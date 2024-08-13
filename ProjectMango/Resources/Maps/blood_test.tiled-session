@@ -1,0 +1,72 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "blood_test_export.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "big_sword_n_trees.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "blood_test.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 150.66666666666666,
+                "y": 128.33333333333331
+            }
+        },
+        "blood_test_export.tmx": {
+            "scale": 1.877734375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 127.81360515914292,
+                "y": 128.07988350322447
+            }
+        },
+        "main_1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "main_2.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/saman/Documents/Coding/MyProjects/SideScrollerJoanna/SracEngine/Resources/Maps",
+    "last.externalTilesetPath": "C:/Users/saman/Documents/Coding/MyProjects/SideScrollerJoanna/SracEngine/Resources/Maps",
+    "last.imagePath": "C:/Users/saman/Documents/Coding/MyProjects/Assets/Blood_Desert",
+    "map.height": 16,
+    "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 16,
+    "openFiles": [
+        "main_1.tsx",
+        "big_sword_n_trees.tsx",
+        "blood_test.tmx",
+        "blood_test_export.tmx"
+    ],
+    "project": "blood_test.tiled-project",
+    "recentFiles": [
+        "main_1.tsx",
+        "big_sword_n_trees.tsx",
+        "blood_test.tmx",
+        "blood_test_export.tmx",
+        "main_2.tsx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 0
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Ability>
+
+	<Properties>
+		<Damage>60</Damage>
+		<Range>700</Range>
+		<MaxSize>150</MaxSize>
+		<Cooldown>3.5</Cooldown>
+
+		<Velocity>400</Velocity>		
+		<KnockbackForce>400</KnockbackForce>
+		<KnockbackDistance>35</KnockbackDistance>
+		<StunTime>4</StunTime>
+	</Properties>
+
+	<Hammer>
+		<Texture>Mjolnir</Texture>
+		<MaxSize>70</MaxSize>
+	</Hammer>
+
+	<Icon>SmashIcon</Icon>
+
+	<Animator>
+		<ID>FloorBurst</ID>
+		<FrameTime>0.08</FrameTime>
+		<FrameSize x = "894" y ="426"></FrameSize>
+		<Animations>
+			<Active>6</Active>
+		</Animations>
+	</Animator>
+
+
+</Ability>

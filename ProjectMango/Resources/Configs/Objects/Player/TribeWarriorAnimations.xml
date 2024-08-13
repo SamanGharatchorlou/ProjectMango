@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<Animator>
+		<ID>TribeWarrior</ID>
+		<FrameTime>0.1</FrameTime>
+		<FrameSize x = "62" y ="69"></FrameSize>
+
+		<!-- Position, Object, Collider, Render dimentions -->
+		<RenderSize x = "124" y ="138"></RenderSize>
+		<ObjectPosition x = "36" y ="49"></ObjectPosition>
+		<ObjectSize x = "30" y ="40"></ObjectSize>
+		<ColliderPosition x = "40" y ="86"></ColliderPosition>
+		<ColliderSize x = "25" y ="16"></ColliderSize>
+		<ObjectPositionOffset x = "-8" y ="26"></ObjectPositionOffset>
+
+		<SpriteSheet>TribeWarrior</SpriteSheet>
+		<!-- Up -->
+		<Animations x = "0" y ="-1"> 
+			<Idle x = "0" y = "2">6</Idle>
+			<Run x = "0" y = "5">12</Run>
+			<BasicAttack x = "0" y = "8" looping = "false" colliderFrame = "5">11</BasicAttack>
+		</Animations>
+		<!-- Down -->
+		<Animations x = "0" y ="1">
+			<Idle x = "0" y = "1">6</Idle>
+			<Run x = "0" y = "4">12</Run>
+			<BasicAttack x = "0" y = "7" looping = "false" colliderFrame = "5">11</BasicAttack>
+		</Animations>
+		<!-- Left/Right -->
+		<Animations x = "1" y ="0" canFlip = "true">
+			<Idle x = "0" y = "0">6</Idle>
+			<Run x = "0" y = "3">12</Run>
+			<BasicAttack x = "0" y = "6" looping = "false" colliderFrame = "5">11</BasicAttack>
+		</Animations>
+		<Animations>
+			<Death x = "0" y = "9" looping = "false">16</Death>
+		</Animations>
+
+	</Animator>
+</root>

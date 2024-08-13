@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Enemy>
+	<Properties>
+		<!-- Physics -->
+		<Force>200</Force>
+		<MaxVelocity>70</MaxVelocity>
+
+		<!-- General Attributes -->
+		<Health>140</Health>
+
+		<!-- Data values -->
+		<Score>75></Score>
+		<Experience>150</Experience>
+
+		<!-- Attack -->
+		<AttackSpeed>0.6</AttackSpeed>
+		<TackleDistance>500</TackleDistance>
+		<TackleMovementSpeed>95</TackleMovementSpeed>
+
+		<!-- Patrol -->
+		<SightRange>500</SightRange>
+		<ChaseRange>1500</ChaseRange>
+	</Properties>
+
+	<MeleeAttack>
+		<Damage>20</Damage>
+		<KnockbackForce>500</KnockbackForce>
+		<KnockbackDistance>100</KnockbackDistance>
+		<Cooldown>3</Cooldown>
+	</MeleeAttack>
+
+	<MaxSize>75</MaxSize>
+	<ColliderScale x = "0.6" y = "0.65"></ColliderScale>
+	<RenderOffset x = "3" y = "-2"></RenderOffset>
+
+	<Animation>OrcAnim</Animation>
+</Enemy>
