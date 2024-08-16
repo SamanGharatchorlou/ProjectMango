@@ -1,0 +1,7 @@
+VC++ Directories: $(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty\rapidxml\Include;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)ThirdParty\imgui-master\src;$(IncludePath)
+
+Library Directories: $(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64
+
+C/C++ - Addition Include Directories: $(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)
+
+Linker - Input - Addition Dependencies: $(CoreLibraryDependencies);%(AdditionalDependencies);SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib
