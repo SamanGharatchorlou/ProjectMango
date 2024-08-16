@@ -44,8 +44,7 @@ int id_numb = 0;
 
 #define DoComponentDropdown(component) \
     if(ecs->HasComponent(component,s_selectedEntity)) {\
-    DoRemoveButton(component); \
-    ComponentDropdown(Do##component##DebugMenu); }
+        DoRemoveButton(component); ComponentDropdown(Do##component##DebugMenu); }
 
 // Entity Window
 void DebugMenu::DoEntitySystemWindow()
