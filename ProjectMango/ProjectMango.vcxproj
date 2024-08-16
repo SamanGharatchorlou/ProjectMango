@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7268d7cd-d6c0-4491-b52e-c3544d51416e}</ProjectGuid>
+    <RootNamespace>ProjectMango</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty\rapidxml\Include;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)ThirdParty\imgui-master\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty\rapidxml\Include;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)ThirdParty\imgui-master\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Animations\Animation.cpp" />
+    <ClCompile Include="Source\Animations\AnimationReader.cpp" />
+    <ClCompile Include="Source\Animations\Animator.cpp" />
+    <ClCompile Include="Source\Audio\Audio.cpp" />
+    <ClCompile Include="Source\Audio\AudioManager.cpp" />
+    <ClCompile Include="Source\Audio\Channel.cpp" />
+    <ClCompile Include="Source\Audio\SoundController.cpp" />
+    <ClCompile Include="Source\Characters\Enemies\Enemies.cpp" />
+    <ClCompile Include="Source\Characters\Player\PlayerCharacter.cpp" />
+    <ClCompile Include="Source\Characters\Spawner.cpp" />
+    <ClCompile Include="Source\Characters\States\CharacterAction.cpp" />
+    <ClCompile Include="Source\Characters\States\EnemyStates.cpp" />
+    <ClCompile Include="Source\Characters\States\PlayerStates.cpp" />
+    <ClCompile Include="Source\Core\BasicString.cpp" />
+    <ClCompile Include="Source\Core\Buffer.cpp" />
+    <ClCompile Include="Source\Core\Colour.cpp" />
+    <ClCompile Include="Source\Core\Events\Dispatcher.cpp" />
+    <ClCompile Include="Source\Core\Helpers.cpp" />
+    <ClCompile Include="Source\Core\Maps\PropertyMap.cpp" />
+    <ClCompile Include="Source\Core\Maps\StringMap.cpp" />
+    <ClCompile Include="Source\Core\Maths.cpp" />
+    <ClCompile Include="Source\Core\NSISFileOutput.cpp" />
+    <ClCompile Include="Source\Core\Physics\Fisics.cpp" />
+    <ClCompile Include="Source\Core\Physics\QuadCollider.cpp" />
+    <ClCompile Include="Source\Core\Property.cpp" />
+    <ClCompile Include="Source\Core\StringBuffers.cpp" />
+    <ClCompile Include="Source\Core\TypeDefs.cpp" />
+    <ClCompile Include="Source\Debugging\DebugDraw.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\AIControllerDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\CharacterStateDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\ColliderDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\PathingDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\PlayerControllerDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\TileMapDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\VelocityDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp" />
+    <ClCompile Include="Source\Debugging\Logging.cpp" />
+    <ClCompile Include="Source\Debugging\MapDebugging.cpp" />
+    <ClCompile Include="Source\Debugging\MemTrack.cpp" />
+    <ClCompile Include="Source\Debugging\PerformanceProfiler.cpp" />
+    <ClCompile Include="Source\Debugging\UIEditor.cpp" />
+    <ClCompile Include="Source\ECS\Components\AIController.cpp" />
+    <ClCompile Include="Source\ECS\Components\Collider.cpp" />
+    <ClCompile Include="Source\ECS\Components\ComponentCommon.cpp" />
+    <ClCompile Include="Source\ECS\Components\Components.cpp" />
+    <ClCompile Include="Source\ECS\Components\ComponentsSetup.cpp" />
+    <ClCompile Include="Source\ECS\Components\Physics.cpp" />
+    <ClCompile Include="Source\ECS\Components\PlayerController.cpp" />
+    <ClCompile Include="Source\ECS\Components\TileMap.cpp" />
+    <ClCompile Include="Source\ECS\EntityManager.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\AIControllerSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\AnimationSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\CollisionSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\PathingSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\PhysicsSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\PlayerControllerSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\RenderSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\TileMapSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\TransformSystem.cpp" />
+    <ClCompile Include="Source\Game\Camera\Camera.cpp" />
+    <ClCompile Include="Source\Game\Camera\CameraShake.cpp" />
+    <ClCompile Include="Source\Game\Data\GameData.cpp" />
+    <ClCompile Include="Source\Game\Data\LoadingBar.cpp" />
+    <ClCompile Include="Source\Game\Data\LoadingManager.cpp" />
+    <ClCompile Include="Source\Game\FrameRateController.cpp" />
+    <ClCompile Include="Source\Game\GameController.cpp" />
+    <ClCompile Include="Source\Game\GameSetup.cpp" />
+    <ClCompile Include="Source\Game\States\GameState.cpp" />
+    <ClCompile Include="Source\Game\States\PauseState.cpp" />
+    <ClCompile Include="Source\Game\States\PreGameState.cpp" />
+    <ClCompile Include="Source\Game\States\StartupState.cpp" />
+    <ClCompile Include="Source\Game\SystemStateManager.cpp" />
+    <ClCompile Include="Source\Graphics\Renderable.cpp" />
+    <ClCompile Include="Source\Graphics\Renderer.cpp" />
+    <ClCompile Include="Source\Graphics\RenderManager.cpp" />
+    <ClCompile Include="Source\Graphics\RenderPacket.cpp" />
+    <ClCompile Include="Source\Graphics\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\TextureManager.cpp" />
+    <ClCompile Include="Source\Graphics\TextureMap.cpp" />
+    <ClCompile Include="Source\Graphics\TileSet.cpp" />
+    <ClCompile Include="Source\Input\Button.cpp" />
+    <ClCompile Include="Source\Input\Cursor.cpp" />
+    <ClCompile Include="Source\Input\InputManager.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\Scene\SceneParsing\SceneBuilder.cpp" />
+    <ClCompile Include="Source\System\Files\Config.cpp" />
+    <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
+    <ClCompile Include="Source\System\Files\FileManager.cpp" />
+    <ClCompile Include="Source\System\Files\StatReader.cpp" />
+    <ClCompile Include="Source\System\Files\TextFileReader.cpp" />
+    <ClCompile Include="Source\System\Files\XMLNode.cpp" />
+    <ClCompile Include="Source\System\Files\XMLParser.cpp" />
+    <ClCompile Include="Source\System\Window.cpp" />
+    <ClCompile Include="Source\UI\Elements\UIBox.cpp" />
+    <ClCompile Include="Source\UI\Elements\UIButton.cpp" />
+    <ClCompile Include="Source\UI\Elements\UIElement.cpp" />
+    <ClCompile Include="Source\UI\Elements\UISlider.cpp" />
+    <ClCompile Include="Source\UI\Elements\UISwitch.cpp" />
+    <ClCompile Include="Source\UI\Elements\UITextBox.cpp" />
+    <ClCompile Include="Source\UI\Elements\UIWindow.cpp" />
+    <ClCompile Include="Source\UI\ScreenController.cpp" />
+    <ClCompile Include="Source\UI\ScreenLayers.cpp" />
+    <ClCompile Include="Source\UI\Screens\GameOverScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\GameScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\LoadingScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\MainMenuScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\PauseScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\PopupScreen.cpp" />
+    <ClCompile Include="Source\UI\Screens\Screen.cpp" />
+    <ClCompile Include="Source\UI\Screens\SettingsScreen.cpp" />
+    <ClCompile Include="Source\UI\Text\Font.cpp" />
+    <ClCompile Include="Source\UI\Text\Text.cpp" />
+    <ClCompile Include="Source\UI\UIEventHandler.cpp" />
+    <ClCompile Include="Source\UI\UIManager.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_tables.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_widgets.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\src\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\src\imgui_impl_sdlrenderer2.cpp" />
+    <ClCompile Include="ThirdParty\imgui_sdl-master\imgui_sdl.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Animations\Animation.h" />
+    <ClInclude Include="Source\Animations\AnimationReader.h" />
+    <ClInclude Include="Source\Animations\Animator.h" />
+    <ClInclude Include="Source\Animations\CharacterStates.h" />
+    <ClInclude Include="Source\Audio\Audio.h" />
+    <ClInclude Include="Source\Audio\AudioManager.h" />
+    <ClInclude Include="Source\Audio\Channel.h" />
+    <ClInclude Include="Source\Audio\SoundController.h" />
+    <ClInclude Include="Source\Characters\Enemies\Enemies.h" />
+    <ClInclude Include="Source\Characters\Player\PlayerCharacter.h" />
+    <ClInclude Include="Source\Characters\Spawner.h" />
+    <ClInclude Include="Source\Characters\States\CharacterAction.h" />
+    <ClInclude Include="Source\Characters\States\EnemyStates.h" />
+    <ClInclude Include="Source\Characters\States\PlayerStates.h" />
+    <ClInclude Include="Source\Core\BasicString.h" />
+    <ClInclude Include="Source\Core\Buffer.h" />
+    <ClInclude Include="Source\Core\Colour.h" />
+    <ClInclude Include="Source\Core\Events\Dispatcher.h" />
+    <ClInclude Include="Source\Core\Events\Events.h" />
+    <ClInclude Include="Source\Core\Events\LocalDispatcher.h" />
+    <ClInclude Include="Source\Core\Events\Observer.h" />
+    <ClInclude Include="Source\Core\Grid.h" />
+    <ClInclude Include="Source\Core\Helpers.h" />
+    <ClInclude Include="Source\Core\LinkedList.h" />
+    <ClInclude Include="Source\Core\Maps\PropertyMap.h" />
+    <ClInclude Include="Source\Core\Maps\StringMap.h" />
+    <ClInclude Include="Source\Core\Maths.h" />
+    <ClInclude Include="Source\Core\NSISFileOutput.h" />
+    <ClInclude Include="Source\Core\ObjectPool.h" />
+    <ClInclude Include="Source\Core\Physics\Fisics.h" />
+    <ClInclude Include="Source\Core\Physics\QuadCollider.h" />
+    <ClInclude Include="Source\Core\Property.h" />
+    <ClInclude Include="Source\Core\Quad2D.h" />
+    <ClInclude Include="Source\Core\Queue.h" />
+    <ClInclude Include="Source\Core\Rect.h" />
+    <ClInclude Include="Source\Core\RingBuffer.h" />
+    <ClInclude Include="Source\Core\Stack.h" />
+    <ClInclude Include="Source\Core\StringBuffers.h" />
+    <ClInclude Include="Source\Core\Timer.h" />
+    <ClInclude Include="Source\Core\TypeDefs.h" />
+    <ClInclude Include="Source\Core\UniqueQueue.h" />
+    <ClInclude Include="Source\Core\Vector2D.h" />
+    <ClInclude Include="Source\Debugging\DebugDraw.h" />
+    <ClInclude Include="Source\Debugging\DebugSettings.h" />
+    <ClInclude Include="Source\Debugging\ImGui\Components\ComponentDebugMenu.h" />
+    <ClInclude Include="Source\Debugging\ImGui\ImGuiHelpers.h" />
+    <ClInclude Include="Source\Debugging\ImGui\ImGuiMainWindows.h" />
+    <ClInclude Include="Source\Debugging\ImGui\ImGuiMenu.h" />
+    <ClInclude Include="Source\Debugging\Logging.h" />
+    <ClInclude Include="Source\Debugging\MapDebugging.h" />
+    <ClInclude Include="Source\Debugging\MemTrack.h" />
+    <ClInclude Include="Source\Debugging\PerformanceProfiler.h" />
+    <ClInclude Include="Source\Debugging\UIEditor.h" />
+    <ClInclude Include="Source\ECS\ComponentArray.h" />
+    <ClInclude Include="Source\ECS\ComponentManager.h" />
+    <ClInclude Include="Source\ECS\Components\AIController.h" />
+    <ClInclude Include="Source\ECS\Components\Collider.h" />
+    <ClInclude Include="Source\ECS\Components\ComponentCommon.h" />
+    <ClInclude Include="Source\ECS\Components\Components.h" />
+    <ClInclude Include="Source\ECS\Components\ComponentsSetup.h" />
+    <ClInclude Include="Source\ECS\Components\Physics.h" />
+    <ClInclude Include="Source\ECS\Components\PlayerController.h" />
+    <ClInclude Include="Source\ECS\Components\TileMap.h" />
+    <ClInclude Include="Source\ECS\EntityCommon.h" />
+    <ClInclude Include="Source\ECS\EntityCoordinator.h" />
+    <ClInclude Include="Source\ECS\EntityManager.h" />
+    <ClInclude Include="Source\ECS\EntSystems\AIControllerSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\AnimationSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\CollisionSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\PathingSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\PhysicsSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\PlayerControllerSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\RenderSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\TileMapSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\TransformSystem.h" />
+    <ClInclude Include="Source\ECS\SystemManager.h" />
+    <ClInclude Include="Source\Game\Camera\Camera.h" />
+    <ClInclude Include="Source\Game\Camera\CameraShake.h" />
+    <ClInclude Include="Source\Game\Data\GameData.h" />
+    <ClInclude Include="Source\Game\Data\LoadingBar.h" />
+    <ClInclude Include="Source\Game\Data\LoadingManager.h" />
+    <ClInclude Include="Source\Game\FrameRateController.h" />
+    <ClInclude Include="Source\Game\GameController.h" />
+    <ClInclude Include="Source\Game\GameSetup.h" />
+    <ClInclude Include="Source\Game\States\GameState.h" />
+    <ClInclude Include="Source\Game\States\PauseState.h" />
+    <ClInclude Include="Source\Game\States\PreGameState.h" />
+    <ClInclude Include="Source\Game\States\StartupState.h" />
+    <ClInclude Include="Source\Game\States\State.h" />
+    <ClInclude Include="Source\Game\States\StateMachine.h" />
+    <ClInclude Include="Source\Game\SystemStateManager.h" />
+    <ClInclude Include="Source\Graphics\Renderable.h" />
+    <ClInclude Include="Source\Graphics\Renderer.h" />
+    <ClInclude Include="Source\Graphics\RenderManager.h" />
+    <ClInclude Include="Source\Graphics\RenderPacket.h" />
+    <ClInclude Include="Source\Graphics\Texture.h" />
+    <ClInclude Include="Source\Graphics\TextureManager.h" />
+    <ClInclude Include="Source\Graphics\TextureMap.h" />
+    <ClInclude Include="Source\Graphics\TileSet.h" />
+    <ClInclude Include="Source\Input\Button.h" />
+    <ClInclude Include="Source\Input\Cursor.h" />
+    <ClInclude Include="Source\Input\InputManager.h" />
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Scene\SceneParsing\SceneBuilder.h" />
+    <ClInclude Include="Source\System\Files\Config.h" />
+    <ClInclude Include="Source\System\Files\ConfigManager.h" />
+    <ClInclude Include="Source\System\Files\FileManager.h" />
+    <ClInclude Include="Source\System\Files\StatReader.h" />
+    <ClInclude Include="Source\System\Files\TextFileReader.h" />
+    <ClInclude Include="Source\System\Files\XMLNode.h" />
+    <ClInclude Include="Source\System\Files\XMLParser.h" />
+    <ClInclude Include="Source\System\Window.h" />
+    <ClInclude Include="Source\UI\Elements\UIBox.h" />
+    <ClInclude Include="Source\UI\Elements\UIButton.h" />
+    <ClInclude Include="Source\UI\Elements\UIElement.h" />
+    <ClInclude Include="Source\UI\Elements\UISlider.h" />
+    <ClInclude Include="Source\UI\Elements\UISwitch.h" />
+    <ClInclude Include="Source\UI\Elements\UITextBox.h" />
+    <ClInclude Include="Source\UI\Elements\UIWindow.h" />
+    <ClInclude Include="Source\UI\ScreenController.h" />
+    <ClInclude Include="Source\UI\ScreenLayers.h" />
+    <ClInclude Include="Source\UI\Screens\GameOverScreen.h" />
+    <ClInclude Include="Source\UI\Screens\GameScreen.h" />
+    <ClInclude Include="Source\UI\Screens\LoadingScreen.h" />
+    <ClInclude Include="Source\UI\Screens\MainMenuScreen.h" />
+    <ClInclude Include="Source\UI\Screens\PauseScreen.h" />
+    <ClInclude Include="Source\UI\Screens\PopupScreen.h" />
+    <ClInclude Include="Source\UI\Screens\Screen.h" />
+    <ClInclude Include="Source\UI\Screens\ScreenHeaders.h" />
+    <ClInclude Include="Source\UI\Screens\SettingsScreen.h" />
+    <ClInclude Include="Source\UI\ScreenTypes.h" />
+    <ClInclude Include="Source\UI\Text\Font.h" />
+    <ClInclude Include="Source\UI\Text\Text.h" />
+    <ClInclude Include="Source\UI\UIEventHandler.h" />
+    <ClInclude Include="Source\UI\UIManager.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_truetype.h" />
+    <ClInclude Include="ThirdParty\imgui-master\src\imgui_impl_sdl2.h" />
+    <ClInclude Include="ThirdParty\imgui-master\src\imgui_impl_sdlrenderer2.h" />
+    <ClInclude Include="ThirdParty\imgui_sdl-master\imgui_sdl.h" />
+    <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_iterators.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_print.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_utils.hpp" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\begin_code.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\close_code.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_assert.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_atomic.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_audio.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_bits.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_blendmode.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_clipboard.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_config.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_cpuinfo.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_egl.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_endian.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_error.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_events.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_filesystem.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_gamecontroller.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_gesture.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_guid.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_haptic.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_hidapi.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_hints.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_joystick.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_keyboard.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_keycode.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_loadso.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_locale.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_log.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_main.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_messagebox.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_metal.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_misc.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_mouse.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_mutex.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_name.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengl.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles2.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_opengl_glext.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_pixels.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_platform.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_power.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_quit.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_rect.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_render.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_revision.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_rwops.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_scancode.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_sensor.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_shape.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_stdinc.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_surface.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_system.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_syswm.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_assert.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_common.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_compare.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_crc32.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_font.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_fuzzer.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_harness.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_images.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_log.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_md5.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_memory.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_test_random.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_thread.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_timer.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_touch.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_types.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_version.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_video.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL_vulkan.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2_image-2.8.2\include\SDL_image.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2_mixer-2.8.0\include\SDL_mixer.h" />
+    <ClInclude Include="ThirdParty\SDL2\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ThirdParty\imgui-master\.editorconfig" />
+    <None Include="ThirdParty\imgui-master\.gitattributes" />
+    <None Include="ThirdParty\imgui-master\.gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ThirdParty\imgui-master\LICENSE.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
