@@ -43,7 +43,7 @@ void SoundController::init()
 
 void SoundController::Update()
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	int counter = 0;
 #endif
 	float vol = getMusicVolume();
@@ -74,7 +74,7 @@ void SoundController::Update()
 		float vol = getMusicVolume();
 		int vim = Mix_VolumeMusic(-1);
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		if (sound.mState != Channel::Free)
 		{
 			counter++;
@@ -82,7 +82,7 @@ void SoundController::Update()
 #endif
 	}
 
-#if DEBUG_CHECK // Check channels aren't getting clogged up with paused audio
+#if DEBUG_MODE // Check channels aren't getting clogged up with paused audio
 	if (counter >= mixerChannels)
 	{
 		int playingCounter = 0;
@@ -107,7 +107,7 @@ void SoundController::Update()
 		}
 #endif // PRINT_FULL_AUDIO_CHANNELS
 	}
-#endif // DEBUG_CHECK
+#endif // DEBUG_MODE
 
 }
 

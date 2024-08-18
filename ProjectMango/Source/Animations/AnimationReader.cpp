@@ -1,144 +1,65 @@
 #include "pch.h"
 #include "AnimationReader.h"
 
-#include "Animations/Animator.h"
-#include "Graphics/TextureManager.h"
+#include "Animations/CharacterStates.h"
+#include "Core/Helpers.h"
+#include "ECS/Components/Animator.h"
 #include "Graphics/Texture.h"
+#include "Graphics/TextureManager.h"
+#include "System/Files/JSONParser.h"
 
-static constexpr u32 c_buffLen = 32;
-static char s_buffer[c_buffLen];
+static std::unordered_map<const char*, ECS::SpriteSheet> s_spriteSheets;
 
-static void ReadRect(XMLNode root, const char* node, VectorF& pos, VectorF& size)
-{
-	snprintf(s_buffer, c_buffLen, "%sPosition", node);
-	XMLNode pos_node = root.child(s_buffer);
-	pos = attributesToVectorF(pos_node);
-	
-	snprintf(s_buffer, c_buffLen, "%sSize", node);
-	XMLNode size_node = root.child(s_buffer);
-	size = attributesToVectorF(size_node);
-}
+namespace AnimationReader
+{	
+	using namespace rapidjson;
 
-static void PopulateBaseSpriteSheet(XMLNode root, SpriteSheet& sheet)
-{
-	sheet.ID = root.child("ID").value();
-
-	ReadRect(root, "Object", sheet.objectPos, sheet.objectSize);
-	ReadRect(root, "Collider", sheet.colliderPos, sheet.colliderSize);
-
-	snprintf(s_buffer, c_buffLen, "ObjectPositionOffset");
-	XMLNode pos_node = root.child(s_buffer);
-	sheet.objectPosOffseet = attributesToVectorF(pos_node);
-
-	const char* spriteSheet = root.child("SpriteSheet").value();
-	Texture* texture = TextureManager::Get()->getTexture(spriteSheet, FileManager::Folder::Image_Animations);
-	if (!texture)
+	void BuildAnimatior(const char* file, ECS::Animator& animator)
 	{
-		DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet);
-		return;
-	}
+		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
+		JSONParser parser(full_path.c_str());
+		
+		const char* id = parser.document["id"].GetString();
 
-	sheet.texture = texture;
-	sheet.frameSize = attributesToVectorF(root.child("FrameSize"));
-	sheet.renderSize = attributesToVectorF(root.child("RenderSize"));
-	sheet.boundaries = (texture->originalDimentions / sheet.frameSize).toInt();
-}
-
-static void PopulateAnimation(XMLNode node, Animation& animation, const SpriteSheet& sprite_sheet)
-{
-	animation.action = stringToAction(node.name());
-
-	// convert x,y position in index count, do i need to do this? or better to leave as x,y. cba to change it at this point
-	VectorI index = attributesToVectorI(node, "x", "y");
-	animation.startIndex = sprite_sheet.boundaries.x * index.y + index.x;
-	animation.frameCount = toInt(node.value());
-
-	if (XMLNode::Attribute attributeNode = node.attribute("minLoops"))
-	{
-		animation.minLoops = toInt(attributeNode->value());
-	}
-
-	if (XMLNode::Attribute attributeNode = node.attribute("looping"))
-	{
-		animation.looping = toBool(attributeNode->value());
-	}
-
-	if (XMLNode::Attribute attributeNode = node.attribute("colliderFrame"))
-	{
-		animation.colliderFrame = toInt(attributeNode->value());
-	}
-
-	if (XMLNode::Attribute attributeNode = node.attribute("frameTime"))
-	{
-		animation.frameTime = toFloat(attributeNode->value());
-	}
-
-	// extend the frame time so as to match an animation with targetFrames number of frames in it
-	// read after frameTime, we need to respect that new time
-	if (XMLNode::Attribute attributeNode = node.attribute("targetFrames"))
-	{
-		float target_frames = toFloat(attributeNode->value());
-		float time_ratio = target_frames / (float)animation.frameCount;
-		animation.frameTime *= time_ratio;
-	}
-}
-
-void AnimationReader::Parse(const char* animation, Animator& animator)
-{
-	BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, animation);
-	XMLParser* parser = new XMLParser;
-	parser->parseXML(full_path.c_str());
-
-	const XMLNode root = parser->rootNode();
-	XMLNode animatorNode = parser->rootChild("Animator");
-
-	SpriteSheet sheet;
-	PopulateBaseSpriteSheet(animatorNode, sheet);
-	animator.mSpriteSheets.push_back(sheet);
-
-	float frame_time = toFloat(animatorNode.child("FrameTime").value());;
-
-	XMLNode animations_node = animatorNode.child("Animations");
-	while (animations_node)
-	{
-		SpriteSheet* sprite_sheet = &animator.mSpriteSheets.back();
-
-		int x = 0;
-		if(XMLNode::Attribute attribute = animations_node.attribute("x"))
-			x = toInt(attribute->value());
-
-		int y = 0;
-		if(XMLNode::Attribute attribute = animations_node.attribute("y"))
-			y = toInt(attribute->value());
-
-		VectorI direction = VectorI(x,y);
-
-		bool can_flip = false;
-		if (XMLNode::Attribute attributeNode = animations_node.attribute("canFlip"))
+		const char* spriteSheet_id = parser.document["spriteSheet"].GetString();
+		Texture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+		if (!texture)
 		{
-			can_flip = toBool(attributeNode->value());
+			DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
 		}
 
-		XMLNode single_anim_node = animations_node.child();
-		while( single_anim_node )
+		if(!s_spriteSheets.contains(id))
 		{
-			Animation animation;
+			ECS::SpriteSheet spriteSheet;
+			spriteSheet.ID = id;
+			spriteSheet.texture = texture;
+			spriteSheet.frameSize.x = parser.document["frameSize_x"].GetFloat();
+			spriteSheet.frameSize.y = parser.document["frameSize_y"].GetFloat();
+			spriteSheet.sheetSize = (texture->originalDimentions / spriteSheet.frameSize).toInt();
 
-			// popup late common data
-			animation.frameTime = frame_time;
-			animation.spriteSheetIndex = animator.mSpriteSheets.size() - 1;
-			animation.direction = direction;
-			animation.canFlip = can_flip;
-
-			// must happen after the common data, we might edit it
-			PopulateAnimation(single_anim_node, animation, *sprite_sheet);
-
-			animator.mAnimations.push_back(animation);
-			single_anim_node = single_anim_node.next();
+			s_spriteSheets[id] = spriteSheet;
 		}
 
-		animations_node = animations_node.next("Animations");
-	}
+		Value& animations = parser.document["animations"];
+		for( u32 i = 0; i < animations.Size(); i++ )
+		{
+			Value& animation = animations[i];
 
-	delete parser;
+			const char* action = animation["action"].GetString();
+			int start_index = animation["startIndex"].GetInt();
+			int frame_count = animation["frameCount"].GetInt();
+			float frame_time = animation["frameTime"].GetFloat();
+			float looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
+
+			animator.animations.push_back(ECS::Animation());
+			ECS::Animation& anim = animator.animations.back();
+
+			anim.action = stringToAction(action);
+			anim.frameCount = frame_count;
+			anim.frameTime = frame_time;
+			anim.startIndex = start_index;
+			anim.spriteSheet = &s_spriteSheets[id];
+			anim.looping = looping;
+		}
+	}
 }

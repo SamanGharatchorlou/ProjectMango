@@ -7,28 +7,26 @@
 
 namespace Player
 {
-	struct StatePool : public ObjectPool<CharacterAction, ActionState>
-	{
-		CharacterAction* createNewObjects(ActionState type, int count, int& outSize) const override;
-	};
-
 	struct IdleState : public CharacterAction
 	{
+		IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
+		void Init() override;
 		void Update(float dt) override;
-	};
-
-	struct WalkState : public CharacterAction
-	{
-		void Update(float dt) override;
+		void Resume() override;
 	};
 
 	struct RunState : public CharacterAction
-	{
+	{		
+		RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
+		void Init() override;
 		void Update(float dt) override;
+		void Resume() override;
 	};
 
 	struct DodgeState : public CharacterAction
 	{
+		DodgeState(ECS::Entity _entity) : CharacterAction(ActionState::Dodge, _entity) { }
+
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
@@ -36,6 +34,9 @@ namespace Player
 
 	struct BasicAttackState : public CharacterAction
 	{
+		
+		BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
@@ -43,13 +44,16 @@ namespace Player
 		ECS::Entity attackCollider = ECS::EntityInvalid;
 	};
 
-	struct ChopAttackState : public CharacterAction
-	{
-		void Update(float dt) override;
-	};
+	//struct ChopAttackState : public CharacterAction
+	//{
+	//	void Update(float dt) override;
+	//};
 
 	struct DeathState : public CharacterAction
 	{
+		
+		DeathState(ECS::Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
+
 		void Init() override;
 		void Update(float dt) override;
 

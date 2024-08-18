@@ -209,33 +209,33 @@ BasicString FileManager::findFileEtx(const Folder folder, const char* name) cons
 
 }
 
-StringBuffer32 FileManager::getItemName(const char* filePath) const
+StringBuffer64 FileManager::getItemName(const char* filePath) const
 {
 	char fileName[50];
 	errno_t error = _splitpath_s(filePath, NULL, 0, NULL, 0, fileName, 50, NULL, 0);
-	return StringBuffer32(fileName);
+	return StringBuffer64(fileName);
 }
 
 
-StringBuffer32 FileManager::getItemName(const fs::path& filePath) const
+StringBuffer64 FileManager::getItemName(const fs::path& filePath) const
 {
 	char fileName[50];
 	errno_t error = _splitpath_s(pathToString(filePath).c_str(), NULL, 0, NULL, 0, fileName, 50, NULL, 0);
-	return StringBuffer32(fileName);
+	return StringBuffer64(fileName);
 }
 
-StringBuffer32 FileManager::getItemNameAndExt(const fs::path& filePath) const
+StringBuffer64 FileManager::getItemNameAndExt(const fs::path& filePath) const
 {
 	char fileName[26];
 	char ext[6];
 	errno_t error = _splitpath_s(pathToString(filePath).c_str(), NULL, 0, NULL, 0, fileName, 26, ext, 6);
-	return StringBuffer32(fileName) + ext;
+	return StringBuffer64(fileName) + ext;
 }
 
 
 bool FileManager::HasExt(const char* filePath, const char* extension)
 {
-	StringBuffer32 buffer;
+	StringBuffer64 buffer;
 	errno_t error = _splitpath_s(filePath, NULL, 0, NULL, 0, NULL, 0, buffer.buffer(), 6);
 	return buffer == extension;
 }
@@ -272,17 +272,14 @@ std::vector<BasicString> FileManager::fullPathsInFolder(const char* directoryPat
 
 
 // TODO: will also get folder names?
-std::vector<StringBuffer32> FileManager::fileNamesInFolder(const Folder folder) const
+std::vector<BasicString> FileManager::fileNamesInFolder(const Folder folder) const
 {
-	std::vector<StringBuffer32> fileNameList;
+	std::vector<BasicString> fileList = allFilesInFolder(folder);
+	std::vector<BasicString> fileNameList;
 
-	fs::path folder_path = fsPath(folder);
-	if (!folder_path.empty())
+	for( u32 i = 0; i < fileList.size(); i++ )
 	{
-		for (const auto& fullFilePath : fs::directory_iterator(folder_path))
-		{
-			fileNameList.push_back(getItemName(fullFilePath.path()));
-		}
+		fileNameList.push_back( getItemName(fileList[i].c_str()).c_str() );
 	}
 
 	return fileNameList;
@@ -442,7 +439,7 @@ void FileManager::addFoldersToList(std::vector<BasicString>& folderList, const f
 }
 
 
-void FileManager::outFilePath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer32& name) const
+void FileManager::outFilePath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer64& name) const
 {
 	if (directoryPath.empty())
 		return;
@@ -465,7 +462,7 @@ void FileManager::outFilePath(BasicString& outValue, const fs::path& directoryPa
 }
 
 
-void FileManager::outFolderPath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer32& name) const
+void FileManager::outFolderPath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer64& name) const
 {
 	if (directoryPath.empty())
 		return;

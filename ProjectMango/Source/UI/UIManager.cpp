@@ -3,6 +3,7 @@
 
 #include "Input/InputManager.h"
 #include "Graphics/TextureManager.h"
+#include "Core/Helpers.h"
 
 #include "UIEventHandler.h"
 #include "Screens/ScreenHeaders.h"
@@ -57,12 +58,12 @@ void UIManager::load()
 	ConfigManager* cm = ConfigManager::Get();
 	FileManager* fm = FileManager::Get();
 
-	const std::vector<StringBuffer32> popup_configs = fm->fileNamesInFolder(FileManager::Config_Popups);
-	for (u32 i = 0; i < popup_configs.size(); i++)
-	{
-		const StringBuffer32 name = fm->getItemName(popup_configs[i].c_str());
-		cm->add<PopupConfig>(name.c_str());
-	}
+	//const std::vector<StringBuffer64> popup_configs = fm->fileNamesInFolder(FileManager::Config_Popups);
+	//for (u32 i = 0; i < popup_configs.size(); i++)
+	//{
+	//	const StringBuffer64 name = fm->getItemName(popup_configs[i].c_str());
+	//	cm->add<PopupConfig>(name.c_str());
+	//}
 }
 
 
@@ -162,7 +163,7 @@ void UIManager::initCursor(Cursor* cursor)
 
 void UIManager::setCursorTexture(Texture* texture) 
 { 
-	const StringBuffer32& textureName = TextureManager::Get()->getTextureName(texture);
+	const StringBuffer64& textureName = TextureManager::Get()->getTextureName(texture);
 	
 	// Set cursor mode
 	if (textureName == "GameCursor")

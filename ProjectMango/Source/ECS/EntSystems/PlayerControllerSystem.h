@@ -10,7 +10,5 @@ namespace ECS
 		PlayerControllerSystem(Archetype type) : EntitySystem(type) { }
 
 		void Update(float dt) override;
-
-		bool spawnPlayer = false;
 	};
 }

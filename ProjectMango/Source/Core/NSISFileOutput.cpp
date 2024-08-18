@@ -11,7 +11,7 @@ void OutputNSISFolderInfo()
 	fm->AllFoldersContainingFiles(fs::path(fm->folderPath(FileManager::Root).c_str()), allFolders);
 
 	const char* cwdPath = "C:\\Users\\Saman\\RougeLike\\RougeLike\\Resources\\";
-	int cwdLength = strlen(cwdPath);
+	int cwdLength = (int)strlen(cwdPath);
 
 	const int buffer_len = 512;
 	char buffer[buffer_len];
@@ -25,7 +25,7 @@ void OutputNSISFolderInfo()
 	std::unordered_set<BasicString>::const_iterator setIter;
 	for (setIter = allFolders.begin(); setIter != allFolders.end(); setIter++)
 	{
-		StringBuffer32 folderName = fm->getItemName(setIter->c_str());
+		StringBuffer64 folderName = fm->getItemName(setIter->c_str());
 		BasicString subbed = setIter->substr(cwdLength, setIter->length() - cwdLength);
 
 		snprintf(buffer, buffer_len, "FOLDER_%s_%d", folderName.c_str(), counter);

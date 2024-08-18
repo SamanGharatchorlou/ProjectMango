@@ -58,3 +58,8 @@ namespace Map
 		void BuildTileMap(const char* mapName, SceneTileMapping& map_layers);
 	};
 }
+
+namespace Scene
+{
+
+}

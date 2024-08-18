@@ -7,6 +7,7 @@
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "ECS/Components/PlayerController.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "ECS/Components/Animator.h"
 
 namespace ECS
 {
@@ -21,45 +22,77 @@ namespace ECS
 				int a = 4;
 
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			//Transform& transform = ecs->GetComponentRef(Transform, entity);
-			Animation& animation = ecs->GetComponentRef(Animation, entity);
-
-			bool using_playlist = DebugMenu::UsingPlaylist(entity);
-
-			Animator& animator = animation.animator;
-
-			if(!using_playlist)
-				animator.RunActive(dt);
-			
+			Transform& transform = ecs->GetComponentRef(Transform, entity);
+			Animator& animator = ecs->GetComponentRef(Animator, entity);
 			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 
+			// update animation
+			if(animator.state == TimeState::Running)
+				animator.timer += dt;
 
-			VectorF pos = animator.getAnimationSubRect();
-			sprite.subRect = RectF(pos, animator.FrameSize());
-
-			if (using_playlist)
-				continue;
-
-			// select the next action
-			ActionState action = state.action;
-			bool is_flipped = false;
-
-			// todo: perhaps rename this or put it into a namespace?
-			const ::Animation* anim = animator.getAnimation(action, state.facingDirection, is_flipped);
-			const ::Animation* active_anim = animator.activeAnimation();
-			
-			sprite.flip = is_flipped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-			DebugMenu::SpriteFlipOverride(entity, sprite.flip);
-
-			if ( anim && anim != active_anim )
+			Animation& active_animation = animator.animations[animator.activeAnimation];
+			if(animator.timer > active_animation.frameTime)
 			{
-				animator.selectAnimation(*anim);
+				animator.frameIndex++;
 
-				const SpriteSheet& ss = animator.getSpritesheet(*anim);
-				sprite.renderSize = ss.renderSize;
-				sprite.texture = ss.texture;
+				if(animator.frameIndex >= active_animation.frameCount)
+				{
+					animator.loopCount++;
+
+					if(active_animation.looping)
+					{
+						animator.frameIndex = 0;
+					}
+					else
+					{
+						animator.state = TimeState::Paused; // Stopped?
+					}
+				}
+
+				animator.frameIndex = Maths::clamp(animator.frameIndex, (u32)0, (u32)active_animation.frameCount - 1);
+				animator.timer = 0;
 			}
+
+			animator.SetActiveSpriteFrame(sprite);
+
+			//sprite.
+
+			//bool using_playlist = DebugMenu::UsingPlaylist(entity);
+
+			//Animator& animator = animation.animator;
+
+			//if(!using_playlist)
+			//	animator.RunActive(dt);
+			//
+			//Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+
+			//VectorF pos = animator.getAnimationSubRect();
+			//sprite.subRect = RectF(pos, animator.FrameSize());
+
+			//if (using_playlist)
+			//	continue;
+
+			//// select the next action
+			//ActionState action = state.action;
+			//bool is_flipped = false;
+
+			//// todo: perhaps rename this or put it into a namespace?
+			//const ::Animation* anim = animator.getAnimation(action, state.facingDirection, is_flipped);
+			//const ::Animation* active_anim = animator.activeAnimation();
+			//
+			//sprite.flip = is_flipped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+
+			//DebugMenu::SpriteFlipOverride(entity, sprite.flip);
+
+			//if ( anim && anim != active_anim )
+			//{
+			//	animator.selectAnimation(*anim);
+
+			//	const SpriteSheet& ss = animator.getSpritesheet(*anim);
+			//	sprite.renderSize = ss.renderSize;
+			//	sprite.texture = ss.texture;
+			//}
 
 			//
 			//// update transform size, is this the wrong place to do it?

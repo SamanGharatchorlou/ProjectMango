@@ -273,4 +273,18 @@ void InputManager::bindDefaultButtons()
 	mButtons.push_back(Button(Button::Key::Seven));
 	mButtons.push_back(Button(Button::Key::Eight));
 	mButtons.push_back(Button(Button::Key::Nine));
+
+	// F numbers
+	mButtons.push_back(Button(Button::Key::F1));
+	mButtons.push_back(Button(Button::Key::F2));
+	mButtons.push_back(Button(Button::Key::F3));
+	mButtons.push_back(Button(Button::Key::F4));
+	mButtons.push_back(Button(Button::Key::F5));
+	mButtons.push_back(Button(Button::Key::F6));
+	mButtons.push_back(Button(Button::Key::F7));
+	mButtons.push_back(Button(Button::Key::F8));
+	mButtons.push_back(Button(Button::Key::F9));
+	mButtons.push_back(Button(Button::Key::F10));
+	mButtons.push_back(Button(Button::Key::F11));
+	mButtons.push_back(Button(Button::Key::F12));
 }

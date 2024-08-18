@@ -11,14 +11,14 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
 		RectF rect;
-		if(const Sprite* sprite = ecs->GetComponent(Sprite, entity))
-		{
-			rect.SetSize(sprite->renderSize);
-			if(const Transform* transform = ecs->GetComponent(Transform, entity))
-			{
-				rect.SetCenter(transform->rect.Center());
-			}
-		}
+		//if(const Sprite* sprite = ecs->GetComponent(Sprite, entity))
+		//{
+		//	rect.SetSize(sprite->renderSize);
+		//	if(const Transform* transform = ecs->GetComponent(Transform, entity))
+		//	{
+		//		rect.SetCenter(transform->rect.Center());
+		//	}
+		//}
 
 		return rect;
 	}
@@ -30,19 +30,19 @@ namespace ECS
 		
 		RectF rect;
 		
-		if(Animation* animation = ecs->GetComponent(Animation, entity))
-		{
-			const Animator& animator = animation->animator;
-			if(const SpriteSheet* ss = animator.getActiveSpritesheet())
-			{
-				rect.SetSize(ss->objectSize);
+		//if(Animation* animation = ecs->GetComponent(Animator, entity))
+		//{
+		//	const Animator& animator = animation->animator;
+		//	if(const SpriteSheet* ss = animator.getActiveSpritesheet())
+		//	{
+		//		rect.SetSize(ss->objectSize);
 
-				if(const Transform* transform = ecs->GetComponent(Transform, entity))
-				{
-					rect.SetTopLeft(transform->rect.TopLeft() + ss->objectPos);
-				}
-			}
-		}
+		//		if(const Transform* transform = ecs->GetComponent(Transform, entity))
+		//		{
+		//			rect.SetTopLeft(transform->rect.TopLeft() + ss->objectPos);
+		//		}
+		//	}
+		//}
 
 		return rect;
 	}
@@ -53,19 +53,19 @@ namespace ECS
 		
 		RectF rect;
 		
-		if(Animation* animation = ecs->GetComponent(Animation, entity))
-		{
-			const Animator& animator = animation->animator;
-			if(const SpriteSheet* ss = animator.getActiveSpritesheet())
-			{
-				rect.SetSize(ss->colliderSize);
+		//if(Animation* animation = ecs->GetComponent(Animation, entity))
+		//{
+		//	const Animator& animator = animation->animator;
+		//	if(const SpriteSheet* ss = animator.getActiveSpritesheet())
+		//	{
+		//		rect.SetSize(ss->colliderSize);
 
-				if(const Transform* transform = ecs->GetComponent(Transform, entity))
-				{
-					rect.SetTopLeft(transform->rect.TopLeft() + ss->colliderPos);
-				}
-			}
-		}
+		//		if(const Transform* transform = ecs->GetComponent(Transform, entity))
+		//		{
+		//			rect.SetTopLeft(transform->rect.TopLeft() + ss->colliderPos);
+		//		}
+		//	}
+		//}
 
 		return rect;
 	}
@@ -77,7 +77,7 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		if (const Transform* transform = ecs->GetComponent(Transform, entity))
 		{
-			return transform->GetPos();
+			return transform->position;// GetPos();
 		}
 
 		return VectorF::zero();

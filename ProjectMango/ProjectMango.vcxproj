@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty\rapidxml\Include;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)ThirdParty\imgui-master\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty\rapidxml\Include;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)ThirdParty\imgui-master\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,7 +130,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,9 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Animations\Animation.cpp" />
     <ClCompile Include="Source\Animations\AnimationReader.cpp" />
-    <ClCompile Include="Source\Animations\Animator.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
@@ -168,6 +166,7 @@
     <ClCompile Include="Source\Core\Property.cpp" />
     <ClCompile Include="Source\Core\StringBuffers.cpp" />
     <ClCompile Include="Source\Core\TypeDefs.cpp" />
+    <ClCompile Include="Source\Debugging\AnimationEditor.cpp" />
     <ClCompile Include="Source\Debugging\DebugDraw.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AIControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp" />
@@ -187,10 +186,12 @@
     <ClCompile Include="Source\Debugging\PerformanceProfiler.cpp" />
     <ClCompile Include="Source\Debugging\UIEditor.cpp" />
     <ClCompile Include="Source\ECS\Components\AIController.cpp" />
+    <ClCompile Include="Source\ECS\Components\Animator.cpp" />
     <ClCompile Include="Source\ECS\Components\Collider.cpp" />
     <ClCompile Include="Source\ECS\Components\ComponentCommon.cpp" />
     <ClCompile Include="Source\ECS\Components\Components.cpp" />
     <ClCompile Include="Source\ECS\Components\ComponentsSetup.cpp" />
+    <ClCompile Include="Source\ECS\Components\Level.cpp" />
     <ClCompile Include="Source\ECS\Components\Physics.cpp" />
     <ClCompile Include="Source\ECS\Components\PlayerController.cpp" />
     <ClCompile Include="Source\ECS\Components\TileMap.cpp" />
@@ -212,6 +213,7 @@
     <ClCompile Include="Source\Game\FrameRateController.cpp" />
     <ClCompile Include="Source\Game\GameController.cpp" />
     <ClCompile Include="Source\Game\GameSetup.cpp" />
+    <ClCompile Include="Source\Game\States\AnimationEditorState.cpp" />
     <ClCompile Include="Source\Game\States\GameState.cpp" />
     <ClCompile Include="Source\Game\States\PauseState.cpp" />
     <ClCompile Include="Source\Game\States\PreGameState.cpp" />
@@ -230,10 +232,12 @@
     <ClCompile Include="Source\Input\InputManager.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\Scene\SceneParsing\LevelReader.cpp" />
     <ClCompile Include="Source\Scene\SceneParsing\SceneBuilder.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
+    <ClCompile Include="Source\System\Files\JSONParser.cpp" />
     <ClCompile Include="Source\System\Files\StatReader.cpp" />
     <ClCompile Include="Source\System\Files\TextFileReader.cpp" />
     <ClCompile Include="Source\System\Files\XMLNode.cpp" />
@@ -270,9 +274,7 @@
     <ClCompile Include="ThirdParty\imgui_sdl-master\imgui_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Animations\Animation.h" />
     <ClInclude Include="Source\Animations\AnimationReader.h" />
-    <ClInclude Include="Source\Animations\Animator.h" />
     <ClInclude Include="Source\Animations\CharacterStates.h" />
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />
@@ -312,6 +314,7 @@
     <ClInclude Include="Source\Core\TypeDefs.h" />
     <ClInclude Include="Source\Core\UniqueQueue.h" />
     <ClInclude Include="Source\Core\Vector2D.h" />
+    <ClInclude Include="Source\Debugging\AnimationEditor.h" />
     <ClInclude Include="Source\Debugging\DebugDraw.h" />
     <ClInclude Include="Source\Debugging\DebugSettings.h" />
     <ClInclude Include="Source\Debugging\ImGui\Components\ComponentDebugMenu.h" />
@@ -326,10 +329,12 @@
     <ClInclude Include="Source\ECS\ComponentArray.h" />
     <ClInclude Include="Source\ECS\ComponentManager.h" />
     <ClInclude Include="Source\ECS\Components\AIController.h" />
+    <ClInclude Include="Source\ECS\Components\Animator.h" />
     <ClInclude Include="Source\ECS\Components\Collider.h" />
     <ClInclude Include="Source\ECS\Components\ComponentCommon.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\ComponentsSetup.h" />
+    <ClInclude Include="Source\ECS\Components\Level.h" />
     <ClInclude Include="Source\ECS\Components\Physics.h" />
     <ClInclude Include="Source\ECS\Components\PlayerController.h" />
     <ClInclude Include="Source\ECS\Components\TileMap.h" />
@@ -354,6 +359,7 @@
     <ClInclude Include="Source\Game\FrameRateController.h" />
     <ClInclude Include="Source\Game\GameController.h" />
     <ClInclude Include="Source\Game\GameSetup.h" />
+    <ClInclude Include="Source\Game\States\AnimationEditorState.h" />
     <ClInclude Include="Source\Game\States\GameState.h" />
     <ClInclude Include="Source\Game\States\PauseState.h" />
     <ClInclude Include="Source\Game\States\PreGameState.h" />
@@ -373,10 +379,12 @@
     <ClInclude Include="Source\Input\Cursor.h" />
     <ClInclude Include="Source\Input\InputManager.h" />
     <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Scene\SceneParsing\LevelReader.h" />
     <ClInclude Include="Source\Scene\SceneParsing\SceneBuilder.h" />
     <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />
+    <ClInclude Include="Source\System\Files\JSONParser.h" />
     <ClInclude Include="Source\System\Files\StatReader.h" />
     <ClInclude Include="Source\System\Files\TextFileReader.h" />
     <ClInclude Include="Source\System\Files\XMLNode.h" />
@@ -414,10 +422,52 @@
     <ClInclude Include="ThirdParty\imgui-master\src\imgui_impl_sdl2.h" />
     <ClInclude Include="ThirdParty\imgui-master\src\imgui_impl_sdlrenderer2.h" />
     <ClInclude Include="ThirdParty\imgui_sdl-master\imgui_sdl.h" />
+    <ClInclude Include="ThirdParty\rapidjson\allocators.h" />
+    <ClInclude Include="ThirdParty\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="ThirdParty\rapidjson\document.h" />
+    <ClInclude Include="ThirdParty\rapidjson\encodedstream.h" />
+    <ClInclude Include="ThirdParty\rapidjson\encodings.h" />
+    <ClInclude Include="ThirdParty\rapidjson\error\en.h" />
+    <ClInclude Include="ThirdParty\rapidjson\error\error.h" />
+    <ClInclude Include="ThirdParty\rapidjson\filereadstream.h" />
+    <ClInclude Include="ThirdParty\rapidjson\filewritestream.h" />
+    <ClInclude Include="ThirdParty\rapidjson\fwd.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\clzll.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\itoa.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\meta.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\pow10.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\regex.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\stack.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\strtod.h" />
+    <ClInclude Include="ThirdParty\rapidjson\internal\swap.h" />
+    <ClInclude Include="ThirdParty\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="ThirdParty\rapidjson\memorybuffer.h" />
+    <ClInclude Include="ThirdParty\rapidjson\memorystream.h" />
+    <ClInclude Include="ThirdParty\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="ThirdParty\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="ThirdParty\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="ThirdParty\rapidjson\pointer.h" />
+    <ClInclude Include="ThirdParty\rapidjson\prettywriter.h" />
+    <ClInclude Include="ThirdParty\rapidjson\rapidjson.h" />
+    <ClInclude Include="ThirdParty\rapidjson\reader.h" />
+    <ClInclude Include="ThirdParty\rapidjson\schema.h" />
+    <ClInclude Include="ThirdParty\rapidjson\stream.h" />
+    <ClInclude Include="ThirdParty\rapidjson\stringbuffer.h" />
+    <ClInclude Include="ThirdParty\rapidjson\uri.h" />
+    <ClInclude Include="ThirdParty\rapidjson\writer.h" />
     <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml.hpp" />
     <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_iterators.hpp" />
     <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_print.hpp" />
     <ClInclude Include="ThirdParty\rapidxml\Include\rapidxml_utils.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="ThirdParty\rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\begin_code.h" />
     <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\close_code.h" />
     <ClInclude Include="ThirdParty\SDL2\SDL2-2.30.5\include\SDL.h" />

@@ -8,8 +8,9 @@
 struct CharacterAction : public State
 {
 	CharacterAction() : action(ActionState::None), entity(ECS::EntityInvalid)  { }
+	CharacterAction(ActionState _action, ECS::Entity _entity) : action(_action), entity(_entity) { }
 
-	void InitState(ECS::Entity entity_id, ActionState state) { entity = entity_id; action = state; }
+	//void InitState(ECS::Entity entity_id, ActionState state) { entity = entity_id; action = state; }
 
 	ECS::Entity entity;
 	ActionState action;

@@ -48,20 +48,20 @@ void UIEventHandler::handleEvent(EventData& data)
 	}
 	case Event::PlayerDead:
 	{
-		PlayerDeadEvent& eventData = static_cast<PlayerDeadEvent&>(data);
-		if (eventData.mMapLevel >= 0)
-		{
-			Screen* screen = GameData::Get().uiManager->getScreen(UIScreen::Type::GameOver);
-			GameOverScreen* gameOver = static_cast<GameOverScreen*>(screen);
+		//PlayerDeadEvent& eventData = static_cast<PlayerDeadEvent&>(data);
+		//if (eventData.mMapLevel >= 0)
+		//{
+		//	Screen* screen = GameData::Get().uiManager->getScreen(UIScreen::Type::GameOver);
+		//	GameOverScreen* gameOver = static_cast<GameOverScreen*>(screen);
 
-			gameOver->mScore = eventData.mScore;
-			gameOver->mKills = eventData.mKills;
-			gameOver->mMapLevel = eventData.mMapLevel;
-			
-			GameData::Get().systemStateManager->addState(SystemStates::PauseState);
+		//	gameOver->mScore = eventData.mScore;
+		//	gameOver->mKills = eventData.mKills;
+		//	gameOver->mMapLevel = eventData.mMapLevel;
+		//	
+		//	GameData::Get().systemStateManager->addState(SystemStates::PauseState);
 
-			controller->addScreen(UIScreen::Type::GameOver);
-		}
+		//	controller->addScreen(UIScreen::Type::GameOver);
+		//}
 		break;
 	}
 

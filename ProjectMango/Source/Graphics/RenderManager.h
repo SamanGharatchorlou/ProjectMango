@@ -7,13 +7,13 @@ constexpr u32 c_RenderLayers = 10;
 
 struct RenderPack
 {
-	RenderPack(Texture* tex, RectF box, u32 renderLayer) : texture(tex), rect(box), layer(renderLayer) 
+	RenderPack(const Texture* tex, RectF box, u32 renderLayer) : texture(tex), rect(box), layer(renderLayer) 
 	{
 		// override if required
 		flipPoint = box.Size() * 0.5f;
 	}
 
-	Texture* texture = nullptr;
+	const Texture* texture = nullptr;
 	RectF rect;
 	RectF subRect = InvalidRectF;
 	VectorF flipPoint;

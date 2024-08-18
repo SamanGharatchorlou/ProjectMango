@@ -97,7 +97,7 @@ namespace ScreenBuilder
 		XMLParser button(FileManager::Get()->findFile(FileManager::Configs, "Buttons").c_str());
 		XMLNode buttonNode = button.rootChild(buttonType);
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		if (!buttonNode)
 		{
 			DebugPrint(Warning, "Button config does not have a '%s' node", buttonType);
@@ -289,7 +289,7 @@ namespace ScreenBuilder
 		readScreen(fm->findFile(FileManager::Config_Menus, fileName.c_str()).c_str(), attributes);
 		buildUIScreen(attributes, screen);
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		if (screen.layers().mLayers.size() == 0)
 			DebugPrint(Warning, "No screen layers built for screen config %s", fm->findFile(FileManager::Config_Menus, fileName.c_str()));
 #endif

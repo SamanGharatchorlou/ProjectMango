@@ -14,6 +14,7 @@ struct Colour
 		Green,
 		Yellow,
 		LightGrey,
+		MidGrey,
 		Black,
 		White,
 	};

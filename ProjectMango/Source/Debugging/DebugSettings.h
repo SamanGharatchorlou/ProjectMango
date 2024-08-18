@@ -1,8 +1,8 @@
 #pragma once
 
-#define DEBUG_CHECK _DEBUG
+#define DEBUG_MODE _DEBUG
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 
 #define ENABLE_LOGGING 1
 

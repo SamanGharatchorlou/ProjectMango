@@ -3,6 +3,7 @@
 
 #include "imgui-master/imgui.h"
 #include "ImGuiHelpers.h"
+#include "Core/Helpers.h"
 
 #include "ECS/EntityManager.h"
 #include "ECS/EntityCoordinator.h"
@@ -11,6 +12,7 @@
 #include "Game/FrameRateController.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "Game/SystemStateManager.h"
+#include "Game/States/GameState.h"
 
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/Collider.h"
@@ -19,6 +21,7 @@
 #include "ECS/Components/PlayerController.h"
 #include "ECS/Components/TileMap.h"
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
+#include "ECS/Components/Animator.h"
 
 #include "Characters/Player/PlayerCharacter.h"
 #include "Characters/Spawner.h"
@@ -80,7 +83,13 @@ void DebugMenu::DoEntitySystemWindow()
     {
         if (ecs->IsAlive(s_selectedEntity))
         {
-            if(ImGui::Button("Kill Entity"))
+			ECS::Health* health = ecs->GetComponent(Health, s_selectedEntity);
+            if(ImGui::ActiveButton("Kill Entity", health != nullptr))
+            {
+                health->currentHealth = 0;
+            }
+
+            if(ImGui::Button("Destroy Entity"))
             {
                 GameData::Get().ecs->entities.KillEntity(s_selectedEntity);
                 ImGui::End();
@@ -91,8 +100,8 @@ void DebugMenu::DoEntitySystemWindow()
             ECS::Archetype type = 0;
             bool do_dropdown = true;
 
-            DoComponentDropdown(Animation);
-            DoComponentDropdown(TileMap);
+            DoComponentDropdown(Animator);
+            //DoComponentDropdown(TileMap);
             DoComponentDropdown(Collider);
             DoComponentDropdown(CharacterState);
             DoComponentDropdown(Physics);
@@ -260,33 +269,7 @@ void DebugMenu::DoGameStateWindow()
 
     if(ImGui::Button("Restart Game State"))
     {
-	    GameData::Get().systemStateManager->replaceState(SystemStates::GameState);
-    }
-
-    if(ImGui::Button("Respawn Player"))
-    {
-	    ECS::Entity entity = Player::Get();
-        ecs->entities.KillEntity(entity);
-		PlayerSpawn::Spawn();
-    }
-
-    if(ImGui::Button("Respawn Enemy"))
-    {
-        const ECS::TileMap* tm = ECS::TileMap::GetActive();
-
-        for( u32 i = 0; i < ecs->systems.entSystems.size(); i++ )
-        {
-            if ( (ecs->systems.entSystems[i]->signature & (u64)1 << ECS::AIController::type() ))
-            {
-                for( u32 e = 0; e < ecs->systems.entSystems[i]->entities.size(); e++ )
-                {
-                    ECS::Entity entity = ecs->systems.entSystems[i]->entities[e];
-                    ecs->entities.KillEntity(entity);
-                }
-            }
-        }
-
-		EnemySpawn::SpawnAll(*tm);
+        GameData::Get().systemStateManager->mStates.replaceState(new GameState);
     }
 }
 

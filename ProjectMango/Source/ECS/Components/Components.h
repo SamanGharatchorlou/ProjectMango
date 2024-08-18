@@ -5,8 +5,7 @@
 #include "Core/Rect.h"
 #include "Core/stack.h"
 
-#include "Core/Physics/Fisics.h"
-#include "Animations/Animator.h"
+#include "Characters/States/CharacterAction.h"
 
 class Texture;
 enum class ActionState;
@@ -24,11 +23,18 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Transform)
 
-		// rect of the actual object
-		RectF rect;
-		VectorF positionOffset;
+		VectorF position;
+		VectorF prevPosition;
 
-		VectorF GetPos() const { return rect.Center() + positionOffset; }
+		// rect of the actual object
+		//RectF rect;
+		//VectorF positionOffset;
+
+		
+		//VectorF forward;
+		//VectorF back;
+
+		//VectorF GetPos() const { return rect.Center() + positionOffset; }
 	};
 
 	struct Sprite
@@ -47,20 +53,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(CharacterState)
 
-		VectorI movementDirection;
-		VectorI facingDirection;
+		ActionStack<CharacterAction> actions;
 
-		ActionState action = ActionState::None;
-
-		bool isRunning = false;
-		bool canChange = true;
-	};
-
-	struct Animation
-	{
-		COMPONENT_TYPE(Animation)
-
-		Animator animator;
+		VectorI movementInput;
 	};
 
 	struct Pathing

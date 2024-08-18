@@ -36,13 +36,13 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			ImGui::Checkbox("Display Object Rect", &s_displayRect);
 			if (s_displayRect)
 			{
-				DebugDraw::RectOutline(transform.rect, Colour::Green);
+				//DebugDraw::RectOutline(transform.rect, Colour::Green);
 			}
 
 			ImGui::Checkbox("Display Position", &s_displayPosition);
 			if (s_displayPosition)
 			{
-				DebugDraw::Point(transform.GetPos(), 4.0f, Colour::Green);
+				DebugDraw::Point(transform.position, 4.0f, Colour::Green);
 			}
 
 			ImGui::TreePop();

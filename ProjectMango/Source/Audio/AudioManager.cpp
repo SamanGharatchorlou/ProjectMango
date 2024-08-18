@@ -73,7 +73,7 @@ void AudioManager::unload()
 {
 	mSoundController.clear();
 
-	for (std::pair<StringBuffer32, Audio*> audio : mAudioBank)
+	for (std::pair<StringBuffer64, Audio*> audio : mAudioBank)
 	{
 		delete audio.second;
 	}
@@ -217,7 +217,7 @@ int AudioManager::loadAllMusic(FileManager::Folder folder)
 
 	for (const BasicString& path : paths)
 	{
-		StringBuffer32 audio_name = fm->getItemName(path.c_str());
+		StringBuffer64 audio_name = fm->getItemName(path.c_str());
 		// Dont double load pre loaded music
 		if (mAudioBank.count(audio_name) == 0)
 		{
@@ -238,7 +238,7 @@ int AudioManager::loadAllSound(FileManager::Folder folder)
 
 	for (const BasicString& path : paths)
 	{
-		StringBuffer32 audio_name = fm->getItemName(path.c_str());
+		StringBuffer64 audio_name = fm->getItemName(path.c_str());
 		// Dont double load pre loaded music
 		if (mAudioBank.count(audio_name) == 0)
 		{
@@ -259,7 +259,7 @@ int AudioManager::loadAllSoundGroups(FileManager::Folder folder)
 
 	for (const BasicString& folderPath : folderPaths)
 	{
-		StringBuffer32 audio_name = fm->getItemName(folderPath.c_str());
+		StringBuffer64 audio_name = fm->getItemName(folderPath.c_str());
 		// Dont double load pre loaded music
 		if (mAudioBank.count(audio_name) == 0)
 		{
@@ -296,7 +296,7 @@ bool AudioManager::loadAudio(Audio* audio, const char* name, const char* filePat
 
 const char* AudioManager::getLabel(Audio* audio) const
 {
-	std::unordered_map<StringBuffer32, Audio*>::const_iterator iter;
+	std::unordered_map<StringBuffer64, Audio*>::const_iterator iter;
 	for (iter = mAudioBank.begin(); iter != mAudioBank.end(); iter++)
 	{
 		if (audio == iter->second)

@@ -5,7 +5,7 @@
 
 #include "Game/GameController.h"
 
-#pragma comment(lib, "SDL2_image")
+//#pragma comment(lib, "SDL2_image")
 
 #include <thread>
 #include <iostream>

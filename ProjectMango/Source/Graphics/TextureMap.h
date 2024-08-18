@@ -2,7 +2,7 @@
 
 class Texture;
 
-using StringTextureMap = std::unordered_map<StringBuffer32, Texture*>;
+using StringTextureMap = std::unordered_map<StringBuffer64, Texture*>;
 
 class TextureMap
 {
@@ -13,10 +13,10 @@ public:
 
 	Texture* texture(const char* id) const { return mData.at(id); }
 
-	StringBuffer32 find(const Texture* texture) const;
+	StringBuffer64 find(const Texture* texture) const;
 	Texture* find(const char* id) const;
 
-	int size() const { return mData.size(); }
+	u32 size() const { return (u32)mData.size(); }
 
 private:
 	StringTextureMap mData;

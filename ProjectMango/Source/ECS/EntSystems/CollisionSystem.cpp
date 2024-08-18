@@ -6,6 +6,8 @@
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/RenderManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
+#include "Core/Helpers.h"
 
 #include "ECS/ComponentArray.h"
 
@@ -111,7 +113,7 @@ namespace ECS
 
 		ComponentArray<Collider>& colliders =  ecs->GetComponents<Collider>(Component::Type::Collider);
 		std::vector<Collider>& collider_list = colliders.components;
-		const u32 count = collider_list.size();
+		const u32 count = (u32)collider_list.size();
 
 		//// first we need to update the collider position with where the entity wants to be
 		//for (Entity entity : entities)
@@ -132,7 +134,8 @@ namespace ECS
 			// debug break point
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
-
+			
+			Transform& A_transform = ecs->GetComponentRef(Transform, entity);
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
 			A_collider.allowedMovement = A_collider.mForward - A_collider.mBack;
 
@@ -226,6 +229,9 @@ namespace ECS
 
 						if(allowed_velocity.y == 0)
 							A_collider.allowedMovement.y = 0.0f;
+
+						// update the position if we're allowed to move there
+						A_transform.position = A_collider.mBack + A_collider.allowedMovement;
 					}
 				}
             }

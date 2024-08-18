@@ -9,15 +9,15 @@ namespace ECS
 	{
 		COMPONENT_TYPE(PlayerController)
 
-		Player::StatePool statePool;
+		//Player::StatePool statePool;
 
-		ActionStack<CharacterAction> actions;
+		//ActionStack<CharacterAction> actions;
 
-		bool hasMovementInput;
+		//bool hasMovementInput;
 
-		ActionState Action() const { return actions.Top().action; }
+		//ActionState Action() const { return actions.Top().action; }
 
-		void PushState(ActionState state);
-		void PopState();
+		//void PushState(ActionState state);
+		//void PopState();
 	};
 }

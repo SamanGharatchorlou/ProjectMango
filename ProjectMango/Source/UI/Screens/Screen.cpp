@@ -128,7 +128,7 @@ static bool CheckExists(const std::unordered_map<StringBuffer32, UIElement*>& ma
 
 bool Screen::pressed(const char* elementId) const
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (!CheckExists(mInteractables, elementId, "button"))
 	{
 		return false;
@@ -141,7 +141,7 @@ bool Screen::pressed(const char* elementId) const
 
 bool Screen::released(const char* elementId) const
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (!CheckExists(mInteractables, elementId, "button"))
 	{
 		return false;
@@ -155,7 +155,7 @@ bool Screen::released(const char* elementId) const
 
 UISlider* Screen::getSlider(const char* elementId)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (!CheckExists(mInteractables, elementId, "slider"))
 	{
 		return nullptr;
@@ -168,7 +168,7 @@ UISlider* Screen::getSlider(const char* elementId)
 
 UIButton* Screen::getButton(const char* elementId)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (!CheckExists(mInteractables, elementId, "button"))
 	{
 		return nullptr;

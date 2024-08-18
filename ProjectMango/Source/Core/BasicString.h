@@ -8,8 +8,8 @@ public:
 	BasicString(const char* string);
 	BasicString(const BasicString& string);
 	BasicString(const char* string, unsigned int length);
-	BasicString(float number);
-	BasicString(float number, int precision);
+	//BasicString(float number);
+	//BasicString(float number, int precision);
 
 	~BasicString();
 
@@ -19,10 +19,10 @@ public:
 
 	BasicString substr(int start, int length) const;
 
-	int length() const { return mLength; }
-	int bufferLength() const { return mCap; }
+	uint32_t length() const { return (uint32_t)mLength; }
+	uint32_t bufferLength() const { return mCap; }
 	bool empty() const { return mLength == 0; }
-	void calculateLength() { mLength = strlen(mBuffer); }
+	void calculateLength() { mLength = length(); }
 
 	BasicString& concat(const char* string);
 
@@ -47,8 +47,8 @@ private:
 
 private:
 	char* mBuffer;
-	int mLength;
-	int mCap;
+	uint32_t mLength;
+	uint32_t mCap;
 };
 
 

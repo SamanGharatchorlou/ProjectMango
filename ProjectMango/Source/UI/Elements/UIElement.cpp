@@ -16,7 +16,7 @@ void UIElement::fill(const StringMap32& attributes)
 	float height = attributes.contains("height") ? attributes.getFloat("height") : -1.0f;
 	VectorF size(width, height);
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (size.x < 0.0f && size.y < 0.0f)
 		DebugPrint(Warning, "Either the height OR the width must at least be set. Neither has been");
 #endif

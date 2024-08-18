@@ -22,7 +22,7 @@ namespace ECS
 			if(!sprite.texture)
 				continue;
 
-			const RectF renderRect(transform.rect.TopLeft(), sprite.renderSize);
+			const RectF renderRect(transform.position, VectorF(206,66) * 2.0f);
 
 			RenderPack pack(sprite.texture, renderRect, sprite.renderLayer);
 			pack.subRect = sprite.subRect;
@@ -33,12 +33,12 @@ namespace ECS
 
 			renderer->AddRenderPacket(pack);
 
-			if( DebugMenu::DisplayRenderRect(entity) )
-			{
-				DebugDraw::RectOutline(transform.rect, Colour::Red);
-				DebugDraw::RectOutline(pack.rect, Colour::Green);
-				DebugDraw::Point(pack.rect.TopLeft() + pack.flipPoint, 3.0f, Colour::Blue);
-			}
+			//if( DebugMenu::DisplayRenderRect(entity) )
+			//{
+			//	//DebugDraw::RectOutline(transform.rect, Colour::Red);
+			//	//DebugDraw::RectOutline(pack.rect, Colour::Green);
+			//	DebugDraw::Point(pack.rect.TopLeft() + pack.flipPoint, 3.0f, Colour::Blue);
+			//}
 		}
 	}
 }

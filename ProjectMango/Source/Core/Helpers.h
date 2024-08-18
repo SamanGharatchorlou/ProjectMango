@@ -123,3 +123,15 @@ static void merge(std::unordered_map<T, K>& map_a, std::unordered_map<T, K>& map
 		map_a[iter->first] = iter->second;
 	}
 }
+
+
+//--------------------------------------------------------
+// rect helpers
+template<class T>
+bool PointInRect(Rect<T> rect, Vector2D<T> position) 
+{
+	return !(	position.x > rect.RightPoint() || 
+				position.x < rect.LeftPoint()  || 
+				position.y > rect.BotPoint()   || 
+				position.y < rect.TopPoint());
+}

@@ -23,10 +23,10 @@ public:
 	const T& get(VectorI index) const { return data[index.y][index.x]; }
 	const std::vector<std::vector<T>>& get() const { return data; }
 
-	const int rows() const { return data.size(); }
-	const int colums() const { return data[0].size(); }
-	const int yCount() const { return data.size(); }
-	const int xCount() const { return data[0].size(); }
+	const u32 rows() const { return (u32)data.size(); }
+	const u32 colums() const { return (u32)data[0].size(); }
+	const u32 yCount() const { return (u32)data.size(); }
+	const u32 xCount() const { return (u32)data[0].size(); }
 
 	bool inBounds(Vector2D<int> index) const;
 
@@ -61,7 +61,7 @@ Grid<T>::Grid(Vector2D<int> size, T value)
 template<class T>
 std::vector<T>& Grid<T>::operator [] (int y)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (y >= 0 && y < yCount() == false)
 		DebugPrint(Error, "Attempting to get out of bounds row %d. Data only has %d rows", y, yCount());
 #endif

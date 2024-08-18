@@ -15,12 +15,12 @@ public:
 	void unload();
 
 	Texture* getTexture(const char* label, const FileManager::Folder folders) const;
-	Texture* getTexture(StringBuffer32 label, const FileManager::Folder folders) const
+	Texture* getTexture(StringBuffer64 label, const FileManager::Folder folders) const
 	{
 		return getTexture(label.c_str(), folders);
 	}
 
-	StringBuffer32 getTextureName(const Texture* texture) const;
+	StringBuffer64 getTextureName(const Texture* texture) const;
 
 private:
 	bool loadTexture(TextureMap& textureMap, const char* filePath);

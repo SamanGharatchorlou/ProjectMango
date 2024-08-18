@@ -72,7 +72,7 @@ void PopupScreen::setBody(const char* body)
 
 void PopupScreen::exitPopup()
 {
-	GameData::Get().uiManager->controller()->popScreen();
-	GameData::Get().systemStateManager->popState();
-	getButton("OkButton")->setActive(false);
+	//GameData::Get().uiManager->controller()->popScreen();
+	//GameData::Get().systemStateManager->popState();
+	//getButton("OkButton")->setActive(false);
 }

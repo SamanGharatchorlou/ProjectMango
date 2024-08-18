@@ -26,8 +26,8 @@ ECS::Component::Type DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 			ECS::AIController& pc = ecs->GetComponentRef(AIController, entity);
 			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
-			ImGui::VectorText("Movement Direction", state.movementDirection);
-			ImGui::VectorText("Facing Direction", state.facingDirection);
+			//ImGui::VectorText("Movement Direction", state.movementDirection);
+			//ImGui::VectorText("Facing Direction", state.facingDirection);
 
 			ImGui::Text("State count: %d", pc.actions.stack.size());
 			ImGui::Text("Current State: %s", actionToString(pc.actions.Top().action).c_str());

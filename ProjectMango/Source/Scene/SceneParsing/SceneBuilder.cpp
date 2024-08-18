@@ -9,6 +9,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
+#include "Core/Helpers.h"
 
 using namespace Map;
 
@@ -114,7 +115,7 @@ static void PopulateObjectLayerData(const XMLNode& object_layer_node, SceneTileM
 		SetFlag<u32>(collider.mFlags, (u32)ECS::Collider::Static);
 
 		ECS::Transform& transform = ecs->AddComponent(Transform, ent);
-		transform.rect = rect;
+		//transform.rect = rect;
 
 		tile_mapping.colliderEntities.push_back(ent);
 

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "StringMap.h"
+#include "Core/Helpers.h"
 
 void StringMap32::fillValues(const XMLNode& node)
 {

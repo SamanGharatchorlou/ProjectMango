@@ -22,7 +22,7 @@ namespace ECS
 
 	bool Collider::contains(VectorF position) const 
 	{
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		bool a = position.x > mRect.RightPoint();
 		bool b = position.x < mRect.LeftPoint();
 		bool c = position.y > mRect.BotPoint(); 

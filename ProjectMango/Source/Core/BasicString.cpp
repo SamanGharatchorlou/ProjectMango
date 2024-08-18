@@ -8,7 +8,7 @@ BasicString::BasicString(const char* string)
 {
 	if (string)
 	{
-		mLength = strlen(string);
+		mLength = (uint32_t)strlen(string);
 		mCap = mLength + 1;
 		mBuffer = new char[mCap];
 
@@ -34,44 +34,41 @@ BasicString::BasicString(const char* string, unsigned int length)
 	memcpy(mBuffer, string, mLength + 1);
 }
 
-BasicString::BasicString(float number)
-{
-	char tempBuffer[20];
-	sprintf_s(tempBuffer, "%.f", number);
-
-	mLength = strlen(tempBuffer);
-	mCap = mLength + 1;
-
-	mBuffer = new char[mCap];
-	memcpy(mBuffer, tempBuffer, mCap);
-}
-
-
-BasicString::BasicString(float number, int precision)
-{
-	char tempBuffer[20];
-
-	char formatBuffer[5] = "%.";
-	_itoa(precision, formatBuffer + 2, 10);
-	strcat(formatBuffer, "f\0");
-
-	sprintf_s(tempBuffer, formatBuffer, number);
-
-	mLength = strlen(tempBuffer);
-	mCap = mLength + 1;
-
-	mBuffer = new char[mCap];
-	memcpy(mBuffer, tempBuffer, mCap);
-}
-
-
+//BasicString::BasicString(float number)
+//{
+//	char tempBuffer[20];
+//	sprintf_s(tempBuffer, "%.f", number);
+//
+//	mLength = (uint32_t)strlen(tempBuffer);
+//	mCap = mLength + 1;
+//
+//	mBuffer = new char[mCap];
+//	memcpy(mBuffer, tempBuffer, mCap);
+//}
+//
+//
+//BasicString::BasicString(float number, int precision)
+//{
+//	char tempBuffer[20];
+//
+//	char formatBuffer[5] = "%.";
+//	_itoa(precision, formatBuffer + 2, 10);
+//	strcat(formatBuffer, "f\0");
+//
+//	sprintf_s(tempBuffer, formatBuffer, number);
+//
+//	mLength = (uint32_t)strlen(tempBuffer);
+//	mCap = mLength + 1;
+//
+//	mBuffer = new char[mCap];
+//	memcpy(mBuffer, tempBuffer, mCap);
+//}
 
 BasicString::~BasicString()
 {
 	delete[] mBuffer;
 	eliminate();
 }
-
 
 void BasicString::eliminate()
 {
@@ -80,11 +77,9 @@ void BasicString::eliminate()
 	mBuffer = nullptr;
 }
 
-
-
 void BasicString::set(const char* string)
 {
-	int strLength = strlen(string);
+	uint32_t strLength = (uint32_t)strlen(string);
 
 	if (strLength < mCap)
 	{
@@ -98,7 +93,6 @@ void BasicString::set(const char* string)
 	}
 }
 
-
 BasicString BasicString::substr(int start, int length) const
 {
 	const char* backEndString = &mBuffer[start];
@@ -106,30 +100,27 @@ BasicString BasicString::substr(int start, int length) const
 	return subbedStr;
 }
 
-
 BasicString& BasicString::concat(const char* string)
 {
-	if (mLength + strlen(string) < mCap)
+	const uint32_t str_len = (uint32_t)strlen(string);
+	if (mLength + str_len < mCap)
 	{
 		strcat_s(mBuffer, mCap, string);
-		mLength = strlen(mBuffer);
+		mLength = (uint32_t)strlen(mBuffer);
 		return *this;
 	}
 	else
 	{
-		resizeBuffer(mLength + strlen(string) + 1);
+		resizeBuffer(mLength + str_len + 1);
 		return concat(string);
 	}
 }
-
 
 void BasicString::clear()
 {
 	memset(mBuffer, 0, mLength);
 	mLength = 0;
 }
-
-
 
 const char* BasicString::findSubString(const BasicString& subString) const
 {
@@ -157,7 +148,7 @@ void BasicString::assignTerminated(const char* string)
 	// i think i need this, copying an empty string breaks the code
 	//if(string)
 	{
-		mLength = strlen(string);
+		mLength = (uint32_t)strlen(string);
 		memcpy(mBuffer, string, mLength + 1);
 	}
 }
@@ -188,7 +179,7 @@ void BasicString::resizeBuffer(int size)
 // Operator overloads
 BasicString& BasicString::operator = (const char* string)
 {
-	unsigned int length = strlen(string);
+	uint32_t length = (uint32_t)strlen(string);
 	if (length >= mCap)
 		setNewBuffer(length);
 

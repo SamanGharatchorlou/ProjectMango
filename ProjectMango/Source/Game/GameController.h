@@ -1,11 +1,7 @@
 #pragma once
 
 #include "Game/Data/GameData.h"
-#include "Game/States/State.h"
-#include "Game/States/StateMachine.h"
-#include "Game/SystemStateManager.h"
 
-class StartupState;
 struct ImGuiContext;
 
 class GameController
@@ -27,7 +23,6 @@ private:
 
 private:
 	GameData mGameData;
-	StartupState* mStartupState = nullptr;
 
 #if FRAMERATE_CAP || PRINT_FRAMERATE_EVERY
 	Timer<float> fpsTimer;

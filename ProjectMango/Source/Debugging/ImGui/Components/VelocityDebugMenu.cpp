@@ -31,10 +31,10 @@ ECS::Component::Type DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 				ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 				ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
 
-				VectorF A = transform.rect.Center();
-				VectorF B = A + physics.speed * state.movementDirection.toFloat() * 10.0f;
+				//VectorF A = transform.rect.Center();
+				//VectorF B = A + physics.speed * state.movementDirection.toFloat() * 10.0f;
 
-				DebugDraw::Line(A, B, Colour::Green);
+				//DebugDraw::Line(A, B, Colour::Green);
 			}
 
 			ImGui::TreePop();

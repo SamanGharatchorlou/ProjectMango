@@ -16,8 +16,8 @@ namespace DebugMenu
 	ECS::Component::Type DoSpriteDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoCharacterStateDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPhysicsDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoAnimationDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoTileMapDebugMenu(ECS::Entity& entity);
+	ECS::Component::Type DoAnimatorDebugMenu(ECS::Entity& entity);
+	//ECS::Component::Type DoTileMapDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoColliderDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPlayerControllerDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPathingDebugMenu(ECS::Entity& entity);

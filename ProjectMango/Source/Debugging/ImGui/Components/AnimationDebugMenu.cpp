@@ -10,7 +10,7 @@
 #include "ECS/Components/ComponentCommon.h"
 
 //static std::vector<ActionState> s_animationPlaylist;
-static std::vector<Animation> s_animationPlaylist;
+//static std::vector<Animation> s_animationPlaylist;
 static int s_playlistIndex = 0;
 static bool s_usingPlaylist = false;
 
@@ -46,44 +46,44 @@ bool DebugMenu::SpriteFlipOverride(ECS::Entity& entity, SDL_RendererFlip& sprite
 	return false;
 }
 
-static Animation* SetAnimation(Animator& animator)
-{
-	if (s_animationPlaylist.size() > s_playlistIndex)
-	{
-		Animation& anim = s_animationPlaylist[s_playlistIndex];
-
-		u32 anim_index = animator.getAnimationIndex(anim);
-		if(anim_index != -1)
-		{
-			animator.mAnimationIndex = anim_index;
-			return &animator.mAnimations[anim_index];
-		}
-	}
-
-	if (s_animationPlaylist.size() > 0)
-	{
-		s_playlistIndex = 0;
-		return SetAnimation(animator);
-	}
-
-	return nullptr;
-}
+//static Animation* SetAnimation(Animator& animator)
+//{
+//	if (s_animationPlaylist.size() > s_playlistIndex)
+//	{
+//		Animation& anim = s_animationPlaylist[s_playlistIndex];
+//
+//		u32 anim_index = animator.getAnimationIndex(anim);
+//		if(anim_index != -1)
+//		{
+//			animator.mAnimationIndex = anim_index;
+//			return &animator.mAnimations[anim_index];
+//		}
+//	}
+//
+//	if (s_animationPlaylist.size() > 0)
+//	{
+//		s_playlistIndex = 0;
+//		return SetAnimation(animator);
+//	}
+//
+//	return nullptr;
+//}
 
 VectorI facing_direction;
 
-ECS::Component::Type DebugMenu::DoAnimationDebugMenu(ECS::Entity& entity)
+ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Component::Type type = ECS::Component::Animation;
+	ECS::Component::Type type = ECS::Component::Animator;
 
 	if(entity != s_activeEnt)
 	{
-		s_animationPlaylist.clear();
-		s_playlistIndex = 0;
-		s_playingPlaylist = false;
-		s_playSingleAnimation = false;
-		s_displayRenderRect = false;
-		s_forceLooping = true;
+		//s_animationPlaylist.clear();
+		//s_playlistIndex = 0;
+		//s_playingPlaylist = false;
+		//s_playSingleAnimation = false;
+		//s_displayRenderRect = false;
+		//s_forceLooping = true;
 	}
 	s_activeEnt = entity;
 
@@ -92,7 +92,8 @@ ECS::Component::Type DebugMenu::DoAnimationDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 		if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 		{
-            ECS::Animation& anim = ecs->GetComponentRef(Animation, entity);
+			/*
+            ECS::Animator& anim = ecs->GetComponentRef(Animator, entity);
 			if (ImGui::TreeNode("Component Data"))
 			{
 				Animator& animator = anim.animator;
@@ -103,13 +104,13 @@ ECS::Component::Type DebugMenu::DoAnimationDebugMenu(ECS::Entity& entity)
 				
 				const SpriteSheet& ss = animator.getSpritesheet(animation);
 
-				StringBuffer32 spriteName = TextureManager::Get()->getTextureName(ss.texture);
+				StringBuffer64 spriteName = TextureManager::Get()->getTextureName(ss.texture);
 				ImGui::Text("SpriteSheet: %s", spriteName.c_str());
 				ImGui::VectorText("Frame Size", ss.frameSize);
 				ImGui::VectorText("Object Size", ss.objectSize);
 				ImGui::VectorText("Boundaries", ss.boundaries);
 
-				std::vector<StringBuffer32> animations;
+				std::vector<StringBuffer64> animations;
 				for (u32 i = 0; i < animator.mAnimations.size(); i++)
 				{
 					ActionState action = animator.mAnimations[i].action;
@@ -186,7 +187,7 @@ ECS::Component::Type DebugMenu::DoAnimationDebugMenu(ECS::Entity& entity)
 						{
 							s_playlistIndex = s_playlistIndex - 1;
 							if (s_playlistIndex < 0)
-								s_playlistIndex = s_animationPlaylist.size() - 1;
+								s_playlistIndex = (int)s_animationPlaylist.size() - 1;
 
 							activeAnim = SetAnimation(animator);
 
@@ -308,6 +309,7 @@ ECS::Component::Type DebugMenu::DoAnimationDebugMenu(ECS::Entity& entity)
 
 				ImGui::TreePop();
 			}
+			*/
 		}
 		ImGui::PopID();
 	}
@@ -332,7 +334,7 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
-			StringBuffer32 spriteName = TextureManager::Get()->getTextureName(sprite.texture);
+			StringBuffer64 spriteName = TextureManager::Get()->getTextureName(sprite.texture);
 			ImGui::Text("SpriteSheet: %s", spriteName.c_str());
 
 			ImGui::Text(sprite.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");

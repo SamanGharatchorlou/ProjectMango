@@ -1,35 +1,34 @@
 #include "Game/States/State.h"
 #include "Game/States/StateMachine.h"
 
-enum class SystemStates
-{
-	None,
-	StartupState,
-	PreGameState,
-	GameState,
-	PauseState,
-};
+//enum class SystemStates
+//{
+//	None,
+//	StartupState,
+//	PreGameState,
+//	GameState,
+//	PauseState,
+//};
 
 struct SystemStateManager
 {
-	friend class GameController;
+	//friend class GameController;
 
 	SystemStateManager();
 
-	// System game states
-	void addState(SystemStates state);
-	void replaceState(SystemStates state);
-	void popState();
+	//// System game states
+	//void addState(SystemStates state);
+	//void replaceState(SystemStates state);
+	//void popState();
 
-	static State* getNewGameState(SystemStates state);
+	//static State* getNewGameState(SystemStates state);
 
-	template<class T>
-	const T* GetActiveState() const { return static_cast<T*>(&mStates.Top()); }
+	//template<class T>
+	//const T* GetActiveState() const { return static_cast<T*>(&mStates.Top()); }
 
-	void restart() { mRestart = true; }
-	void quit() { mQuit = true; }
+	//void restart() { mRestart = true; }
+	//void quit() { mQuit = true; }
 
-private:
 	StateMachine<State> mStates;
 
 	bool mQuit = false;

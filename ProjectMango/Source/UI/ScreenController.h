@@ -18,7 +18,7 @@ public:
 	void replaceScreen(UIScreen::Type type);
 	void popScreen();
 
-	int screenCount() const { return mScreens.size(); }
+	u32 screenCount() const { return (u32)mScreens.size(); }
 	void clearScreenStack();
 
 	Screen* getActiveScreen() const { return &mScreens.getActiveState(); }

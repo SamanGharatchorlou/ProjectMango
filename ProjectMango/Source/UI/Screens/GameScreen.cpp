@@ -46,11 +46,11 @@ void GameScreen::Init()
 
 void GameScreen::HandleInput(InputManager* input)
 {
-	if (input->isReleased(Button::Pause) || input->isReleased(Button::Esc))
-	{
-		GameData::Get().uiManager->controller()->addScreen(UIScreen::Type::Pause);
-		GameData::Get().systemStateManager->addState(SystemStates::PauseState);
-	}
+	//if (input->isReleased(Button::Pause) || input->isReleased(Button::Esc))
+	//{
+	//	GameData::Get().uiManager->controller()->addScreen(UIScreen::Type::Pause);
+	//	GameData::Get().systemStateManager->addState(SystemStates::PauseState);
+	//}
 }
 
 

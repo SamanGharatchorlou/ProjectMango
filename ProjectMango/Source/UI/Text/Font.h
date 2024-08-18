@@ -35,7 +35,7 @@ private:
 	Renderer* mRenderer;
 	SDL_Texture* mTexture;
 
-	StringBuffer32 mFontName;
+	StringBuffer64 mFontName;
 	TTF_Font* mFont;
 
 	SDL_Color colour;

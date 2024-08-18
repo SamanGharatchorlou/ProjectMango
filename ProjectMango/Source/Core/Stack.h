@@ -8,6 +8,11 @@ public:
 
 	void Push(T* state)
 	{
+		if(stack.size() > 0)
+		{
+			stack.back()->Pause();
+		}
+
 		stack.push_back(state);
 		stack.back()->Init();
 	}
@@ -17,17 +22,25 @@ public:
 		if(stack.size() > 0)
 		{
 			stack.back()->Exit();
+			delete stack.back();
 			stack.pop_back();
 		}
 
-		if(stack.size() == 0)
-			int a = 4;
+		if(stack.size() > 0)
+			stack.back()->Resume();
 	}
 
 	void Replace(T* item)
-	{
-		Pop();
-		Push(item);
+	{		
+		if(stack.size() > 0)
+		{
+			stack.back()->Exit();
+			delete stack.back();
+			stack.pop_back();
+		}
+		
+		stack.push_back(item);
+		stack.back()->Init();
 	}
 
 	T& Top() { return *stack.back(); }

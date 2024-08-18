@@ -11,6 +11,7 @@
 #include "System/Window.h"
 
 #include "ImguiMainWindows.h"
+#include "Debugging/AnimationEditor.h"
 
 #if IMGUI
 namespace DebugMenu
@@ -52,6 +53,7 @@ namespace DebugMenu
 	static bool s_colliderWindow = false;
 	static bool s_gameStateWindow = false;
 	static bool s_tweakerWindow = false;
+	static bool s_editorWindow = false;
 
 	void Draw()
 	{
@@ -69,6 +71,8 @@ namespace DebugMenu
 		ImGui::Checkbox("GameState", &s_gameStateWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Tweakers", &s_tweakerWindow);
+		ImGui::SameLine();
+		ImGui::Checkbox("Animation Editor", &s_editorWindow);
 		ImGui::End();
 
 		if (s_entitySystemWindow)
@@ -94,6 +98,11 @@ namespace DebugMenu
 		if(s_tweakerWindow)
 		{
 			DoTweakerWindow();
+		}
+
+		if(s_editorWindow)
+		{
+			AnimationEditor::DoEditor();
 		}
 
 		//ImGui::ShowDemoWindow();

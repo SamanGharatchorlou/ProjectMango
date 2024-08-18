@@ -17,7 +17,7 @@ public:
 	K* getObject(T type);
 	void returnObject(K* object, T type);
 
-	int size(T type) { return mPool[type].size(); }
+	uint32_t size(T type) { return (uint32_t)mPool[type].size(); }
 
 private:
 	virtual K* createNewObjects(T type, int count, int& objectSize) const = 0;

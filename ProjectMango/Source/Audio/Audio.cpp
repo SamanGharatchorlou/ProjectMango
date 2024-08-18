@@ -146,7 +146,7 @@ SoundGroup::~SoundGroup()
 
 bool SoundGroup::load(const char* directoryPath)
 {
-	StringBuffer32 groupName = FileManager::Get()->getItemName( directoryPath);
+	StringBuffer64 groupName = FileManager::Get()->getItemName( directoryPath);
 	std::vector<BasicString> audioFilePaths = FileManager::Get()->fullPathsInFolder(directoryPath);
 
 	for (int i = 0; i < audioFilePaths.size(); i++)
@@ -176,7 +176,7 @@ bool SoundGroup::load(const char* directoryPath)
 
 void SoundGroup::play(int channel) const
 {
-	int randomNumber = Maths::randomNumberBetween(0, group.size());
+	int randomNumber = Maths::randomNumberBetween(0, (u32)group.size());
 	group[randomNumber]->play(channel);
 }
 
@@ -210,7 +210,7 @@ void SoundGroup::resume(int channel) const
 
 void SoundGroup::fadeIn(int channel, int ms) const
 {
-	int randomNumber = Maths::randomNumberBetween(0, group.size());
+	int randomNumber = Maths::randomNumberBetween(0, (u32)group.size());
 	group[randomNumber]->fadeIn(channel, ms);
 }
 

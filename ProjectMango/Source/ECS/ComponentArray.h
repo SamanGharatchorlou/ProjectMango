@@ -23,7 +23,7 @@ namespace ECS
 
 		T& InsertComponent(Entity entity)
 		{
-			u32 index = components.size();
+			u32 index = (u32)components.size();
 
 			components.emplace_back(T());
 
@@ -41,7 +41,7 @@ namespace ECS
 			components.pop_back();
 
 			// index of the component we're just moved to the new spot
-			u32 last_component_index = components.size();
+			u32 last_component_index = (u32)components.size();
 
 			// update the entity and component indexes
 			Entity moving_entity = componentToEntity[last_component_index];

@@ -16,7 +16,7 @@ void GameOverScreen::Update()
 {	
 	if (released("ContinueButton"))
 	{
-		GameData::Get().systemStateManager->restart();
+		//GameData::Get().systemStateManager->restart();
 	}
 }
 

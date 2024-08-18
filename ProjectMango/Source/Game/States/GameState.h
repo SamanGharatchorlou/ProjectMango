@@ -14,7 +14,7 @@ public:
 	void Resume() override;
 	void Exit() override;
 	
-	ECS::Entity activeMap;
+	ECS::Entity activeLevel;
 
 private:
 	void initCamera();

@@ -1,14 +1,12 @@
 #include "pch.h"
 #include "GameController.h"
 
-#include <thread>
 #include "Graphics/Renderer.h"
-
-#include "Game/Data/LoadingManager.h"
 #include "Game/GameSetup.h"
+#include "Game/SystemStateManager.h"
+#include "Game/States/GameState.h"
 
 // GameData
-//#include "System/Window.h"
 #include "Audio/AudioManager.h"
 #include "Input/inputManager.h"
 #include "Graphics/RenderManager.h"
@@ -16,13 +14,13 @@
 #include "Game/FrameRateController.h"
 #include "Game/States/StartupState.h"
 
+
 GameController::GameController()
 {
-	mStartupState = new StartupState(mGameData);
+	StartupState* startup_state = new StartupState(mGameData);
 
 	SystemStateManager* sm = mGameData.systemStateManager;
-
-	sm->mStates.addState(mStartupState);
+	sm->mStates.addState(startup_state);
 }
 
 void GameController::run()
@@ -30,7 +28,8 @@ void GameController::run()
 	SystemStateManager* sm = mGameData.systemStateManager;
 
 	// add first game state
-	sm->replaceState(SystemStates::PreGameState);
+	//sm->replaceState(SystemStates::GameState);
+    sm->mStates.replaceState(new GameState);
 
 	FrameRateController& frc = FrameRateController::Get();
 	frc.start();
@@ -90,7 +89,9 @@ void GameController::restartGame()
 
 	//mGameData.environment->init(&mGameData);
 	//mGameData.environment->load();
-	sm->addState(SystemStates::PreGameState);
+	//sm->addState(SystemStates::PreGameState);
+	// todo: clear / pop whatever state is on here
+    sm->mStates.addState(new GameState);
 	DebugPrint(Log, "--- End game restart ---");
 }
 

@@ -34,7 +34,7 @@ protected:
 
 	RectF mSubrect;
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	bool mDrawRect;
 #endif
 };

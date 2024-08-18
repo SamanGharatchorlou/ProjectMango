@@ -20,7 +20,7 @@ void TextureMap::free()
 
 void TextureMap::add(const char* id, Texture* texture)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (mData.count(id) > 0)
 	{
 		DebugPrint(Warning, "ID '%s' already contained in texture map. Replacing old value, this value might be lost forever(and a memory leak)", id);
@@ -30,7 +30,7 @@ void TextureMap::add(const char* id, Texture* texture)
 }
 
 
-StringBuffer32 TextureMap::find(const Texture* texture) const
+StringBuffer64 TextureMap::find(const Texture* texture) const
 {
 	StringTextureMap::const_iterator iter;
 	for (iter = mData.begin(); iter != mData.end(); iter++)
@@ -41,7 +41,7 @@ StringBuffer32 TextureMap::find(const Texture* texture) const
 		}
 	}
 
-	return StringBuffer32();
+	return StringBuffer64();
 }
 
 

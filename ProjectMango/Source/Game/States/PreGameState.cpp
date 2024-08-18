@@ -4,17 +4,9 @@
 #include "Audio/AudioManager.h"
 #include "UI/UIManager.h"
 #include "Graphics/TextureManager.h"
-#include "Graphics/Renderer.h"
 #include "UI/Screens/MainMenuScreen.h"
 
-#include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/ComponentManager.h"
-#include "ECS/SystemManager.h"
-
-#include "ECS/EntityManager.h"
-#include "Graphics/RenderManager.h"
-#include "System/Files/ConfigManager.h"
 
 void PreGameState::Init()
 {	

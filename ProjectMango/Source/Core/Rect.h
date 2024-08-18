@@ -111,7 +111,7 @@ public:
 	inline void Zero() { x1 = x2 = y1 = y2 = 0; }
 
 
-	// Validity
+	// Validity 
 	inline bool isValid() const { return (x2 > x1 && y2 > y1 ); }
 
 
@@ -127,7 +127,7 @@ public:
 	inline Rect<T> operator * (T scalar) { return Rect<T>(x1, y1, x1 + (Width() * scalar), y1 + (Height() * scalar)); }
 	inline Rect<T> operator + (const Rect<T>& rect) { return Rect<T>(x1 + rect.x1, y1 + rect.y1, x2 + rect.x2, y2 + rect.y2); }
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	BasicString  infoString();
 #endif
 
@@ -335,7 +335,7 @@ Vector2D<T> Rect<T>::closestRectSide(Vector2D<T> point) const
 }
 
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 template <class T>
 BasicString Rect<T>::infoString()
 {

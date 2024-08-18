@@ -5,9 +5,10 @@
 #include "Audio/AudioManager.h"
 #include "Game/Camera/Camera.h"
 #include "UI/UIManager.h"
+#include "Game/States/StartupState.h"
 
 #include "ECS/Components/Components.h"
-#include "ECS/Components/TileMap.h"
+#include "ECS/Components/Level.h"
 #include "ECS/EntityCoordinator.h"
 
 #include "Characters/Spawner.h"
@@ -15,6 +16,11 @@
 #include "Scene/SceneParsing/SceneBuilder.h"
 
 #include "Debugging/ImGui/ImGuiMainWindows.h"
+
+#include "Scene/SceneParsing/LevelReader.h"
+
+#include "Game/SystemStateManager.h"
+#include "Game/States/AnimationEditorState.h"
 
 void GameState::Init()
 {
@@ -24,18 +30,19 @@ void GameState::Init()
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Map");
 
-	ECS::TileMap& tile_map = ecs->AddComponent(TileMap, entity);
-	Map::SceneBuilder::BuildTileMap("blood_test_export.xml", tile_map.tileMap);
-	activeMap = entity;
+	ECS::Level& level_1 = ecs->AddComponent(Level, entity);
+	Level::BuildLevel(level_1, 1);
 
-	ECS::Entity player = PlayerSpawn::Spawn(tile_map.tileMap.playerSpawnArea.Center());
-	ECS::Entity enemy = EnemySpawn::Spawn(tile_map);
+	activeLevel = entity;
 
-	// debugging
-	DebugMenu::SelectEntity(enemy);
+	ECS::Entity player = PlayerSpawn::Spawn( level_1.playerSpawn );
+	//ECS::Entity enemy = EnemySpawn::Spawn(tile_map);
 
-	if(ECS::Pathing* pathing = ecs->GetComponent(Pathing, enemy))
-		pathing->target = player;
+	//// debugging
+	//DebugMenu::SelectEntity(enemy);
+
+	//if(ECS::Pathing* pathing = ecs->GetComponent(Pathing, enemy))
+	//	pathing->target = player;
 
 	UIManager* ui = GameData::Get().uiManager;
 	ui->controller()->replaceScreen(UIScreen::Type::Game);
@@ -50,7 +57,13 @@ void GameState::Init()
 
 void GameState::HandleInput()
 {
-
+#if DEBUG_MODE
+	InputManager* input = InputManager::Get();
+	if(input->isPressed(Button::F11))
+	{
+		GameData::Get().systemStateManager->mStates.addState(new AnimationEditorState);
+	}
+#endif
 }
 
 

@@ -19,9 +19,9 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 		if (ImGui::TreeNode("Component Data"))
 		{
 			ECS::CharacterState& cs = ecs->GetComponentRef(CharacterState, entity);
-			ImGui::VectorText("Facing Direction", cs.facingDirection);
-			ImGui::Text("Current State: %s", actionToString(cs.action).c_str());
-			ImGui::Checkbox("Can Change", &cs.canChange);
+			//ImGui::VectorText("Facing Direction", cs.facingDirection);
+			//ImGui::Text("Current State: %s", actionToString(cs.action).c_str());
+			//ImGui::Checkbox("Can Change", &cs.canChange);
 
 			
 			if(ECS::AIController* aic = ecs->GetComponent(AIController, entity))
@@ -60,11 +60,11 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 				{
 					for( u32 i = 0; i < (u32)ActionState::Count; i++ )
 					{
-						const char* action_string = actionToString((ActionState)i).c_str();
-						if (ImGui::Selectable(action_string, false))
-						{
-							pc->PushState((ActionState)i);
-						}
+						//const char* action_string = actionToString((ActionState)i).c_str();
+						//if (ImGui::Selectable(action_string, false))
+						//{
+						//	pc->PushState((ActionState)i);
+						//}
 					}
 						
 					ImGui::EndCombo();

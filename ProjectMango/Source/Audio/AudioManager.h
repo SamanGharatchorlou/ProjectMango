@@ -22,7 +22,7 @@ struct AudioEvent
 	AudioEvent(Action _action, const char* _label, const void* _id, VectorF _source, int _time)	: action(_action), label(_label), id(reinterpret_cast<const uintptr_t>(_id)), source(_source),				 time(_time) { }
 
 	const Action action;
-	const StringBuffer32 label;
+	const StringBuffer64 label;
 	const uintptr_t id;
 	const VectorF source;
 	const int time;
@@ -76,5 +76,5 @@ private:
 
 private:
 	SoundController mSoundController;
-	std::unordered_map<StringBuffer32, Audio*> mAudioBank;
+	std::unordered_map<StringBuffer64, Audio*> mAudioBank;
 };

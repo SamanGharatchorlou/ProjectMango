@@ -10,6 +10,7 @@
 #include "Characters/States/PlayerStates.h"
 #include "ECS/Components/PlayerController.h"
 #include "ECS/Components/Physics.h"
+#include "ECS/Components/Animator.h"
 #include "Animations/AnimationReader.h"
 
 ECS::Entity s_playerEntity = ECS::EntityInvalid;
@@ -35,32 +36,32 @@ ECS::Entity Player::Create()
 	physics.maxSpeed = VectorF(5.0f, 5.0f);
 
 	// Animation
-	ECS::Animation& animation = ecs->AddComponent(Animation, s_playerEntity);
-	AnimationReader::Parse( "BloodHeroAnimations", animation.animator );
-	animation.animator.start();
+	ECS::Animator& animation = ecs->AddComponent(Animator, s_playerEntity);
+	AnimationReader::BuildAnimatior( "PandaHeroAnimations", animation );
+	animation.activeAnimation = 0;
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, s_playerEntity);
 	sprite.renderLayer = 9;
 	
 	// Collider
-	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
-	SpriteSheet& ss = animation.animator.mSpriteSheets.front();
-	collider.SetRect(RectF(VectorF::zero(), ss.colliderSize));
+	//ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
+	//SpriteSheet& ss = animation.animator.mSpriteSheets.front();
+	//collider.SetRect(RectF(VectorF::zero(), ss.colliderSize));
 	
 	// PlayerController
 	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);
 
-	std::vector<ActionState> actions;
-	for( u32 i = 0; i < (u32)ActionState::Count; i++ )
-	{
-		actions.push_back((ActionState)i);
-	}
-	player_controller.statePool.load(actions, 4);
+	//std::vector<ActionState> actions;
+	//for( u32 i = 0; i < (u32)ActionState::Count; i++ )
+	//{
+	//	actions.push_back((ActionState)i);
+	//}
+	//player_controller.statePool.load(actions, 4);
 	
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
-	character_state.facingDirection = VectorI(0,1); // facing down
+	//character_state.facingDirection = VectorI(0,1); // facing down
 	
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, s_playerEntity);

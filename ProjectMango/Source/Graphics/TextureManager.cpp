@@ -62,7 +62,7 @@ void TextureManager::load()
 
 	for (int i = 0; i < folders.size(); i++)
 	{
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		BasicString folderPath = fm->folderPath(folders[i]);
 		BasicString rootPath = fm->folderPath(FileManager::Root);
 		int start = rootPath.length();
@@ -84,7 +84,7 @@ int TextureManager::loadAllTexturesIn(FileManager::Folder resource_folder, FileM
 	TextureMap& textureMap = mTextures[placement_folder];
 
 	int fails = 0;
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	int count = 0;
 #endif
 
@@ -95,12 +95,12 @@ int TextureManager::loadAllTexturesIn(FileManager::Folder resource_folder, FileM
 			continue;
 
 		fails += !loadTexture(textureMap, path.c_str());
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		count++;
 #endif
 	}
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (textureMap.size() != count)
 		DebugPrint(Warning, "The final number of textures does not match the number of file paths provided.\ncount (%d) != map size (%d).", count, textureMap.size());
 #endif
@@ -118,7 +118,7 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	Renderer::Get()->lock();
 	if (texture->loadFromFile(filePath))
 	{
-		StringBuffer32 label = fm->getItemName(filePath);
+		StringBuffer64 label = fm->getItemName(filePath);
 		textureMap.add(label.c_str(), texture);
 
 		// Add to has loaded files
@@ -128,7 +128,7 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	}
 	else
 	{
-		StringBuffer32 label = fm->getItemName(filePath);
+		StringBuffer64 label = fm->getItemName(filePath);
 		DebugPrint(Log, "Failure: texture NOT loaded '%s' at '%s'", label.c_str(), filePath);
 		delete texture;
 		success = false;
@@ -138,20 +138,20 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	return success;
 }
 
-StringBuffer32 TextureManager::getTextureName(const Texture* texture) const
+StringBuffer64 TextureManager::getTextureName(const Texture* texture) const
 {
 	std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
 	for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
 	{
 		TextureMap textureMap = iter->second;
-		StringBuffer32 id = textureMap.find(texture);
+		StringBuffer64 id = textureMap.find(texture);
 
 		if (!id.empty())
 			return id;
 	}
 
 	DebugPrint(Log, "Texture was not found within any texture map");
-	return StringBuffer32();
+	return StringBuffer64();
 }
 
 Texture* TextureManager::getTexture(const char* label, const FileManager::Folder folder) const
@@ -159,8 +159,8 @@ Texture* TextureManager::getTexture(const char* label, const FileManager::Folder
 	Texture* texture = nullptr;
 	const TextureMap* textureMap = findTextureMap(folder);
 
-	StringBuffer32 buffer = label;
-	for (int i = strlen(label) - 1; i >= 0; i--)
+	StringBuffer64 buffer = label;
+	for (int i = (u32)strlen(label) - 1; i >= 0; i--)
 	{
 		if (label[i] == '.') 
 		{

@@ -63,7 +63,7 @@ namespace ECS
 				//if (LockAndKey(entSystems[i]->signature, type)) // this is wrong!
 				if ( (entSystems[i]->signature & (u64)1 << type ))
 				{
-					const u32 ent_count = entSystems[i]->entities.size();
+					const u32 ent_count = (u32)entSystems[i]->entities.size();
 					for (int ent = 0; ent < ent_count; ent++)
 					{
 						if (entSystems[i]->entities[ent] == entity)

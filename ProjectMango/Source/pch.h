@@ -71,10 +71,8 @@ namespace fs = std::filesystem;
 #include "Core/Colour.h"
 #include "Core/Timer.h"
 
-//// todo: remove these
-//#include "Core/Maps/Map.h"
+// todo: remove these
 #include "Core/Maps/StringMap.h"
-//#include "Core/Maps/PropertyMap.h"
 
 
 // File accessors
@@ -88,15 +86,11 @@ namespace fs = std::filesystem;
 // and they should not be using definition from this file
 #include "Core/TypeDefs.h"
 
-// this can come last, doesnt define anything itself, 
-// just some simple helpers but may use any of the above
-#include "Core/Helpers.h"
-
 // Entity and Component types
 #include "ECS/EntityCommon.h"
 
 // --- Debug Only Includes ---
-#if DEBUG_CHECK
+#if DEBUG_MODE
 #include "Debugging/DebugDraw.h"
 #include "Debugging/Logging.h"
 #endif

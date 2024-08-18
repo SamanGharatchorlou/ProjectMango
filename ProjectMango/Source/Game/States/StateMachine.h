@@ -67,7 +67,8 @@ void StateMachine<T>::shallowClear()
 template<class T>
 void StateMachine<T>::addState(T* state)
 {
-	states.back()->Pause();
+	//if(states.size() > 0)
+	//	states.back()->Pause();
 
 	states.insert_back(state);
 	states.back()->Init();

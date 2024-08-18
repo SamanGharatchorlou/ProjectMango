@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "XMLParser.h"
 
-#include "rapidxml_print.hpp"
-
+#include "rapidxml/rapidxml_print.hpp"
 
 void XMLParser::parseXML(const char* filePath)
 {
@@ -12,7 +11,7 @@ void XMLParser::parseXML(const char* filePath)
 	file = new rapidxml::file<>(filePath);
 	xmlFile.parse<rapidxml::parse_no_data_nodes>(file->data());
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	path = filePath;
 #endif
 }
@@ -23,10 +22,10 @@ void XMLParser::saveToFile(std::ofstream& file)
 	file << xmlFile;
 }
 
-
 XMLParser::~XMLParser()
 {
-	delete file;
+	if(file)
+		delete file;
 }
 
 void XMLParser::reload(const char* filePath)
@@ -40,7 +39,7 @@ void XMLParser::reload(const char* filePath)
 	file = new rapidxml::file<>(filePath);
 	xmlFile.parse<rapidxml::parse_no_data_nodes>(file->data());
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	path = filePath;
 #endif
 }
@@ -50,10 +49,9 @@ XMLNode XMLParser::rootNode() const
 	return XMLNode(xmlFile.first_node());
 }
 
-
 XMLNode XMLParser::rootChild(const char* label) const
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	XMLNode child = rootNode().child(label);
 	if (child.isEmpty())
 		DebugPrint(Log, "Parser at path '%s' has no child node labeled '%s'", path.c_str(), label);

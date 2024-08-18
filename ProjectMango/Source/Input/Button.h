@@ -54,6 +54,20 @@ public:
 		Eight = SDLK_8,
 		Nine = SDLK_9,
 
+		// F keys
+		F1 = SDLK_F1,
+		F2 = SDLK_F2,
+		F3 = SDLK_F3,
+		F4 = SDLK_F4,
+		F5 = SDLK_F5,
+		F6 = SDLK_F6,
+		F7 = SDLK_F7,
+		F8 = SDLK_F8,
+		F9 = SDLK_F9,
+		F10 = SDLK_F10,
+		F11 = SDLK_F11,
+		F12 = SDLK_F12,
+
 		COUNT
 	};
 

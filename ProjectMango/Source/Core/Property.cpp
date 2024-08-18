@@ -18,7 +18,7 @@ BasicString PropertyType::string() const
 
 PropertyType::Type findPropertyType(const BasicString& string)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (PropertyLookUpTable.count(string) == 0)
 	{
 		DebugPrint(Warning, "No property in the lookup table with string '%s'", string.c_str());

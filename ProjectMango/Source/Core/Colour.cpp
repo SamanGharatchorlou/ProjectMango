@@ -38,6 +38,9 @@ Colour::Colour(Enum colour)
 	case LightGrey:
 		r = 201; g = 201; b = 201;
 		break;
+	case MidGrey:
+		r = 125; g = 125; b = 125;
+		break;
 	case Black:
 		r = 0; g = 0; b = 0;
 		break;

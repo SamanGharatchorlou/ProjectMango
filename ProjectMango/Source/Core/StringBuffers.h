@@ -1,6 +1,6 @@
 #pragma once
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 #include "Debugging/Logging.h"
 #endif
 
@@ -27,14 +27,14 @@ public:
 
 	void set(const char* string) 
 	{
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		if (strlen(string) > bufferLength())
 			DebugPrint(Error, "Attempting to set StringBuffer%d with string of size %d, will drop overflow characters", bufferLength(), strlen(string));
 #endif
 		strncpy(mBuffer, string, bufferLength()); 
 	}
 
-	int length() const { return strlen(mBuffer); }
+	uint32_t length() const { return (uint32_t)strlen(mBuffer); }
 	bool empty() const { return strlen(mBuffer) == 0; }
 	void clear() { memset(mBuffer, 0, bufferLength()); }
 
@@ -80,13 +80,13 @@ public:
 
 	void set(const char* string) 
 	{
-#if DEBUG_CHECK
+#if DEBUG_MODE
 		if (strlen(string) > bufferLength())
 			DebugPrint(Error, "Attempting to set StringBuffer%d with string of size %d, will drop overflow characters", bufferLength(), strlen(string));
 #endif
 		strncpy(mBuffer, string, bufferLength()); 
 	}
-	int length() const { return strlen(mBuffer); }
+	uint32_t length() const { return (uint32_t)strlen(mBuffer); }
 	bool empty() const { return strlen(mBuffer) == 0; }
 
 	StringBuffer64 operator + (const StringBuffer64& string)

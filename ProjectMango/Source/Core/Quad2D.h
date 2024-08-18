@@ -253,7 +253,7 @@ void Quad2D<T>::rotate(double degrees, Point aboutpoint)
 template<class T>
 void Quad2D<T>::rotate(double degrees)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (mAboutPoint.isNegative())
 	{
 		DebugPrint(Warning, "Attempting to rotate quad %f degrees, without an about point set.\
@@ -286,7 +286,7 @@ void Quad2D<T>::resetRotation(Point aboutpoint)
 template<class T>
 void Quad2D<T>::resetRotation()
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (mAboutPoint.isNegative())
 	{
 		DebugPrint(Warning, "Attempting to reset rotation of quad without an about point set.\

@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
+#include "Core/Helpers.h"
 
 
 ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect, float damage, const char* entity_name)
@@ -13,7 +14,7 @@ ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect,
 
 	// Transform
 	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attack_collider);
-	attack_transform.rect = collider_rect;
+	//attack_transform.rect = collider_rect;
 	//attack_transform.targetCenterPosition = collider_rect.Center(); 
 
 	// Collider
@@ -34,17 +35,18 @@ ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect,
 
 bool HandleAttackAnimation(ECS::Entity entity, ECS::Entity attack_collider)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-		
-	const Animation* anim = animation.animator.activeAnimation();
-		
-	// activate the collider
-	if(animation.animator.mFrameIndex >= anim->colliderFrame)
-	{
-		ECS::Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
-		RemoveFlag(collider.mFlags, (u32)ECS::Collider::IgnoreAll);
-	}
+	//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	//ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
+	//	
+	//const Animation* anim = animation.animator.activeAnimation();
+	//	
+	//// activate the collider
+	//if(animation.animator.mFrameIndex >= anim->colliderFrame)
+	//{
+	//	ECS::Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
+	//	RemoveFlag(collider.mFlags, (u32)ECS::Collider::IgnoreAll);
+	//}
 
-	return animation.animator.finished();
+	//return animation.animator.finished();
+	return false;
 }

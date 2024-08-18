@@ -15,7 +15,7 @@ void PauseScreen::HandleInput(InputManager* input)
 	}
 	else if (input->isReleased(Button::Esc) || input->isReleased(Button::Quit))
 	{
-		GameData::Get().systemStateManager->quit();
+		//GameData::Get().systemStateManager->quit();
 	}
 }
 
@@ -27,23 +27,23 @@ void PauseScreen::Update()
 		GameData::Get().uiManager->controller()->addScreen(UIScreen::Type::Settings);
 	}
 
-	if (released("QuitButton"))
-	{
-		GameData::Get().systemStateManager->quit();
-	}
-	else if (released("RestartButton"))
-	{
-		GameData::Get().systemStateManager->restart();
-	}
-	else if (released("ResumeButton") || released("CloseButton"))
-	{
-		popScreenState();
-	}
+	//if (released("QuitButton"))
+	//{
+	//	GameData::Get().systemStateManager->quit();
+	//}
+	//else if (released("RestartButton"))
+	//{
+	//	GameData::Get().systemStateManager->restart();
+	//}
+	//else if (released("ResumeButton") || released("CloseButton"))
+	//{
+	//	popScreenState();
+	//}
 }
 
 
 void PauseScreen::popScreenState()
 {
-	GameData::Get().uiManager->controller()->popScreen();
-	GameData::Get().systemStateManager->popState();
+	//GameData::Get().uiManager->controller()->popScreen();
+	//GameData::Get().systemStateManager->popState();
 }

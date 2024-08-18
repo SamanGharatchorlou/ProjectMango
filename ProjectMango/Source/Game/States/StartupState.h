@@ -3,8 +3,6 @@
 #include "Game/States/State.h"
 #include "Game/Data/LoadingManager.h"
 
-//#include <thread>
-
 struct GameData;
 
 class StartupState : public State

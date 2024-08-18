@@ -1,10 +1,8 @@
 #pragma once
 
-#include "rapidxml.hpp"
-#include "rapidxml_utils.hpp"
-
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_utils.hpp"
 #include "XMLNode.h"
-
 
 class XMLParser
 {
@@ -23,7 +21,7 @@ public:
 	XMLNode rootNode() const;
 	XMLNode rootChild(const char* label) const;
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	BasicString path;
 #endif
 

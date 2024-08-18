@@ -11,6 +11,7 @@
 #include "Characters/States/PlayerStates.h"
 #include "ECS/Components/Physics.h"
 #include "Animations/AnimationReader.h"
+#include "Core/Helpers.h"
 
 static void ParseEnemyData(const char* file)
 {
@@ -42,8 +43,8 @@ ECS::Entity Enemy::Create()
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	transform.rect.SetSize(VectorF(17.0f, 34.0f));
-	transform.positionOffset = VectorF(-8.0f, 26.0f);
+	//transform.rect.SetSize(VectorF(17.0f, 34.0f));
+	//transform.positionOffset = VectorF(-8.0f, 26.0f);
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, entity);
@@ -52,10 +53,10 @@ ECS::Entity Enemy::Create()
 	physics.maxSpeed = VectorF(5.0f, 5.0f);
 	physics.speed = VectorF(0,2);
 
-	// Animation
-	ECS::Animation& animation = ecs->AddComponent(Animation, entity);
-	AnimationReader::Parse( "TribeWarriorAnimations", animation.animator );
-	animation.animator.start();
+	//// Animation
+	//ECS::Animation& animation = ecs->AddComponent(Animation, entity);
+	//AnimationReader::Parse( "TribeWarriorAnimations", animation.animator );
+	//animation.animator.start();
 
 
 
@@ -64,9 +65,9 @@ ECS::Entity Enemy::Create()
 	sprite.renderLayer = 9;
 	
 	// Collider
-	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
-	collider.SetRect(transform.rect);
-	SetFlag<u32>(collider.mFlags, (u32)ECS::Collider::IsEnemy);
+	//ECS::Collider& collider = ecs->AddComponent(Collider, entity);
+	//collider.SetRect(transform.rect);
+	//SetFlag<u32>(collider.mFlags, (u32)ECS::Collider::IsEnemy);
 	
 	// AI Controller
 	ECS::AIController& ai_controller = ecs->AddComponent(AIController, entity);
@@ -79,8 +80,8 @@ ECS::Entity Enemy::Create()
 	ai_controller.statePool.load(actions, 4);
 	
 	// CharacterState
-	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
-	character_state.facingDirection = VectorI(0,1); // facing down
+	//ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+	//character_state.facingDirection = VectorI(0,1); // facing down
 
 	// Pathing
 	ecs->AddComponent(Pathing, entity);

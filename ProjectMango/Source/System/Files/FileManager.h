@@ -53,17 +53,17 @@ public:
 
 	bool exists(const Folder folder, const char* name) const;
 	BasicString findFile(const Folder folder, const char* name) const;
-	BasicString findFile(const Folder folder, StringBuffer32 name) const { findFile(folder, name.c_str()); }
+	BasicString findFile(const Folder folder, StringBuffer64 name) const { findFile(folder, name.c_str()); }
 	BasicString findFileEtx(const Folder folder, const char* name) const;
 
 	// todo: dont return these vectors, fill some in instead, same with allFilesinFolder functions
 	std::vector<BasicString> fullPathsInFolder(const Folder folder) const;
 	std::vector<BasicString> fullPathsInFolder(const char* directory) const;
-	std::vector<StringBuffer32> fileNamesInFolder(const Folder folder) const;
+	std::vector<BasicString> fileNamesInFolder(const Folder folder) const;
 
-	StringBuffer32 getItemName(const char* filePath) const;
-	StringBuffer32 getItemName(const fs::path& filePath) const;
-	StringBuffer32 getItemNameAndExt(const fs::path& filePath) const;
+	StringBuffer64 getItemName(const char* filePath) const;
+	StringBuffer64 getItemName(const fs::path& filePath) const;
+	StringBuffer64 getItemNameAndExt(const fs::path& filePath) const;
 
 	std::vector<BasicString> allFilesInFolder(const Folder folder) const;
 	std::vector<BasicString> allFilesInFolder(const fs::path& directory) const;
@@ -85,8 +85,8 @@ private:
 	bool containsFile(const fs::path& directoryPath) const;
 	bool containsDirectory(const fs::path& directoryPath) const;
 
-	void outFolderPath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer32& name) const;
-	void outFilePath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer32& name) const;
+	void outFolderPath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer64& name) const;
+	void outFilePath(BasicString& outValue, const fs::path& directoryPath, const StringBuffer64& name) const;
 
 
 private:

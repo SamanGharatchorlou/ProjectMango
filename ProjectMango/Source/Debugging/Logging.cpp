@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Logging.h"
 
-#if DEBUG_CHECK
+#if DEBUG_MODE
 static constexpr PriorityLevel LogLevel = PriorityLevel::Log;
 #else
 static constexpr PriorityLevel LogLevel = PriorityLevel::Log;
@@ -54,7 +54,7 @@ void DebugPrint(PriorityLevel priority, const char* format, ...)
 
 void DebugAssert(int lineNumber, const char* functionName, bool condition, const char* format, ...)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if ( !condition )
 	{
 		printf("Assert failed in %s::%d - ", functionName, lineNumber);
@@ -71,5 +71,5 @@ void DebugAssert(int lineNumber, const char* functionName, bool condition, const
 
 		// either properly pause the code or open an output window with a failed message
 	}
-#endif // DEBUG_CHECK
+#endif // DEBUG_MODE
 }

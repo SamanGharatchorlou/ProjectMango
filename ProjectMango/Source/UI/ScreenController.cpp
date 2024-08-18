@@ -3,6 +3,7 @@
 
 #include "UI/UIManager.h"
 #include "Screens/PopupScreen.h"
+#include "Core/Helpers.h"
 
 #include "Game/SystemStateManager.h"
 #include "Audio/AudioManager.h"
@@ -40,7 +41,7 @@ void ScreenController::addScreen(UIScreen::Type type, u32 flags)
 
 void ScreenController::replaceScreen(UIScreen::Type type)
 {
-#if DEBUG_CHECK
+#if DEBUG_MODE
 	if (mScreens.size() <= 1)
 	{
 		StringBuffer32 screenName;
@@ -79,7 +80,7 @@ void ScreenController::openPopup(const char* popupInfo)
 
 		addScreen(UIScreen::Type::Popup, flags);
 		setPersistingScreen(popup);
-		GameData::Get().systemStateManager->addState(SystemStates::PauseState);
+		//GameData::Get().systemStateManager->addState(SystemStates::PauseState);
 	}
 	else
 	{

@@ -40,49 +40,49 @@ ECS::Component::Type DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 		InputManager* input = InputManager::Get();
 		ImGui::PushID(entity + (int)type);
 
-		ImGui::Checkbox("Display Path", &s_displayPath);
-		if (s_displayPath)
-		{
-			const VectorF world_tile_size = ECS::TileMap::GetMapSizeRatio() * ECS::c_tileSize;
-			std::vector<VectorI> path = pathing.path;
+		//ImGui::Checkbox("Display Path", &s_displayPath);
+		//if (s_displayPath)
+		//{
+		//	const VectorF world_tile_size = ECS::TileMap::GetMapSizeRatio() * ECS::c_tileSize;
+		//	std::vector<VectorI> path = pathing.path;
 
-			for( u32 i = 0; i < path.size(); i++ )
-			{
-				VectorF pos = path[i].toFloat() * world_tile_size;
-				VectorF size = world_tile_size;
-				RectF rect(pos, size);
+		//	for( u32 i = 0; i < path.size(); i++ )
+		//	{
+		//		VectorF pos = path[i].toFloat() * world_tile_size;
+		//		VectorF size = world_tile_size;
+		//		RectF rect(pos, size);
 
-				DebugDraw::RectOutline(rect, Colour::Blue);
-			}
-		}
+		//		DebugDraw::RectOutline(rect, Colour::Blue);
+		//	}
+		//}
 
 		ImGui::Checkbox("Display Target", &s_displayTarget);
 		if(s_displayTarget)
 		{
 			const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
 
-			const VectorI directions[4] = { VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0) };
-			for( u32 i = 0; i < 4; i++ )
-			{
-				const float attack_range = Enemy::GetAttackRange(entity, directions[i] );
-				VectorF looking_at = transform.rect.Center() + (directions[i].toFloat() * attack_range);
-					
-				Colour colour = Colour::Green;
+			//const VectorI directions[4] = { VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0) };
+			//for( u32 i = 0; i < 4; i++ )
+			//{
+			//	const float attack_range = Enemy::GetAttackRange(entity, directions[i] );
+			//	VectorF looking_at = transform.rect.Center() + (directions[i].toFloat() * attack_range);
+			//		
+			//	Colour colour = Colour::Green;
 
-				VectorI direction;
-				if( ECS::Pathing* pathing = ecs->GetComponent(Pathing, entity) )
-				{
-					if(ecs->IsAlive(pathing->target))
-					{
-						if(Enemy::IsInAttackRange(entity, pathing->target, direction))
-						{
-							colour = Colour::Red;
-						}
-					}
-				}
+			//	VectorI direction;
+			//	if( ECS::Pathing* pathing = ecs->GetComponent(Pathing, entity) )
+			//	{
+			//		if(ecs->IsAlive(pathing->target))
+			//		{
+			//			if(Enemy::IsInAttackRange(entity, pathing->target, direction))
+			//			{
+			//				colour = Colour::Red;
+			//			}
+			//		}
+			//	}
 
-				DebugDraw::Point(looking_at, 10, colour);
-			}
+			//	DebugDraw::Point(looking_at, 10, colour);
+			//}
 		}
 
 		bool is_entity = s_entWithNoPath == entity;

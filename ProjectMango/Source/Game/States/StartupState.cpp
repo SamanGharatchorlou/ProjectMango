@@ -21,7 +21,7 @@ StartupState::StartupState(GameData& gd)
 
 static void loadGameAssets()
 {
-	GameData& gd = GameData::Get();
+	GameData& gd = GameData::Get(); 
 	gd.load();
 }
 
@@ -71,7 +71,7 @@ void StartupState::Init()
 			{
 				DebugPrint(Warning, "Early exitting loading, closing application");
 				loader.earlyExit();
-				GameData::Get().systemStateManager->quit();
+				GameData::Get().systemStateManager->mQuit = true;
 				break;
 			}
 		}

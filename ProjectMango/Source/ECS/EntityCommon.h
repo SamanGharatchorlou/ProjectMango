@@ -24,13 +24,14 @@ namespace ECS
 			CharacterState,
 			PlayerController,
 			Physics,
-			Animation,
+			Animator,
 			TileMap,
 			Collider,
 			AIController,
 			Pathing,
 			Damage,
 			Health,
+			Level,
 
 			Count
 		};
@@ -43,13 +44,14 @@ namespace ECS
 		"CharacterState", 
 		"PlayerController", 
 		"Physics", 
-		"Animation", 
+		"Animator", 
 		"TileMap",
 		"Collider",
 		"AIController",
 		"Pathing",
 		"Damage",
-		"Health"
+		"Health",
+		"Level"
 	};
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \

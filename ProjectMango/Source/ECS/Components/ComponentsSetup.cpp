@@ -6,7 +6,8 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
-#include "ECS/Components/TileMap.h"
+#include "ECS/Components/Level.h"
+#include "ECS/Components/Animator.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/AIControllerSystem.h"
 #include "ECS/EntSystems/AnimationSystem.h"
@@ -30,13 +31,14 @@ void ECS::RegisterAllComponents()
 	ecs->RegisterComponent(CharacterState, 32);
 	ecs->RegisterComponent(PlayerController, 32);
 	ecs->RegisterComponent(Physics, 32);
-	ecs->RegisterComponent(Animation, 32);
-	ecs->RegisterComponent(TileMap, 4);
+	ecs->RegisterComponent(Animator, 32);
+	//ecs->RegisterComponent(TileMap, 4);
 	ecs->RegisterComponent(Collider, 32);
 	ecs->RegisterComponent(AIController, 32);
 	ecs->RegisterComponent(Pathing, 32);
 	ecs->RegisterComponent(Damage, 32);
 	ecs->RegisterComponent(Health, 32);
+	ecs->RegisterComponent(Level, 4);
 }
 
 void ECS::RegisterAllSystems()
@@ -60,12 +62,12 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<PhysicsSystem>(physicsSignature);
 
 	// Animation
-	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animation) | ArcheBit(CharacterState) | ArcheBit(Transform);
+	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator) | ArcheBit(CharacterState) | ArcheBit(Transform);
 	ecs->RegisterSystem<AnimationSystem>(animationSignature);
 
 	// Map
-	Signature mapTileSignature = ArcheBit(TileMap);
-	ecs->RegisterSystem<TileMapSystem>(mapTileSignature);
+	Signature levelSignature = ArcheBit(Level);
+	ecs->RegisterSystem<TileMapSystem>(levelSignature);
 
 	// Collisions
 	Signature collisionSignature = ArcheBit(Collider) | ArcheBit(Transform);
@@ -89,8 +91,9 @@ void ECS::RemoveAllComponents(Entity entity)
 	ecs->RemoveComponent(CharacterState, entity);
 	ecs->RemoveComponent(PlayerController, entity);
 	ecs->RemoveComponent(Physics, entity);
-	ecs->RemoveComponent(Animation, entity);
-	ecs->RemoveComponent(TileMap, entity);
+	ecs->RemoveComponent(Animator, entity);
+	ecs->RemoveComponent(Level, entity);
+	//ecs->RemoveComponent(TileMap, entity);
 	ecs->RemoveComponent(Collider, entity);
 	ecs->RemoveComponent(AIController, entity);
 	ecs->RemoveComponent(Pathing, entity);

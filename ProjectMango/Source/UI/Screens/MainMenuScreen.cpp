@@ -2,7 +2,8 @@
 #include "MainMenuScreen.h"
 #include "Game/SystemStateManager.h"
 #include "UI/UIManager.h"
-
+#include "Game/States/GameState.h"
+#include "Core/Helpers.h"
 
 void MainMenuScreen::Init()
 {
@@ -18,16 +19,16 @@ void MainMenuScreen::Update()
 		SetFlag<u32>(flags, Screen::RenderBelow);
 
 		//GameData::Get().uiManager->controller()->addScreen(UIScreen::Type::Settings, flags);
-		GameData::Get().systemStateManager->addState(SystemStates::GameState);
+		//GameData::Get().systemStateManager->addState(new GameState);
 	}
 	else if (released("ExitButton"))
 	{
-		GameData::Get().systemStateManager->quit();
+		//GameData::Get().systemStateManager->quit();
 	}
 }
 
 
 void MainMenuScreen::Restart()
 {
-	GameData::Get().systemStateManager->replaceState(SystemStates::GameState);
+	//GameData::Get().systemStateManager->replaceState(SystemStates::GameState);
 }

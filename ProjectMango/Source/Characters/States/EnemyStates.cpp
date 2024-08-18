@@ -11,6 +11,7 @@
 #include "ECS/EntSystems/AnimationSystem.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/ComponentCommon.h"
+#include "Core/Helpers.h"
 
 namespace Enemy
 {
@@ -87,84 +88,84 @@ namespace Enemy
 		ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		
-		VectorI facing_direction;
-		if(CanAttackTarget(entity, facing_direction))
-		{
-			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			state.facingDirection = facing_direction;
+		//VectorI facing_direction;
+		//if(CanAttackTarget(entity, facing_direction))
+		//{
+		//	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		//	state.facingDirection = facing_direction;
 
-			ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
-			ai.PushState(ActionState::BasicAttack);
-		}
+		//	ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
+		//	ai.PushState(ActionState::BasicAttack);
+		//}
 
-		if(!state.movementDirection.isZero())
-		{
-			ai.PushState(ActionState::Run);
-		}
+		//if(!state.movementDirection.isZero())
+		//{
+		//	ai.PushState(ActionState::Run);
+		//}
 
-		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-		{
-			physics->speed.set(0.0f, 0.0f);
-			physics->ApplyDrag(state.movementDirection.toFloat(), 0.9f);
-		}
+		//if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		//{
+		//	physics->speed.set(0.0f, 0.0f);
+		//	physics->ApplyDrag(state.movementDirection.toFloat(), 0.9f);
+		//}
 	}
 
 	// Run
 	// ---------------------------------------------------------
 	void RunState::Update(float dt)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
-		const ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		//ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
+		//const ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
-		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-		{
-			// apply walk speed
-			physics->maxSpeed = VectorF(3.0f, 3.0f);
-			physics->ApplyMovement(state.movementDirection.toFloat(), dt);
-			physics->ApplyDrag(state.movementDirection.toFloat(), 0.9f);
-		}
+		//if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		//{
+		//	// apply walk speed
+		//	physics->maxSpeed = VectorF(3.0f, 3.0f);
+		//	physics->ApplyMovement(state.movementDirection.toFloat(), dt);
+		//	physics->ApplyDrag(state.movementDirection.toFloat(), 0.9f);
+		//}
 
-		if(state.movementDirection.isZero())
-		{
-			ai.PopState();
-		}
+		//if(state.movementDirection.isZero())
+		//{
+		//	ai.PopState();
+		//}
 	}
 
 	// BasicAttack
 	// ---------------------------------------------------------
 	void BasicAttackState::Init()
 	{	
-		// init values
-		attackCollider = ECS::EntityInvalid;
+		//// init values
+		//attackCollider = ECS::EntityInvalid;
 
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		const ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		const RectF character_rect = ECS::GetObjectRect(entity);
+		//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		//const ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		//const RectF character_rect = ECS::GetObjectRect(entity);
 
-		if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-		{
-			physics->speed.set(0.0f, 0.0f);
-		}
-		
-		const VectorI direction = state.facingDirection;
-		const RectF collider_rect = GetAttackRect(entity, direction);
-		attackCollider = CreateAttackCollider(entity, collider_rect, 60, "Enemy Attack Collider");
+		//if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		//{
+		//	physics->speed.set(0.0f, 0.0f);
+		//}
+		//
+		//const VectorI direction = state.facingDirection;
+		//const RectF collider_rect = GetAttackRect(entity, direction);
+		//attackCollider = CreateAttackCollider(entity, collider_rect, 60, "Enemy Attack Collider");
 	}
 
 	void BasicAttackState::Update(float dt)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-		ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
-		
-		const Animation* anim = animation.animator.activeAnimation();
-		
-		if(HandleAttackAnimation(entity, attackCollider))
-		{
-			ai.PopState();
-			ai.PushState(ActionState::Idle, 1.0f);
-		}
+		//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		//ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
+		//ECS::AIController& ai = ecs->GetComponentRef(AIController, entity);
+		//
+		//const Animation* anim = animation.animator.activeAnimation();
+		//
+		//if(HandleAttackAnimation(entity, attackCollider))
+		//{
+		//	ai.PopState();
+		//	ai.PushState(ActionState::Idle, 1.0f);
+		//}
 	}
 
 	void BasicAttackState::Exit()
@@ -194,13 +195,13 @@ namespace Enemy
 
 	void DeathState::Update(float dt)
 	{	
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
-		const ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-		if(animation.animator.finished())
-		{
-			can_kill = true;
-		}
+		//const ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
+		//if(animation.animator.finished())
+		//{
+		//	can_kill = true;
+		//}
 	}
 
 	RectF GetAttackRect(ECS::Entity entity, const VectorI facing_direction)
