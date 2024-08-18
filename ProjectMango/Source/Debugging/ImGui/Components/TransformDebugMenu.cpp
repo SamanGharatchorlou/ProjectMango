@@ -8,6 +8,7 @@
 
 bool s_displayRect = false;
 bool s_displayPosition = false;
+bool s_outputPosition = false;
 
 ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 {
@@ -43,6 +44,12 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			if (s_displayPosition)
 			{
 				DebugDraw::Point(transform.position, 4.0f, Colour::Green);
+			}
+
+			ImGui::Checkbox("Output Position", &s_outputPosition);
+			if(s_outputPosition)
+			{
+				DebugPrint(PriorityLevel::Log, "Position: %f, %f", transform.position.x, transform.position.y);
 			}
 
 			ImGui::TreePop();

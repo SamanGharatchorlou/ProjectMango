@@ -20,6 +20,7 @@ ECS::Component::Type DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 			ImGui::VectorText("Speed", physics.speed);
 			ImGui::VectorText("Max Speed", physics.maxSpeed);
 			ImGui::VectorText("Acceleration", physics.acceleration);
+			ImGui::Text("Is On Floor: %d", physics.onFloor);
 
 			ImGui::TreePop();
 		}

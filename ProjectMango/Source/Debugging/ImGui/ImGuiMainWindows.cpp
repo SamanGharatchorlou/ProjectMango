@@ -259,9 +259,25 @@ void DebugMenu::DoColliderWindow()
             colour.a = 100;
         }
 
-        DebugDraw::Shape(s_drawType, collider.GetRect(), colour);
+        RectF cached_rect = collider.GetRect();
+
+        cached_rect.SetTopLeft(collider.mForward);
+        DebugDraw::Shape(s_drawType, cached_rect, colour);
+        
+        cached_rect.SetTopLeft(collider.mBack);
+        DebugDraw::Shape(s_drawType, cached_rect, colour);
 	}
 }
+
+DebugMenu::GamePlayerState s_gamePlayerState;
+
+DebugMenu::GamePlayerState& DebugMenu::GetGamePlayerState()
+{
+    return s_gamePlayerState;
+}
+
+static bool s_gamePlayer = false;
+static bool s_nextFrame = false;
 
 void DebugMenu::DoGameStateWindow() 
 {
@@ -271,17 +287,32 @@ void DebugMenu::DoGameStateWindow()
     {
         GameData::Get().systemStateManager->mStates.replaceState(new GameState);
     }
+
+    ImGui::Checkbox("Game Player", &s_gamePlayerState.isActive);
+
+    if(ImGui::Button("Next Frame"))
+    {
+        s_gamePlayerState.nextFrame = true;
+    }
 }
 
-static bool s_playerInvulnerable = true;
+static bool s_drawRaycasts = false;
+
+bool DebugMenu::DrawRaycasts()
+{
+    return s_drawRaycasts;
+}
 
 void DebugMenu::DoTweakerWindow() 
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = Player::Get();
 
-    ImGui::Checkbox("Player Invulnerable", &s_playerInvulnerable);
+    if(ECS::Health* health = ecs->GetComponent(Health, entity))
+    {
+        ImGui::Checkbox("Player Invulnerable", &health->invulnerable);
+    }
 
-    ECS::Health& health = ecs->GetComponentRef(Health, entity);
-    health.invulnerable = s_playerInvulnerable;
+    ImGui::Checkbox("Draw Raycasts", &s_drawRaycasts);
+
 }

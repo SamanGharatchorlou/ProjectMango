@@ -195,6 +195,7 @@
     <ClCompile Include="Source\ECS\Components\Physics.cpp" />
     <ClCompile Include="Source\ECS\Components\PlayerController.cpp" />
     <ClCompile Include="Source\ECS\Components\TileMap.cpp" />
+    <ClCompile Include="Source\ECS\EntityCoordinator.cpp" />
     <ClCompile Include="Source\ECS\EntityManager.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\AIControllerSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\AnimationSystem.cpp" />
@@ -219,6 +220,7 @@
     <ClCompile Include="Source\Game\States\PreGameState.cpp" />
     <ClCompile Include="Source\Game\States\StartupState.cpp" />
     <ClCompile Include="Source\Game\SystemStateManager.cpp" />
+    <ClCompile Include="Source\Graphics\Raycast.cpp" />
     <ClCompile Include="Source\Graphics\Renderable.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\RenderManager.cpp" />
@@ -367,6 +369,7 @@
     <ClInclude Include="Source\Game\States\State.h" />
     <ClInclude Include="Source\Game\States\StateMachine.h" />
     <ClInclude Include="Source\Game\SystemStateManager.h" />
+    <ClInclude Include="Source\Graphics\Raycast.h" />
     <ClInclude Include="Source\Graphics\Renderable.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\RenderManager.h" />

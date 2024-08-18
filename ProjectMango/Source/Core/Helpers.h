@@ -135,3 +135,10 @@ bool PointInRect(Rect<T> rect, Vector2D<T> position)
 				position.y > rect.BotPoint()   || 
 				position.y < rect.TopPoint());
 }
+
+static VectorI IndexToGrid(int index, int grid_width)
+{
+	int index_y = (int)((float)index / grid_width);
+	int index_x = (int)(index - (index_y * grid_width));
+	return VectorI(index_x, index_y);
+}

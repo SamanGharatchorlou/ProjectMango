@@ -1,30 +1,15 @@
 #include "pch.h"
 #include "CollisionSystem.h"
 
+#include "Core/Helpers.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "ECS/ComponentArray.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "Graphics/RenderManager.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
-#include "Core/Helpers.h"
-#include "Core/Helpers.h"
-
-#include "ECS/ComponentArray.h"
 
 namespace ECS
 {
-	//static void RollForwardCollider(EntityCoordinator* ecs, ECS::Entity entity)
-	//{
-	//	Collider& collider = ecs->GetComponentRef(Collider, entity);
-
-	//	// ignore static colliders, they dont move
-	//	u32 flags = Collider::Flags::Static;
-	//	if(HasFlag(collider.mFlags, flags))
-	//		return;
-
-	//	collider.RollForwardPosition();
-	//}
-
 	static bool CanCollide(EntityCoordinator* ecs, const Collider& A_collider, bool A_isDamage, bool A_isPhysical, const Collider& B_collider)
 	{
 		ECS::Entity B_entity = B_collider.entity;
@@ -75,7 +60,7 @@ namespace ECS
 			int a = 4;
 		
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		const ComponentArray<Collider>& colliders =  ecs->GetComponents<Collider>(Component::Type::Collider);
+		const ComponentArray<Collider>& colliders = ecs->GetComponents<Collider>(Component::Type::Collider);
 		const std::vector<Collider>& collider_list = colliders.components;
 
 		const Collider& A_collider = ecs->GetComponentRef(Collider, entity);
@@ -107,6 +92,8 @@ namespace ECS
 		return false;
 	}
 
+	static const float c_colliderGap = 1.0f;
+
 	void CollisionSystem::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -115,27 +102,13 @@ namespace ECS
 		std::vector<Collider>& collider_list = colliders.components;
 		const u32 count = (u32)collider_list.size();
 
-		//// first we need to update the collider position with where the entity wants to be
-		//for (Entity entity : entities)
-		//{
-		//	Collider& collider = ecs->GetComponentRef(Collider, entity);
-		//	collider.collisions.clear();
-
-		//	// ignore static colliders, they dont move
-		//	u32 flags = Collider::Flags::Static;
-		//	if(HasFlag(collider.mFlags, flags))
-		//		return;
-
-		//	collider.RollForwardPosition();
-		//}
-
 		for (Entity entity : entities)
 		{
 			// debug break point
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 			
-			Transform& A_transform = ecs->GetComponentRef(Transform, entity);
+			//Transform& A_transform = ecs->GetComponentRef(Transform, entity);
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
 			A_collider.allowedMovement = A_collider.mForward - A_collider.mBack;
 
@@ -181,57 +154,69 @@ namespace ECS
 						Health* B_health = ecs->GetComponent(Health, B_entity);
 						B_health->ApplyDamage(*A_damage);
 					}
-					// Physical
+					// Physical, can we slide
 					else
 					{
 						VectorF velocity = A_collider.mForward - A_collider.mBack;
 						if (velocity.isZero())
 							continue;
 
-						VectorF allowed_velocity;
-
 						// roll back both colliders, then roll this one forward axis by axis to check which way it can move
 						A_collider.RollBackPosition();
 						B_collider.RollBackPosition();
 
+						RectF cached_rect = A_collider.GetRect();
+
+						cached_rect.SetTopLeft(A_collider.mForward + VectorF(2,0));
+						DebugDraw::RectOutline(cached_rect, Colour::Red);
+        
+						cached_rect.SetTopLeft(A_collider.mBack + VectorF(2,0));
+						DebugDraw::RectOutline(cached_rect, Colour::Red);
+						 
 						bool still_interacts = A_collider.intersects(B_collider);
 						if (!still_interacts)
 						{
 							// rolled back rect
 							RectF rect = A_collider.GetRect();
 
+							//VectorF allowed_velocity = VectorF::zero();
+
 							// doesnt matter on the direction, always seems to fail NOT with static colliders though
 							// only with moving colliders to be fair, maybe theres something in that
 							const RectF horizontal_rect = rect.MoveCopy(VectorF(velocity.x, 0.0f));
-							const bool can_move_horizontally = !B_collider.intersects(horizontal_rect);
-							if (can_move_horizontally)
-								allowed_velocity.x = velocity.x; 
+							const bool cannot_move_horizontally = B_collider.intersects(horizontal_rect);
+							if(cannot_move_horizontally)
+							{
+								A_collider.allowedMovement.x = 0;
+
+
+
+							}
 
 							const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
-							const bool can_move_vertically = !B_collider.intersects(vertical_rect);
-							if (can_move_vertically)
-								allowed_velocity.y = velocity.y;
+							const bool cannot_move_vertically = B_collider.intersects(vertical_rect);
+							if(cannot_move_vertically)
+							{
+								A_collider.allowedMovement.y = 0;
 
-							// now that we're allowed to move this much we cant also allow the other collider to do the same priorities?
-							// otherwise we could both move towards each other assuming we can, but really only 1 can right?
-							// so remove our roll back, we're not going that way for sure
-							A_collider.mBack = rect.Center() + allowed_velocity;
+								float b_top = B_collider.GetRect().TopPoint();
+								float a_bot = A_collider.GetRect().BotPoint();
+								if(b_top > a_bot)
+								{
+									float distance = b_top - a_bot - c_colliderGap;
+									if( distance > 0)
+										A_collider.allowedMovement.y = distance;
+								}
+							}
 						}
 						else
 						{
-							allowed_velocity = VectorF::zero();
+							// we're proably stuck here...?
+							A_collider.allowedMovement = VectorF::zero();
 						}
 
+						A_collider.RollForwardPosition();
 						B_collider.RollForwardPosition();
-
-						if(allowed_velocity.x == 0)
-							A_collider.allowedMovement.x = 0.0f;
-
-						if(allowed_velocity.y == 0)
-							A_collider.allowedMovement.y = 0.0f;
-
-						// update the position if we're allowed to move there
-						A_transform.position = A_collider.mBack + A_collider.allowedMovement;
 					}
 				}
             }

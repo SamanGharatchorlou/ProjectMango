@@ -31,7 +31,7 @@ ECS::Entity PlayerSpawn::Spawn(VectorF spawn_pos)
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	transform.position = spawn_pos;
+	transform.SetPosition(spawn_pos);
 	//transform.rect.SetBotCenter(spawn_pos);
 	return entity;
 }

@@ -18,9 +18,6 @@
 #include "ECS/EntSystems/RenderSystem.h"
 #include "ECS/EntSystems/TileMapSystem.h"
 #include "ECS/EntSystems/TransformSystem.h"
-#include "ECS/SystemManager.h"
-
-
 
 void ECS::RegisterAllComponents()
 {
@@ -32,7 +29,6 @@ void ECS::RegisterAllComponents()
 	ecs->RegisterComponent(PlayerController, 32);
 	ecs->RegisterComponent(Physics, 32);
 	ecs->RegisterComponent(Animator, 32);
-	//ecs->RegisterComponent(TileMap, 4);
 	ecs->RegisterComponent(Collider, 32);
 	ecs->RegisterComponent(AIController, 32);
 	ecs->RegisterComponent(Pathing, 32);
@@ -58,11 +54,11 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<PlayerControllerSystem>(playerInputSignature);
 
 	// Physics
-	Signature physicsSignature = ArcheBit(Transform) | ArcheBit(CharacterState) | ArcheBit(Physics);
+	Signature physicsSignature = ArcheBit(Physics);
 	ecs->RegisterSystem<PhysicsSystem>(physicsSignature);
 
 	// Animation
-	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator) | ArcheBit(CharacterState) | ArcheBit(Transform);
+	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator) | ArcheBit(Transform);
 	ecs->RegisterSystem<AnimationSystem>(animationSignature);
 
 	// Map
@@ -93,7 +89,6 @@ void ECS::RemoveAllComponents(Entity entity)
 	ecs->RemoveComponent(Physics, entity);
 	ecs->RemoveComponent(Animator, entity);
 	ecs->RemoveComponent(Level, entity);
-	//ecs->RemoveComponent(TileMap, entity);
 	ecs->RemoveComponent(Collider, entity);
 	ecs->RemoveComponent(AIController, entity);
 	ecs->RemoveComponent(Pathing, entity);

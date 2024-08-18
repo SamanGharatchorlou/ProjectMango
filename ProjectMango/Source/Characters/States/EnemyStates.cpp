@@ -19,18 +19,18 @@ namespace Enemy
 	{
 		CharacterAction* state = nullptr;
 
-		switch (type)
-		{
-		ActionStateCase(Idle)
-		ActionStateCase(Run)
-		ActionStateCase(BasicAttack)
-		ActionStateCase(Death)
-		case ActionState::Count:
-		case ActionState::None:
-		default:
-			DebugPrint(Warning, "Invalid effect type %d, could not create %d objects\n", type, count);
-			break;
-		}
+		//switch (type)
+		//{
+		//ActionStateCase(Idle)
+		//ActionStateCase(Run)
+		//ActionStateCase(BasicAttack)
+		//ActionStateCase(Death)
+		//case ActionState::Count:
+		//case ActionState::None:
+		//default:
+		//	DebugPrint(Warning, "Invalid effect type %d, could not create %d objects\n", type, count);
+		//	break;
+		//}
 
 		return state;
 	}

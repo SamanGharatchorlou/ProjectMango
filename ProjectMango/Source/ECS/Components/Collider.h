@@ -46,6 +46,8 @@ namespace ECS
 		const RectF& GetRect() const;
 		void SetRect(const RectF& rect);
 
+		//void SetSt
+
 		void RollBackPosition();
 		void RollForwardPosition();
 
@@ -59,7 +61,7 @@ namespace ECS
 
 		VectorF mForward;
 		VectorF mBack;
-		VectorF posOffset;
+		//VectorF posOffset;
 
 		std::vector<ECS::Entity> collisions;
 

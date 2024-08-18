@@ -1,20 +1,11 @@
 #include "pch.h"
 #include "PlayerControllerSystem.h"
 
+#include "Characters/Spawner.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
-#include "ECS/Components/PlayerController.h"
-#include "ECS/Components/Physics.h"
-
-#include "Characters/Spawner.h"
-#include "Characters/Player/PlayerCharacter.h"
-#include "Core/Helpers.h"
-
-#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
-
-#include "ECS/EntSystems/CollisionSystem.h"
 
 namespace ECS
 {
@@ -29,28 +20,11 @@ namespace ECS
 		{
 			PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			Physics& physics = ecs->GetComponentRef(Physics, entity);
-
-			bool respawn_player = false;
 
 			if(state.actions.HasAction())
 			{
 				CharacterAction* character_state = &state.actions.Top();
 				character_state->Update(dt);
-
-				//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
-				//{
-				//	if(HasFlag(collider->mFlags, Collider::IgnoreCollisions))
-				//	{
-				//		// remove the flag so we can make a "would it collide" check
-				//		// if so, add it back we'll end up in a bad state
-				//		RemoveFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
-				//		if(CollisionSystem::DoesColliderInteract(entity))
-				//		{
-				//			SetFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
-				//		}
-				//	}
-				//}
 
 				if( character_state->action == ActionState::Death )
 				{
@@ -79,16 +53,14 @@ namespace ECS
 				state.actions.Push( new Player::IdleState(entity) );
 			}
 
-			//// Movement Direction
-			//pc.hasMovementInput = input->isHeld(Button::Right) || input->isHeld(Button::Left) || 
-			//						input->isHeld(Button::Up) || input->isHeld(Button::Down);
+			// Movement Direction
+			const int horizontal_direction = input->isHeld(Button::Right) - input->isHeld(Button::Left);
+			//const int vertical_direction = input->isHeld(Button::Up) || input->isHeld(Button::Down);
 
-			int horizontal_direction = input->isHeld(Button::Right) - input->isHeld(Button::Left);
-			int vertical_direction = 0;
-
-			state.movementInput = VectorI(horizontal_direction, vertical_direction);
+			state.movementInput = VectorI(horizontal_direction, 0);
 		}
 
+		// kill entity with edit the entity list so do it outside the loop
 		for( u32 i = 0; i < to_respawn.size(); i++ )
 		{
 			ecs->entities.KillEntity(entities.front());

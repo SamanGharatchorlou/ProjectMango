@@ -23,6 +23,14 @@ namespace Player
 		void Resume() override;
 	};
 
+	struct JumpState : public CharacterAction
+	{
+		JumpState(ECS::Entity _entity) : CharacterAction(ActionState::Jump, _entity) { }
+
+		void Init() override;
+		void Update(float dt) override;
+	};
+
 	struct DodgeState : public CharacterAction
 	{
 		DodgeState(ECS::Entity _entity) : CharacterAction(ActionState::Dodge, _entity) { }

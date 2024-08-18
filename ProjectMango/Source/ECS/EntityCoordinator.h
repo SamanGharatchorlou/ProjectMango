@@ -78,13 +78,7 @@ namespace ECS
 			return entities.HasComponent(entity, type); 
 		}
 
-		void UpdateSystems(float dt)
-		{
-			for (size_t i = 0; i < systems.entSystems.size(); i++)
-			{
-				systems.entSystems[i]->Update(dt);
-			}
-		}
+		void UpdateSystems(float dt);
 
 		EntityManager entities;
 		ComponentManager components;

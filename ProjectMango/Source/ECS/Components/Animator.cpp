@@ -2,6 +2,7 @@
 #include "Animator.h"
 
 #include "Components.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -17,12 +18,10 @@ namespace ECS
 		int active_frame_index = animation.startIndex + frameIndex;
 
 		float x_frames = (float)animation.spriteSheet->sheetSize.x;
-
-		int index_y = (int)((float)active_frame_index / x_frames);
-		int index_x = (int)(active_frame_index - (index_y * x_frames));
+		VectorI index = IndexToGrid(active_frame_index, x_frames);
 
 		const VectorF frame_size = animation.spriteSheet->frameSize;
-		VectorF top_left = frame_size * VectorI(index_x, index_y).toFloat();
+		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
 	}
 

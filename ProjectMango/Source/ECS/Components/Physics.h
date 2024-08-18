@@ -11,6 +11,7 @@ namespace ECS
 		VectorF acceleration;
 
 		bool applyGravity;
+		bool onFloor;
 
 		void ApplyMovement(VectorF movement_direction, float dt);
 		void ApplyDrag(VectorF movement_direction, float drag_coefficient);

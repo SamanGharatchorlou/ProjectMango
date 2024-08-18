@@ -5,7 +5,15 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
 #include "Core/Helpers.h"
+#include "ECS/Components/Animator.h"
 
+
+void CharacterAction::StartAnimation()
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+	animation.StartAnimation(action);
+}
 
 ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect, float damage, const char* entity_name)
 {

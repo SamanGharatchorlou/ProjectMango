@@ -2,7 +2,6 @@
 #include "TransformSystem.h"
 
 #include "ECS/Components/Components.h"
-#include "ECS/Components/ComponentCommon.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Physics.h"
@@ -17,53 +16,41 @@ namespace ECS
  		for (Entity entity : entities)
 		{
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
-			transform.prevPosition = transform.position;
 
-			if(Physics* physics = ecs->GetComponent(Physics, entity))
+			// only move to the allowed position, otherwise roll back
+			Collider* collider = ecs->GetComponent(Collider, entity);
+			if(collider)
 			{
-				if(physics->speed.isZero())
+				u32 flags = Collider::Flags::Static;
+				if(HasFlag(collider->mFlags, flags))
 					continue;
 
-				const VectorF forward_pos = transform.position + physics->speed;
-
-				if(Collider* collider = ecs->GetComponent(Collider, entity))
-				{
-					collider->mBack = transform.position;
-					collider->mForward = forward_pos;
-				}
-
-				transform.position = forward_pos;
+				transform.position = transform.position + collider->allowedMovement;
 			}
 
-			
-			//if(Sprite* sprite = ecs->GetComponent(Sprite, entity))
-			//{
-			//	// set transform size based on the sprite
-			//	if(sprite->renderSize.isPositive())
-			//		transform.rect.SetSize(sprite->renderSize);
-			//}
+			// update the target position based on physics
+			Physics* physics = ecs->GetComponent(Physics, entity);
+			if(physics)
+			{
+				transform.targetPosition = transform.position + physics->speed;
+			}
 
-			//Collider* collider = ecs->GetComponent(Collider, entity);
-			//if (!collider)
-			//	continue;
-			//
-			//// update the transform position once its passed all collision checks
-			//transform.rect.Translate(collider->allowedMovement);
-			//collider->allowedMovement = VectorF::zero();
-			//
-			//// set the target position, the place we want to move to given collisions
-			//if(Physics* physics = ecs->GetComponent(Physics, entity))
-			//{
-			//	// update the collider position and roll it forwards to where we want to move
-			//	if (HasFlag(collider->mFlags, Collider::Flags::Static))
-			//		continue;
-	
-			//	collider->SetRect( GetColliderRect(entity) );
-			//	collider->mBack = collider->GetRect().Center();
-			//	collider->mForward = collider->mBack + physics->speed;
+			// set collider paramters
+			if(collider)
+			{
+				collider->mBack = transform.position;
+				collider->mForward = transform.targetPosition;
+				collider->RollForwardPosition();
 
-			//	collider->RollForwardPosition();
-			//}
+				if( physics )
+				{
+					if(collider->allowedMovement.x == 0)
+						physics->speed.x = 0;
+
+					if(collider->allowedMovement.y == 0)
+						physics->speed.y = 0;
+				}
+			}
 		}
 	}
 }

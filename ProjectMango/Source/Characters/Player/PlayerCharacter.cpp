@@ -31,9 +31,9 @@ ECS::Entity Player::Create()
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
-	physics.applyGravity = false;	
+	physics.applyGravity = true;	
 	physics.acceleration = VectorF(100.0f, 100.0f);
-	physics.maxSpeed = VectorF(5.0f, 5.0f);
+	physics.maxSpeed = VectorF(5.0f, 20.0f);
 
 	// Animation
 	ECS::Animator& animation = ecs->AddComponent(Animator, s_playerEntity);
@@ -45,9 +45,10 @@ ECS::Entity Player::Create()
 	sprite.renderLayer = 9;
 	
 	// Collider
-	//ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
+	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
 	//SpriteSheet& ss = animation.animator.mSpriteSheets.front();
-	//collider.SetRect(RectF(VectorF::zero(), ss.colliderSize));
+
+	collider.SetRect(RectF(VectorF::zero(), VectorF(206,66) * 2.0f));
 	
 	// PlayerController
 	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);

@@ -23,18 +23,19 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Transform)
 
+
+		VectorF targetPosition;
 		VectorF position;
-		VectorF prevPosition;
 
 		// rect of the actual object
 		//RectF rect;
 		//VectorF positionOffset;
 
-		
-		//VectorF forward;
-		//VectorF back;
-
-		//VectorF GetPos() const { return rect.Center() + positionOffset; }
+		void SetPosition(VectorF pos) 
+		{
+			targetPosition = pos;
+			position = pos;
+		}
 	};
 
 	struct Sprite

@@ -12,6 +12,8 @@ struct CharacterAction : public State
 
 	//void InitState(ECS::Entity entity_id, ActionState state) { entity = entity_id; action = state; }
 
+	void StartAnimation();
+
 	ECS::Entity entity;
 	ActionState action;
 };

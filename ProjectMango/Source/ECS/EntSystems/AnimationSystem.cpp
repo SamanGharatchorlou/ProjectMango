@@ -21,7 +21,6 @@ namespace ECS
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
 			Animator& animator = ecs->GetComponentRef(Animator, entity);
 			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);

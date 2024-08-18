@@ -45,15 +45,16 @@ void Physics::ApplyMovement(VectorF movement_direction, float dt)
 {
 	// peeeeoooowwwwwwmmmm
 	speed += movement_direction * acceleration * dt;
-	speed = speed.clamp(maxSpeed * -1.0f, maxSpeed);
+	speed.x = Maths::clamp(speed.x, maxSpeed.x * -1.0f, maxSpeed.x);
+	speed.y = Maths::clamp(speed.y, maxSpeed.y * -1.0f, maxSpeed.y);
 
-	// handle diagonal movement
-	const float total_speed = speed.length();
-	const float max_speed = maxSpeed.x;
-	const float speed_ratio = total_speed / max_speed;
-	if (speed_ratio > 1.0f)
-	{
-		speed /= speed_ratio;
-	}
+	//// handle diagonal movement
+	//const float total_speed = speed.length();
+	//const float max_speed = maxSpeed.x;
+	//const float speed_ratio = total_speed / max_speed;
+	//if (speed_ratio > 1.0f)
+	//{
+	//	speed /= speed_ratio;
+	//}
 
 }

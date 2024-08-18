@@ -13,6 +13,7 @@ enum class ActionState
 	Walk,
 	Run,
 
+	Jump,
 	Dodge,
 
 	BasicAttack,
@@ -34,7 +35,8 @@ static void initActionMap()
 	s_actionMap["Idle"] = ActionState::Idle;
 	s_actionMap["Walk"] = ActionState::Walk;
 	s_actionMap["Run"] = ActionState::Run;
-
+	
+	s_actionMap["Jump"] = ActionState::Jump;
 	s_actionMap["Dodge"] = ActionState::Dodge;
 
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
@@ -43,11 +45,11 @@ static void initActionMap()
 	s_actionMap["Death"] = ActionState::Death;
 }
 
-
-#define ActionStateCase(action) case ActionState::action: \
-								out_size = sizeof(action##State);  \
-								state = new action##State[count]; \
-								break;
+//
+//#define ActionStateCase(action) case ActionState::action: \
+//								out_size = sizeof(action##State);  \
+//								state = new action##State[count]; \
+//								break;
 
 static ActionState stringToAction(const char* action)
 {

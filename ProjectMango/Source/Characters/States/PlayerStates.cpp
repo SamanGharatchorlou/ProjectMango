@@ -22,13 +22,11 @@ using namespace Player;
 // ---------------------------------------------------------
 void IdleState::Init()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
-	animation.StartAnimation(action);
+	StartAnimation();
 }
 void IdleState::Resume()
 {
-	Init();
+	StartAnimation();
 }
 
 void IdleState::Update(float dt)
@@ -54,9 +52,14 @@ void IdleState::Update(float dt)
 	//	pc.PushState(ActionState::ChopAttack);
 	//}
 
+	if (input->isPressed(Button::Space, c_inputBuffer))
+	{
+		PushNewState(Jump);
+	}
+
 	if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
-		physics->speed.set(0.0f, 0.0f);
+		physics->speed.x = 0.0f;
 	}
 }
 
@@ -64,13 +67,11 @@ void IdleState::Update(float dt)
 // ---------------------------------------------------------
 void RunState::Init()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
-	animation.StartAnimation(action);
+	StartAnimation();
 }
 void RunState::Resume()
 {
-	Init();
+	StartAnimation();
 }
 
 void RunState::Update(float dt)
@@ -90,9 +91,15 @@ void RunState::Update(float dt)
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
 		// apply walk speed
-		physics->maxSpeed = VectorF(5.0f, 5.0f);
+		physics->maxSpeed.x = 20.0f;
 		physics->ApplyMovement(state.movementInput.toFloat(), dt);
-		physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
+		//physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
+	}
+	
+	InputManager* input = InputManager::Get();
+	if (input->isPressed(Button::Space, c_inputBuffer))
+	{
+		PushNewState(Jump);
 	}
 
 	//// Slash Attack
@@ -111,6 +118,51 @@ void RunState::Update(float dt)
 	//{
 	//	pc.PushState(ActionState::Dodge);
 	//}
+}
+
+
+// JumpState
+// ---------------------------------------------------------
+void JumpState::Init()
+{
+	StartAnimation();
+	
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		
+	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	{
+		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		// apply walk speed
+		physics->maxSpeed.y = 100.0f;
+		physics->speed.y = -30.0f;
+	}
+}
+
+void JumpState::Update(float dt)
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
+	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	{
+		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		// apply walk speed
+		physics->maxSpeed.x = 20.0f;
+		physics->ApplyMovement(state.movementInput.toFloat(), dt);
+		//physics->ApplyMovement(state.movementInput.toFloat(), dt);
+		//physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
+	}
+
+	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	{
+		if(physics->onFloor && physics->speed.y >= 0.0f)
+		{
+			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			state.actions.Pop();
+			return;
+		}
+	}
 }
 
 // DodgeState
@@ -149,6 +201,20 @@ void DodgeState::Update(float dt)
 	//	pc.PopState();
 	//}
 }
+
+//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+//{
+//	if(HasFlag(collider->mFlags, Collider::IgnoreCollisions))
+//	{
+//		// remove the flag so we can make a "would it collide" check
+//		// if so, add it back we'll end up in a bad state
+//		RemoveFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
+//		if(CollisionSystem::DoesColliderInteract(entity))
+//		{
+//			SetFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
+//		}
+//	}
+//}
 
 void DodgeState::Exit()
 {
@@ -284,10 +350,9 @@ void DeathState::Init()
 {
 	can_respawn = false;
 
+	StartAnimation();
+	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
-	animation.StartAnimation(action);
-
 	if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
 		physics->speed.set(0.0f, 0.0f);

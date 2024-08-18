@@ -49,6 +49,8 @@ namespace ECS
 	void Collider::SetRect(const RectF& rect)
 	{
 		mRect = rect;
+		mForward = mRect.TopLeft();
+		mBack = mForward;
 	}
 
 	//void Collider::SetPosition(const RectF& rect, VectorF& forward)
@@ -59,11 +61,11 @@ namespace ECS
 	//}
 	void Collider::RollBackPosition()
 	{
-		mRect.SetCenter(mBack);
+		mRect.SetTopLeft(mBack);
 	}
 	void Collider::RollForwardPosition()
 	{
-		mRect.SetCenter(mForward);
+		mRect.SetTopLeft(mForward);
 	}
 		
 	//void Collider::SetCenter(const VectorF& pos)

@@ -35,6 +35,8 @@ namespace ECS
 
 		std::vector<Layer> layers;
 
+		std::vector<ECS::Entity> colliders;
+
 		VectorF playerSpawn;
 	};
 }
