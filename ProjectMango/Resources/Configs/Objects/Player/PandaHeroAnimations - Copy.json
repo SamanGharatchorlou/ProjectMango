@@ -1,0 +1,27 @@
+{
+	"id": "PandaHero",
+	"spriteSheet": "Tiny Panda Good Version 103x33",
+	"frameSize_x" : 103,
+	"frameSize_y" : 33,
+	"animations" : [
+		{
+			"action" : "Idle",
+			"startIndex": 0,
+			"frameCount": 9,
+			"frameTime": 0.1
+		},
+		{
+			"action" : "Run",
+			"startIndex": 17,
+			"frameCount": 8,
+			"frameTime": 0.1
+		},
+		{
+			"action" : "Death",
+			"startIndex": 221,
+			"frameCount": 10,
+			"frameTime": 0.1,
+			"looping" : false
+		}
+	]
+}

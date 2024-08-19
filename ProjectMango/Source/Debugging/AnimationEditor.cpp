@@ -36,6 +36,16 @@ namespace AnimationEditor
             int pausedFrame;
         };
 
+        struct CursorSelection
+        {
+            VectorF topLeft;
+            VectorF botRight;
+
+            RectF selectionRect;
+        };
+
+        CursorSelection cursorSelection;
+
         Config configAnim;
 
 		int targetFrame = 0;
@@ -52,6 +62,7 @@ namespace AnimationEditor
                 
         FrameRateController& fc = FrameRateController::Get();
 	    RenderManager* rm = GameData::Get().renderManager;
+        InputManager* im = GameData::Get().inputManager;
 	    const VectorF window_size = GameData::Get().window->size();
         const VectorF y_spacing = window_size * VectorF(0.0f, 0.1f);
 
@@ -117,7 +128,6 @@ namespace AnimationEditor
                         DebugDraw::Line(pointA + animation.TopLeft(), pointB + animation.TopLeft(), Colour::Blue);
                     }
 
-                    InputManager* im = GameData::Get().inputManager;
                     if(im->isCursorHeld(Cursor::ButtonType::Left))
                     {
                         const VectorF cursor_pos = im->cursorPosition();
@@ -266,6 +276,7 @@ namespace AnimationEditor
                     if (ImGui::Selectable(file_names[i].c_str(), is_selected))
                     {
                         c.selected = file_names[i].c_str();
+                        c.animator = ECS::Animator();
                         AnimationReader::BuildAnimatior(c.selected.c_str(), c.animator.animations);
                     }
 
@@ -363,6 +374,37 @@ namespace AnimationEditor
 
             ImGui::TreePop();
         }
+
+        AnimationState::CursorSelection& cs = s_state.cursorSelection;
+        if(im->isCursorPressed(Cursor::Left))
+        {
+            cs.topLeft = im->cursorPosition();
+            cs.botRight.zero();
+        }
+
+        if(im->isCursorHeld(Cursor::Left))
+        {
+            cs.botRight = im->cursorPosition();
+
+            VectorF size = cs.botRight - cs.topLeft;
+            size.x = std::abs(size.x);
+            size.y = std::abs(size.y);
+
+            if(size.isPositive())
+            {
+                VectorF top_left;
+                top_left.x = std::min(cs.topLeft.x, cs.botRight.x);
+                top_left.y = std::min(cs.topLeft.y, cs.botRight.y);
+
+                cs.selectionRect = RectF(top_left, size);
+            }
+        }
+        
+        DebugDraw::RectOutline( cs.selectionRect, Colour::Green);
+        ImGui::VectorText("Position", cs.selectionRect.TopLeft());
+        ImGui::VectorText("Size", cs.selectionRect.Size());
+
+        // display relative position to the whole sprite
 
         ImGui::End();
 	}

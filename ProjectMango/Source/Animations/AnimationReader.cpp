@@ -19,6 +19,9 @@ namespace AnimationReader
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
 		JSONParser parser(full_path.c_str());
 		
+		if(!parser.document.IsObject())
+			return;
+
 		const char* id = parser.document["id"].GetString();
 
 		const char* spriteSheet_id = parser.document["spriteSheet"].GetString();
