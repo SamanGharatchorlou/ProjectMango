@@ -37,7 +37,7 @@ ECS::Entity Player::Create()
 
 	// Animation
 	ECS::Animator& animation = ecs->AddComponent(Animator, s_playerEntity);
-	AnimationReader::BuildAnimatior( "PandaHeroAnimations", animation );
+	AnimationReader::BuildAnimatior( "PandaHeroAnimations", animation.animations );
 	animation.activeAnimation = 0;
 
 	// Sprite

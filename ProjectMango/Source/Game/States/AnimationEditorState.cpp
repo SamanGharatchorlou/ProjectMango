@@ -9,8 +9,6 @@
 #include "Debugging/AnimationEditor.h"
 #include "Graphics/Texture.h"
 
-AnimationEditor::AnimationState s_state;
-
 void AnimationEditorState::Init()
 {	
 
@@ -26,9 +24,9 @@ void AnimationEditorState::HandleInput()
 
 void AnimationEditorState::Update(float dt) 
 {
-	s_state.HandleInput();
-
-	s_state.Render();
+	//s_state.HandleInput();
+	
+	AnimationEditor::Render();
 }
 
 void AnimationEditorState::Exit()

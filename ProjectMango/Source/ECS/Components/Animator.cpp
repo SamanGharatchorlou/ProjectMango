@@ -44,4 +44,9 @@ namespace ECS
 
 		DebugPrint(Warning, "No animation found for action %s", actionToString(action));
 	}
+
+	const Animation& Animator::ActiveAnimation() const
+	{
+		return animations[activeAnimation];
+	}
 }

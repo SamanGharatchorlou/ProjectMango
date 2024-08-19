@@ -14,7 +14,7 @@ namespace AnimationReader
 {	
 	using namespace rapidjson;
 
-	void BuildAnimatior(const char* file, ECS::Animator& animator)
+	void BuildAnimatior(const char* file, std::vector<ECS::Animation>& animations)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
 		JSONParser parser(full_path.c_str());
@@ -40,10 +40,10 @@ namespace AnimationReader
 			s_spriteSheets[id] = spriteSheet;
 		}
 
-		Value& animations = parser.document["animations"];
-		for( u32 i = 0; i < animations.Size(); i++ )
+		Value& anims = parser.document["animations"];
+		for( u32 i = 0; i < anims.Size(); i++ )
 		{
-			Value& animation = animations[i];
+			Value& animation = anims[i];
 
 			const char* action = animation["action"].GetString();
 			int start_index = animation["startIndex"].GetInt();
@@ -51,8 +51,8 @@ namespace AnimationReader
 			float frame_time = animation["frameTime"].GetFloat();
 			float looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
 
-			animator.animations.push_back(ECS::Animation());
-			ECS::Animation& anim = animator.animations.back();
+			animations.push_back(ECS::Animation());
+			ECS::Animation& anim =animations.back();
 
 			anim.action = stringToAction(action);
 			anim.frameCount = frame_count;
