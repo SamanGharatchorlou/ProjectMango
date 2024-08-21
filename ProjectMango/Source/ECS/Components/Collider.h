@@ -24,9 +24,10 @@ namespace ECS
 			// use to enable/disable collisions
 			IgnoreAll = 1 << 6,
 			IgnoreCollisions = 1 << 7,
+			IgnoreDamage = 1 << 8,
 
 			// to check for collisions without any affect
-			GhostCollider = 1 << 8
+			GhostCollider = 1 << 9
 		};
 
 		enum RuntimeFlags 

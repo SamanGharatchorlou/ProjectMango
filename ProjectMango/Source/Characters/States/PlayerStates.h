@@ -31,9 +31,9 @@ namespace Player
 		void Update(float dt) override;
 	};
 
-	struct DodgeState : public CharacterAction
+	struct RollState : public CharacterAction
 	{
-		DodgeState(ECS::Entity _entity) : CharacterAction(ActionState::Dodge, _entity) { }
+		RollState(ECS::Entity _entity) : CharacterAction(ActionState::Roll, _entity) { }
 
 		void Init() override;
 		void Update(float dt) override;

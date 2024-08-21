@@ -15,6 +15,13 @@ void CharacterAction::StartAnimation()
 	animation.StartAnimation(action);
 }
 
+void CharacterAction::StartAnimation(ActionState action_state)
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+	animation.StartAnimation(action_state);
+}
+
 ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect, float damage, const char* entity_name)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;

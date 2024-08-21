@@ -34,7 +34,13 @@ void GameSetup::initGameData(GameData& game_data)
 	ConfigManager::Get()->load();
 
 	Window* window = initSDLWindow();
+
+	VectorF scale = window->size() / (VectorF(1024, 1024));
+	Renderer::Get()->setScale(game_scale);
+
 	game_data.init(window);
+
+
 
 	GameSettingsConfig* gs = ConfigManager::Get()->getConfig<GameSettingsConfig>("GameSettings");
 

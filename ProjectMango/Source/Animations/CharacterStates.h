@@ -14,7 +14,11 @@ enum class ActionState
 	Run,
 
 	Jump,
-	Dodge,
+
+	JumpMovingUp,
+	JumpMovingDown,
+
+	Roll,
 
 	BasicAttack,
 	ChopAttack,
@@ -37,7 +41,10 @@ static void initActionMap()
 	s_actionMap["Run"] = ActionState::Run;
 	
 	s_actionMap["Jump"] = ActionState::Jump;
-	s_actionMap["Dodge"] = ActionState::Dodge;
+	s_actionMap["JumpMovingUp"] = ActionState::JumpMovingUp;
+	s_actionMap["JumpMovingDown"] = ActionState::JumpMovingDown;
+
+	s_actionMap["Roll"] = ActionState::Roll;
 
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
 	s_actionMap["ChopAttack"] = ActionState::ChopAttack;

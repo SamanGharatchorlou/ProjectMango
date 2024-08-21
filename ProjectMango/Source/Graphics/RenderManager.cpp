@@ -51,6 +51,14 @@ void RenderManager::render()
 {
 	SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
 
+	// SDL_GetRendererInfo
+
+	SDL_RenderSetLogicalSize(renderer, 512, 512);
+	Renderer::Get()->setScale(0.5);
+	//VectorF scale = 
+
+	//SDL_RenderSetScale(renderer, 0.5, 0.5);
+
 	// clear screen
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);

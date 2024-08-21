@@ -293,7 +293,7 @@ namespace AnimationEditor
             {
                 ImGui::PushID("config selector");
 
-                const char* select_animation_string = actionToString(c.animator.ActiveAnimation().action).c_str();
+                const char* select_animation_string = actionToString(c.animator.GetActiveAnimation().action).c_str();
                 if (ImGui::BeginCombo("Select Animation", select_animation_string))
                 {
                     for( u32 i = 0; i < c.animator.animations.size(); i++ )
@@ -323,7 +323,7 @@ namespace AnimationEditor
                     c.animator.frameIndex--;
                     if(c.animator.frameIndex < 0)
                     {
-                        const ECS::Animation& active_animation = c.animator.ActiveAnimation();
+                        const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
                         c.animator.frameIndex = active_animation.frameCount - 1;
                     }
 			    }
@@ -345,7 +345,7 @@ namespace AnimationEditor
                     c.animator.state = TimeState::Paused;
 
                     c.animator.frameIndex++;
-                    const ECS::Animation& active_animation = c.animator.ActiveAnimation();
+                    const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
                     c.animator.frameIndex = c.animator.frameIndex % active_animation.frameCount;
 			    }
 
@@ -354,7 +354,7 @@ namespace AnimationEditor
                 ECS::Sprite sprite;
                 c.animator.SetActiveSpriteFrame(sprite);
 
-                const ECS::Animation& selected_animation = c.animator.ActiveAnimation();
+                const ECS::Animation& selected_animation = c.animator.GetActiveAnimation();
 
 			    VectorF dim = selected_animation.spriteSheet->texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet->sheetSize.toFloat();

@@ -22,6 +22,8 @@
 #include "Game/SystemStateManager.h"
 #include "Game/States/AnimationEditorState.h"
 
+#include "Characters/Player/PlayerCharacter.h"
+
 void GameState::Init()
 {
 	ECS::RegisterAllComponents();
@@ -35,7 +37,7 @@ void GameState::Init()
 
 	activeLevel = entity;
 
-	ECS::Entity player = PlayerSpawn::Spawn( level_1.playerSpawn );
+	ECS::Entity player = Player::Spawn();
 	//ECS::Entity enemy = EnemySpawn::Spawn(tile_map);
 
 	//// debugging

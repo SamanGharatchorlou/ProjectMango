@@ -164,22 +164,12 @@ namespace ECS
 						// roll back both colliders, then roll this one forward axis by axis to check which way it can move
 						A_collider.RollBackPosition();
 						B_collider.RollBackPosition();
-
-						RectF cached_rect = A_collider.GetRect();
-
-						cached_rect.SetTopLeft(A_collider.mForward + VectorF(2,0));
-						DebugDraw::RectOutline(cached_rect, Colour::Red);
-        
-						cached_rect.SetTopLeft(A_collider.mBack + VectorF(2,0));
-						DebugDraw::RectOutline(cached_rect, Colour::Red);
 						 
 						bool still_interacts = A_collider.intersects(B_collider);
 						if (!still_interacts)
 						{
 							// rolled back rect
 							RectF rect = A_collider.GetRect();
-
-							//VectorF allowed_velocity = VectorF::zero();
 
 							// doesnt matter on the direction, always seems to fail NOT with static colliders though
 							// only with moving colliders to be fair, maybe theres something in that

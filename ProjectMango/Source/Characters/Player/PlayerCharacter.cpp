@@ -1,17 +1,18 @@
 #include "pch.h"
 #include "PlayerCharacter.h"
 
-#include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 
+#include "Animations/AnimationReader.h"
+#include "Characters/States/PlayerStates.h"
+#include "ECS/Components/Animator.h"
+#include "ECS/Components/Level.h"
+#include "ECS/Components/Physics.h"
+#include "ECS/Components/PlayerController.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/ConfigManager.h"
-#include "Characters/States/PlayerStates.h"
-#include "ECS/Components/PlayerController.h"
-#include "ECS/Components/Physics.h"
-#include "ECS/Components/Animator.h"
-#include "Animations/AnimationReader.h"
 
 ECS::Entity s_playerEntity = ECS::EntityInvalid;
 
@@ -20,14 +21,22 @@ ECS::Entity Player::Get()
 	return s_playerEntity;
 }
 
-ECS::Entity Player::Create()
+ECS::Entity Player::Spawn()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
+	ecs->entities.KillEntity(s_playerEntity);
 	s_playerEntity = ecs->CreateEntity("Player");
+
+	VectorF spawn_pos;
+	ECS::Entity level_entity = ECS::Level::GetActive();
+	if (ECS::Level* level = ecs->GetComponent(Level, level_entity))
+		spawn_pos = level->playerSpawn;
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
+	transform.SetPosition(spawn_pos);
+	transform.size = VectorF(412, 122);
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
@@ -46,23 +55,13 @@ ECS::Entity Player::Create()
 	
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
-	//SpriteSheet& ss = animation.animator.mSpriteSheets.front();
-
-	collider.SetRect(RectF(VectorF::zero(), VectorF(206,66) * 2.0f));
+	collider.SetRect(RectF(VectorF::zero(), transform.size));
 	
 	// PlayerController
 	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);
-
-	//std::vector<ActionState> actions;
-	//for( u32 i = 0; i < (u32)ActionState::Count; i++ )
-	//{
-	//	actions.push_back((ActionState)i);
-	//}
-	//player_controller.statePool.load(actions, 4);
 	
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
-	//character_state.facingDirection = VectorI(0,1); // facing down
 	
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, s_playerEntity);

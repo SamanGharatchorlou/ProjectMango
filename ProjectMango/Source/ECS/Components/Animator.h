@@ -47,6 +47,6 @@ namespace ECS
 		void SetActiveSpriteFrame(Sprite& sprite);
 		void StartAnimation(ActionState action);
 
-		const Animation& ActiveAnimation() const;
+		const Animation& GetActiveAnimation() const;
 	};
 }

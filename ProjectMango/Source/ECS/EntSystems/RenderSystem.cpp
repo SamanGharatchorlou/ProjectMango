@@ -5,8 +5,11 @@
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/RenderManager.h"
 #include "ECS/Components/ComponentCommon.h"
+#include "System/Window.h"
 
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
+
+// all sizes are relative to a 1024 size screen
 
 namespace ECS
 {
@@ -15,6 +18,10 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		RenderManager* renderer = GameData::Get().renderManager;
 
+		const VectorF window_size = GameData::Get().window->size();
+		const VectorF scale = VectorF(1.0f, 1.0f); //window_size / (VectorF(1024, 1024));
+
+
  		for (Entity entity : entities)
 		{
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
@@ -22,7 +29,7 @@ namespace ECS
 			if(!sprite.texture)
 				continue;
 
-			const RectF renderRect(transform.position, VectorF(206,66) * 2.0f);
+			const RectF renderRect(transform.position, transform.size * scale); // VectorF(206, 66) * 2.0f);
 
 			RenderPack pack(sprite.texture, renderRect, sprite.renderLayer);
 			pack.subRect = sprite.subRect;

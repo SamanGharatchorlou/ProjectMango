@@ -38,5 +38,7 @@ namespace ECS
 		std::vector<ECS::Entity> colliders;
 
 		VectorF playerSpawn;
+
+		static const Entity GetActive();
 	};
 }

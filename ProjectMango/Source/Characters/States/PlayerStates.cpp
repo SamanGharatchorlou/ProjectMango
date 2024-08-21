@@ -102,6 +102,11 @@ void RunState::Update(float dt)
 		PushNewState(Jump);
 	}
 
+	if (input->isPressed(Button::Shift, c_inputBuffer))
+	{
+		PushNewState(Roll);
+	}
+
 	//// Slash Attack
 	//InputManager* input = InputManager::Get();
 	//if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer))
@@ -125,7 +130,7 @@ void RunState::Update(float dt)
 // ---------------------------------------------------------
 void JumpState::Init()
 {
-	StartAnimation();
+	StartAnimation(ActionState::JumpMovingUp);
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		
@@ -142,34 +147,47 @@ void JumpState::Init()
 void JumpState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 
-	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	// apply walk speed
+	physics.maxSpeed.x = 15.0f;
+	physics.ApplyMovement(state.movementInput.toFloat(), dt);
+
+	// rapidly slow upwards movement while not holding space
+	InputManager* input = InputManager::Get();
+	if (!input->isHeld(Button::Space))
 	{
-		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-
-		// apply walk speed
-		physics->maxSpeed.x = 20.0f;
-		physics->ApplyMovement(state.movementInput.toFloat(), dt);
-		//physics->ApplyMovement(state.movementInput.toFloat(), dt);
-		//physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
+		if (physics.speed.y < 0)
+		{
+			physics.speed.y -= physics.speed.y * 8.0f * dt;
+		}
 	}
 
-	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	// moving downwards
+	if (physics.speed.y >= 0.0f)
 	{
-		if(physics->onFloor && physics->speed.y >= 0.0f)
+		ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+		if (animation.GetActiveAnimation().action == ActionState::JumpMovingUp)
 		{
-			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			StartAnimation(ActionState::JumpMovingDown);
+		}
+
+		if (physics.onFloor)
+		{
 			state.actions.Pop();
 			return;
 		}
 	}
 }
 
-// DodgeState
+// RollState
 // ---------------------------------------------------------
-void DodgeState::Init()
+void RollState::Init()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
+	StartAnimation(ActionState::Roll);
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics,entity))
 	{
@@ -185,7 +203,7 @@ void DodgeState::Init()
 	}
 }
 
-void DodgeState::Update(float dt)
+void RollState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
@@ -194,12 +212,13 @@ void DodgeState::Update(float dt)
 		physics->ApplyDrag(VectorF::zero(), 0.08f);
 	}
 	
-	//ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-	//if(animation.animator.finished())
-	//{
-	//	ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-	//	pc.PopState();
-	//}
+	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+
+	if (animation.loopCount > 0)
+	{
+		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		state.actions.Pop();
+	}
 }
 
 //if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
@@ -216,7 +235,7 @@ void DodgeState::Update(float dt)
 //	}
 //}
 
-void DodgeState::Exit()
+void RollState::Exit()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))

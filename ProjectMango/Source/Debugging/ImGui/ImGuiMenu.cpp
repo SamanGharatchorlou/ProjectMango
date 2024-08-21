@@ -35,7 +35,7 @@ namespace DebugMenu
 		ImGui_ImplSDLRenderer2_Init(renderer);
 
 		// Initialize ImGuiSDL by calling Initialize with your SDL_Renderer, and with window size. This will also take care of setting up the ImGui viewport.
-		ImGuiSDL::Initialize(renderer, 800, 600);
+		//ImGuiSDL::Initialize(renderer, 1024, 1024);
 	}
 
 
@@ -108,6 +108,10 @@ namespace DebugMenu
 		//ImGui::ShowDemoWindow();
 
 		ImGui::Render();
+
+		SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
+		ImGuiIO& io = ImGui::GetIO();
+		//SDL_RenderSetScale(renderer, 0.5f, 0.5f);// io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
 		ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 	}
 }

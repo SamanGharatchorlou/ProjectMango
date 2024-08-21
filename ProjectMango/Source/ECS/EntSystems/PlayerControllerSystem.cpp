@@ -6,6 +6,7 @@
 #include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
+#include "Characters/Player/PlayerCharacter.h"
 
 namespace ECS
 {
@@ -33,7 +34,8 @@ namespace ECS
 					{
 						//respawn = true;
 						to_respawn.push_back(entity);
-						continue;
+						Player::Spawn();
+						return;
 					}
 				}
 				else
@@ -63,8 +65,8 @@ namespace ECS
 		// kill entity with edit the entity list so do it outside the loop
 		for( u32 i = 0; i < to_respawn.size(); i++ )
 		{
-			ecs->entities.KillEntity(entities.front());
-			PlayerSpawn::Spawn();
+			//ecs->entities.KillEntity(entities.front());
+			//Player::Spawn();
 		}
 		to_respawn.clear();
 	} 

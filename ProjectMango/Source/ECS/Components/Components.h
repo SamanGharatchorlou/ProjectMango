@@ -23,10 +23,10 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Transform)
 
-
 		VectorF targetPosition;
 		VectorF position;
 
+		VectorF size;
 		// rect of the actual object
 		//RectF rect;
 		//VectorF positionOffset;

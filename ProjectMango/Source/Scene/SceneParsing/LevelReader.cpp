@@ -52,8 +52,8 @@ namespace Level
 		Value& levels = parser.document["levels"];
 		Value& numbered_level = levels[level_number - 1];
 
-		float level_px_width = numbered_level["pxWid"].GetFloat();
-		float level_px_height = numbered_level["pxHei"].GetFloat();
+		int level_px_width = numbered_level["pxWid"].GetInt();
+		int level_px_height = numbered_level["pxHei"].GetInt();
 		
 		int grid_length = parser.document["defaultGridSize"].GetInt();
 		int level_width = level_px_width / grid_length;
@@ -61,8 +61,8 @@ namespace Level
 
 		const VectorF window_size = GameData::Get().window->size();
 
-		const float level_to_window_x = window_size.x / level_px_width;
-		const float level_to_window_y = window_size.y / level_px_height;
+		const float level_to_window_x = window_size.x / (float)level_px_width;
+		const float level_to_window_y = window_size.y / (float)level_px_height;
 		VectorF level_to_window(level_to_window_x, level_to_window_y);
 
 		Value& layers = numbered_level["layerInstances"];

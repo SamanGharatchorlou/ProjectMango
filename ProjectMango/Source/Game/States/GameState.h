@@ -14,7 +14,7 @@ public:
 	void Resume() override;
 	void Exit() override;
 	
-	ECS::Entity activeLevel;
+	ECS::Entity activeLevel = ECS::EntityInvalid;
 
 private:
 	void initCamera();

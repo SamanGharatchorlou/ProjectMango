@@ -8,6 +8,9 @@ namespace ECS
 {
 	void EntityManager::KillEntity(Entity entity)
 	{
+		if (entity == EntityInvalid)
+			return;
+
 		RemoveAllComponents(entity);
 		archetypes[entity] = ArchetypeInvalid;
 

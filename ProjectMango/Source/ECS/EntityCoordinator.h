@@ -33,6 +33,7 @@ namespace ECS
 		template<class T>
 		T& AddComponent(Entity entity, Component::Type type)
 		{
+			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
 			T& comp = components.AddComponent<T>(entity, type);
 			comp.entity = entity;
 
@@ -47,10 +48,11 @@ namespace ECS
 		template<class T>
 		void RemoveComponent(Entity entity, Component::Type type)
 		{
+			if (entity == EntityInvalid)
+				return;
+
 			if(const T* comp_ptr = GetComponent<T>(entity, type))
 			{
-				//Archetype archetype = entities.GetAchetype(entity);
-
 				components.RemoveComponent<T>(entity, type);
 				entities.RemoveComponent(entity, type);
 
@@ -59,12 +61,16 @@ namespace ECS
 		}
 
 		template<class T>
-		T& GetComponentRef(Entity entity, Component::Type type) { return components.GetComponent<T>(entity, type); }
+		T& GetComponentRef(Entity entity, Component::Type type) 
+		{
+			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
+			return components.GetComponent<T>(entity, type); 
+		}
 
 		template<class T>
 		T* GetComponent(Entity entity, Component::Type type) 
 		{ 
-			if(entities.HasComponent(entity, type))
+			if(entity != EntityInvalid && entities.HasComponent(entity, type))
 				return &components.GetComponent<T>(entity, type); 
 			
 			return nullptr;
@@ -75,7 +81,7 @@ namespace ECS
 
 		bool HasComponent(Entity entity, Component::Type type) 
 		{ 
-			return entities.HasComponent(entity, type); 
+			return entity != EntityInvalid && entities.HasComponent(entity, type);
 		}
 
 		void UpdateSystems(float dt);

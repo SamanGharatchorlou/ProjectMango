@@ -42,7 +42,7 @@ namespace ECS
 				{
 					if(character_state->actions.Top().action == ActionState::Jump)
 					{
-						multiplyer = 5.0f;
+						multiplyer = 7.0f;
 
 						if(physics.speed.y > 0.0f)
 							multiplyer *= 1.5f;

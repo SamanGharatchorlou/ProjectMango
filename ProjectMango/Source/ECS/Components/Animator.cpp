@@ -17,7 +17,7 @@ namespace ECS
 
 		int active_frame_index = animation.startIndex + frameIndex;
 
-		float x_frames = (float)animation.spriteSheet->sheetSize.x;
+		int x_frames = animation.spriteSheet->sheetSize.x;
 		VectorI index = IndexToGrid(active_frame_index, x_frames);
 
 		const VectorF frame_size = animation.spriteSheet->frameSize;
@@ -45,7 +45,7 @@ namespace ECS
 		DebugPrint(Warning, "No animation found for action %s", actionToString(action));
 	}
 
-	const Animation& Animator::ActiveAnimation() const
+	const Animation& Animator::GetActiveAnimation() const
 	{
 		return animations[activeAnimation];
 	}

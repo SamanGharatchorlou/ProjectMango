@@ -3,25 +3,44 @@
 	"spriteSheet": "Tiny Panda Good Version 103x33",
 	"frameSize_x" : 103,
 	"frameSize_y" : 33,
-	"animations" : [
+	"animations": [
 		{
-			"action" : "Idle",
+			"action": "Idle",
 			"startIndex": 0,
 			"frameCount": 9,
 			"frameTime": 0.1
 		},
 		{
-			"action" : "Run",
+			"action": "Run",
 			"startIndex": 17,
 			"frameCount": 8,
 			"frameTime": 0.1
 		},
 		{
-			"action" : "Death",
+			"action": "Death",
 			"startIndex": 221,
 			"frameCount": 10,
 			"frameTime": 0.1,
-			"looping" : false
+			"looping": false
+		},
+		{
+			"action": "JumpMovingUp",
+			"startIndex": 68,
+			"frameCount": 4,
+			"frameTime": 0.1
+		},
+		{
+			"action": "JumpMovingDown",
+			"startIndex": 85,
+			"frameCount": 4,
+			"frameTime": 0.1
+		},
+		{
+			"action": "Roll",
+			"startIndex": 34,
+			"frameCount": 4,
+			"frameTime": 0.1,
+			"looping": false
 		}
 	]
 }
