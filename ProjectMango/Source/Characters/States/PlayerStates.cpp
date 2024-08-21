@@ -88,13 +88,17 @@ void RunState::Update(float dt)
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
-		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-
 		// apply walk speed
 		physics->maxSpeed.x = 20.0f;
 		physics->ApplyMovement(state.movementInput.toFloat(), dt);
 		//physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
 	}
+
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	if(state.movementInput.x > 0)
+		sprite.flip = SDL_FLIP_NONE;
+	else
+		sprite.flip = SDL_FLIP_HORIZONTAL;
 	
 	InputManager* input = InputManager::Get();
 	if (input->isPressed(Button::Space, c_inputBuffer))
@@ -199,7 +203,7 @@ void RollState::Init()
 
 	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
 	{
-		SetFlag(collider->mFlags, (u32)ECS::Collider::IgnoreAll);
+		SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
 	}
 }
 
@@ -240,8 +244,8 @@ void RollState::Exit()
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
 	{
-		RemoveFlag(collider->mFlags, (u32)ECS::Collider::IgnoreAll);
-		SetFlag(collider->mFlags, (u32)ECS::Collider::IgnoreCollisions);
+		RemoveFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
+		SetFlag(collider->flags, (u32)ECS::Collider::IgnoreCollisions);
 	}
 }
 

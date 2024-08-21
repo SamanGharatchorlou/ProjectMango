@@ -13,6 +13,7 @@
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntSystems/AnimationSystem.h"
+#include "ECS/Components/Collider.h"
 
 #include "Core/Helpers.h"
 #include "imgui.h"
@@ -32,6 +33,8 @@ namespace AnimationEditor
             StringBuffer64 selected;
             ECS::Animator animator;
 
+            ECS::Sprite sprite;
+
             TimeState state;
             int pausedFrame;
         };
@@ -42,6 +45,9 @@ namespace AnimationEditor
             VectorF botRight;
 
             RectF selectionRect;
+
+            bool movingSelection = false;
+            VectorF cursorOffset;
         };
 
         CursorSelection cursorSelection;
@@ -259,11 +265,11 @@ namespace AnimationEditor
             ImGui::TreePop();
         }
 
-        
+        VectorF relative_selection_top_left;
+
+        AnimationState::Config& c = s_state.configAnim;
         if( ImGui::TreeNode("Config Reader") )
         {
-            AnimationState::Config& c = s_state.configAnim;
-
             if (ImGui::BeginCombo("Build Animator From Config", c.selected.c_str()))
             {
                 FileManager* fm = FileManager::Get();
@@ -349,10 +355,20 @@ namespace AnimationEditor
                     c.animator.frameIndex = c.animator.frameIndex % active_animation.frameCount;
 			    }
 
+
+
                 ECS::AnimationSystem::UpdateAnimator(c.animator, fc.delta()); 		
 
-                ECS::Sprite sprite;
-                c.animator.SetActiveSpriteFrame(sprite);
+                c.animator.SetActiveSpriteFrame(c.sprite);
+
+                if(ImGui::Button("Flip Sprite"))
+                {
+                    SDL_RendererFlip flip = c.sprite.flip;
+                    if(flip == SDL_FLIP_HORIZONTAL)
+                        c.sprite.flip = SDL_FLIP_NONE;
+                    else
+                        c.sprite.flip = SDL_FLIP_HORIZONTAL;
+                }
 
                 const ECS::Animation& selected_animation = c.animator.GetActiveAnimation();
 
@@ -363,11 +379,21 @@ namespace AnimationEditor
                 RectF renderFrameRect(draw_point_TL, frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(sprite.texture, renderFrameRect, 1);
-                frame_pack.subRect = sprite.subRect;
+                RenderPack frame_pack(c.sprite.texture, renderFrameRect, 1);
+                frame_pack.subRect = c.sprite.subRect;
+                frame_pack.flip = c.sprite.flip;
+
+                const RectF& selection_rect = s_state.cursorSelection.selectionRect;
+                if(!selection_rect.Size().isZero())
+                {
+                    float flip_x = selection_rect.Center().x - draw_point_TL.x;
+                    frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
+                }
+
 			    rm->AddRenderPacket(frame_pack);
 
                 DebugDraw::RectOutline(renderFrameRect, Colour::Yellow);
+                relative_selection_top_left = renderFrameRect.TopLeft();
             
                 ImGui::PopID();
             }
@@ -399,12 +425,65 @@ namespace AnimationEditor
                 cs.selectionRect = RectF(top_left, size);
             }
         }
-        
-        DebugDraw::RectOutline( cs.selectionRect, Colour::Green);
-        ImGui::VectorText("Position", cs.selectionRect.TopLeft());
-        ImGui::VectorText("Size", cs.selectionRect.Size());
 
-        // display relative position to the whole sprite
+        if(im->isCursorPressed(Cursor::Right))
+        {
+            cs.topLeft.zero();
+            cs.botRight.zero();
+            cs.selectionRect.Zero();
+        }
+
+        if(im->isHeld(Button::Shift))
+        {
+            const VectorF cursor_pos = im->cursorPosition();
+            if(!cs.movingSelection)
+            {
+                ECS::Collider selection;
+                selection.SetRect(cs.selectionRect);
+
+                if(selection.contains(cursor_pos))
+                {
+                    cs.movingSelection = true;
+                    cs.cursorOffset = cs.selectionRect.TopLeft() - cursor_pos;
+                }
+            }
+
+            if(cs.movingSelection)
+            {
+                cs.selectionRect.SetTopLeft( cursor_pos + cs.cursorOffset );
+            }
+        }
+        else
+        {
+            cs.movingSelection = false;
+            cs.cursorOffset = VectorF::zero();
+        }
+        
+        const RectF& selection_rect = s_state.cursorSelection.selectionRect;
+        if(!selection_rect.Size().isZero())
+        {
+            DebugDraw::RectOutline( selection_rect, Colour::Green);
+            ImGui::VectorText("Absolute Position", selection_rect.TopLeft());
+            ImGui::VectorText("Absolute Size", selection_rect.Size());
+
+            // display relative position to the whole sprite
+            if( c.animator.animations.size() > 0 )
+            {
+                const ECS::Animation& selected_animation = s_state.configAnim.animator.GetActiveAnimation();
+                const VectorF dim = selected_animation.spriteSheet->texture->originalDimentions;
+                const VectorF real_frame_size = dim / selected_animation.spriteSheet->sheetSize.toFloat(); 
+                const VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+
+                VectorF relative_pos = (selection_rect.TopLeft() - relative_selection_top_left) / frame_texture_size;
+                VectorF relative_size = selection_rect.Size() / frame_texture_size;
+
+                ImGui::VectorText("Relative Position", relative_pos);
+                ImGui::VectorText("Relative Size", relative_size);
+                            
+                float flip_x = selection_rect.Center().x - draw_point_TL.x;
+                ImGui::VectorText("Relative Center", VectorF(flip_x / frame_texture_size.x, 0.5f) );
+            }
+        }
 
         ImGui::End();
 	}

@@ -5,13 +5,14 @@
 #include "Graphics/RenderManager.h"
 #include "Input/InputManager.h"
 
-#include "imgui.h"
 #include "Debugging/AnimationEditor.h"
 #include "Graphics/Texture.h"
 
+#include "Debugging/ImGui/ImGuiMenu.h"
+
 void AnimationEditorState::Init()
 {	
-
+	DebugMenu::OpenEditorWindow();
 }
 
 void AnimationEditorState::HandleInput()

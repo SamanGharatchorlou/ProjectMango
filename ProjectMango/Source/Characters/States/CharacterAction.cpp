@@ -35,7 +35,7 @@ ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect,
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, attack_collider);
 	collider.SetRect(collider_rect);
-	collider.mFlags |= ECS::Collider::Flags::IgnoreAll;
+	collider.flags |= ECS::Collider::Flags::IgnoreAll;
 
 	// Damage
 	ECS::Damage& damage_comp = ecs->AddComponent(Damage, attack_collider);

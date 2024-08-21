@@ -29,14 +29,14 @@ namespace ECS
 			if(!sprite.texture)
 				continue;
 
-			const RectF renderRect(transform.position, transform.size * scale); // VectorF(206, 66) * 2.0f);
+			const RectF renderRect(transform.position, transform.size);
 
 			RenderPack pack(sprite.texture, renderRect, sprite.renderLayer);
 			pack.subRect = sprite.subRect;
 			pack.flip = sprite.flip;
-			pack.flipPoint = ECS::GetObjectRect(entity).Center() - renderRect.TopLeft();
+			pack.flipPoint = sprite.flipPoint * renderRect.Size();
 
-			float target_flip = renderRect.Height() * 0.5f;
+			//float target_flip = renderRect.Height() * 0.5f;
 
 			renderer->AddRenderPacket(pack);
 

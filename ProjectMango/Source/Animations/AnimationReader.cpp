@@ -46,23 +46,40 @@ namespace AnimationReader
 		Value& anims = parser.document["animations"];
 		for( u32 i = 0; i < anims.Size(); i++ )
 		{
-			Value& animation = anims[i];
-
-			const char* action = animation["action"].GetString();
-			int start_index = animation["startIndex"].GetInt();
-			int frame_count = animation["frameCount"].GetInt();
-			float frame_time = animation["frameTime"].GetFloat();
-			float looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
-
 			animations.push_back(ECS::Animation());
 			ECS::Animation& anim =animations.back();
 
-			anim.action = stringToAction(action);
-			anim.frameCount = frame_count;
-			anim.frameTime = frame_time;
-			anim.startIndex = start_index;
+			Value& animation = anims[i];
 			anim.spriteSheet = &s_spriteSheets[id];
-			anim.looping = looping;
+			anim.action = stringToAction(animation["action"].GetString());
+			anim.startIndex = animation["startIndex"].GetInt();
+			anim.frameCount = animation["frameCount"].GetInt();
+			anim.frameTime = animation["frameTime"].GetFloat();
+			anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
+
+			anim.colliderPos = VectorF::zero();
+			if(animation.HasMember("collider_pos"))
+			{
+				Value& relative_pos = animation["collider_pos"];
+
+				anim.colliderPos.x = relative_pos[0].GetFloat();
+				anim.colliderPos.y = relative_pos[1].GetFloat();
+			}
+
+			anim.colliderSize = VectorF(1,1);
+			if(animation.HasMember("collider_size"))
+			{
+				Value& relative_size = animation["collider_size"];
+
+				anim.colliderSize.x = relative_size[0].GetFloat();
+				anim.colliderSize.y = relative_size[1].GetFloat();
+			}
+
+			anim.flipPointX = 0.5f;
+			if(animation.HasMember("flip_point_x"))
+			{
+				anim.flipPointX = animation["flip_point_x"].GetFloat();
+			}
 		}
 	}
 }

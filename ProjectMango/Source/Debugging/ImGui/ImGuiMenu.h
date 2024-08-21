@@ -8,5 +8,7 @@ namespace DebugMenu
 	void Init();
 	bool HandleInput(SDL_Event& event);
 	void Draw();
+
+	void OpenEditorWindow();
 }
 #endif

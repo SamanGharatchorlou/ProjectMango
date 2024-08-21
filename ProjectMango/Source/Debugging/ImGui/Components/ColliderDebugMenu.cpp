@@ -15,14 +15,14 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 		if (ImGui::TreeNode("Component Data"))
 		{
-			ImGui::DisplayRect(collider.GetRect());
+			ImGui::DisplayRect(collider.rect);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Display"))
 		{
-			DebugDraw::RectOutline(collider.GetRect(), Colour::Purple);
+			DebugDraw::RectOutline(collider.rect, Colour::Purple);
 
 			ImGui::TreePop();
 		}

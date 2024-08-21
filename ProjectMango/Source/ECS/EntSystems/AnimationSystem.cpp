@@ -58,6 +58,13 @@ namespace ECS
 			UpdateAnimator(animator, dt);
 			animator.SetActiveSpriteFrame(sprite);
 
+			if( Collider* collider = ecs->GetComponent(Collider, entity) )
+			{
+				const Animation& animation = animator.GetActiveAnimation();
+				if(animation.colliderPos.isPositive() && animation.colliderSize.isPositive())
+					collider->SetRelativeRect(animation.colliderPos, animation.colliderSize);
+			}
+
 			//sprite.
 
 			//bool using_playlist = DebugMenu::UsingPlaylist(entity);

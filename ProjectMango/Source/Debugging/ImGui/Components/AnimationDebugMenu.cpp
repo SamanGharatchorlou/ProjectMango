@@ -330,7 +330,7 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
 		const ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		const RectF render_rect = ECS::GetRenderRect(entity);
+		//const RectF render_rect = ECS::GetRenderRect(entity);
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
@@ -356,10 +356,15 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 
 		if (ImGui::TreeNode("Display"))
 		{
+			ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+
 			ImGui::Checkbox("Render Rect", &s_renderRects.render);
 			if(s_renderRects.render)
 			{	
-				DebugDraw::RectOutline(render_rect, Colour::Green);
+				const RectF renderRect(transform.position, transform.size);
+				DebugDraw::RectOutline(renderRect, Colour::Green);
 			}
 			
 			ImGui::Checkbox("Object Rect", &s_renderRects.object);

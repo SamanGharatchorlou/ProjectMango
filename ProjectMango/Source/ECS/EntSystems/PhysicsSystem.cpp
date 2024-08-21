@@ -22,7 +22,7 @@ namespace ECS
 			// todo what to use here, the sprite might be better
 			if(const Collider* collider = ecs->GetComponent(Collider, entity))
 			{
-				VectorF ray_start = collider->GetRect().BotCenter();
+				VectorF ray_start = collider->rect.BotCenter();
 				VectorF direction = VectorF(0.0f, 1.0f);
 
 				std::vector<Entity> self;

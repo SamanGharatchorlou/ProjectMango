@@ -184,7 +184,7 @@ namespace Enemy
 
 		if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
 		{
-			SetFlag(collider->mFlags, (u32)ECS::Collider::IgnoreAll);
+			SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
 		}
 
 		if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))

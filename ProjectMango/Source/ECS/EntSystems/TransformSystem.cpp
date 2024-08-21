@@ -22,7 +22,7 @@ namespace ECS
 			if(collider)
 			{
 				u32 flags = Collider::Flags::Static;
-				if(HasFlag(collider->mFlags, flags))
+				if(HasFlag(collider->flags, flags))
 					continue;
 
 				transform.position = transform.position + collider->allowedMovement;
@@ -38,8 +38,8 @@ namespace ECS
 			// set collider paramters
 			if(collider)
 			{
-				collider->mBack = transform.position;
-				collider->mForward = transform.targetPosition;
+				collider->back = transform.position;
+				collider->forward = transform.targetPosition;
 				collider->RollForwardPosition();
 
 				if( physics )

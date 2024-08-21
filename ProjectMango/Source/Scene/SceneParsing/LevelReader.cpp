@@ -193,7 +193,7 @@ namespace Level
 
 					ECS::Collider& collider = ecs->AddComponent(Collider, ent);
 					collider.SetRect( collider_rect );
-					SetFlag<u32>(collider.mFlags, (u32)ECS::Collider::Static);
+					SetFlag<u32>(collider.flags, (u32)ECS::Collider::Static);
 
 					ECS::Transform& transform = ecs->AddComponent(Transform, ent);
 					transform.SetPosition(top_left);

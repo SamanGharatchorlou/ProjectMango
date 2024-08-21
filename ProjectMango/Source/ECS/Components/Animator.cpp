@@ -23,6 +23,8 @@ namespace ECS
 		const VectorF frame_size = animation.spriteSheet->frameSize;
 		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
+
+		sprite.flipPoint = VectorF(animation.flipPointX, 0.5f);
 	}
 
 	

@@ -13,7 +13,7 @@ namespace ECS
 	static bool CanCollide(EntityCoordinator* ecs, const Collider& A_collider, bool A_isDamage, bool A_isPhysical, const Collider& B_collider)
 	{
 		ECS::Entity B_entity = B_collider.entity;
-		if(HasFlag(B_collider.mFlags, Collider::Flags::IgnoreAll))
+		if(HasFlag(B_collider.flags, Collider::Flags::IgnoreAll))
 			return false;
 
 		const bool B_is_damage = ecs->HasComponent(Damage, B_collider.entity);
@@ -27,7 +27,7 @@ namespace ECS
 		else if (B_is_physical)
 		{
 			u32 ignore_physical = Collider::Flags::IgnoreCollisions;
-			if(HasFlag(A_collider.mFlags, ignore_physical))
+			if(HasFlag(A_collider.flags, ignore_physical))
 				return false;
 		}
 
@@ -39,13 +39,13 @@ namespace ECS
 		if( A_isPhysical )
 		{
 			u32 ignore_physical = Collider::Flags::IgnoreCollisions;
-			if(HasFlag(A_collider.mFlags, ignore_physical))
+			if(HasFlag(A_collider.flags, ignore_physical))
 				return false;
 
 			// if the collider we're checking against is physical but is ignoring collisions then skip
 			if(B_is_physical)
 			{
-				if(HasFlag(B_collider.mFlags, ignore_physical))
+				if(HasFlag(B_collider.flags, ignore_physical))
 					return false;
 			}
 		}
@@ -67,7 +67,7 @@ namespace ECS
 
 		// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
 		u32 flags = Collider::Flags::Static | Collider::Flags::IgnoreAll;
-		if(HasFlag(A_collider.mFlags, flags))
+		if(HasFlag(A_collider.flags, flags))
 			return false;
 
 		const u32 index = colliders.GetComponentIndex(entity);
@@ -110,11 +110,11 @@ namespace ECS
 			
 			//Transform& A_transform = ecs->GetComponentRef(Transform, entity);
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
-			A_collider.allowedMovement = A_collider.mForward - A_collider.mBack;
+			A_collider.allowedMovement = A_collider.forward - A_collider.back;
 
 			// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
 			u32 flags = Collider::Flags::Static | Collider::Flags::IgnoreAll;
-			if(HasFlag(A_collider.mFlags, flags))
+			if(HasFlag(A_collider.flags, flags))
 				continue;
 
 			const u32 index = colliders.GetComponentIndex(entity);
@@ -145,7 +145,7 @@ namespace ECS
 
 					// ghost colliders just check for collisions and have no effect so dont compute anything below
 					u32 flags = Collider::Flags::GhostCollider;
-					if(HasFlag(A_collider.mFlags, flags))
+					if(HasFlag(A_collider.flags, flags))
 						continue;
 
 					// Damage
@@ -157,7 +157,7 @@ namespace ECS
 					// Physical, can we slide
 					else
 					{
-						VectorF velocity = A_collider.mForward - A_collider.mBack;
+						VectorF velocity = A_collider.forward - A_collider.back;
 						if (velocity.isZero())
 							continue;
 
@@ -169,7 +169,7 @@ namespace ECS
 						if (!still_interacts)
 						{
 							// rolled back rect
-							RectF rect = A_collider.GetRect();
+							RectF rect = A_collider.rect;
 
 							// doesnt matter on the direction, always seems to fail NOT with static colliders though
 							// only with moving colliders to be fair, maybe theres something in that
@@ -189,8 +189,8 @@ namespace ECS
 							{
 								A_collider.allowedMovement.y = 0;
 
-								float b_top = B_collider.GetRect().TopPoint();
-								float a_bot = A_collider.GetRect().BotPoint();
+								float b_top = B_collider.rect.TopPoint();
+								float a_bot = A_collider.rect.BotPoint();
 								if(b_top > a_bot)
 								{
 									float distance = b_top - a_bot - c_colliderGap;

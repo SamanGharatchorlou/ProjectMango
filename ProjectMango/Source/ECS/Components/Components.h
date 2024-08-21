@@ -42,12 +42,16 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Sprite)
 
-		VectorF renderSize;
 		RectF subRect;
+		VectorF renderSize;
+
 		Texture* texture = nullptr;
+		
+		VectorF flipPoint = VectorF(0.5f, 0.5f);
+		SDL_RendererFlip flip;
+
 		u32 renderLayer = 0;
 		
-		SDL_RendererFlip flip;
 	};
 
 	struct CharacterState

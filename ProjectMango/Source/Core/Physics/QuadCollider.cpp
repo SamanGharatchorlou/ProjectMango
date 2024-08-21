@@ -8,7 +8,7 @@
 
 bool QuadCollider::intersects(const Collider& collider) const
 {
-	RectF thatRect = collider.GetRect();
+	RectF thatRect = collider.rect;
 	Quad2D<float> thatQuad(thatRect);
 
 	// Assuming 'thatRect' is orientated on the x/y axis, test for overlaps

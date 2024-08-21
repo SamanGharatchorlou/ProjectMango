@@ -8,7 +8,6 @@ void Window::init(const char* title, Vector2D<int> size)
 		size.x, size.y, SDL_WINDOW_SHOWN);
 }
 
-
 Window::~Window()
 {
 	if(mWindow)
@@ -17,12 +16,10 @@ Window::~Window()
 	mWindow = nullptr;
 }
 
-
 SDL_Renderer* Window::createRenderer()
 {
 	 return SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED );
 }
-
 
 void Window::setTitle(const char* title)
 {
@@ -34,5 +31,5 @@ VectorF Window::size() const
 	int width = -1;
 	int height = -1;
 	SDL_GetWindowSize(mWindow, &width, &height);
-	return VectorF(1024, 1024);//(float)width, (float)height);
+	return VectorF((float)width, (float)height);
 }

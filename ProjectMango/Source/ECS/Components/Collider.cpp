@@ -7,71 +7,72 @@
 
 namespace ECS 
 {
-	bool Collider::intersects(const RectF& rect) const
+	bool Collider::intersects(const RectF& _rect) const
 	{
-		return !(	rect.LeftPoint()  > mRect.RightPoint() || 
-					rect.RightPoint() < mRect.LeftPoint()  || 
-					rect.TopPoint()   > mRect.BotPoint()   || 
-					rect.BotPoint()   < mRect.TopPoint());
+		return !(	rect.LeftPoint()  > _rect.RightPoint() || 
+					rect.RightPoint() < _rect.LeftPoint()  || 
+					rect.TopPoint()   > _rect.BotPoint()   || 
+					rect.BotPoint()   < _rect.TopPoint());
 	}
 
 	bool Collider::intersects(const Collider& collider) const
 	{
-		return intersects(collider.mRect);
+		return intersects(collider.rect);
 	}
 
 	bool Collider::contains(VectorF position) const 
 	{
 #if DEBUG_MODE
-		bool a = position.x > mRect.RightPoint();
-		bool b = position.x < mRect.LeftPoint();
-		bool c = position.y > mRect.BotPoint(); 
-		bool d = position.y < mRect.TopPoint();
+		bool a = position.x > rect.RightPoint();
+		bool b = position.x < rect.LeftPoint();
+		bool c = position.y > rect.BotPoint(); 
+		bool d = position.y < rect.TopPoint();
 		int z = 4;
 #endif
 
-		return !(	position.x > mRect.RightPoint() || 
-					position.x < mRect.LeftPoint()  || 
-					position.y > mRect.BotPoint()   || 
-					position.y < mRect.TopPoint());
+		return !(	position.x > rect.RightPoint() || 
+					position.x < rect.LeftPoint()  || 
+					position.y > rect.BotPoint()   || 
+					position.y < rect.TopPoint());
 	}
 
 	bool Collider::test1DOverlap(float minA, float maxA, float minB, float maxB)
 	{
 		return maxA > minB && minA < maxB;
 	}
-
-	const RectF& Collider::GetRect() const
+	
+	void Collider::SetRelativeRect(VectorF position, VectorF size)
 	{
-		return mRect;
+		relative_position = position;
+		relative_size = size;
+
+		VectorF rel_top_left = baseRect.TopLeft() + (baseRect.Size() * relative_position);
+		VectorF rel_size = baseRect.Size() * relative_size;
+		rect = RectF(rel_top_left, rel_size);
 	}
 
-	void Collider::SetRect(const RectF& rect)
+	void Collider::SetRect(const RectF& _rect)
 	{
-		mRect = rect;
-		mForward = mRect.TopLeft();
-		mBack = mForward;
+		baseRect = _rect;
+		forward = baseRect.TopLeft();
+		back = forward;
+
+		VectorF rel_top_left = baseRect.TopLeft() + (baseRect.Size() * relative_position);
+		VectorF rel_size = baseRect.Size() * relative_size;
+		rect = RectF(rel_top_left, rel_size);
 	}
 
-	//void Collider::SetPosition(const RectF& rect, VectorF& forward)
-	//{
-	//	SetCenter(rect.Center());
-	//	mForward = forward;
-	//	mBack = rect.Center();
-	//}
+	// using these requires updating the GetRect
 	void Collider::RollBackPosition()
 	{
-		mRect.SetTopLeft(mBack);
+		baseRect.SetTopLeft(back);
+		rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
 	void Collider::RollForwardPosition()
 	{
-		mRect.SetTopLeft(mForward);
+		baseRect.SetTopLeft(forward);
+		rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
-		
-	//void Collider::SetCenter(const VectorF& pos)
-	//{
-	//	mRect.SetCenter(pos + posOffset);
-	//}
 
 	#if TRACK_COLLISIONS
 	void Collider::renderCollider()

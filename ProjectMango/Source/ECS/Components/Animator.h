@@ -22,6 +22,13 @@ namespace ECS
 	
 		SpriteSheet* spriteSheet;
 
+		// relative to the sprite
+		VectorF colliderPos = VectorF(-1,-1);
+		VectorF colliderSize = VectorF(-1,-1);
+
+		// relative to size x
+		float flipPointX;
+
 		int startIndex = 0;
 		int frameCount = 0;
 

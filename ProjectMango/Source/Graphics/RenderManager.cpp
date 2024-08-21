@@ -53,8 +53,8 @@ void RenderManager::render()
 
 	// SDL_GetRendererInfo
 
-	SDL_RenderSetLogicalSize(renderer, 512, 512);
-	Renderer::Get()->setScale(0.5);
+	//SDL_RenderSetLogicalSize(renderer, 512, 512);
+	//Renderer::Get()->setScale(2);
 	//VectorF scale = 
 
 	//SDL_RenderSetScale(renderer, 0.5, 0.5);

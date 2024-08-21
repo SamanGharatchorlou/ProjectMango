@@ -33,9 +33,6 @@ namespace DebugMenu
 		// Setup Platform/Renderer backends
 		ImGui_ImplSDL2_InitForSDLRenderer(GameData::Get().window->get(), renderer);
 		ImGui_ImplSDLRenderer2_Init(renderer);
-
-		// Initialize ImGuiSDL by calling Initialize with your SDL_Renderer, and with window size. This will also take care of setting up the ImGui viewport.
-		//ImGuiSDL::Initialize(renderer, 1024, 1024);
 	}
 
 
@@ -54,6 +51,11 @@ namespace DebugMenu
 	static bool s_gameStateWindow = false;
 	static bool s_tweakerWindow = false;
 	static bool s_editorWindow = false;
+
+	void OpenEditorWindow()
+	{
+		s_editorWindow = true;
+	}
 
 	void Draw()
 	{

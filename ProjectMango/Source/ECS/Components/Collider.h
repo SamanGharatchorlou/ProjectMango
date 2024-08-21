@@ -44,10 +44,8 @@ namespace ECS
 	
 		static bool test1DOverlap(float minA, float maxA, float minB, float maxB);
 
-		const RectF& GetRect() const;
 		void SetRect(const RectF& rect);
-
-		//void SetSt
+		void SetRelativeRect(VectorF position, VectorF size);
 
 		void RollBackPosition();
 		void RollForwardPosition();
@@ -56,18 +54,23 @@ namespace ECS
 		virtual void renderCollider();	
 	#endif
 		
-		u32 mFlags = 0;
+		u32 flags = 0;
 		
 		VectorF allowedMovement;
 
-		VectorF mForward;
-		VectorF mBack;
-		//VectorF posOffset;
+		VectorF forward;
+		VectorF back;
+
+		RectF rect; 
 
 		std::vector<ECS::Entity> collisions;
 
 	private:
-		// always need to use the transform to set this position and offset by posOffset
-		RectF mRect;
+		// done use this, use the rect
+		RectF baseRect;
+
+		// relative to the transform rect
+		VectorF relative_position = VectorF(0,0);
+		VectorF relative_size = VectorF(1,1);
 	};
 }

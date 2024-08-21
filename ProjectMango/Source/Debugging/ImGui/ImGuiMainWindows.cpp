@@ -234,7 +234,7 @@ void DebugMenu::DoColliderWindow()
         const ECS::Collider& collider = collider_list[i];
 
 		// ignore static colliders, they dont move
-        bool is_static = HasFlag(collider.mFlags, ECS::Collider::Flags::Static);
+        bool is_static = HasFlag(collider.flags, ECS::Collider::Flags::Static);
 		if(!s_displayStatics && is_static)
             continue;
         if(!s_displayDynamics && !is_static)
@@ -246,26 +246,20 @@ void DebugMenu::DoColliderWindow()
             colour = Colour::Purple;
         }
 
-       bool ignore_collisions = HasFlag(collider.mFlags, ECS::Collider::Flags::IgnoreCollisions);
+       bool ignore_collisions = HasFlag(collider.flags, ECS::Collider::Flags::IgnoreCollisions);
         if(ignore_collisions)
         {
             colour = Colour::Black;
         }
 
-        bool ignore_all = HasFlag(collider.mFlags, ECS::Collider::Flags::IgnoreAll);
+        bool ignore_all = HasFlag(collider.flags, ECS::Collider::Flags::IgnoreAll);
         if(ignore_all)
         {
             colour = Colour::LightGrey;
             colour.a = 100;
         }
 
-        RectF cached_rect = collider.GetRect();
-
-        cached_rect.SetTopLeft(collider.mForward);
-        DebugDraw::Shape(s_drawType, cached_rect, colour);
-        
-        cached_rect.SetTopLeft(collider.mBack);
-        DebugDraw::Shape(s_drawType, cached_rect, colour);
+        DebugDraw::Shape(s_drawType, collider.rect, colour);
 	}
 }
 
