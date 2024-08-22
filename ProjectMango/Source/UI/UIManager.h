@@ -2,7 +2,6 @@
 
 #include "Core/Events/Observer.h"
 #include "ScreenController.h"
-#include "Graphics/Renderable.h"
 #if UI_EDITOR
 #include "Debugging/UIEditor.h"
 #endif
@@ -11,7 +10,7 @@ class InputManager;
 class Cursor;
 class Screen;
 
-class UIManager : public Observer, public Renderable
+class UIManager : public Observer //, public Renderable
 {
 public:
 	UIManager();
@@ -27,7 +26,7 @@ public:
 
 	void handleInput(InputManager* input);
 	void update();
-	void render() override;
+	//void render() override;
 
 	void handleEvent(EventData& data) override;
 	

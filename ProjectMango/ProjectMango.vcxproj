@@ -221,10 +221,8 @@
     <ClCompile Include="Source\Game\States\StartupState.cpp" />
     <ClCompile Include="Source\Game\SystemStateManager.cpp" />
     <ClCompile Include="Source\Graphics\Raycast.cpp" />
-    <ClCompile Include="Source\Graphics\Renderable.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\RenderManager.cpp" />
-    <ClCompile Include="Source\Graphics\RenderPacket.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Graphics\TextureManager.cpp" />
     <ClCompile Include="Source\Graphics\TextureMap.cpp" />
@@ -370,10 +368,8 @@
     <ClInclude Include="Source\Game\States\StateMachine.h" />
     <ClInclude Include="Source\Game\SystemStateManager.h" />
     <ClInclude Include="Source\Graphics\Raycast.h" />
-    <ClInclude Include="Source\Graphics\Renderable.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\RenderManager.h" />
-    <ClInclude Include="Source\Graphics\RenderPacket.h" />
     <ClInclude Include="Source\Graphics\Texture.h" />
     <ClInclude Include="Source\Graphics\TextureManager.h" />
     <ClInclude Include="Source\Graphics\TextureMap.h" />

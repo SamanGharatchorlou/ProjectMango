@@ -32,11 +32,11 @@ void LoadingBar::setTextures(Texture* loadingBar, Texture* loadingBarContainer)
 }
 
 
-void LoadingBar::render()
-{
-	RectF loadedRect = mRect;
-	loadedRect.SetWidth(mRect.Width() * mPercentage);
-
-	mLoadingBarContainer->render(mRect);
-	mLoadingBar->render(loadedRect);
-}
+//void LoadingBar::render()
+//{
+//	RectF loadedRect = mRect;
+//	loadedRect.SetWidth(mRect.Width() * mPercentage);
+//
+//	mLoadingBarContainer->render(mRect);
+//	mLoadingBar->render(loadedRect);
+//}

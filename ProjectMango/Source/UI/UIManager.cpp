@@ -125,27 +125,27 @@ Screen* UIManager::getActiveScreen()
 }
 
 
-void UIManager::render()
-{
-	if (mController.persistingScreen())
-		mController.persistingScreen()->render();
-
-	node<Screen*>* screen_node = mController.mScreens.getActiveStateNode();
-
-	// render the below one first
-	if (HasFlag(screen_node->data->mFlags, Screen::RenderBelow))
-	{
-		screen_node->prev->data->render();
-	}
-
-	screen_node->data->render();
-
-#if UI_EDITOR
-	mEditor.render();
-#endif
-		
-	mCursor->render();
-}
+//void UIManager::render()
+//{
+//	if (mController.persistingScreen())
+//		mController.persistingScreen()->render();
+//
+//	node<Screen*>* screen_node = mController.mScreens.getActiveStateNode();
+//
+//	// render the below one first
+//	if (HasFlag(screen_node->data->mFlags, Screen::RenderBelow))
+//	{
+//		screen_node->prev->data->render();
+//	}
+//
+//	screen_node->data->render();
+//
+//#if UI_EDITOR
+//	mEditor.render();
+//#endif
+//		
+//	mCursor->render();
+//}
 
 
 void UIManager::handleEvent(EventData& data)

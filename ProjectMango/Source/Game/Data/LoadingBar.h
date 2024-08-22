@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Graphics/Renderable.h"
-
 class Texture;
 
-class LoadingBar : public Renderable
+class LoadingBar //: public Renderable
 {
 public:
 	LoadingBar() : mPercentage(0.0f), mLoadingBar(nullptr), mLoadingBarContainer(nullptr) { }
@@ -17,7 +15,7 @@ public:
 
 	void setPercentage(float percentage) { mPercentage = percentage; }
 
-	void render() override;
+	//void render() override;
 
 private:
 	float mPercentage;

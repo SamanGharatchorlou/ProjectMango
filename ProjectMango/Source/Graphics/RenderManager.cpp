@@ -2,8 +2,8 @@
 #include "Graphics/RenderManager.h"
 
 #include "Texture.h"
-#include "Renderable.h"
 #include "Renderer.h"
+#include "System/Window.h"
 
 #include "Debugging/ImGui/ImGuiMenu.h"
 
@@ -17,28 +17,10 @@ RenderManager* RenderManager::Get()
 	return gd.renderManager;
 }
 
-void RenderManager::addRenderable(Renderable* renderable)
-{
-	mRenderables.push_back(renderable);
-}
-
-void RenderManager::removeRenderable(Renderable* renderable)
-{
-	for (auto iter = mRenderables.begin(); iter != mRenderables.end(); iter++)
-	{
-		if (*iter == renderable)
-		{
-			mRenderables.erase(iter);
-			return;
-		}
-	}
-}
-
 void RenderManager::AddDebugRenderPacker(const DebugRenderPack& renderPack)
 {
 	mDebugRenders.push_back(renderPack);
 }
-
 
 void RenderManager::AddRenderPacket(RenderPack renderPacket) 
 { 
@@ -51,23 +33,18 @@ void RenderManager::render()
 {
 	SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
 
-	// SDL_GetRendererInfo
-
-	//SDL_RenderSetLogicalSize(renderer, 512, 512);
-	//Renderer::Get()->setScale(2);
-	//VectorF scale = 
-
-	//SDL_RenderSetScale(renderer, 0.5, 0.5);
+	// handle window scaling
+	int width = -1;
+	int height = -1;
+	SDL_GetWindowSize(GameData::Get().window->get(), &width, &height);
+	const VectorF real_window_size = VectorF((float)width, (float)height);
+	const VectorF fake_window_size = GameData::Get().window->size();
+	const float render_scale = real_window_size.x / fake_window_size.x;
+	Renderer::Get()->setScale(render_scale);
 
 	// clear screen
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);
-
-	// todo: remove
-	for (uint32_t i = 0; i < mRenderables.size(); i++)
-	{
-		mRenderables[i]->render();
-	}
 
 	// render all the packs we received in the layer order
 	for (u32 i = 0; i < c_RenderLayers; i++)
@@ -148,7 +125,13 @@ void RenderManager::render()
 	mDebugRenders.clear();
 
 #if IMGUI
+	// a hack due to how im handling scaling, im pretending the game is build for a 1024x1024 window size.
+	// all sizes and positions are relative to this and then i'm scaling to the real window size. but imgui is getting
+	// the real window size and THEN scaling so its all messed up, i dont know how to get it to think its drawing on a 
+	// 1024x1024 window size so just pretend its not scaling, then it at least draws to a 1024 screen and its useable
+	Renderer::Get()->setScale(1);
 	DebugMenu::Draw();
+	Renderer::Get()->setScale(render_scale);
 #endif
 
 	// update window surface

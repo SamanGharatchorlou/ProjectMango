@@ -1,7 +1,6 @@
 #pragma once
 
 class Texture;
-struct Renderable;
 
 constexpr u32 c_RenderLayers = 10;
 
@@ -39,7 +38,7 @@ struct DebugRenderPack
     DebugDrawType type;
 };
 
-class RenderManager //: public Observer
+class RenderManager
 {
 public:
 	RenderManager();
@@ -49,23 +48,9 @@ public:
 	void render();
 
 	void AddRenderPacket(RenderPack renderPacket);
-	//void AddRenderPacketList(RenderPack renderPacket) { mRenderPackets[renderPacket.layer].push_back(renderPacket); }
-
 	void AddDebugRenderPacker(const DebugRenderPack& renderPack);
 
-	//void handleEvent(EventData& data) override;
-	void addRenderable(Renderable* renderable);
-	void removeRenderable(Renderable* renderable);
-
 private:
-	void renderPacketRange(int start, int end);
-	//void renderPackets(RenderLayer layer);
-
-
-private:
-	std::vector<Renderable*> mRenderables;
-	//std::vector<RenderPack> mRenderPackets;
-
 	// renderlayers + the lowest
 	std::vector<RenderPack> mRenderPackets[c_RenderLayers];
 	std::vector<DebugRenderPack> mDebugRenders;

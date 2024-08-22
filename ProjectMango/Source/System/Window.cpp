@@ -28,8 +28,9 @@ void Window::setTitle(const char* title)
 
 VectorF Window::size() const
 {
-	int width = -1;
-	int height = -1;
-	SDL_GetWindowSize(mWindow, &width, &height);
-	return VectorF((float)width, (float)height);
+	return VectorF(1024, 1024);
+	//int width = -1;
+	//int height = -1;
+	//SDL_GetWindowSize(mWindow, &width, &height);
+	//return VectorF((float)width, (float)height);
 }

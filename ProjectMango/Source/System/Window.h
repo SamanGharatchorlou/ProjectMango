@@ -11,6 +11,8 @@ public:
 	SDL_Renderer* createRenderer();
 
 	SDL_Window* get() const { return mWindow; }
+
+	// pretend size, always 1024x1024
 	VectorF size() const;
 
 	void setTitle(const char* title);
