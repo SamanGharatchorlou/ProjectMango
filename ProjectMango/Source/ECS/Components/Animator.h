@@ -23,8 +23,12 @@ namespace ECS
 		SpriteSheet* spriteSheet;
 
 		// relative to the sprite
-		VectorF colliderPos = VectorF(-1,-1);
-		VectorF colliderSize = VectorF(-1,-1);
+		VectorF entityColliderPos = VectorF(-1,-1);
+		VectorF entityColliderSize = VectorF(-1,-1);
+
+		// relative to the sprite
+		VectorF attackColliderPos = VectorF(-1, -1);
+		VectorF attackColliderSize = VectorF(-1, -1);
 
 		// relative to size x
 		float flipPointX;
@@ -55,5 +59,7 @@ namespace ECS
 		void StartAnimation(ActionState action);
 
 		const Animation& GetActiveAnimation() const;
+
+		bool OnLastFrame() const;
 	};
 }

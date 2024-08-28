@@ -51,4 +51,10 @@ namespace ECS
 	{
 		return animations[activeAnimation];
 	}
+
+
+	bool Animator::OnLastFrame() const
+	{
+		return frameIndex == animations[activeAnimation].frameCount - 1;
+	}
 }

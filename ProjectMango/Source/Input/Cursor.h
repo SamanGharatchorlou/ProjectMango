@@ -43,6 +43,7 @@ public:
 	bool isVisible() const { return mVisibility; }
 
 	Button& getButton(ButtonType type) { return mButtons[type]; }
+	const Button& getButton(ButtonType type) const { return mButtons[type]; }
 	void setButton(ButtonType type, Button button);
 	void setMotion(bool isMoving) { mMoving = isMoving; }
 

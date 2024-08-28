@@ -60,6 +60,15 @@ namespace ECS
 			//const int vertical_direction = input->isHeld(Button::Up) || input->isHeld(Button::Down);
 
 			state.movementInput = VectorI(horizontal_direction, 0);
+
+			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+			if (sprite.canFlip)
+			{
+				if (state.movementInput.x > 0)
+					sprite.flip = SDL_FLIP_NONE;
+				else if (state.movementInput.x < 0)
+					sprite.flip = SDL_FLIP_HORIZONTAL;
+			}
 		}
 
 		// kill entity with edit the entity list so do it outside the loop

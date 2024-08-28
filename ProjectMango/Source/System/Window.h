@@ -14,6 +14,7 @@ public:
 
 	// pretend size, always 1024x1024
 	VectorF size() const;
+	VectorF realSize() const;
 
 	void setTitle(const char* title);
 

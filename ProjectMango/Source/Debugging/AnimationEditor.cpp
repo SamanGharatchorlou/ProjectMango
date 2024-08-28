@@ -25,7 +25,9 @@ namespace AnimationEditor
 		StringBuffer64 selectedSpriteSheet;
 		VectorI frameCounts = VectorI(17,14);
 
-		std::vector<VectorF> selectedFrames;
+        VectorI previousSelectedFrameIndex;
+
+		//std::vector<VectorF> selectedFrames;
 		std::vector<VectorI> selectedFrameIndexes;
         
         struct Config
@@ -60,17 +62,47 @@ namespace AnimationEditor
 		bool isPlayingFrames = true;
 	};
 
+    static void AddOrRemoveIndex(std::vector<VectorI>& list, VectorI index)
+    {
+        if (list.back() == index)
+        {
+            list.resize(list.size() - 1);
+        }
+        {
+            list.push_back(index);
+        }
+
+        //if (Contains(list, index))
+        //{
+        //    for (auto iter = list.begin(); iter != list.end(); iter++)
+        //    {
+        //        if (*iter == index) 
+        //        {
+        //            list.erase(iter);
+        //            return;
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    list.push_back(index);
+        //}
+    }
+
     static AnimationState s_state;
+    static VectorF s_targetWindowSize = VectorF(640, 640);
 
 	void DoEditor()
 	{
+        s_targetWindowSize = GameData::Get().window->size() * 0.99f;
+
 		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
                 
         FrameRateController& fc = FrameRateController::Get();
 	    RenderManager* rm = GameData::Get().renderManager;
         InputManager* im = GameData::Get().inputManager;
-	    const VectorF window_size = GameData::Get().window->size();
-        const VectorF y_spacing = window_size * VectorF(0.0f, 0.1f);
+        const VectorF window_size = s_targetWindowSize;
+        const VectorF y_spacing = window_size * VectorF(0.0f, 0.025f);
 
         VectorF draw_point_TL = y_spacing;
         
@@ -146,11 +178,12 @@ namespace AnimationEditor
                                 RectF rect(pos, frame_size);
                                 
                                 if(PointInRect(rect, cursor_pos))
-                                {                               
-                                    if( !Contains(s_state.selectedFrames, pos) )
+                                {
+                                    VectorI index = VectorI(ix, iy);
+                                    if( !Contains(s_state.selectedFrameIndexes, index) )
                                     {
-                                        s_state.selectedFrames.push_back(pos);
-                                        s_state.selectedFrameIndexes.push_back(VectorI(ix,iy));
+                                        s_state.selectedFrameIndexes.push_back(index);
+                                        s_state.previousSelectedFrameIndex = index;
                                     }
                                 }
                             }
@@ -159,21 +192,62 @@ namespace AnimationEditor
 
                     if(im->isCursorPressed(Cursor::ButtonType::Right))
                     {
-                        s_state.selectedFrames.clear();
                         s_state.selectedFrameIndexes.clear();
                         s_state.targetFrame = 0;
                     }
 
-                    for( u32 f = 0; f < s_state.selectedFrames.size(); f++ )
+                    bool right = im->isPressed(Button::RightArrow);
+                    bool left = im->isPressed(Button::LeftArrow);
+
+                    if (right && s_state.selectedFrameIndexes.size() < s_state.frameCounts.x)
                     {
-                        VectorF pos = s_state.selectedFrames[f];
+                        VectorI index = s_state.selectedFrameIndexes.back() + VectorI(1, 0);
+                        s_state.selectedFrameIndexes.push_back(index);
+                    }
+
+                    if (left && s_state.selectedFrameIndexes.size() > 0)
+                    {
+                        s_state.selectedFrameIndexes.resize(s_state.selectedFrameIndexes.size() - 1);
+                        s_state.targetFrame = s_state.targetFrame % s_state.selectedFrameIndexes.size();
+                    }
+
+
+                    bool down = im->isPressed(Button::DownArrow);
+                    bool up = im->isPressed(Button::UpArrow);
+                    if (down)
+                    {
+                        for (u32 i = 0; i < s_state.selectedFrameIndexes.size(); i++)
+                        {
+                            s_state.selectedFrameIndexes[i] = s_state.selectedFrameIndexes[i] + VectorI(0, 1);
+                        }
+                    }                   
+                    if (up)
+                    {
+                        for (u32 i = 0; i < s_state.selectedFrameIndexes.size(); i++)
+                        {
+                            s_state.selectedFrameIndexes[i] = s_state.selectedFrameIndexes[i] + VectorI(0, -1);
+                        }
+                    }
+
+                    for( u32 f = 0; f < s_state.selectedFrameIndexes.size(); f++ )
+                    {
+                        VectorI tile_index = s_state.selectedFrameIndexes[f];
+                        VectorF pos = frame_size * tile_index.toFloat() + animation.TopLeft();
+                        RectF rect(pos, frame_size);
+
                         DebugDraw::RectOutline(RectF(pos, frame_size), Colour::Purple);
                     }
                     
-                    ImGui::Text("Selected Frame count: %d", s_state.selectedFrames.size());
+                    if (s_state.selectedFrameIndexes.size() > 0)
+                    {
+                        VectorI start_index = s_state.selectedFrameIndexes.front();
+                        ImGui::Text("Start Frame Index: %d", start_index.y * s_state.frameCounts.x + start_index.x);
+                    }
+                    ImGui::Text("Selected Frame count: %d", s_state.selectedFrameIndexes.size());
                     ImGui::Text("Active Frame: %d", s_state.targetFrame);
 
-                    if(s_state.selectedFrames.size() > 0)
+                    u32 selected_count = (u32)s_state.selectedFrameIndexes.size();
+                    if(selected_count > 0)
                     {
                         ImGui::PushID("sprite sheet selector");
 
@@ -182,7 +256,7 @@ namespace AnimationEditor
 
                         VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
                         VectorF adjusted_frame_texture_size = frame_texture_size;
-                        adjusted_frame_texture_size.y /= s_state.selectedFrames.size();
+                        adjusted_frame_texture_size.y /= selected_count;
 
                         VectorI top_left = s_state.selectedFrameIndexes.front();
                         VectorI bot_right = s_state.selectedFrameIndexes.back();
@@ -201,7 +275,7 @@ namespace AnimationEditor
                         DebugDraw::RectOutline(renderRect, Colour::Yellow);
 
                         // display the frame on the row showing the active render frame
-                        VectorF render_row_frame_size = VectorF(renderRect.Width() / (float)s_state.selectedFrames.size(), renderRect.Height());
+                        VectorF render_row_frame_size = VectorF(renderRect.Width() / (float)selected_count, renderRect.Height());
                         VectorF renderRowFrame_topLeft = renderRect.TopLeft() + VectorF(s_state.targetFrame * render_row_frame_size.x, 0.f);
                         RectF renderRowFrameRect(renderRowFrame_topLeft, render_row_frame_size);
                         DebugDraw::RectOutline(renderRowFrameRect, Colour::Blue);
@@ -213,7 +287,7 @@ namespace AnimationEditor
 					    {
                             s_state.targetFrame--;
                             if(s_state.targetFrame < 0)
-                                s_state.targetFrame = (int)s_state.selectedFrameIndexes.size() - 1;
+                                s_state.targetFrame = (int)selected_count - 1;
 
                             s_state.isPlayingFrames = false;
 					    }
@@ -225,7 +299,7 @@ namespace AnimationEditor
 					    if (ImGui::Button("Next Frame ->"))
 					    {
                             s_state.targetFrame++;
-                            s_state.targetFrame = s_state.targetFrame % s_state.selectedFrameIndexes.size();
+                            s_state.targetFrame = s_state.targetFrame % selected_count;
 
                             s_state.isPlayingFrames = false;
 					    }
@@ -493,7 +567,7 @@ namespace AnimationEditor
 	    const VectorF window_size = GameData::Get().window->size();
 	    RenderManager* rm = GameData::Get().renderManager;
 
-	    RectF screen(VectorF::zero(), window_size);
+	    RectF screen(VectorF::zero(), s_targetWindowSize);
 	    Texture* bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
 	    RenderPack pack(bg, screen, 0);
 	    rm->AddRenderPacket(pack);

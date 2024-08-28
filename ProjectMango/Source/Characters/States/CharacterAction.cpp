@@ -13,6 +13,10 @@ void CharacterAction::StartAnimation()
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
 	animation.StartAnimation(action);
+
+	// reset the sprite can flip state, default to true
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.canFlip = true;
 }
 
 void CharacterAction::StartAnimation(ActionState action_state)
@@ -29,13 +33,13 @@ ECS::Entity CreateAttackCollider(ECS::Entity entity, const RectF& collider_rect,
 
 	// Transform
 	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attack_collider);
-	//attack_transform.rect = collider_rect;
-	//attack_transform.targetCenterPosition = collider_rect.Center(); 
+	attack_transform.SetPosition(collider_rect.TopLeft());
+	attack_transform.size = collider_rect.Size();
 
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, attack_collider);
 	collider.SetRect(collider_rect);
-	collider.flags |= ECS::Collider::Flags::IgnoreAll;
+	//collider.flags |= ECS::Collider::Flags::IgnoreAll;
 
 	// Damage
 	ECS::Damage& damage_comp = ecs->AddComponent(Damage, attack_collider);

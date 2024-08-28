@@ -28,15 +28,11 @@ ECS::Entity Player::Spawn()
 	ecs->entities.KillEntity(s_playerEntity);
 	s_playerEntity = ecs->CreateEntity("Player");
 
-	VectorF spawn_pos;
-	ECS::Entity level_entity = ECS::Level::GetActive();
-	if (ECS::Level* level = ecs->GetComponent(Level, level_entity))
-		spawn_pos = level->playerSpawn;
-
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
-	transform.SetPosition(spawn_pos);
-	transform.size = VectorF(412, 122);
+	VectorF size = VectorF(412, 122);
+	transform.SetPosition(ECS::Level::GetSpawnPos("PlayerStart") - (size / 2.0f));
+	transform.size = size;
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);

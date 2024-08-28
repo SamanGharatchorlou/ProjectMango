@@ -3,41 +3,16 @@
 
 using namespace ECS;
 
-void Physics::ApplyDrag(VectorF movement_direction, float drag_coefficient)
+void Physics::ApplyDrag(float drag_coefficient)
 {
 	const float dragFractor = 1.0f - drag_coefficient;
 	const float minSpeedMultiple = 0.1f;
 
-	// No movement, apply drag then halt at min speed
-	if (!movement_direction.x)
-	{
-		speed.x = speed.x * dragFractor;
+	speed.x = speed.x * dragFractor;
 
-		const float min_speed = maxSpeed.x * minSpeedMultiple;
-		if (speed.x < min_speed && speed.x > -min_speed)
-			speed.x = 0;
-	}
-	if (!movement_direction.y)
-	{
-		speed.y = speed.y * dragFractor;
-
-		const float min_speed = maxSpeed.y * minSpeedMultiple;
-		if (speed.y < min_speed && speed.y > -min_speed)
-			speed.y = 0;
-	}
-
-	// Changing direction
-	if (speed.x > 0.0f && movement_direction.x < 0.0f ||
-		speed.x < 0.0f && movement_direction.x > 0.0f)
-	{
-		speed.x = speed.x * dragFractor;
-	}
-
-	if (speed.y > 0.0f && movement_direction.y < 0.0f ||
-		speed.y < 0.0f && movement_direction.y > 0.0f)
-	{
-		speed.y = speed.y * dragFractor;
-	}
+	const float min_speed = maxSpeed.x * minSpeedMultiple;
+	if (speed.x < min_speed && speed.x > -min_speed)
+		speed.x = 0;
 }
 
 

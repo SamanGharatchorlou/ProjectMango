@@ -76,17 +76,17 @@ namespace Level
 				for( u32 e = 0; e < entities.Size(); e++ )
 				{
 					Value& entry = entities[e];
-					if( StringCompare(entry["__identifier"].GetString(), "PlayerStart") )
-					{
-						float width = entry["width"].GetFloat();
-						float height = entry["height"].GetFloat();
 
-						Value& px = entry["px"];
-						float px_x = px[0].GetFloat() + (width * 0.5f);
-						float px_y = px[1].GetFloat() - (height);
+					float width = entry["width"].GetFloat();
+					float height = entry["height"].GetFloat();
 
-						level.playerSpawn = VectorF(px_x, px_y) * level_to_window;
-					}
+					Value& px = entry["px"];
+					float px_x = px[0].GetFloat() + (width * 0.5f);
+					float px_y = px[1].GetFloat() - (height);
+
+					const char* id = entry["__identifier"].GetString();
+					VectorF spawn_pos = VectorF(px_x, px_y) * level_to_window;
+					level.spawnPositions[id] = spawn_pos;
 				}
 			}
 			else if( StringCompare(layer_type, "IntGrid" ) )

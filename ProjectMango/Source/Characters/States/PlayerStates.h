@@ -42,7 +42,6 @@ namespace Player
 
 	struct BasicAttackState : public CharacterAction
 	{
-		
 		BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
 
 		void Init() override;

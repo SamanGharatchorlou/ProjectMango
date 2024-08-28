@@ -21,6 +21,8 @@ enum class ActionState
 	Roll,
 
 	BasicAttack,
+	BasicAttackHold,
+
 	ChopAttack,
 
 	Death,
@@ -47,6 +49,7 @@ static void initActionMap()
 	s_actionMap["Roll"] = ActionState::Roll;
 
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
+	s_actionMap["BasicAttackHold"] = ActionState::BasicAttackHold;
 	s_actionMap["ChopAttack"] = ActionState::ChopAttack;
 
 	s_actionMap["Death"] = ActionState::Death;

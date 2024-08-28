@@ -3,6 +3,7 @@
 
 #include "Input/InputManager.h"
 #include "Animations/CharacterStates.h"
+#include "Game/FrameRateController.h"
 
 #include "ECS/Components/PlayerController.h"
 #include "ECS/Components/Physics.h"
@@ -32,7 +33,6 @@ void IdleState::Resume()
 void IdleState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	//ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
 	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
 	// Run
@@ -40,27 +40,30 @@ void IdleState::Update(float dt)
 	{
 		PushNewState(Run);
 	}
-
-	// Slash Attack
-	InputManager* input = InputManager::Get();
-	if (input->isCursorPressed(Cursor::ButtonType::Left))
+	else
 	{
-		//state.actions.Push( new BasicAttackState(entity));
+		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		{
+			physics->ApplyDrag(0.6f);
+		}
 	}
-	//if (input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
-	//{
-	//	pc.PushState(ActionState::ChopAttack);
-	//}
+
+	// Basic Attack
+	InputManager* input = InputManager::Get();
+	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
+	{
+		PushNewState(BasicAttack);
+	}
 
 	if (input->isPressed(Button::Space, c_inputBuffer))
 	{
 		PushNewState(Jump);
 	}
 
-	if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-	{
-		physics->speed.x = 0.0f;
-	}
+	//if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	//{
+	//	physics->speed.x = 0.0f;
+	//}
 }
 
 // Run
@@ -77,28 +80,26 @@ void RunState::Resume()
 void RunState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
 	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 	
 	if(state.movementInput.isZero())
 	{
 		state.actions.Pop();
 		return;
 	}
-
-	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	else
 	{
-		// apply walk speed
-		physics->maxSpeed.x = 20.0f;
-		physics->ApplyMovement(state.movementInput.toFloat(), dt);
-		//physics->ApplyDrag(state.movementInput.toFloat(), 0.9f);
+		const float speed = physics.speed.x;
+		const int input_dir = state.movementInput.x;
+		if (speed > 0.0f && input_dir < 0 || speed < 0.0f && input_dir > 0)
+		{
+			physics.ApplyDrag(0.9f);
+		}
 	}
 
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	if(state.movementInput.x > 0)
-		sprite.flip = SDL_FLIP_NONE;
-	else
-		sprite.flip = SDL_FLIP_HORIZONTAL;
+	physics.maxSpeed.x = 20.0f;
+	physics.ApplyMovement(state.movementInput.toFloat(), dt);
 	
 	InputManager* input = InputManager::Get();
 	if (input->isPressed(Button::Space, c_inputBuffer))
@@ -111,22 +112,10 @@ void RunState::Update(float dt)
 		PushNewState(Roll);
 	}
 
-	//// Slash Attack
-	//InputManager* input = InputManager::Get();
-	//if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer))
-	//{
-	//	state.actions.Push( new BasicAttackState);
-	//}
-	//if (input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
-	//{
-	//	pc.PushState(ActionState::ChopAttack);
-	//}
-
-	//// Dodge
-	//if (input->isPressed(Button::Space, c_inputBuffer))
-	//{
-	//	pc.PushState(ActionState::Dodge);
-	//}
+	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
+	{
+		PushNewState(BasicAttack);
+	}
 }
 
 
@@ -197,27 +186,41 @@ void RollState::Init()
 	{
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
-		float amplitude = 10.0f;
-		physics->speed = state.movementInput.toFloat() * amplitude;
+		const float c_rollSpeed = 35.0f;
+		physics->speed = state.movementInput.toFloat() * c_rollSpeed;
 	}
 
-	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	InputManager* input = InputManager::Get();
+	if (input->isReleased(Button::Shift, c_inputBuffer))
 	{
-		SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
+		const FrameRateController& frc = FrameRateController::Get();
+		const int frame_count = frc.frameCount();
+
+		const int release_frame = input->getButton(Button::Shift).mReleasedFrame;
+		if (release_frame + c_inputBuffer < frame_count)
+		{
+			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			state.actions.Pop();
+			return;
+		}
 	}
+
+	//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	//{
+	//	SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
+	//}
 }
 
 void RollState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
-	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-	{
-		physics->ApplyDrag(VectorF::zero(), 0.08f);
-	}
+	//if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	//{
+	//	physics->ApplyDrag(0.08f);
+	//}
 	
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
-
+	const ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
 	if (animation.loopCount > 0)
 	{
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
@@ -241,90 +244,69 @@ void RollState::Update(float dt)
 
 void RollState::Exit()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
-	{
-		RemoveFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
-		SetFlag(collider->flags, (u32)ECS::Collider::IgnoreCollisions);
-	}
+	//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	//{
+	//	RemoveFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
+	//	SetFlag(collider->flags, (u32)ECS::Collider::IgnoreCollisions);
+	//}
 }
 
 
-// SlashAttack
+// BasicAttack
 // ---------------------------------------------------------
 void BasicAttackState::Init()
 {
-	//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	StartAnimation();
 
-	//const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	//const ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+	const ECS::Animation& animation = animator.GetActiveAnimation();
 
-	//const RectF& character_rect = ECS::GetObjectRect(entity);
-	//const RectF boundary_rect = ECS::GetRenderRect(entity);
+	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	RectF base_rect(transform.position, transform.size);
+	
+	VectorF pos = base_rect.TopLeft() + (base_rect.Size() * animation.attackColliderPos);
+	VectorF size = base_rect.Size() * animation.attackColliderSize;
 
-	//RectF collider_rect;
-	//	
-	//if(!state.movementInput.isZero())
-	//{
-	//	if( direction.x == -1 || direction.x == 1 )
-	//	{
-	//		const float width = boundary_rect.Width() * 0.7f;
-	//		const float height = boundary_rect.Height() * 0.3f;
-	//		const VectorF size(width, height);
-	//		collider_rect.SetSize(size);
-
-	//		if( direction.x == 1 )
-	//			collider_rect.SetTopLeft(character_rect.Center());
-	//		else
-	//			collider_rect.SetTopRight(character_rect.Center());
-	//	}
-	//	else if( direction.y == -1 || direction.y == 1 )
-	//	{
-	//		const float height = boundary_rect.Height() * 0.45f;
-	//		const float width = boundary_rect.Width() * 0.65f;
-	//		const VectorF size(width, height);
-	//		collider_rect.SetSize(size);
-
-	//		if( direction.y == 1 )
-	//			collider_rect.SetTopCenter(character_rect.Center());
-	//		else
-	//			collider_rect.SetBotCenter(character_rect.Center());
-	//	}
-	//}
-
-	//attackCollider = CreateAttackCollider(entity, collider_rect, 60, "Player Attack Collider");
+	attackCollider = CreateAttackCollider(entity, RectF(pos, size), 10, "player attack collider");
 }
 
 void BasicAttackState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
 	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	
+	ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+	if (animator.loopCount > 0)
+	{
+		if (animator.GetActiveAnimation().action == ActionState::BasicAttack)
+		{
+			InputManager* input = InputManager::Get();
+			if (input->isCursorHeld(Cursor::ButtonType::Left))
+			{
+				StartAnimation(ActionState::BasicAttackHold);
+			}
+			else
+			{
+				state.actions.Pop();
+				return;
+			}
+		}
+		else if (animator.GetActiveAnimation().action == ActionState::BasicAttackHold)
+		{
+			InputManager* input = InputManager::Get();
+			if (!input->isCursorHeld(Cursor::ButtonType::Left))
+			{
+				state.actions.Pop();
+				return;
+			}
+		}
+	}
+
 	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
-		physics->ApplyDrag(VectorF::zero(), 0.2f);
+		physics->ApplyDrag(0.15f);
 	}
-	
-	if(HandleAttackAnimation(entity, attackCollider))
-	{
-		state.actions.Pop();
-	}
-		state.actions.Pop();
-	
-	//ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-	//if(animation.animator.lastFrame())
-	//{
-	//	// input buffer
-	//	InputManager* input = InputManager::Get();
-	//	if (input->isCursorPressed(Cursor::ButtonType::Left))
-	//	{
-	//		animation.animator.restart();
-
-	//		pc.PopState();
-	//		pc.PushState(ActionState::BasicAttack);
-	//	}
-	//}
 }
 
 void BasicAttackState::Exit()

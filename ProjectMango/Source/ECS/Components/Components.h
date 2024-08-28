@@ -49,6 +49,7 @@ namespace ECS
 		
 		VectorF flipPoint = VectorF(0.5f, 0.5f);
 		SDL_RendererFlip flip;
+		bool canFlip = true;
 
 		u32 renderLayer = 0;
 		
@@ -93,6 +94,8 @@ namespace ECS
 
 		bool invulnerable = false;
 
+		// todo: every few frames look through this list and
+		// remove any dead entities // new system? health system?w
 		std::vector<Entity> ignoredDamaged;
 
 		void ApplyDamage(const Damage& damage);

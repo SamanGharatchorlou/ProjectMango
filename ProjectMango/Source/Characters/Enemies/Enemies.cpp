@@ -3,6 +3,7 @@
 
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Level.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/AIController.h"
 
@@ -37,21 +38,21 @@ ECS::Entity Enemy::Create()
 
 	ECS::Entity entity = ecs->CreateEntity("Enemy");
 
-	StringMap32 enemy_data;
+	//StringMap32 enemy_data;
 
-	ParseEnemyData("BasicEnemy");
+	//ParseEnemyData("BasicEnemy");
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	//transform.rect.SetSize(VectorF(17.0f, 34.0f));
-	//transform.positionOffset = VectorF(-8.0f, 26.0f);
+	transform.SetPosition(ECS::Level::GetSpawnPos("TrainingDummy"));
+	transform.size = VectorF(128, 128);
 	
 	// MovementPhysics
-	ECS::Physics& physics = ecs->AddComponent(Physics, entity);
-	physics.applyGravity = false;	
-	physics.acceleration = VectorF(100.0f, 100.0f);
-	physics.maxSpeed = VectorF(5.0f, 5.0f);
-	physics.speed = VectorF(0,2);
+	//ECS::Physics& physics = ecs->AddComponent(Physics, entity);
+	//physics.applyGravity = false;	
+	//physics.acceleration = VectorF(100.0f, 100.0f);
+	//physics.maxSpeed = VectorF(5.0f, 5.0f);
+	//physics.speed = VectorF(0,2);
 
 	//// Animation
 	//ECS::Animation& animation = ecs->AddComponent(Animation, entity);
@@ -59,32 +60,22 @@ ECS::Entity Enemy::Create()
 	//animation.animator.start();
 
 
+	Texture* texture = TextureManager::Get()->getTexture("TrainingDummy", FileManager::Folder::Image_Animations);
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
 	sprite.renderLayer = 9;
+	sprite.texture = texture;
 	
 	// Collider
-	//ECS::Collider& collider = ecs->AddComponent(Collider, entity);
-	//collider.SetRect(transform.rect);
-	//SetFlag<u32>(collider.mFlags, (u32)ECS::Collider::IsEnemy);
-	
-	// AI Controller
-	ECS::AIController& ai_controller = ecs->AddComponent(AIController, entity);
+	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
+	collider.SetRect(RectF(VectorF::zero(), transform.size));
+	SetFlag<u32>(collider.flags, (u32)ECS::Collider::IsEnemy);
 
-	std::vector<ActionState> actions;
-	for( u32 i = 0; i < (u32)ActionState::Count; i++ )
-	{
-		actions.push_back((ActionState)i);
-	}
-	ai_controller.statePool.load(actions, 4);
 	
 	// CharacterState
 	//ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
 	//character_state.facingDirection = VectorI(0,1); // facing down
-
-	// Pathing
-	ecs->AddComponent(Pathing, entity);
 
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, entity);

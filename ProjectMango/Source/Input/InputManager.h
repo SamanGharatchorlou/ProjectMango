@@ -23,13 +23,14 @@ public:
 
 	// Buttons
 	Button& getButton(Button::Key key);
+	const Button& getButton(Button::Key key) const;
 
 	Button::State state(Button::Key key, int frame_number) { return getButton(key).state(frame_number); }
-	bool isHeld(Button::Key key, int frame_buffer = 0);
+	bool isHeld(Button::Key key, int frame_buffer = 0) const;
 	bool isPressed(Button::Key key, int frame_buffer = 0);
 	bool isReleased(Button::Key key, int frame_buffer = 0);
 
-	int getHeldFrames(Button::Key key) { return getButton(key).getHeldFrames(); }
+	int getHeldFrames(Button::Key key) const { return getButton(key).getHeldFrames(); }
 
 	// Cursor
 	Cursor* getCursor() { return &mCursor; }
@@ -49,8 +50,8 @@ private:
 
 	void bindDefaultButtons();
 
-	bool HandlePressedButton(Button& button, int frame_buffer);
-	bool HandleReleaseButton(Button& button, int frame_buffer);
+	bool HandlePressedButton(const Button& button, int frame_buffer);
+	bool HandleReleaseButton(const Button& button, int frame_buffer);
 
 public:
 	// turn me into an array

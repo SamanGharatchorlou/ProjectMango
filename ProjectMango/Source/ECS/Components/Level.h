@@ -37,8 +37,9 @@ namespace ECS
 
 		std::vector<ECS::Entity> colliders;
 
-		VectorF playerSpawn;
+		std::unordered_map<StringBuffer64, VectorF> spawnPositions;
 
 		static const Entity GetActive();
+		static VectorF GetSpawnPos(const char* spawn_id);
 	};
 }

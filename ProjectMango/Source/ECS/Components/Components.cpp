@@ -3,8 +3,6 @@
 
 #include "ECS/EntityCoordinator.h"
 
-
-
 namespace ECS
 {
 	void Health::ApplyDamage(const Damage& damage)

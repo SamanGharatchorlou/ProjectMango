@@ -23,6 +23,7 @@
 #include "Game/States/AnimationEditorState.h"
 
 #include "Characters/Player/PlayerCharacter.h"
+#include "Characters/Enemies/Enemies.h"
 
 void GameState::Init()
 {
@@ -38,7 +39,9 @@ void GameState::Init()
 	activeLevel = entity;
 
 	ECS::Entity player = Player::Spawn();
-	//ECS::Entity enemy = EnemySpawn::Spawn(tile_map);
+	//ECS::Entity enemy = EnemySpawn::Spawn();
+
+	ECS::Entity enemy = Enemy::Create();
 
 	//// debugging
 	//DebugMenu::SelectEntity(enemy);

@@ -14,6 +14,30 @@ namespace AnimationReader
 {	
 	using namespace rapidjson;
 
+	static void PopulateColliderData(const char* prefix, Value& animation, VectorF& out_pos, VectorF& out_size)
+	{
+		const u32 len = 64;
+		char pos[len];
+		snprintf(pos, len, "%s_pos", prefix);
+		char size[len];
+		snprintf(size, len, "%s_size", prefix);
+
+		if (animation.HasMember(pos))
+		{
+			Value& relative_pos = animation[pos];
+
+			out_pos.x = relative_pos[0].GetFloat();
+			out_pos.y = relative_pos[1].GetFloat();
+		}
+		if (animation.HasMember(size))
+		{
+			Value& relative_size = animation[size];
+
+			out_size.x = relative_size[0].GetFloat();
+			out_size.y = relative_size[1].GetFloat();
+		}
+	}
+
 	void BuildAnimatior(const char* file, std::vector<ECS::Animation>& animations)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
@@ -57,29 +81,17 @@ namespace AnimationReader
 			anim.frameTime = animation["frameTime"].GetFloat();
 			anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
 
-			anim.colliderPos = VectorF::zero();
-			if(animation.HasMember("collider_pos"))
-			{
-				Value& relative_pos = animation["collider_pos"];
-
-				anim.colliderPos.x = relative_pos[0].GetFloat();
-				anim.colliderPos.y = relative_pos[1].GetFloat();
-			}
-
-			anim.colliderSize = VectorF(1,1);
-			if(animation.HasMember("collider_size"))
-			{
-				Value& relative_size = animation["collider_size"];
-
-				anim.colliderSize.x = relative_size[0].GetFloat();
-				anim.colliderSize.y = relative_size[1].GetFloat();
-			}
-
 			anim.flipPointX = 0.5f;
-			if(animation.HasMember("flip_point_x"))
+			if (animation.HasMember("flip_point_x"))
 			{
 				anim.flipPointX = animation["flip_point_x"].GetFloat();
 			}
+
+			anim.entityColliderPos = VectorF::zero();
+			anim.entityColliderSize = VectorF(1, 1);
+			PopulateColliderData("entity_collider", animation, anim.entityColliderPos, anim.entityColliderSize);
+
+			PopulateColliderData("attack_collider", animation, anim.attackColliderPos, anim.attackColliderSize);
 		}
 	}
 }

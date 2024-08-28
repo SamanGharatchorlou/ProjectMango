@@ -14,6 +14,6 @@ namespace ECS
 		bool onFloor;
 
 		void ApplyMovement(VectorF movement_direction, float dt);
-		void ApplyDrag(VectorF movement_direction, float drag_coefficient);
+		void ApplyDrag(float drag_coefficient);
 	};
 }

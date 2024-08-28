@@ -77,12 +77,25 @@ Button& InputManager::getButton(Button::Key key)
 	return mButtons[0];
 }
 
-bool InputManager::isHeld(Button::Key key, int frame_buffer) 
+
+const Button& InputManager::getButton(Button::Key key) const
+{
+	for (unsigned int i = 0; i < mButtons.size(); i++)
+	{
+		if (mButtons[i].isKey(key))
+			return mButtons[i];
+	}
+
+	DebugPrint(Warning, "Button for key %d not found, return button with KEY: NONE", key);
+	return mButtons[0];
+}
+
+bool InputManager::isHeld(Button::Key key, int frame_buffer) const
 { 
 	return getButton(key).isHeld(); 
 }
 
-bool InputManager::HandlePressedButton(Button& button, int frame_buffer)
+bool InputManager::HandlePressedButton(const Button& button, int frame_buffer)
 {
 	const FrameRateController& frc = FrameRateController::Get();
 	const int frame_count = frc.frameCount();
@@ -99,7 +112,7 @@ bool InputManager::HandlePressedButton(Button& button, int frame_buffer)
 	return is_pressed;
 }
 
-bool InputManager::HandleReleaseButton(Button& button, int frame_buffer)
+bool InputManager::HandleReleaseButton(const Button& button, int frame_buffer)
 {
 	const FrameRateController& frc = FrameRateController::Get();
 	const int frame_count = frc.frameCount();
@@ -116,27 +129,27 @@ bool InputManager::HandleReleaseButton(Button& button, int frame_buffer)
 	return is_released;
 }
 
-bool InputManager::isPressed(Button::Key key, int frame_buffer) 
+bool InputManager::isPressed(Button::Key key, int frame_buffer)
 { 
-	Button& button = getButton(key);
+	const Button& button = getButton(key);
 	return HandlePressedButton(button, frame_buffer);
 }
 
-bool InputManager::isReleased(Button::Key key, int frame_buffer) 
+bool InputManager::isReleased(Button::Key key, int frame_buffer)
 { 	
-	Button& button = getButton(key);
+	const Button& button = getButton(key);
 	return HandleReleaseButton(button, frame_buffer);
 }
 
 // Cursor
 void InputManager::setCursorSize(VectorF size) { mCursor.setSize(size); }
 bool InputManager::isCursorHeld(Cursor::ButtonType button) const { return mCursor.isHeld(button); }
-bool InputManager::isCursorPressed(Cursor::ButtonType cursor_button, int frame_buffer) 
+bool InputManager::isCursorPressed(Cursor::ButtonType cursor_button, int frame_buffer)
 { 
-	Button& button = mCursor.getButton(cursor_button);
+	const Button& button = mCursor.getButton(cursor_button);
 	return HandlePressedButton(button, frame_buffer);
 }
-bool InputManager::isCursorReleased(Cursor::ButtonType cursor_button, int frame_buffer) 
+bool InputManager::isCursorReleased(Cursor::ButtonType cursor_button, int frame_buffer)
 { 
 	Button& button = mCursor.getButton(cursor_button);
 	return HandleReleaseButton(button, frame_buffer);

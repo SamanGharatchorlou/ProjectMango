@@ -27,13 +27,9 @@ namespace ECS
 				animator.loopCount++;
 
 				if(active_animation.looping)
-				{
 					animator.frameIndex = 0;
-				}
 				else
-				{
 					animator.state = TimeState::Paused; // Stopped?
-				}
 			}
 
 			animator.frameIndex = Maths::clamp(animator.frameIndex, (u32)0, (u32)active_animation.frameCount - 1);
@@ -61,52 +57,9 @@ namespace ECS
 			if( Collider* collider = ecs->GetComponent(Collider, entity) )
 			{
 				const Animation& animation = animator.GetActiveAnimation();
-				if(animation.colliderPos.isPositive() && animation.colliderSize.isPositive())
-					collider->SetRelativeRect(animation.colliderPos, animation.colliderSize);
+				if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
+					collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
 			}
-
-			//sprite.
-
-			//bool using_playlist = DebugMenu::UsingPlaylist(entity);
-
-			//Animator& animator = animation.animator;
-
-			//if(!using_playlist)
-			//	animator.RunActive(dt);
-			//
-			//Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-
-
-			//VectorF pos = animator.getAnimationSubRect();
-			//sprite.subRect = RectF(pos, animator.FrameSize());
-
-			//if (using_playlist)
-			//	continue;
-
-			//// select the next action
-			//ActionState action = state.action;
-			//bool is_flipped = false;
-
-			//// todo: perhaps rename this or put it into a namespace?
-			//const ::Animation* anim = animator.getAnimation(action, state.facingDirection, is_flipped);
-			//const ::Animation* active_anim = animator.activeAnimation();
-			//
-			//sprite.flip = is_flipped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-			//DebugMenu::SpriteFlipOverride(entity, sprite.flip);
-
-			//if ( anim && anim != active_anim )
-			//{
-			//	animator.selectAnimation(*anim);
-
-			//	const SpriteSheet& ss = animator.getSpritesheet(*anim);
-			//	sprite.renderSize = ss.renderSize;
-			//	sprite.texture = ss.texture;
-			//}
-
-			//
-			//// update transform size, is this the wrong place to do it?
-			//transform.rect.SetSize(sprite.renderSize);
 		}
 	}
 }
