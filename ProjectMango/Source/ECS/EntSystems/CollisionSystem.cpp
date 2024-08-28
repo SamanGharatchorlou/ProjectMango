@@ -7,6 +7,7 @@
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
+#include "Game/FrameRateController.h"
 
 namespace ECS
 {
@@ -97,6 +98,8 @@ namespace ECS
 	void CollisionSystem::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
+		const FrameRateController& frc = FrameRateController::Get();
+		const int frame_count = frc.frameCount();
 
 		ComponentArray<Collider>& colliders =  ecs->GetComponents<Collider>(Component::Type::Collider);
 		std::vector<Collider>& collider_list = colliders.components;
@@ -107,9 +110,20 @@ namespace ECS
 			// debug break point
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
-			
-			//Transform& A_transform = ecs->GetComponentRef(Transform, entity);
+
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
+
+			for( u32 i = 0; i < A_collider.collisions.size(); i++ )
+			{
+				// remove one dead entry at a time, we reorder and change the size of this list 
+				// so this just keeps things simple and it doesnt matter if things hang around for a bit
+				if(!ecs->IsAlive(A_collider.collisions[i]))
+				{
+					EraseSwap(A_collider.collisions, A_collider.collisions[i]);
+					break;
+				}
+			}
+
 			A_collider.allowedMovement = A_collider.forward - A_collider.back;
 
 			// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
@@ -140,8 +154,11 @@ namespace ECS
 				if(A_collider.intersects(B_collider)) 
 				{
 					ECS::Entity B_entity = B_collider.entity;
-					push_back_unique(A_collider.collisions, B_entity);
-					push_back_unique(B_collider.collisions, entity);
+					const bool did_add_a = PushBackUnique(A_collider.collisions, B_entity);
+					const bool did_add_b = PushBackUnique(B_collider.collisions, entity);
+
+					if(did_add_b && A_is_damage)
+						B_collider.lastHitFrame = frame_count;
 
 					// ghost colliders just check for collisions and have no effect so dont compute anything below
 					u32 flags = Collider::Flags::GhostCollider;
@@ -178,9 +195,6 @@ namespace ECS
 							if(cannot_move_horizontally)
 							{
 								A_collider.allowedMovement.x = 0;
-
-
-
 							}
 
 							const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));

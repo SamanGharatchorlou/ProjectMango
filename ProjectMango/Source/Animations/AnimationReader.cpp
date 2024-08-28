@@ -75,7 +75,7 @@ namespace AnimationReader
 
 			Value& animation = anims[i];
 			anim.spriteSheet = &s_spriteSheets[id];
-			anim.action = stringToAction(animation["action"].GetString());
+			anim.action = StringToAction(animation["action"].GetString());
 			anim.startIndex = animation["startIndex"].GetInt();
 			anim.frameCount = animation["frameCount"].GetInt();
 			anim.frameTime = animation["frameTime"].GetFloat();

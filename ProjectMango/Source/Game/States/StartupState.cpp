@@ -3,8 +3,6 @@
 
 #include "Game/GameSetup.h"
 #include "Game/SystemStateManager.h"
-#include "UI/UIManager.h"
-#include "UI/ScreenController.h"
 #include "Audio/AudioManager.h"
 
 #include <thread>
@@ -53,13 +51,11 @@ void StartupState::Init()
 	timer.start();
 
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));
-	GameData::Get().uiManager->controller()->addScreen(UIScreen::Type::LoadingScreen);
 
 	LoadingManager loader;
 	loader.init();
 
 	std::thread assetLoader(loadGameAssets);
-	//std::thread loadingscreen(renderLoadingBar, &loader);
 
 	SDL_Event events;
 
@@ -85,15 +81,11 @@ void StartupState::Init()
 
 void StartupState::Update(float dt)
 {
-	//GameData::Get().systemStateManager->popState();
 
-	//GameData::Get().systemStateManager->proce;
 }
 
 void StartupState::Exit()
 {
 	DebugPrint(Log, "\n\nloading time taken: %fs", timer.getSeconds());
 	DebugPrint(Log, " -------------------------- exiting loader thread -------------------------- ");
-
-	GameData::Get().uiManager->controller()->popScreen();
 }

@@ -3,8 +3,6 @@
 class Window;
 class InputManager;
 class RenderManager;
-class UIManager;
-class FrameRateController;
 class ConfigManager;
 class AudioManager;
 struct SystemStateManager;
@@ -25,11 +23,9 @@ struct GameData
 	bool endLoading();
 
 	Window* window = nullptr;
-
 	ConfigManager* configs = nullptr;
 	InputManager* inputManager = nullptr;
 	RenderManager* renderManager = nullptr;
-	UIManager* uiManager = nullptr;
 	AudioManager* audioManager = nullptr;
 	SystemStateManager* systemStateManager = nullptr;
 	ECS::EntityCoordinator* ecs = nullptr;

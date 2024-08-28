@@ -3,6 +3,7 @@
 
 #include "Components.h"
 #include "Core/Helpers.h"
+#include "Animations/CharacterStates.h"
 
 namespace ECS
 {
@@ -44,7 +45,7 @@ namespace ECS
 			}
 		}
 
-		DebugPrint(Warning, "No animation found for action %s", actionToString(action));
+		DebugPrint(Warning, "No animation found for action %s", ActionToString(action));
 	}
 
 	const Animation& Animator::GetActiveAnimation() const

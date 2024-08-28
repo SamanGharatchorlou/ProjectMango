@@ -6,13 +6,12 @@
 #include "ECS/EntityCoordinator.h"
 
 #include "Animations/AnimationReader.h"
-#include "Characters/States/PlayerStates.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Level.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
-#include "Graphics/TextureManager.h"
-#include "System/Files/ConfigManager.h"
+
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 
 ECS::Entity s_playerEntity = ECS::EntityInvalid;
 
@@ -31,7 +30,7 @@ ECS::Entity Player::Spawn()
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
 	VectorF size = VectorF(412, 122);
-	transform.SetPosition(ECS::Level::GetSpawnPos("PlayerStart") - (size / 2.0f));
+	transform.SetWorldPosition(ECS::Level::GetSpawnPos("PlayerStart") - (size / 2.0f));
 	transform.size = size;
 	
 	// MovementPhysics
@@ -51,7 +50,7 @@ ECS::Entity Player::Spawn()
 	
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
-	collider.SetRect(RectF(VectorF::zero(), transform.size));
+	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
 	
 	// PlayerController
 	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);
@@ -63,6 +62,8 @@ ECS::Entity Player::Spawn()
 	ECS::Health& health = ecs->AddComponent(Health, s_playerEntity);
 	health.maxHealth = 100;
 	health.currentHealth = 100;
+
+	DebugMenu::SelectEntity(s_playerEntity);
 
 	return s_playerEntity;
 }

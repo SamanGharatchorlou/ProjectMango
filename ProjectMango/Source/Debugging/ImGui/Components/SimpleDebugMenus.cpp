@@ -49,3 +49,30 @@ ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 
 	return type;
 }
+
+
+ECS::Component::Type DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Component::Type type = ECS::Component::EntityData;
+
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	{
+		ECS::EntityData& entity_data = ecs->GetComponentRef(EntityData, entity);
+		ImGui::PushID(entity + (int)type);
+
+		ECS::EntityManager& em = ecs->entities;
+		const char* parent = entity_data.parent != ECS::EntityInvalid ? em.entityNames[entity].c_str() : "No parent";
+		ImGui::Text("Parent: %s", parent);
+
+		for( u32 i = 0; i < entity_data.children.size(); i++ )
+		{
+			const char* child = em.entityNames[entity_data.children[i]].c_str();
+			ImGui::Text("Child: %s", child);
+		}
+
+		ImGui::PopID();
+	}
+
+	return type;
+}

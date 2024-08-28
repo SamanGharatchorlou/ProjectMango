@@ -363,7 +363,7 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			ImGui::Checkbox("Render Rect", &s_renderRects.render);
 			if(s_renderRects.render)
 			{	
-				const RectF renderRect(transform.position, transform.size);
+				const RectF renderRect(transform.worldPosition, transform.size);
 				DebugDraw::RectOutline(renderRect, Colour::Green);
 			}
 			

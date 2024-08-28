@@ -2,12 +2,12 @@
 #include "ComponentsSetup.h"
 
 #include "ECS/Components/AIController.h"
+#include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/Level.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
-#include "ECS/Components/Level.h"
-#include "ECS/Components/Animator.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/AIControllerSystem.h"
 #include "ECS/EntSystems/AnimationSystem.h"
@@ -22,7 +22,8 @@
 void ECS::RegisterAllComponents()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
+	
+	ecs->RegisterComponent(EntityData, 32);
 	ecs->RegisterComponent(Transform, 32);
 	ecs->RegisterComponent(Sprite, 32);
 	ecs->RegisterComponent(CharacterState, 32);
@@ -42,7 +43,7 @@ void ECS::RegisterAllSystems()
 	EntityCoordinator* ecs = GameData::Get().ecs;
 
 	// Transform
-	Signature transformSignature = ArcheBit(Transform); // also want sprite here, but its the same as rendering
+	Signature transformSignature = ArcheBit(Transform);
 	ecs->RegisterSystem<TransformSystem>(transformSignature);
 
 	// Rendering
@@ -50,7 +51,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<RenderSystem>(renderSignature);
 
 	// Player Controller
-	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(CharacterState) | ArcheBit(Transform) | ArcheBit(Physics);
+	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(CharacterState) | ArcheBit(Physics);
 	ecs->RegisterSystem<PlayerControllerSystem>(playerInputSignature);
 
 	// Physics
@@ -58,7 +59,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<PhysicsSystem>(physicsSignature);
 
 	// Animation
-	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator) | ArcheBit(Transform);
+	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterSystem<AnimationSystem>(animationSignature);
 
 	// Map
@@ -66,11 +67,11 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<TileMapSystem>(levelSignature);
 
 	// Collisions
-	Signature collisionSignature = ArcheBit(Collider) | ArcheBit(Transform);
+	Signature collisionSignature = ArcheBit(Collider);
 	ecs->RegisterSystem<CollisionSystem>(collisionSignature);
 
 	// AI Controller
-	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState) | ArcheBit(Transform) | ArcheBit(Physics);
+	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState) | ArcheBit(Physics);
 	ecs->RegisterSystem<AIControllerSystem>(AIControllerSignature);
 
 	// Pathing
@@ -82,6 +83,7 @@ void ECS::RegisterAllSystems()
 void ECS::RemoveAllComponents(Entity entity)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ecs->RemoveComponent(EntityData, entity);
 	ecs->RemoveComponent(Transform, entity);
 	ecs->RemoveComponent(Sprite, entity);
 	ecs->RemoveComponent(CharacterState, entity);

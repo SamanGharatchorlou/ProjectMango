@@ -2,10 +2,6 @@
 #include "LoadingManager.h"
 
 #include "Graphics/Renderer.h"
-#include "UI/UIManager.h"
-#include "UI/Screens/LoadingScreen.h"
-#include "UI/Elements/UISlider.h"
-#include "UI/Elements/UITextBox.h"
 
 static LoadingManager* s_loader = nullptr;
 
@@ -49,12 +45,12 @@ void LoadingManager::exit()
 
 void LoadingManager::update()
 {
-	Screen* screen = GameData::Get().uiManager->getActiveScreen();
-	if (UISlider* loadingBar = screen->getSlider("LoadingSlider"))
-	{
-		float value = loadedPercentage();
-		loadingBar->setSliderValue(loadedPercentage());
-	}
+	//Screen* screen = GameData::Get().uiManager->getActiveScreen();
+	//if (UISlider* loadingBar = screen->getSlider("LoadingSlider"))
+	//{
+	//	float value = loadedPercentage();
+	//	loadingBar->setSliderValue(loadedPercentage());
+	//}
 }
 
 
@@ -77,13 +73,13 @@ void LoadingManager::render()
 
 void LoadingManager::earlyExit() 
 { 
-	mEarlyExit = true;
+	//mEarlyExit = true;
 
-	Screen* screen = GameData::Get().uiManager->getActiveScreen();
+	//Screen* screen = GameData::Get().uiManager->getActiveScreen();
 
-	UITextBox* text = screen->findTextBox("LoadingText");
-	text->setText("Exiting Game...");
-	text->align();
+	//UITextBox* text = screen->findTextBox("LoadingText");
+	//text->setText("Exiting Game...");
+	//text->align();
 }
 
 

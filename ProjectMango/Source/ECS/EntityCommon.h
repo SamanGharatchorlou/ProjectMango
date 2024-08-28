@@ -19,13 +19,13 @@ namespace ECS
 	{
 		enum Type : u64
 		{
+			EntityData,
 			Transform,
 			Sprite,
 			CharacterState,
 			PlayerController,
 			Physics,
 			Animator,
-			TileMap,
 			Collider,
 			AIController,
 			Pathing,
@@ -39,13 +39,13 @@ namespace ECS
 
 	static constexpr const char* ComponentNames[Component::Count]
 	{
+		"EntityData",
 		"Transform", 
 		"Sprite",
 		"CharacterState", 
 		"PlayerController", 
 		"Physics", 
-		"Animator", 
-		"TileMap",
+		"Animator",
 		"Collider",
 		"AIController",
 		"Pathing",

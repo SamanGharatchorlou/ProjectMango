@@ -7,7 +7,6 @@
 #include "Audio/AudioManager.h"
 #include "Input/inputManager.h"
 #include "Graphics/RenderManager.h"
-#include "UI/UIManager.h"
 #include "Game/Camera/Camera.h"
 #include "LoadingManager.h"
 #include "Game/SystemStateManager.h"
@@ -51,10 +50,6 @@ void GameData::init(Window* newWindow)
 	// Input
 	inputManager = new InputManager;
 
-	// UI
-	uiManager = new UIManager;
-	uiManager->init();
-
 	// Entity Component System
 	ecs = new ECS::EntityCoordinator;
 
@@ -68,9 +63,6 @@ void GameData::preLoad()
 {
 	TextureManager::Get()->preLoad();
 	AudioManager::Get()->preLoad();
-
-	uiManager->preLoad();
-	uiManager->initCursor(inputManager->getCursor());
 }
 
 bool GameData::endLoading()
@@ -119,19 +111,6 @@ void GameData::load()
 	if (endLoading())
 		return;
 
-	// UI
-	uiManager->load();
-	uiManager->initCursor(inputManager->getCursor());
-
-	DebugPrint(Log, "finish loading UI");
-
-	if (endLoading())
-		return;
-
-	// Map Level
-	//environment->init(this);
-	//environment->load();
-
 	// load this right at the end since some of the above init's might add more configs to load
 	configs->load();
 
@@ -162,7 +141,6 @@ void GameData::setupObservers()
 
 void GameData::free()
 {
-	delete uiManager;
 	delete inputManager;
 	delete systemStateManager;
 

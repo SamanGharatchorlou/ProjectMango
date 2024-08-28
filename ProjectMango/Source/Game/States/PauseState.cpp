@@ -6,12 +6,9 @@
 
 #include "Graphics/TextureManager.h"
 #include "Graphics/RenderManager.h"
-#include "UI/UIManager.h"
 
 void PauseState::Init() 
 {
-	GameData::Get().uiManager->setCursorTexture(TextureManager::Get()->getTexture("UICursor", FileManager::Image_UI));
-
 	AudioManager* audio = AudioManager::Get();
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 750));
 }

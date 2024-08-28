@@ -36,24 +36,14 @@ namespace ECS
 			 
 			if(physics.applyGravity && !physics.onFloor)
 			{
-				float multiplyer = 1.0f;
-				
-				if(ECS::CharacterState* character_state = ecs->GetComponent(CharacterState, entity))
-				{
-					if(character_state->actions.Top().action == ActionState::Jump)
-					{
-						multiplyer = 7.0f;
+				float multiplyer = 7.0f;
 
-						if(physics.speed.y > 0.0f)
-							multiplyer *= 1.5f;
-					}
-				}
+				if(physics.speed.y > 0.0f)
+					multiplyer *= 1.5f;
 				
 				physics.speed += VectorF(0.0f, 9.8f) * multiplyer * dt;
 				physics.speed = physics.speed.clamp(physics.maxSpeed * -1.0f, physics.maxSpeed);
 			}
-
-
 		}
 	}
 }

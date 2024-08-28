@@ -1,29 +1,17 @@
 #include "pch.h"
 #include "GameState.h"
 
-#include "Input/InputManager.h"
 #include "Audio/AudioManager.h"
-#include "Game/Camera/Camera.h"
-#include "UI/UIManager.h"
-#include "Game/States/StartupState.h"
-
-#include "ECS/Components/Components.h"
+#include "Characters/Enemies/Enemies.h"
+#include "Characters/Player/PlayerCharacter.h"
+#include "ECS/Components/ComponentsSetup.h"
 #include "ECS/Components/Level.h"
 #include "ECS/EntityCoordinator.h"
-
-#include "Characters/Spawner.h"
-#include "ECS/Components/ComponentsSetup.h"
-#include "Scene/SceneParsing/SceneBuilder.h"
-
-#include "Debugging/ImGui/ImGuiMainWindows.h"
-
-#include "Scene/SceneParsing/LevelReader.h"
-
-#include "Game/SystemStateManager.h"
+#include "Game/Camera/Camera.h"
 #include "Game/States/AnimationEditorState.h"
-
-#include "Characters/Player/PlayerCharacter.h"
-#include "Characters/Enemies/Enemies.h"
+#include "Game/SystemStateManager.h"
+#include "Input/InputManager.h"
+#include "Scene/SceneParsing/LevelReader.h"
 
 void GameState::Init()
 {
@@ -39,18 +27,7 @@ void GameState::Init()
 	activeLevel = entity;
 
 	ECS::Entity player = Player::Spawn();
-	//ECS::Entity enemy = EnemySpawn::Spawn();
-
 	ECS::Entity enemy = Enemy::Create();
-
-	//// debugging
-	//DebugMenu::SelectEntity(enemy);
-
-	//if(ECS::Pathing* pathing = ecs->GetComponent(Pathing, enemy))
-	//	pathing->target = player;
-
-	UIManager* ui = GameData::Get().uiManager;
-	ui->controller()->replaceScreen(UIScreen::Type::Game);
 
 	initCamera();
 

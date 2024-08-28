@@ -19,23 +19,34 @@ namespace ECS
 		VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0) 
 	};
 
+	struct EntityData
+	{
+		COMPONENT_TYPE(EntityData)
+
+		ECS::Entity parent = EntityInvalid;
+		std::vector<Entity> children;
+
+		static void SetParent(Entity entity, Entity parent);
+	};
+
 	struct Transform
 	{
 		COMPONENT_TYPE(Transform)
 
-		VectorF targetPosition;
-		VectorF position;
+		VectorF targetWorldPosition;
+		VectorF worldPosition;
+
+		VectorF localPosition;
 
 		VectorF size;
-		// rect of the actual object
-		//RectF rect;
-		//VectorF positionOffset;
 
-		void SetPosition(VectorF pos) 
+		void SetWorldPosition(VectorF pos) 
 		{
-			targetPosition = pos;
-			position = pos;
+			targetWorldPosition = pos;
+			worldPosition = pos;
 		}
+
+		void SetLocalPosition(VectorF pos);
 	};
 
 	struct Sprite
@@ -53,6 +64,7 @@ namespace ECS
 
 		u32 renderLayer = 0;
 		
+		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
 	};
 
 	struct CharacterState

@@ -99,9 +99,9 @@ void DebugMenu::DoEntitySystemWindow()
             id_numb = 0;
             ECS::Archetype type = 0;
             bool do_dropdown = true;
-
+            
+            DoComponentDropdown(EntityData);
             DoComponentDropdown(Animator);
-            //DoComponentDropdown(TileMap);
             DoComponentDropdown(Collider);
             DoComponentDropdown(CharacterState);
             DoComponentDropdown(Physics);

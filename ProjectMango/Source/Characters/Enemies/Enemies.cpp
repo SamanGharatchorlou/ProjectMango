@@ -4,15 +4,14 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Level.h"
-#include "ECS/EntityCoordinator.h"
-#include "ECS/Components/AIController.h"
-
-#include "Graphics/TextureManager.h"
-#include "System/Files/ConfigManager.h"
-#include "Characters/States/PlayerStates.h"
 #include "ECS/Components/Physics.h"
-#include "Animations/AnimationReader.h"
+#include "ECS/Components/AIController.h"
+#include "ECS/EntityCoordinator.h"
+#include "Graphics/TextureManager.h"
 #include "Core/Helpers.h"
+
+#include "Animations/AnimationReader.h"
+#include "ECS/Components/Animator.h"
 
 static void ParseEnemyData(const char* file)
 {
@@ -38,49 +37,40 @@ ECS::Entity Enemy::Create()
 
 	ECS::Entity entity = ecs->CreateEntity("Enemy");
 
-	//StringMap32 enemy_data;
-
-	//ParseEnemyData("BasicEnemy");
-
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	transform.SetPosition(ECS::Level::GetSpawnPos("TrainingDummy"));
-	transform.size = VectorF(128, 128);
-	
+	transform.SetWorldPosition(ECS::Level::GetSpawnPos("TrainingDummy"));
+	transform.size = VectorF(352, 120);
+
 	// MovementPhysics
-	//ECS::Physics& physics = ecs->AddComponent(Physics, entity);
-	//physics.applyGravity = false;	
-	//physics.acceleration = VectorF(100.0f, 100.0f);
-	//physics.maxSpeed = VectorF(5.0f, 5.0f);
-	//physics.speed = VectorF(0,2);
+	ECS::Physics& physics = ecs->AddComponent(Physics, entity);
+	physics.applyGravity = true;		
+	physics.acceleration = VectorF(100.0f, 100.0f);
+	physics.maxSpeed = VectorF(5.0f, 20.0f);
 
-	//// Animation
-	//ECS::Animation& animation = ecs->AddComponent(Animation, entity);
-	//AnimationReader::Parse( "TribeWarriorAnimations", animation.animator );
-	//animation.animator.start();
-
-
-	Texture* texture = TextureManager::Get()->getTexture("TrainingDummy", FileManager::Folder::Image_Animations);
+	ECS::Animator& animation = ecs->AddComponent(Animator, entity);
+	AnimationReader::BuildAnimatior( "ShockSweeperAnimations", animation.animations );
+	animation.activeAnimation = 0;
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
 	sprite.renderLayer = 9;
-	sprite.texture = texture;
 	
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
-	collider.SetRect(RectF(VectorF::zero(), transform.size));
+	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
 	SetFlag<u32>(collider.flags, (u32)ECS::Collider::IsEnemy);
-
-	
-	// CharacterState
-	//ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
-	//character_state.facingDirection = VectorI(0,1); // facing down
 
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, entity);
-	health.maxHealth = 100;
-	health.currentHealth = 100;
+	health.maxHealth = 10000;
+	health.currentHealth = health.maxHealth;
+
+	// AI
+	ECS::AIController& ai = ecs->AddComponent(AIController, entity);
+	
+	// CharacterState
+	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
 
 	return entity;
 }

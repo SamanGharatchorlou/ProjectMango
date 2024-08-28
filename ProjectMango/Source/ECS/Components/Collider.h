@@ -44,7 +44,8 @@ namespace ECS
 	
 		static bool test1DOverlap(float minA, float maxA, float minB, float maxB);
 
-		void SetRect(const RectF& rect);
+		void SetBaseRect(const RectF& rect);
+		void SetTopLeft(const VectorF& pos);
 		void SetRelativeRect(VectorF position, VectorF size);
 
 		void RollBackPosition();
@@ -55,7 +56,8 @@ namespace ECS
 	#endif
 		
 		u32 flags = 0;
-		
+		int lastHitFrame = -1;
+
 		VectorF allowedMovement;
 
 		VectorF forward;
@@ -65,12 +67,17 @@ namespace ECS
 
 		std::vector<ECS::Entity> collisions;
 
+
 	private:
-		// done use this, use the rect
+		// dont use this, use the rect
+		// the base rect represents the size of the transform, since the collider might be smaller 
+		// we use the relative pos and size to build the actual rect of this collider from the transform
 		RectF baseRect;
 
 		// relative to the transform rect
 		VectorF relative_position = VectorF(0,0);
 		VectorF relative_size = VectorF(1,1);
+
+		void UpdateRectFromBase();
 	};
 }

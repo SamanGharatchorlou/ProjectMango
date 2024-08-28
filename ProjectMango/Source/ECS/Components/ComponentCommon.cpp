@@ -77,7 +77,7 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		if (const Transform* transform = ecs->GetComponent(Transform, entity))
 		{
-			return transform->position;// GetPos();
+			return transform->worldPosition;// GetPos();
 		}
 
 		return VectorF::zero();

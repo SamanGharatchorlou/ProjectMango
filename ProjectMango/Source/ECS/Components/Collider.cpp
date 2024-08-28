@@ -40,26 +40,38 @@ namespace ECS
 	{
 		return maxA > minB && minA < maxB;
 	}
+
+	void Collider::UpdateRectFromBase()
+	{
+		VectorF rel_top_left = baseRect.TopLeft() + (baseRect.Size() * relative_position);
+		VectorF rel_size = baseRect.Size() * relative_size;
+		rect = RectF(rel_top_left, rel_size);
+	}
 	
 	void Collider::SetRelativeRect(VectorF position, VectorF size)
 	{
 		relative_position = position;
 		relative_size = size;
 
-		VectorF rel_top_left = baseRect.TopLeft() + (baseRect.Size() * relative_position);
-		VectorF rel_size = baseRect.Size() * relative_size;
-		rect = RectF(rel_top_left, rel_size);
+		UpdateRectFromBase();
 	}
 
-	void Collider::SetRect(const RectF& _rect)
+	void Collider::SetBaseRect(const RectF& _rect)
 	{
 		baseRect = _rect;
 		forward = baseRect.TopLeft();
 		back = forward;
 
-		VectorF rel_top_left = baseRect.TopLeft() + (baseRect.Size() * relative_position);
-		VectorF rel_size = baseRect.Size() * relative_size;
-		rect = RectF(rel_top_left, rel_size);
+		UpdateRectFromBase();
+	}
+
+	void Collider::SetTopLeft(const VectorF& pos)
+	{
+		baseRect.SetTopLeft(pos);		
+		forward = baseRect.TopLeft();
+		back = forward;
+
+		UpdateRectFromBase();
 	}
 
 	// using these requires updating the GetRect

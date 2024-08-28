@@ -2,9 +2,51 @@
 #include "Components.h"
 
 #include "ECS/EntityCoordinator.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
+	// EntityData
+	void EntityData::SetParent(Entity entity, Entity parent)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		// set new entity parent
+		EntityData* entity_data = ecs->GetComponent(EntityData, entity);
+		if(!entity_data)
+			entity_data = &ecs->AddComponent(EntityData, entity);
+
+		// remove ourself from the old parent, if there was one
+		if( entity_data->parent != EntityInvalid )
+		{
+			EntityData& old_parent_entity_data = ecs->GetComponentRef(EntityData, entity_data->parent);
+			EraseSwap(old_parent_entity_data.children, entity);
+		}
+
+		entity_data->parent = parent;
+		
+		// add the child to the parent
+		EntityData* parent_entity_data = ecs->GetComponent(EntityData, parent);
+		if(!parent_entity_data)
+			parent_entity_data = &ecs->AddComponent(EntityData, parent);
+
+		PushBackUnique(parent_entity_data->children, entity);
+	}
+
+	// Transform
+	void Transform::SetLocalPosition(VectorF pos)
+	{
+		localPosition = pos;
+		
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		// must have a parent by this point
+		EntityData& entity_data = ecs->GetComponentRef(EntityData, entity);
+		Transform& parent_transform = ecs->GetComponentRef(Transform, entity_data.parent);
+		SetWorldPosition(parent_transform.worldPosition + localPosition);
+	}
+	
+	// Health
 	void Health::ApplyDamage(const Damage& damage)
 	{
 		if(invulnerable)
@@ -25,38 +67,4 @@ namespace ECS
 		// todo: clean this list when the entity is dead
 		ignoredDamaged.push_back(damage.entity);
 	}
-
-	//void Pathing::UpdateTargetPosition()
-	//{
-	//	EntityCoordinator* ecs = GameData::Get().ecs;
-	//	if(ecs->IsAlive(target))
-	//	{
-	//		const RectF target_rect = ECS::GetColliderRect(target);
-
-	//		VectorF start_position = ECS::GetPosition(entity);
-
-	//		int min_path_length = INT_MAX;
-
-	//		// check which position is most desirable out of top, right, bottom, left depending on our position
-	//		for( u32 i = 0; i < Direction::Count; i++ )
-	//		{
-	//			const VectorI direction = s_directions[i];
-	//			const VectorI facing_direction = direction *-1;
-	//			
-	//			VectorF pos = target_rect.Center();
-	//			const VectorF area = Enemy::GetAttackRangeArea(entity, facing_direction);
-	//			pos += area * direction.toFloat();
-
-	//			if(DebugMenu::GetSelectedEntity() == entity)
-	//				DebugMenu::SetPathAttackPoint(pos, (Direction)i);
-
-	//			int path_length = PathingSystem::FindPath(start_position, pos).size();
-	//			if(path_length < min_path_length)
-	//			{
-	//				min_path_length = path_length;
-	//				currentTarget = pos;
-	//			}
-	//		}
-	//	}
-	//}
 }

@@ -21,10 +21,9 @@ namespace ECS
 
 		void KillEntity(Entity entity);
 
-		// todo: not currently using these... i assume i do, but when will i need the archetype array
 		bool HasComponent(Entity entity, Component::Type component) const
 		{
-			return archetypes[entity] & ((u64)1 << component);
+			return archetypes[entity] != ArchetypeInvalid && archetypes[entity] & ((u64)1 << component);
 		}
 
 		void AddComponent(Entity entity, Component::Type component)

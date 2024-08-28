@@ -147,7 +147,10 @@ namespace AnimationEditor
 			        DebugDraw::RectOutline(animation, Colour::Yellow);
 
                     ImGui::VectorText("Texture Size", texture_size);
-                    ImGui::InputVectorI("Frame Size", s_state.frameCounts);
+                    ImGui::InputVectorI("Frame Counts", s_state.frameCounts);
+
+                    VectorF real_frame_size = dim / s_state.frameCounts.toFloat();
+                    ImGui::VectorText("Frame Size", real_frame_size);
 
                     int frame_split_x = std::max(1, s_state.frameCounts.x);
                     int frame_split_y = std::max(1, s_state.frameCounts.y);
@@ -373,18 +376,18 @@ namespace AnimationEditor
             {
                 ImGui::PushID("config selector");
 
-                const char* select_animation_string = actionToString(c.animator.GetActiveAnimation().action).c_str();
+                const char* select_animation_string = ActionToString(c.animator.GetActiveAnimation().action);
                 if (ImGui::BeginCombo("Select Animation", select_animation_string))
                 {
                     for( u32 i = 0; i < c.animator.animations.size(); i++ )
                     {
-                        const char* action_string = actionToString(c.animator.animations[i].action).c_str();
+                        const char* action_string = ActionToString(c.animator.animations[i].action);
 
                         const bool is_selected =  StringCompare(action_string, select_animation_string);
 
                         if (ImGui::Selectable(action_string, is_selected))
                         {
-                            ActionState action = stringToAction(action_string);
+                            ActionState action = StringToAction(action_string);
                             c.animator.StartAnimation(action);
                         }
 
@@ -513,7 +516,7 @@ namespace AnimationEditor
             if(!cs.movingSelection)
             {
                 ECS::Collider selection;
-                selection.SetRect(cs.selectionRect);
+                selection.SetBaseRect(cs.selectionRect);
 
                 if(selection.contains(cursor_pos))
                 {

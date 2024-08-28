@@ -38,12 +38,31 @@ bool Contains(std::vector<T>& vector, const T& item)
 }
 
 template<typename T>
-void push_back_unique(std::vector<T>& vector, const T& item)
+bool PushBackUnique(std::vector<T>& vector, const T& item)
 {
 	if( !Contains(vector, item) )
 	{
 		vector.push_back(item);
+		return true;
 	}
+
+	return false;
+}
+
+template<typename T>
+bool EraseSwap(std::vector<T>& vector, const T& item)
+{
+	for( auto iter = vector.begin(); iter != vector.end(); iter++ )
+	{
+		if(*iter = item)
+		{
+			*iter = vector.back();
+			vector.resize(vector.size() - 1);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

@@ -16,26 +16,6 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		if (ImGui::TreeNode("Component Data"))
-		{
-			ECS::CharacterState& cs = ecs->GetComponentRef(CharacterState, entity);
-			//ImGui::VectorText("Facing Direction", cs.facingDirection);
-			//ImGui::Text("Current State: %s", actionToString(cs.action).c_str());
-			//ImGui::Checkbox("Can Change", &cs.canChange);
-
-			
-			if(ECS::AIController* aic = ecs->GetComponent(AIController, entity))
-			{
-				for( u32 i = 0; i < aic->actions.stack.size(); i++ )
-				{
-					CharacterAction* action = aic->actions.stack[i];
-					ImGui::Text("Action Stack: %s", actionToString(action->action).c_str());
-				}
-			}
-
-			ImGui::TreePop();
-		}
-
 		if (ImGui::TreeNode("State Editor"))
 		{
 			if(ECS::AIController* aic = ecs->GetComponent(AIController, entity))
@@ -44,10 +24,10 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 				{
 					for( u32 i = 0; i < (u32)ActionState::Count; i++ )
 					{
-						const char* action_string = actionToString((ActionState)i).c_str();
+						const char* action_string = ActionToString((ActionState)i);
 						if (ImGui::Selectable(action_string, false))
 						{
-							aic->PushState((ActionState)i);
+							//aic->PushState((ActionState)i);
 						}
 					}
 						

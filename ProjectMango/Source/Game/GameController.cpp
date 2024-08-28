@@ -10,7 +10,6 @@
 #include "Audio/AudioManager.h"
 #include "Input/inputManager.h"
 #include "Graphics/RenderManager.h"
-#include "UI/UIManager.h"
 #include "Game/FrameRateController.h"
 #include "Game/States/StartupState.h"
 
@@ -83,14 +82,6 @@ void GameController::restartGame()
 
 	// Remove all states
 	sm->mStates.shallowClear();
-
-	mGameData.uiManager->clearScreens();
-	mGameData.uiManager->load();
-
-	//mGameData.environment->init(&mGameData);
-	//mGameData.environment->load();
-	//sm->addState(SystemStates::PreGameState);
-	// todo: clear / pop whatever state is on here
     sm->mStates.addState(new GameState);
 	DebugPrint(Log, "--- End game restart ---");
 }
@@ -113,7 +104,6 @@ void GameController::handleInput(SDL_Event& event)
 	}
 	mGameData.inputManager->updateHeldFrame();
 
-	mGameData.uiManager->handleInput(mGameData.inputManager);
 	sm->mStates.getActiveState().HandleInput();
 
 #if DEBUG_CURSOR // show mouse position in screen title
@@ -135,8 +125,6 @@ void GameController::updateLoops(float dt)
 		sm->mStates.getActiveState().FastUpdate(dt / updateLoopRepeats);
 
 	sm->mStates.getActiveState().Update(dt);
-
-	mGameData.uiManager->update();
 }
 
 

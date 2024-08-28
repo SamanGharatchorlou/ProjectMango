@@ -7,6 +7,8 @@
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
 #include "Characters/Player/PlayerCharacter.h"
+#include "Characters/States/PlayerStates.h"
+#include "Animations/CharacterStates.h"
 
 namespace ECS
 {

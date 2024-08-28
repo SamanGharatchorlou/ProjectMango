@@ -29,7 +29,7 @@ namespace ECS
 			if(!sprite.texture)
 				continue;
 
-			const RectF renderRect(transform.position, transform.size);
+			const RectF renderRect(transform.worldPosition, transform.size);
 
 			RenderPack pack(sprite.texture, renderRect, sprite.renderLayer);
 			pack.subRect = sprite.subRect;

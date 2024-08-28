@@ -1,26 +1,27 @@
 #include "pch.h"
 #include "PlayerStates.h"
 
-#include "Input/InputManager.h"
 #include "Animations/CharacterStates.h"
 #include "Game/FrameRateController.h"
+#include "Input/InputManager.h"
 
-#include "ECS/Components/PlayerController.h"
-#include "ECS/Components/Physics.h"
+#include "Core/Helpers.h"
+#include "ECS/Components/Animator.h"
+#include "ECS/Components/Collider.h"
+#include "ECS/Components/ComponentCommon.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/Physics.h"
+#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/AnimationSystem.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/ComponentCommon.h"
-#include "Core/Helpers.h"
 
 using namespace Player;
 
-#define PushNewState(action) state.actions.Push(new action##State(entity))
 
 // Idle
 // ---------------------------------------------------------
+IdleState::IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
+
 void IdleState::Init()
 {
 	StartAnimation();
@@ -59,15 +60,12 @@ void IdleState::Update(float dt)
 	{
 		PushNewState(Jump);
 	}
-
-	//if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-	//{
-	//	physics->speed.x = 0.0f;
-	//}
 }
 
 // Run
 // ---------------------------------------------------------
+RunState::RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
+
 void RunState::Init()
 {
 	StartAnimation();
@@ -98,7 +96,7 @@ void RunState::Update(float dt)
 		}
 	}
 
-	physics.maxSpeed.x = 20.0f;
+	physics.maxSpeed.x = 15.0f;
 	physics.ApplyMovement(state.movementInput.toFloat(), dt);
 	
 	InputManager* input = InputManager::Get();
@@ -121,6 +119,8 @@ void RunState::Update(float dt)
 
 // JumpState
 // ---------------------------------------------------------
+JumpState::JumpState(ECS::Entity _entity) : CharacterAction(ActionState::Jump, _entity) { }
+
 void JumpState::Init()
 {
 	StartAnimation(ActionState::JumpMovingUp);
@@ -144,8 +144,15 @@ void JumpState::Update(float dt)
 	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 
 	// apply walk speed
-	physics.maxSpeed.x = 15.0f;
+	physics.maxSpeed.x = 10.0f;
 	physics.ApplyMovement(state.movementInput.toFloat(), dt);
+
+	const float speed = physics.speed.x;
+	const int input_dir = state.movementInput.x;
+	if (speed > 0.0f && input_dir < 0 || speed < 0.0f && input_dir > 0)
+	{
+		physics.ApplyDrag(0.7f);
+	}
 
 	// rapidly slow upwards movement while not holding space
 	InputManager* input = InputManager::Get();
@@ -176,6 +183,8 @@ void JumpState::Update(float dt)
 
 // RollState
 // ---------------------------------------------------------
+RollState::RollState(ECS::Entity _entity) : CharacterAction(ActionState::Roll, _entity) { }
+
 void RollState::Init()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -255,21 +264,17 @@ void RollState::Exit()
 
 // BasicAttack
 // ---------------------------------------------------------
+BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+
 void BasicAttackState::Init()
 {
 	StartAnimation();
 
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	const ECS::Animation& animation = animator.GetActiveAnimation();
-
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	RectF base_rect(transform.position, transform.size);
+	CreateNewAttackCollider();
 	
-	VectorF pos = base_rect.TopLeft() + (base_rect.Size() * animation.attackColliderPos);
-	VectorF size = base_rect.Size() * animation.attackColliderSize;
-
-	attackCollider = CreateAttackCollider(entity, RectF(pos, size), 10, "player attack collider");
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.canFlip = false;
 }
 
 void BasicAttackState::Update(float dt)
@@ -277,8 +282,12 @@ void BasicAttackState::Update(float dt)
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 	ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+
 	if (animator.loopCount > 0)
 	{
+		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.canFlip = true;
+
 		if (animator.GetActiveAnimation().action == ActionState::BasicAttack)
 		{
 			InputManager* input = InputManager::Get();
@@ -301,56 +310,69 @@ void BasicAttackState::Update(float dt)
 				return;
 			}
 		}
+
+		if(animator.loopCount > damageOnLoopCount)
+		{
+			CreateNewAttackCollider();
+		}
 	}
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
-		physics->ApplyDrag(0.15f);
+		physics->ApplyDrag(0.35f);
 	}
 }
 
 void BasicAttackState::Exit()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	GameData::Get().ecs->entities.KillEntity(attackCollider);
+	ecs->entities.KillEntity(attackCollider);
+			
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.canFlip = true;
 }
 
+void BasicAttackState::CreateNewAttackCollider()
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ecs->entities.KillEntity(attackCollider);
+	
+	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+	const ECS::Animation& animation = animator.GetActiveAnimation();
+	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	VectorF pos =  transform.size * animation.attackColliderPos;
+	VectorF size = transform.size * animation.attackColliderSize;
+	RectF collider_rect(pos, size);
+	
+	attackCollider = ecs->CreateEntity("player attack collider");
+	ECS::EntityData::SetParent(attackCollider, entity);
 
-//// ChopAttack
-//// ---------------------------------------------------------
-//void ChopAttackState::Update(float dt)
-//{
-//	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-//	ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-//	
-//	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-//	{
-//		physics->ApplyDrag(VectorF::zero(), 0.05f);
-//	}
-//	
-//	//ECS::Animation& animation = ecs->GetComponentRef(Animation, entity);
-//	//if(animation.animator.finished())
-//	//{
-//	//	pc.PopState();
-//	//}
-//
-//	//if(animation.animator.lastFrame())
-//	//{
-//	//	// input buffer
-//	//	InputManager* input = InputManager::Get();
-//	//	if (input->isCursorPressed(Cursor::ButtonType::Left))
-//	//	{
-//	//		animation.animator.restart();			
-//	//		
-//	//		pc.PopState();
-//	//		pc.PushState(ActionState::ChopAttack);;
-//	//	}
-//	//}
-//}
+	// Transform
+	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attackCollider);
+	attack_transform.SetLocalPosition(pos);
+	attack_transform.size = size;
+
+	// Collider
+	ECS::Collider& collider = ecs->AddComponent(Collider, attackCollider);
+	collider.SetBaseRect(collider_rect);
+	//collider.flags |= ECS::Collider::Flags::IgnoreAll;
+
+	// Damage
+	ECS::Damage& damage_comp = ecs->AddComponent(Damage, attackCollider);
+	damage_comp.value = 10;
+		
+	// dont damage our self
+	ECS::Health& health = ecs->GetComponentRef(Health, entity);
+	health.ignoredDamaged.push_back(attackCollider);
+
+	damageOnLoopCount = animator.loopCount;
+}
 
 
 // DeathState
 // ---------------------------------------------------------
+DeathState::DeathState(ECS::Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
+
 void DeathState::Init()
 {
 	can_respawn = false;
@@ -371,9 +393,4 @@ void DeathState::Update(float dt)
 
 	if(animation.loopCount > 0)
 		can_respawn = true;
-
-	//if(animation.animator.finished())
-	//{
-	//	can_respawn = true;
-	//}
 }

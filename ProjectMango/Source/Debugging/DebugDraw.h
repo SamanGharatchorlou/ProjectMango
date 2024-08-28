@@ -12,5 +12,5 @@ namespace DebugDraw
 	void RectFill(const RectF& rect, Colour colour);
 	//void debugDrawRects(std::vector<RectF> rects, Colour colour);
 	//void debugDrawQuad(Quad2D<float> quad, Colour colour);
-	void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment = "Center");
+	//void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment = "Center");
 }

@@ -64,7 +64,9 @@
 			"startIndex": 187,
 			"frameCount": 4,
 			"frameTime": 0.06,
-			"flip_point_x": 0.426
+			"flip_point_x": 0.426,
+			"attack_collider_pos": [ 0.529, 0.513 ],
+			"attack_collider_size": [ 0.232, 0.364 ]
 		}
 	]
 }

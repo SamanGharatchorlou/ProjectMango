@@ -189,14 +189,17 @@ namespace Level
 
 					// create a static collider entity
 					ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-					ECS::Entity ent = ecs->CreateNewEntity();
+
+					char buffer[32];
+					snprintf(buffer, 32, "Map Collider %d", (int)b);
+					ECS::Entity ent = ecs->CreateEntity(buffer);
 
 					ECS::Collider& collider = ecs->AddComponent(Collider, ent);
-					collider.SetRect( collider_rect );
+					collider.SetBaseRect( collider_rect );
 					SetFlag<u32>(collider.flags, (u32)ECS::Collider::Static);
 
 					ECS::Transform& transform = ecs->AddComponent(Transform, ent);
-					transform.SetPosition(top_left);
+					transform.SetWorldPosition(top_left);
 				}
 			}
 			else

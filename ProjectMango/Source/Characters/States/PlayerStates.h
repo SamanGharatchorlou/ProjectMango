@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Core/ObjectPool.h"
-#include "Game/States/State.h"
-#include "Animations/CharacterStates.h"
 #include "CharacterAction.h"
 
 namespace Player
 {
 	struct IdleState : public CharacterAction
 	{
-		IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
+		IdleState(ECS::Entity _entity);
 		void Init() override;
 		void Update(float dt) override;
 		void Resume() override;
@@ -17,7 +14,7 @@ namespace Player
 
 	struct RunState : public CharacterAction
 	{		
-		RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
+		RunState(ECS::Entity _entity);
 		void Init() override;
 		void Update(float dt) override;
 		void Resume() override;
@@ -25,7 +22,7 @@ namespace Player
 
 	struct JumpState : public CharacterAction
 	{
-		JumpState(ECS::Entity _entity) : CharacterAction(ActionState::Jump, _entity) { }
+		JumpState(ECS::Entity _entity);
 
 		void Init() override;
 		void Update(float dt) override;
@@ -33,7 +30,7 @@ namespace Player
 
 	struct RollState : public CharacterAction
 	{
-		RollState(ECS::Entity _entity) : CharacterAction(ActionState::Roll, _entity) { }
+		RollState(ECS::Entity _entity);
 
 		void Init() override;
 		void Update(float dt) override;
@@ -42,24 +39,22 @@ namespace Player
 
 	struct BasicAttackState : public CharacterAction
 	{
-		BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+		BasicAttackState(ECS::Entity _entity);
 
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
+
+		void CreateNewAttackCollider();
 		
 		ECS::Entity attackCollider = ECS::EntityInvalid;
-	};
 
-	//struct ChopAttackState : public CharacterAction
-	//{
-	//	void Update(float dt) override;
-	//};
+		u32 damageOnLoopCount = 0;
+	};
 
 	struct DeathState : public CharacterAction
 	{
-		
-		DeathState(ECS::Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
+		DeathState(ECS::Entity _entity);
 
 		void Init() override;
 		void Update(float dt) override;

@@ -3,7 +3,6 @@
 #include "DebugDraw.h"
 
 #include "Game/Camera/Camera.h"
-#include "UI/Elements/UITextBox.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/RenderManager.h"
 
@@ -114,12 +113,12 @@ namespace DebugDraw
 	//	}
 	//}
 
-	void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment)
-	{
-		UITextBox textBox;
-		textBox.setAlignment(alignment);
-		textBox.mText.init(text, "default", ptSize, colour.toSDL());
-		textBox.setRect(RectF(position + VectorF(5,5), VectorF::zero()));
-		textBox.render();
-	}
+//	void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment)
+//	{
+//		UITextBox textBox;
+//		textBox.setAlignment(alignment);
+//		textBox.mText.init(text, "default", ptSize, colour.toSDL());
+//		textBox.setRect(RectF(position + VectorF(5,5), VectorF::zero()));
+//		textBox.render();
+//	}
 }

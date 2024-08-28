@@ -11,13 +11,13 @@ namespace DebugMenu
 	bool RemovePath(ECS::Entity& entity);
 
 	void SetPathAttackPoint(VectorF point, Colour colour, ECS::Direction direction);
-
+	
+	ECS::Component::Type DoEntityDataDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoTransformDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoSpriteDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoCharacterStateDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPhysicsDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoAnimatorDebugMenu(ECS::Entity& entity);
-	//ECS::Component::Type DoTileMapDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoColliderDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPlayerControllerDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoPathingDebugMenu(ECS::Entity& entity);

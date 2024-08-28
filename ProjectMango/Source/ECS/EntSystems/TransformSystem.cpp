@@ -25,21 +25,48 @@ namespace ECS
 				if(HasFlag(collider->flags, flags))
 					continue;
 
-				transform.position = transform.position + collider->allowedMovement;
+				transform.worldPosition = transform.worldPosition + collider->allowedMovement;
+
+				// update children positions
+				if(EntityData* entity_data = ecs->GetComponent(EntityData, entity))
+				{
+					VectorF flip_point;
+					if(ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+					{
+						if(sprite->IsFlipped())
+							flip_point = sprite->flipPoint * transform.size;
+					}
+
+					for( u32 i = 0; i < entity_data->children.size(); i++ )
+					{
+						Entity child = entity_data->children[i];
+						Transform& child_transform = ecs->GetComponentRef(Transform, child);
+
+						VectorF child_world_pos = transform.worldPosition + child_transform.localPosition;
+
+						if(!flip_point.isZero())
+						{
+							VectorF flip_distance = child_transform.localPosition - flip_point;
+							child_world_pos -= (flip_distance * 2.0f + VectorF(child_transform.size.x, 0.0f));
+						}
+
+						child_transform.SetWorldPosition(child_world_pos);
+					}
+				}
 			}
 
 			// update the target position based on physics
 			Physics* physics = ecs->GetComponent(Physics, entity);
 			if(physics)
 			{
-				transform.targetPosition = transform.position + physics->speed;
+				transform.targetWorldPosition = transform.worldPosition + physics->speed;
 			}
 
 			// set collider paramters
 			if(collider)
 			{
-				collider->back = transform.position;
-				collider->forward = transform.targetPosition;
+				collider->back = transform.worldPosition;
+				collider->forward = transform.targetWorldPosition;
 				collider->RollForwardPosition();
 
 				if( physics )
