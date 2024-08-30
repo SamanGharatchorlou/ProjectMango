@@ -34,7 +34,6 @@ namespace ECS
 					Player::DeathState* death_state = static_cast<Player::DeathState*>(character_state);
 					if(death_state->can_respawn)
 					{
-						//respawn = true;
 						to_respawn.push_back(entity);
 						Player::Spawn();
 						return;
@@ -58,10 +57,21 @@ namespace ECS
 			}
 
 			// Movement Direction
-			const int horizontal_direction = input->isHeld(Button::Right) - input->isHeld(Button::Left);
-			//const int vertical_direction = input->isHeld(Button::Up) || input->isHeld(Button::Down);
+			bool move_right = input->isHeld(Button::Right);
+			bool move_left = input->isHeld(Button::Left);
+			int horizontal_direction = move_right - move_left;
+
+			if (move_right && move_left)
+			{
+				// take the most recently pressed direction
+				if (input->getHeldFrames(Button::Right) < input->getHeldFrames(Button::Left))
+					horizontal_direction = 1;
+				else
+					horizontal_direction = -1;
+			}
 
 			state.movementInput = VectorI(horizontal_direction, 0);
+
 
 			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 			if (sprite.canFlip)
@@ -72,14 +82,6 @@ namespace ECS
 					sprite.flip = SDL_FLIP_HORIZONTAL;
 			}
 		}
-
-		// kill entity with edit the entity list so do it outside the loop
-		for( u32 i = 0; i < to_respawn.size(); i++ )
-		{
-			//ecs->entities.KillEntity(entities.front());
-			//Player::Spawn();
-		}
-		to_respawn.clear();
 	} 
 }
 

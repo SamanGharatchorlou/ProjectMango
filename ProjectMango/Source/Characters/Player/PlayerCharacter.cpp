@@ -51,6 +51,7 @@ ECS::Entity Player::Spawn()
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
 	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
+	collider.SetFlag(ECS::Collider::IsPlayer);
 	
 	// PlayerController
 	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);

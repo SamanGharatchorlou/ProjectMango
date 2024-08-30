@@ -18,6 +18,7 @@
 #include "ECS/EntSystems/RenderSystem.h"
 #include "ECS/EntSystems/TileMapSystem.h"
 #include "ECS/EntSystems/TransformSystem.h"
+#include "ECS/EntSystems/HealthSystem.h"
 
 void ECS::RegisterAllComponents()
 {
@@ -77,6 +78,10 @@ void ECS::RegisterAllSystems()
 	// Pathing
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(Transform);
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
+
+	// Health
+	Signature healthSignature = ArcheBit(Health);
+	ecs->RegisterSystem<HealthSystem>(healthSignature);
 }
 
 

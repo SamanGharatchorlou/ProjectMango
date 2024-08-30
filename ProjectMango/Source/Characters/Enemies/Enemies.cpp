@@ -59,7 +59,7 @@ ECS::Entity Enemy::Create()
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
 	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
-	SetFlag<u32>(collider.flags, (u32)ECS::Collider::IsEnemy);
+	collider.SetFlag(ECS::Collider::IsEnemy);
 
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, entity);

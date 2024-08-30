@@ -14,7 +14,7 @@ namespace ECS
 	static bool CanCollide(EntityCoordinator* ecs, const Collider& A_collider, bool A_isDamage, bool A_isPhysical, const Collider& B_collider)
 	{
 		ECS::Entity B_entity = B_collider.entity;
-		if(HasFlag(B_collider.flags, Collider::Flags::IgnoreAll))
+		if(B_collider.HasFlag(Collider::IgnoreAll))
 			return false;
 
 		const bool B_is_damage = ecs->HasComponent(Damage, B_collider.entity);
@@ -27,8 +27,7 @@ namespace ECS
 		}
 		else if (B_is_physical)
 		{
-			u32 ignore_physical = Collider::Flags::IgnoreCollisions;
-			if(HasFlag(A_collider.flags, ignore_physical))
+			if (A_collider.HasFlag(Collider::IgnorePhysical))
 				return false;
 		}
 
@@ -39,14 +38,13 @@ namespace ECS
 		// if physical and ignoring collisions skip
 		if( A_isPhysical )
 		{
-			u32 ignore_physical = Collider::Flags::IgnoreCollisions;
-			if(HasFlag(A_collider.flags, ignore_physical))
+			if (A_collider.HasFlag(Collider::IgnorePhysical))
 				return false;
 
 			// if the collider we're checking against is physical but is ignoring collisions then skip
 			if(B_is_physical)
 			{
-				if(HasFlag(B_collider.flags, ignore_physical))
+				if(B_collider.HasFlag(Collider::IgnorePhysical))
 					return false;
 			}
 		}
@@ -67,8 +65,7 @@ namespace ECS
 		const Collider& A_collider = ecs->GetComponentRef(Collider, entity);
 
 		// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
-		u32 flags = Collider::Flags::Static | Collider::Flags::IgnoreAll;
-		if(HasFlag(A_collider.flags, flags))
+		if(A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
 			return false;
 
 		const u32 index = colliders.GetComponentIndex(entity);
@@ -127,8 +124,7 @@ namespace ECS
 			A_collider.allowedMovement = A_collider.forward - A_collider.back;
 
 			// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
-			u32 flags = Collider::Flags::Static | Collider::Flags::IgnoreAll;
-			if(HasFlag(A_collider.flags, flags))
+			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
 				continue;
 
 			const u32 index = colliders.GetComponentIndex(entity);
@@ -161,8 +157,7 @@ namespace ECS
 						B_collider.lastHitFrame = frame_count;
 
 					// ghost colliders just check for collisions and have no effect so dont compute anything below
-					u32 flags = Collider::Flags::GhostCollider;
-					if(HasFlag(A_collider.flags, flags))
+					if(A_collider.HasFlag(Collider::Flags::GhostCollider))
 						continue;
 
 					// Damage

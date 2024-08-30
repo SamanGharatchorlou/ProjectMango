@@ -234,7 +234,7 @@ void DebugMenu::DoColliderWindow()
         const ECS::Collider& collider = collider_list[i];
 
 		// ignore static colliders, they dont move
-        bool is_static = HasFlag(collider.flags, ECS::Collider::Flags::Static);
+        bool is_static = collider.HasFlag(ECS::Collider::Static);
 		if(!s_displayStatics && is_static)
             continue;
         if(!s_displayDynamics && !is_static)
@@ -246,16 +246,27 @@ void DebugMenu::DoColliderWindow()
             colour = Colour::Purple;
         }
 
-       bool ignore_collisions = HasFlag(collider.flags, ECS::Collider::Flags::IgnoreCollisions);
+       bool ignore_collisions = collider.HasFlag(ECS::Collider::IgnorePhysical);
         if(ignore_collisions)
         {
             colour = Colour::Black;
         }
 
-        bool ignore_all = HasFlag(collider.flags, ECS::Collider::Flags::IgnoreAll);
+        bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
         if(ignore_all)
         {
             colour = Colour::LightGrey;
+            colour.a = 100;
+        }
+
+        if (collider.HasFlag(ECS::Collider::IsEnemy))
+        {
+            colour = Colour::Red;
+            colour.a = 100;
+        }
+        if (collider.HasFlag(ECS::Collider::IsPlayer))
+        {
+            colour = Colour::Green;
             colour.a = 100;
         }
 

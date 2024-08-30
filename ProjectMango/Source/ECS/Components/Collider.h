@@ -8,26 +8,31 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Collider)
 
+			// todod stop the 1 << x thing and do that in the function call, make one for
+			// colliders, this way i dont need to keep updating it like a mug
 		enum Flags
 		{
-			// type
-			Static = 1 << 0,
+			// base type
+			None = 0,
+			Static,
 
-			// id of the collider
-			IsPlayer = 1 << 2,
-			IsEnemy = 1 << 3,
+			// collider type
+			IsPlayer,
+			IsEnemy,
+			IsTerrain,
 
 			// filtering
-			HitPlayerOnly = 1 << 4,
-			HitEnemyOnly = 1 << 5,
+			HitPlayerOnly,
+			HitEnemyOnly,
 
 			// use to enable/disable collisions
-			IgnoreAll = 1 << 6,
-			IgnoreCollisions = 1 << 7,
-			IgnoreDamage = 1 << 8,
+			IgnoreAll,
+			IgnorePhysical,		// solid objects, i.e. not damage
+			IgnoreDamage,
+			IgnoreObjects,		// everything but things like terrain
 
 			// to check for collisions without any affect
-			GhostCollider = 1 << 9
+			GhostCollider
 		};
 
 		enum RuntimeFlags 
@@ -50,6 +55,9 @@ namespace ECS
 
 		void RollBackPosition();
 		void RollForwardPosition();
+
+		inline bool HasFlag(Flags flag) const { return flags & (1 << flag); }
+		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 
 	#if TRACK_COLLISIONS
 		virtual void renderCollider();	

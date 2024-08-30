@@ -24,5 +24,5 @@ void Renderer::unlock()
 void Renderer::setScale(float scale)
 {
 	SDL_RenderSetScale(mRenderer, scale, scale);
-	Camera::Get()->setScale(scale);
+	//Camera::Get()->setScale(scale);
 }

@@ -179,9 +179,6 @@ namespace Level
 
 				for( u32 b = 0; b < blocks.size(); b++ )
 				{
-					//if(blocks[b].value != 1)
-					//	continue;
-
 					VectorF top_left = blocks[b].top_left.toFloat() * grid_size * level_to_window;
 					VectorF size = (blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left).toFloat() * grid_size * level_to_window;
 
@@ -196,7 +193,8 @@ namespace Level
 
 					ECS::Collider& collider = ecs->AddComponent(Collider, ent);
 					collider.SetBaseRect( collider_rect );
-					SetFlag<u32>(collider.flags, (u32)ECS::Collider::Static);
+					collider.SetFlag(ECS::Collider::Static);
+					collider.SetFlag(ECS::Collider::IsTerrain);
 
 					ECS::Transform& transform = ecs->AddComponent(Transform, ent);
 					transform.SetWorldPosition(top_left);

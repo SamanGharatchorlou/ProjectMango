@@ -201,6 +201,7 @@
     <ClCompile Include="Source\ECS\EntSystems\AIControllerSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\AnimationSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CollisionSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\HealthSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\PathingSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\PhysicsSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\PlayerControllerSystem.cpp" />
@@ -324,6 +325,7 @@
     <ClInclude Include="Source\ECS\EntSystems\AIControllerSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\AnimationSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\CollisionSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\HealthSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\PathingSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\PhysicsSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\PlayerControllerSystem.h" />

@@ -348,6 +348,9 @@
     <ClCompile Include="Source\Animations\CharacterStates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\HealthSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animations\AnimationReader.h">
@@ -1101,6 +1104,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Raycast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\HealthSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
