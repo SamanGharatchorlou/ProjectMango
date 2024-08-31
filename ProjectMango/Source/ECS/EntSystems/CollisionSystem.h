@@ -11,6 +11,6 @@ namespace ECS
 
 		void Update(float dt) override;
 
-		static bool DoesColliderInteract(ECS::Entity entity);
+		//static bool DoesColliderInteract(ECS::Entity entity);
 	};
 }

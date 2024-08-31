@@ -72,11 +72,11 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<CollisionSystem>(collisionSignature);
 
 	// AI Controller
-	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState) | ArcheBit(Physics);
+	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterSystem<AIControllerSystem>(AIControllerSignature);
 
 	// Pathing
-	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(Transform);
+	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
 
 	// Health

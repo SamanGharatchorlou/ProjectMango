@@ -69,20 +69,6 @@ namespace ECS
 			}
 
 			aic.target = Player::Get();
-			if(aic.target != EntityInvalid)
-			{
-				Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-				if (sprite.canFlip)
-				{
-					const Transform& target_transform = ecs->GetComponentRef(Transform, aic.target);
-					const Transform& transform = ecs->GetComponentRef(Transform, entity);
-
-					if (target_transform.worldPosition.x > transform.worldPosition.x)
-						sprite.flip = SDL_FLIP_NONE;
-					else if (target_transform.worldPosition.x < transform.worldPosition.x)
-						sprite.flip = SDL_FLIP_HORIZONTAL;
-				}
-			}
 		}
 
 		//for( u32 i = 0; i < dead_entities.size(); i++ )

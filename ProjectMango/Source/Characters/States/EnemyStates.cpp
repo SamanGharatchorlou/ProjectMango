@@ -41,6 +41,11 @@ namespace Enemy
 				PushNewState(TakeHit);
 			}
 		}
+
+		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		{
+			physics->ApplyDrag(0.1f);
+		}
 	}
 
 	// TakeHitState

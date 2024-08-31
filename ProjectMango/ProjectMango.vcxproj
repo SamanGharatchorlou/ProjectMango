@@ -162,7 +162,6 @@
     <ClCompile Include="Source\Core\Maps\StringMap.cpp" />
     <ClCompile Include="Source\Core\Maths.cpp" />
     <ClCompile Include="Source\Core\NSISFileOutput.cpp" />
-    <ClCompile Include="Source\Core\Physics\Fisics.cpp" />
     <ClCompile Include="Source\Core\Physics\QuadCollider.cpp" />
     <ClCompile Include="Source\Core\Property.cpp" />
     <ClCompile Include="Source\Core\StringBuffers.cpp" />
@@ -182,10 +181,8 @@
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp" />
     <ClCompile Include="Source\Debugging\Logging.cpp" />
-    <ClCompile Include="Source\Debugging\MapDebugging.cpp" />
     <ClCompile Include="Source\Debugging\MemTrack.cpp" />
     <ClCompile Include="Source\Debugging\PerformanceProfiler.cpp" />
-    <ClCompile Include="Source\Debugging\UIEditor.cpp" />
     <ClCompile Include="Source\ECS\Components\AIController.cpp" />
     <ClCompile Include="Source\ECS\Components\Animator.cpp" />
     <ClCompile Include="Source\ECS\Components\Collider.cpp" />
@@ -282,7 +279,6 @@
     <ClInclude Include="Source\Core\Maths.h" />
     <ClInclude Include="Source\Core\NSISFileOutput.h" />
     <ClInclude Include="Source\Core\ObjectPool.h" />
-    <ClInclude Include="Source\Core\Physics\Fisics.h" />
     <ClInclude Include="Source\Core\Physics\QuadCollider.h" />
     <ClInclude Include="Source\Core\Property.h" />
     <ClInclude Include="Source\Core\Quad2D.h" />
@@ -303,10 +299,8 @@
     <ClInclude Include="Source\Debugging\ImGui\ImGuiMainWindows.h" />
     <ClInclude Include="Source\Debugging\ImGui\ImGuiMenu.h" />
     <ClInclude Include="Source\Debugging\Logging.h" />
-    <ClInclude Include="Source\Debugging\MapDebugging.h" />
     <ClInclude Include="Source\Debugging\MemTrack.h" />
     <ClInclude Include="Source\Debugging\PerformanceProfiler.h" />
-    <ClInclude Include="Source\Debugging\UIEditor.h" />
     <ClInclude Include="Source\ECS\ComponentArray.h" />
     <ClInclude Include="Source\ECS\ComponentManager.h" />
     <ClInclude Include="Source\ECS\Components\AIController.h" />

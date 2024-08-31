@@ -18,10 +18,6 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		RenderManager* renderer = GameData::Get().renderManager;
 
-		const VectorF window_size = GameData::Get().window->size();
-		const VectorF scale = VectorF(1.0f, 1.0f); //window_size / (VectorF(1024, 1024));
-
-
  		for (Entity entity : entities)
 		{
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
@@ -36,16 +32,7 @@ namespace ECS
 			pack.flip = sprite.flip;
 			pack.flipPoint = sprite.flipPoint * renderRect.Size();
 
-			//float target_flip = renderRect.Height() * 0.5f;
-
 			renderer->AddRenderPacket(pack);
-
-			//if( DebugMenu::DisplayRenderRect(entity) )
-			//{
-			//	//DebugDraw::RectOutline(transform.rect, Colour::Red);
-			//	//DebugDraw::RectOutline(pack.rect, Colour::Green);
-			//	DebugDraw::Point(pack.rect.TopLeft() + pack.flipPoint, 3.0f, Colour::Blue);
-			//}
 		}
 	}
 }

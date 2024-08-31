@@ -57,9 +57,6 @@
     <ClCompile Include="Source\Core\Maps\StringMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Physics\Fisics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\Physics\QuadCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,16 +129,10 @@
     <ClCompile Include="Source\Debugging\Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Debugging\MapDebugging.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Debugging\MemTrack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\PerformanceProfiler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Debugging\UIEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Components\AIController.cpp">
@@ -407,9 +398,6 @@
     <ClInclude Include="Source\Core\Maps\StringMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Physics\Fisics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Core\Physics\QuadCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -494,16 +482,10 @@
     <ClInclude Include="Source\Debugging\Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Debugging\MapDebugging.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Debugging\MemTrack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debugging\PerformanceProfiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Debugging\UIEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\AIController.h">

@@ -45,8 +45,8 @@ ECS::Entity Enemy::Create()
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, entity);
 	physics.applyGravity = true;		
-	physics.acceleration = VectorF(100.0f, 100.0f);
-	physics.maxSpeed = VectorF(5.0f, 20.0f);
+	physics.acceleration = VectorF(80.0f, 80.0f);
+	physics.maxSpeed = VectorF(15.0f, 20.0f);
 
 	ECS::Animator& animation = ecs->AddComponent(Animator, entity);
 	AnimationReader::BuildAnimatior( "ShockSweeperAnimations", animation.animations );
@@ -68,6 +68,9 @@ ECS::Entity Enemy::Create()
 
 	// AI
 	ECS::AIController& ai = ecs->AddComponent(AIController, entity);
+	
+	// Pathing
+	ECS::Pathing& pathing = ecs->AddComponent(Pathing, entity);
 	
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, entity);

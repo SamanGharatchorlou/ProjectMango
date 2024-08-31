@@ -13,19 +13,8 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 	{
 		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
 		ImGui::PushID(entity + (int)type);
-		if (ImGui::TreeNode("Component Data"))
-		{
-			ImGui::DisplayRect(collider.rect);
 
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Display"))
-		{
-			DebugDraw::RectOutline(collider.rect, Colour::Purple);
-
-			ImGui::TreePop();
-		}
+		DebugDraw::RectOutline(collider.rect, Colour::Purple);
 			
 		ImGui::PopID();
 	}

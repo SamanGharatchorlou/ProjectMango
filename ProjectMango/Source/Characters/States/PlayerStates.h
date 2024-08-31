@@ -49,7 +49,7 @@ namespace Player
 		
 		ECS::Entity attackCollider = ECS::EntityInvalid;
 
-		u32 damageOnLoopCount = 0;
+		int damageOnLoopCount = 0;
 	};
 
 	struct DeathState : public CharacterAction

@@ -2,6 +2,7 @@
 #include "Components.h"
 
 #include "ECS/EntityCoordinator.h"
+#include "ECS/Components/Physics.h"
 #include "Core/Helpers.h"
 
 namespace ECS
@@ -66,5 +67,31 @@ namespace ECS
 
 		// todo: clean this list when the entity is dead
 		ignoredDamaged.push_back(damage.entity);
+	}
+
+	// Damage
+	void Damage::Apply(Entity entity, const Damage& damage)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		if(Health* health = ecs->GetComponent(Health, entity))
+			health->ApplyDamage(damage);
+
+		if(Physics* physics = ecs->GetComponent(Physics, entity))
+		{
+			VectorF impulse = damage.force / physics->mass;
+			physics->speed += impulse;
+		}
+	}
+
+	// CharacterState
+	VectorI CharacterState::GetFacingDirection() const
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+		int direction = sprite.IsFlipped() ? -1 : 1;
+
+		return VectorI(direction, 0);
 	}
 }

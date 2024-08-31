@@ -269,8 +269,7 @@ BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(Action
 void BasicAttackState::Init()
 {
 	StartAnimation();
-
-	CreateNewAttackCollider();
+	damageOnLoopCount = -1;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
@@ -294,6 +293,7 @@ void BasicAttackState::Update(float dt)
 			if (input->isCursorHeld(Cursor::ButtonType::Left))
 			{
 				StartAnimation(ActionState::BasicAttackHold);
+				damageOnLoopCount = -1;
 			}
 			else
 			{
@@ -310,16 +310,17 @@ void BasicAttackState::Update(float dt)
 				return;
 			}
 		}
-
-		if(animator.loopCount > damageOnLoopCount)
-		{
-			CreateNewAttackCollider();
-		}
+	}
+	
+	if(animator.loopCount > damageOnLoopCount)
+	{
+		CreateNewAttackCollider();
+		damageOnLoopCount = animator.loopCount;
 	}
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
-		physics->ApplyDrag(0.35f);
+		physics->ApplyDrag(0.5f);
 	}
 }
 
@@ -355,17 +356,19 @@ void BasicAttackState::CreateNewAttackCollider()
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, attackCollider);
 	collider.SetBaseRect(collider_rect);
+	collider.SetFlag(ECS::Collider::IsDamage);
 	//collider.flags |= ECS::Collider::Flags::IgnoreAll;
 
 	// Damage
-	ECS::Damage& damage_comp = ecs->AddComponent(Damage, attackCollider);
-	damage_comp.value = 10;
+	ECS::Damage& damage = ecs->AddComponent(Damage, attackCollider);
+	damage.value = 10;
+	
+	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+	damage.force = character_state.GetFacingDirection().toFloat() * 3.0f;
 		
 	// dont damage our self
 	ECS::Health& health = ecs->GetComponentRef(Health, entity);
 	health.ignoredDamaged.push_back(attackCollider);
-
-	damageOnLoopCount = animator.loopCount;
 }
 
 
@@ -394,3 +397,4 @@ void DeathState::Update(float dt)
 	if(animation.loopCount > 0)
 		can_respawn = true;
 }
+

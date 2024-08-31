@@ -20,6 +20,7 @@ namespace ECS
 			IsPlayer,
 			IsEnemy,
 			IsTerrain,
+			IsDamage,
 
 			// filtering
 			HitPlayerOnly,
@@ -27,12 +28,14 @@ namespace ECS
 
 			// use to enable/disable collisions
 			IgnoreAll,
-			IgnorePhysical,		// solid objects, i.e. not damage
 			IgnoreDamage,
-			IgnoreObjects,		// everything but things like terrain
 
-			// to check for collisions without any affect
-			GhostCollider
+			// to check for collisions without any affect, i.e. not physical
+			GhostCollider,
+
+			// helps prevent collider getting stuck, maybe just for player?
+			// or only for more complex moving colliders maybe
+			CanBump
 		};
 
 		enum RuntimeFlags 

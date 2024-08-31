@@ -74,6 +74,7 @@ namespace ECS
 		ActionStack<CharacterAction> actions;
 
 		VectorI movementInput;
+		VectorI GetFacingDirection() const;
 	};
 
 	struct Pathing
@@ -94,7 +95,13 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Damage)
 
-		float value = -1;
+		// the damage
+		float value = 0;
+
+		// may apply a force
+		VectorF force;
+
+		static void Apply(Entity entity, const Damage& damage);
 	};
 
 	struct Health

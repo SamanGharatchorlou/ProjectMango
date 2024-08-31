@@ -246,12 +246,6 @@ void DebugMenu::DoColliderWindow()
             colour = Colour::Purple;
         }
 
-       bool ignore_collisions = collider.HasFlag(ECS::Collider::IgnorePhysical);
-        if(ignore_collisions)
-        {
-            colour = Colour::Black;
-        }
-
         bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
         if(ignore_all)
         {

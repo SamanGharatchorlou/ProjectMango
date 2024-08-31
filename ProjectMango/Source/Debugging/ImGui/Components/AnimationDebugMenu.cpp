@@ -8,6 +8,10 @@
 #include "Graphics/TextureManager.h"
 #include "Game/FrameRateController.h"
 #include "ECS/Components/ComponentCommon.h"
+#include "ECS/Components/Animator.h"
+#include "Animations/CharacterStates.h"
+#include "Game/FrameRateController.h"
+//#include "Core/BasicString.h"
 
 //static std::vector<ActionState> s_animationPlaylist;
 //static std::vector<Animation> s_animationPlaylist;
@@ -46,273 +50,50 @@ bool DebugMenu::SpriteFlipOverride(ECS::Entity& entity, SDL_RendererFlip& sprite
 	return false;
 }
 
-//static Animation* SetAnimation(Animator& animator)
-//{
-//	if (s_animationPlaylist.size() > s_playlistIndex)
-//	{
-//		Animation& anim = s_animationPlaylist[s_playlistIndex];
-//
-//		u32 anim_index = animator.getAnimationIndex(anim);
-//		if(anim_index != -1)
-//		{
-//			animator.mAnimationIndex = anim_index;
-//			return &animator.mAnimations[anim_index];
-//		}
-//	}
-//
-//	if (s_animationPlaylist.size() > 0)
-//	{
-//		s_playlistIndex = 0;
-//		return SetAnimation(animator);
-//	}
-//
-//	return nullptr;
-//}
-
 VectorI facing_direction;
+
+ActionState s_activeAction = ActionState::None;
+
+std::vector<BasicString> s_animationLog;
 
 ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Animator;
 
-	if(entity != s_activeEnt)
+	if (!ecs->HasComponent(Transform, entity))
+		return type;
+
+	ImGui::PushID(entity + (int)type);
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		//s_animationPlaylist.clear();
-		//s_playlistIndex = 0;
-		//s_playingPlaylist = false;
-		//s_playSingleAnimation = false;
-		//s_displayRenderRect = false;
-		//s_forceLooping = true;
-	}
-	s_activeEnt = entity;
+		const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
 
-    //if (ecs->HasComponent(entity, type))
-    {
-		ImGui::PushID(entity + (int)type);
-		if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+		ActionState active_animation = animator.GetActiveAnimation().action;
+		if(active_animation != s_activeAction)
 		{
-			/*
-            ECS::Animator& anim = ecs->GetComponentRef(Animator, entity);
-			if (ImGui::TreeNode("Component Data"))
-			{
-				Animator& animator = anim.animator;
-				Animation& animation = animator.mAnimations[animator.mAnimationIndex];
+			s_activeAction = active_animation;
 
-				ImGui::Text("Active Animation: %s", actionToString(animation.action).c_str());
+			const FrameRateController& frc = FrameRateController::Get();
+			char new_string_log[128];
 
-				
-				const SpriteSheet& ss = animator.getSpritesheet(animation);
+			const char* action = ActionToString(active_animation);
+			float start_time = frc.GameSeconds();
 
-				StringBuffer64 spriteName = TextureManager::Get()->getTextureName(ss.texture);
-				ImGui::Text("SpriteSheet: %s", spriteName.c_str());
-				ImGui::VectorText("Frame Size", ss.frameSize);
-				ImGui::VectorText("Object Size", ss.objectSize);
-				ImGui::VectorText("Boundaries", ss.boundaries);
-
-				std::vector<StringBuffer64> animations;
-				for (u32 i = 0; i < animator.mAnimations.size(); i++)
-				{
-					ActionState action = animator.mAnimations[i].action;
-					animations.push_back(actionToString(action).c_str());
-				}
-
-				ImGui::TreePop();
-			}
-
-			s_usingPlaylist = false;
-			if (ImGui::TreeNode("Playlist Mode"))
-			{
-				// Playlist
-				s_usingPlaylist = true;
-				if (s_usingPlaylist)
-				{
-					Animator& animator = anim.animator;
-					Animation* activeAnim = SetAnimation(animator);
-					bool has_animation = activeAnim != nullptr;
-					if (!has_animation)
-						ImGui::BeginDisabled();
-
-					float frame_time = activeAnim ? activeAnim->frameTime : 0.0f;
-					ImGui::SliderFloat("Frame Time", &frame_time, 0.0f, 1.0f);
-					if (activeAnim)
-						activeAnim->frameTime = frame_time;
-
-					char button_label1[64];
-					snprintf(button_label1, 64, s_playSingleAnimation ? "Stop %s" : "Play %s", "single animation");
-					if (ImGui::Button(button_label1))
-					{
-						s_playSingleAnimation = !s_playSingleAnimation;
-					}
-					ImGui::SameLine();
-
-					char button_label2[64];
-					snprintf(button_label2, 64, s_playingPlaylist ? "Stop %s" : "Play %s", "Animation Playlist");
-					if (ImGui::Button(button_label2))
-					{
-						s_playingPlaylist = !s_playingPlaylist;
-					}
-
-					bool running_animation = s_playingPlaylist || s_playSingleAnimation;
-					if (running_animation)
-					{
-						if (s_animationPlaylist.size() == 0)
-						{
-							s_playingPlaylist = false;
-							s_playSingleAnimation = false;
-						}
-
-						FrameRateController& frc = FrameRateController::Get();
-						if (animator.RunActive(frc.delta(), s_forceLooping))
-						{
-							if (s_playingPlaylist)
-							{
-								s_playlistIndex = (s_playlistIndex + 1) % s_animationPlaylist.size();
-								animator.mFrameIndex = 0;
-							}
-
-							s_playSingleAnimation = false;
-						}
-					}
-
-					ImGui::Checkbox("Force Looping", &s_forceLooping);
-
-					if (running_animation)
-						ImGui::BeginDisabled();
-
-					if (ImGui::Button("<- Previous Frame"))
-					{
-						int prev_frame = animator.mFrameIndex - 1;
-						if (prev_frame < 0)
-						{
-							s_playlistIndex = s_playlistIndex - 1;
-							if (s_playlistIndex < 0)
-								s_playlistIndex = (int)s_animationPlaylist.size() - 1;
-
-							activeAnim = SetAnimation(animator);
-
-							prev_frame = activeAnim->frameCount - 1;
-						}
-
-						animator.mFrameIndex = prev_frame;
-					}
-
-					ImGui::SameLine();
-					if (ImGui::Button("Next Frame ->"))
-					{
-						int next_frame = animator.mFrameIndex + 1;
-						if (next_frame >= activeAnim->frameCount)
-						{
-							s_playlistIndex = (s_playlistIndex + 1) % s_animationPlaylist.size();
-							next_frame = 0;
-						}
-
-						animator.mFrameIndex = next_frame;
-					}
-
-					activeAnim = SetAnimation(animator);
-
-
-					int frame = (int)animator.mFrameIndex;
-					ImGui::SliderInt("Frame", &frame, 0, activeAnim ? activeAnim->frameCount - 1 : 0);
-					animator.mFrameIndex = (u32)frame;
-
-					if (running_animation)
-						ImGui::EndDisabled();
-
-					if (!has_animation)
-						ImGui::EndDisabled();
-
-					for (u32 i = 0; i < s_animationPlaylist.size(); i++)
-					{
-						ImGui::PushID(i);
-						if (ImGui::Button("-"))
-						{
-							s_animationPlaylist.erase(s_animationPlaylist.begin() + i);
-							ImGui::PopID();
-							break;
-						}
-						ImGui::SameLine();
-
-						ActionState action = s_animationPlaylist[i].action;
-
-						// select this animation
-						if (ImGui::Button(actionToString(action).c_str()))
-						{
-							s_playlistIndex = i;
-							animator.mFrameIndex = 0;
-						}
-
-						if (s_playlistIndex == i)
-						{
-							ImGui::SameLine();
-							ImGui::Text(" <-- active");
-						}
-						ImGui::PopID();
-					}
-
-					std::vector<ActionState> actions;
-					for (u32 i = 0; i < animator.mAnimations.size(); i++)
-					{
-						ActionState action = animator.mAnimations[i].action;
-					}
-
-					if (ImGui::BeginCombo("Add animation to playlist", "", 0))
-					{
-						for (u32 i = 0; i < animator.mAnimations.size(); i++)
-						{
-							ActionState action = animator.mAnimations[i].action;
-							//const bool is_selected = action == activeAnim->action;
-
-							char symbol = ' ';
-							char dir = ' ';
-
-							VectorI direction = animator.mAnimations[i].direction;
-							bool flipable = animator.mAnimations[i].canFlip;
-							if(direction.x != 0)
-							{
-								dir = 'x';
-								if(flipable)
-								{
-									symbol = '*';
-								}
-								else
-								{
-									symbol = direction.x > 0 ? '+' : '-';
-								}
-							}
-							else if(direction.y != 0)
-							{
-								dir = 'y';
-								if(flipable)
-								{
-									symbol = '*';
-								}
-								else
-								{
-									symbol = direction.y > 0 ? '+' : '-';
-								}
-							}
-
-							StringBuffer64 buffer;
-							sprintf(buffer.buffer(), "%c%c: %s", symbol, dir, actionToString(action).c_str());
-
-							if (ImGui::Selectable(buffer.c_str(), false))
-							{
-								s_animationPlaylist.push_back(animator.mAnimations[i]);
-							}
-						}
-
-						ImGui::EndCombo();
-					}
-				}
-
-				ImGui::TreePop();
-			}
-			*/
+			snprintf(new_string_log, 128, "Action: %s | Time: %f", action, start_time);
+			s_animationLog.push_back(new_string_log);
 		}
-		ImGui::PopID();
+
+		for( u32 i = 0; i < s_animationLog.size(); i++ )
+		{
+			ImGui::Text(s_animationLog[i].c_str());
+		}
+
+		ImGui::Text("Loops: %d", animator.loopCount);
 	}
+
+
+	ImGui::PopID();
 
 	return type;
 }
@@ -330,7 +111,6 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
 		const ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		//const RectF render_rect = ECS::GetRenderRect(entity);
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
@@ -365,23 +145,6 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			{	
 				const RectF renderRect(transform.worldPosition, transform.size);
 				DebugDraw::RectOutline(renderRect, Colour::Green);
-			}
-			
-			ImGui::Checkbox("Object Rect", &s_renderRects.object);
-			if(s_renderRects.object)
-			{
-				RectF object_rect = ECS::GetObjectRect(entity);
-				DebugDraw::RectOutline(object_rect, Colour::Purple);
-
-				VectorF flip_point = ECS::GetObjectRect(entity).Center();
-				DebugDraw::Point(flip_point, 5.0f, Colour::White);
-			}
-
-			ImGui::Checkbox("Collider Rect", &s_renderRects.collider);
-			if(s_renderRects.collider)		
-			{
-				RectF collider_rect = ECS::GetColliderRect(entity);
-				DebugDraw::RectOutline(collider_rect, Colour::Blue);
 			}
 
 			ImGui::TreePop();
