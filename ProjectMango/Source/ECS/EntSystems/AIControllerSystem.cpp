@@ -9,6 +9,7 @@
 #include "Game/FrameRateController.h"
 
 #include "Characters/Player/PlayerCharacter.h"
+#include "Characters/States/EnemyStates.h" // can try to forward decalare state
 
 bool EnemyCanMove();
 

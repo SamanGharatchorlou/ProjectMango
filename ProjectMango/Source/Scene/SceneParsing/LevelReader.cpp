@@ -195,6 +195,7 @@ namespace Level
 					collider.SetBaseRect( collider_rect );
 					collider.SetFlag(ECS::Collider::Static);
 					collider.SetFlag(ECS::Collider::IsTerrain);
+					collider.SetFlag(ECS::Collider::IgnoreDamage);
 
 					ECS::Transform& transform = ecs->AddComponent(Transform, ent);
 					transform.SetWorldPosition(top_left);

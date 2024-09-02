@@ -53,35 +53,39 @@ namespace ECS
 		if(invulnerable)
 			return;
 
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
-		for( u32 i = 0; i < ignoredDamaged.size(); i++ )
-		{
-			// ignore damage from this source
-			if(ignoredDamaged[i] == damage.entity)
-				return;
-		}
-
 		currentHealth -= damage.value;
 		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
-
-		// todo: clean this list when the entity is dead
-		ignoredDamaged.push_back(damage.entity);
 	}
 
 	// Damage
-	void Damage::Apply(Entity entity, const Damage& damage)
+	bool Damage::CanApplyTo(Entity entity) const
+	{
+		for( u32 i = 0; i < appliedTo.size(); i++ )
+		{
+			// dont re-apply damage to this source
+			if(appliedTo[i] == entity)
+				return false;
+		}
+
+		return true;
+	}
+
+	void Damage::ApplyTo(Entity entity)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
+		PushBackUnique(appliedTo, entity);
+
 		if(Health* health = ecs->GetComponent(Health, entity))
-			health->ApplyDamage(damage);
+			health->ApplyDamage(*this);
 
 		if(Physics* physics = ecs->GetComponent(Physics, entity))
 		{
-			VectorF impulse = damage.force / physics->mass;
+			VectorF impulse = force / physics->mass;
 			physics->speed += impulse;
 		}
+
+		DebugPrint(PriorityLevel::Log, "Apply damage to %d", entity);
 	}
 
 	// CharacterState

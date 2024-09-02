@@ -17,6 +17,7 @@
 
 using namespace Player;
 
+static const int c_defaultEasingSpeed = 3;
 
 // Idle
 // ---------------------------------------------------------
@@ -86,18 +87,10 @@ void RunState::Update(float dt)
 		state.actions.Pop();
 		return;
 	}
-	else
-	{
-		const float speed = physics.speed.x;
-		const int input_dir = state.movementInput.x;
-		if (speed > 0.0f && input_dir < 0 || speed < 0.0f && input_dir > 0)
-		{
-			physics.ApplyDrag(0.9f);
-		}
-	}
 
+	const int run_acceleration_factor = 3;
 	physics.maxSpeed.x = 15.0f;
-	physics.ApplyMovement(state.movementInput.toFloat(), dt);
+	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, run_acceleration_factor);
 	
 	InputManager* input = InputManager::Get();
 	if (input->isPressed(Button::Space, c_inputBuffer))
@@ -144,15 +137,9 @@ void JumpState::Update(float dt)
 	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 
 	// apply walk speed
+	const int jump_acceleration_factor = 2;
 	physics.maxSpeed.x = 10.0f;
-	physics.ApplyMovement(state.movementInput.toFloat(), dt);
-
-	const float speed = physics.speed.x;
-	const int input_dir = state.movementInput.x;
-	if (speed > 0.0f && input_dir < 0 || speed < 0.0f && input_dir > 0)
-	{
-		physics.ApplyDrag(0.7f);
-	}
+	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
 
 	// rapidly slow upwards movement while not holding space
 	InputManager* input = InputManager::Get();
@@ -199,66 +186,41 @@ void RollState::Init()
 		physics->speed = state.movementInput.toFloat() * c_rollSpeed;
 	}
 
-	InputManager* input = InputManager::Get();
-	if (input->isReleased(Button::Shift, c_inputBuffer))
+	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
 	{
-		const FrameRateController& frc = FrameRateController::Get();
-		const int frame_count = frc.frameCount();
-
-		const int release_frame = input->getButton(Button::Shift).mReleasedFrame;
-		if (release_frame + c_inputBuffer < frame_count)
-		{
-			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			state.actions.Pop();
-			return;
-		}
+		collider->SetFlag(ECS::Collider::TerrainOnly);
 	}
 
-	//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
-	//{
-	//	SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
-	//}
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.canFlip = false;
 }
 
 void RollState::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
-	//if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-	//{
-	//	physics->ApplyDrag(0.08f);
-	//}
+	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+	
+	const int roll_acceleration_factor = 4;
+	physics.maxSpeed.x = 35.0f;
+	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, roll_acceleration_factor);
 	
 	const ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
 	if (animation.loopCount > 0)
 	{
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		state.actions.Pop();
+		return;
 	}
 }
 
-//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
-//{
-//	if(HasFlag(collider->mFlags, Collider::IgnoreCollisions))
-//	{
-//		// remove the flag so we can make a "would it collide" check
-//		// if so, add it back we'll end up in a bad state
-//		RemoveFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
-//		if(CollisionSystem::DoesColliderInteract(entity))
-//		{
-//			SetFlag(collider->mFlags, (u32)Collider::IgnoreCollisions);
-//		}
-//	}
-//}
-
 void RollState::Exit()
 {
-	//ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	//if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
-	//{
-	//	RemoveFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
-	//	SetFlag(collider->flags, (u32)ECS::Collider::IgnoreCollisions);
-	//}
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	{
+		collider->RemoveFlag(ECS::Collider::TerrainOnly);
+	}
 }
 
 
@@ -269,6 +231,8 @@ BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(Action
 void BasicAttackState::Init()
 {
 	StartAnimation();
+	
+	CreateNewAttackCollider();
 	damageOnLoopCount = -1;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -314,7 +278,10 @@ void BasicAttackState::Update(float dt)
 	
 	if(animator.loopCount > damageOnLoopCount)
 	{
-		CreateNewAttackCollider();
+		ECS::Damage& damage = ecs->GetComponentRef(Damage, attackCollider);
+		damage.appliedTo.clear();
+		damage.appliedTo.push_back(entity);
+
 		damageOnLoopCount = animator.loopCount;
 	}
 
@@ -357,18 +324,16 @@ void BasicAttackState::CreateNewAttackCollider()
 	ECS::Collider& collider = ecs->AddComponent(Collider, attackCollider);
 	collider.SetBaseRect(collider_rect);
 	collider.SetFlag(ECS::Collider::IsDamage);
-	//collider.flags |= ECS::Collider::Flags::IgnoreAll;
 
 	// Damage
 	ECS::Damage& damage = ecs->AddComponent(Damage, attackCollider);
 	damage.value = 10;
+
+	// dont damage our self
+	damage.appliedTo.push_back(entity);
 	
 	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
-	damage.force = character_state.GetFacingDirection().toFloat() * 3.0f;
-		
-	// dont damage our self
-	ECS::Health& health = ecs->GetComponentRef(Health, entity);
-	health.ignoredDamaged.push_back(attackCollider);
+	damage.force = character_state.GetFacingDirection().toFloat() * 30.0f;
 }
 
 

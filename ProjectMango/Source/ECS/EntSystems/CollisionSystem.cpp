@@ -66,7 +66,7 @@ namespace ECS
 				continue;
 
 			const u32 index = colliders.GetComponentIndex(entity);
-			const Damage* A_damage = ecs->GetComponent(Damage, entity);
+			Damage* A_damage = ecs->GetComponent(Damage, entity);
 
 			for (u32 i = 0; i < count; i++) 
 			{
@@ -80,18 +80,22 @@ namespace ECS
 				if(B_collider.HasFlag(Collider::IgnoreAll) || B_collider.HasFlag(Collider::IsDamage) )
 					continue;
 
+				if( A_collider.HasFlag(Collider::TerrainOnly) && !B_collider.HasFlag(Collider::IsTerrain) )
+					continue;
+
 				if(A_collider.intersects(B_collider)) 
 				{
 					ECS::Entity B_entity = B_collider.entity;
-					const bool did_add_a = PushBackUnique(A_collider.collisions, B_entity);
-					const bool did_add_b = PushBackUnique(B_collider.collisions, entity);
-
-					if(did_add_b && A_damage)
-						B_collider.lastHitFrame = frame_count;
+					PushBackUnique(A_collider.collisions, B_entity);
+					PushBackUnique(B_collider.collisions, entity);
 
 					if( A_damage && !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
-						Damage::Apply(B_entity, *A_damage);
+						if(A_damage->CanApplyTo(B_entity))
+						{
+							B_collider.lastHitFrame = frame_count;
+							A_damage->ApplyTo(B_entity);
+						}
 					}
 
 					// ghost colliders just check for collisions and have no effect so dont compute anything below
@@ -178,7 +182,7 @@ namespace ECS
 							// we cant bump into another collider, just check static colliders
 							for (const Collider& static_collider : collider_list)
 							{
-								if(static_collider.entity == entity || static_collider.entity == B_collider.entity )
+								if(static_collider.entity == entity || static_collider.entity == B_entity )
 									continue;
 
 								if(!static_collider.HasFlag(Collider::Static))

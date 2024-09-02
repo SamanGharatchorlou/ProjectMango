@@ -19,8 +19,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 	{
 		const ECS::Collider& collider = collider_list[i];
 
-		u32 flags = ECS::Collider::Flags::IgnoreAll;
-		if(HasFlag(collider.flags, flags))
+		if(collider.HasFlag(ECS::Collider::IgnoreAll))
 			continue;
 
 		ECS::Entity ent = collider.entity;

@@ -22,13 +22,12 @@ namespace ECS
 			IsTerrain,
 			IsDamage,
 
-			// filtering
-			HitPlayerOnly,
-			HitEnemyOnly,
-
 			// use to enable/disable collisions
 			IgnoreAll,
 			IgnoreDamage,
+
+			// only collider with terrain
+			TerrainOnly,
 
 			// to check for collisions without any affect, i.e. not physical
 			GhostCollider,
@@ -61,6 +60,7 @@ namespace ECS
 
 		inline bool HasFlag(Flags flag) const { return flags & (1 << flag); }
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
+		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
 
 	#if TRACK_COLLISIONS
 		virtual void renderCollider();	

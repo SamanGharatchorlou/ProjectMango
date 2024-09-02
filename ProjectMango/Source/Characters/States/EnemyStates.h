@@ -15,6 +15,14 @@ namespace Enemy
 		void Resume() override;
 	};
 
+	struct RunState : public CharacterAction
+	{		
+		RunState(ECS::Entity _entity);
+		void Init() override;
+		void Update(float dt) override;
+		void Resume() override;
+	};
+
 	struct TakeHitState : public CharacterAction
 	{
 		TakeHitState(ECS::Entity _entity) : CharacterAction(ActionState::TakeHit, _entity) { }

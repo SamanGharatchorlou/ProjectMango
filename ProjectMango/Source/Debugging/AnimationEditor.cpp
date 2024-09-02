@@ -23,7 +23,7 @@ namespace AnimationEditor
     struct AnimationState
 	{
 		StringBuffer64 selectedSpriteSheet;
-		VectorI frameCounts = VectorI(17,14);
+		VectorI frameCounts = VectorI(10,9);
 
         VectorI previousSelectedFrameIndex;
 

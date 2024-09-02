@@ -17,8 +17,6 @@ namespace ECS
 		{
 			Pathing& pathing = ecs->GetComponentRef(Pathing, entity);
 			AIController& aic = ecs->GetComponentRef(AIController, entity);
-			
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
 			if(aic.target != EntityInvalid)
 			{
@@ -34,14 +32,6 @@ namespace ECS
 						sprite.flip = SDL_FLIP_NONE;
 					else if (target.x < enemy.x)
 						sprite.flip = SDL_FLIP_HORIZONTAL;
-				}
-
-				VectorI facing_direction = state.GetFacingDirection();
-				 
-				if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
-				{
-					physics->maxSpeed.x = 4.0f;
-					physics->ApplyMovement(facing_direction.toFloat(), dt);
 				}
 			}
 		}

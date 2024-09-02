@@ -68,4 +68,4 @@ ECS::Entity Player::Spawn()
 	DebugMenu::SelectEntity(s_playerEntity);
 
 	return s_playerEntity;
-}
+} 

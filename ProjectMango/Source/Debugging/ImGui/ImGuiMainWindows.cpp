@@ -263,6 +263,11 @@ void DebugMenu::DoColliderWindow()
             colour = Colour::Green;
             colour.a = 100;
         }
+        if (collider.HasFlag(ECS::Collider::TerrainOnly))
+        {
+            colour = Colour::LightGrey;
+            colour.a = 200;
+        }
 
         DebugDraw::Shape(s_drawType, collider.rect, colour);
 	}

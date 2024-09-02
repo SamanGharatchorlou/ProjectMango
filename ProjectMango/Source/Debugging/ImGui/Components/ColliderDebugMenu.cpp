@@ -14,7 +14,27 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
 		ImGui::PushID(entity + (int)type);
 
-		DebugDraw::RectOutline(collider.rect, Colour::Purple);
+		
+        if (collider.HasFlag(ECS::Collider::Static))
+			ImGui::Text("Static");
+        if (collider.HasFlag(ECS::Collider::IsPlayer))
+			ImGui::Text("IsPlayer");
+        if (collider.HasFlag(ECS::Collider::IsEnemy))
+			ImGui::Text("IsEnemy");
+		if (collider.HasFlag(ECS::Collider::IsTerrain))
+			ImGui::Text("IsTerrain");
+		if (collider.HasFlag(ECS::Collider::IsDamage))
+			ImGui::Text("IsDamage");
+		if (collider.HasFlag(ECS::Collider::IgnoreAll))
+			ImGui::Text("IgnoreAll");
+		if (collider.HasFlag(ECS::Collider::IgnoreDamage))
+			ImGui::Text("IgnoreDamage");
+		if (collider.HasFlag(ECS::Collider::TerrainOnly))
+			ImGui::Text("TerrainOnly");
+		if (collider.HasFlag(ECS::Collider::GhostCollider))
+			ImGui::Text("GhostCollider");
+		if (collider.HasFlag(ECS::Collider::CanBump))
+			ImGui::Text("CanBump");
 			
 		ImGui::PopID();
 	}

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Core/stack.h"
-#include "Characters/States/EnemyStates.h" // can try to forward decalare state
-
 namespace ECS
 {
 
@@ -12,6 +9,6 @@ namespace ECS
 
 		Entity target = EntityInvalid;
 
-		u32 gotHitFrame = -1;
+		bool moveToTarget = true;
 	};
 }

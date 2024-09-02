@@ -20,27 +20,27 @@ ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 			ImGui::Text("Current Health: %.f", health.currentHealth);
 			ImGui::Text("Max Health: %.f", health.maxHealth);
 
-			ImGui::Text("Ignored Damage: ");
-			for( u32 i = 0; i < health.ignoredDamaged.size(); i++ )
-			{
-				ImGui::PushID(i);
+			//ImGui::Text("Ignored Damage: ");
+			//for( u32 i = 0; i < health.ignoredDamaged.size(); i++ )
+			//{
+			//	ImGui::PushID(i);
 
-				ImGui::SameLine();
-				ImGui::Text("%d, ", health.ignoredDamaged[i]);
+			//	ImGui::SameLine();
+			//	ImGui::Text("%d, ", health.ignoredDamaged[i]);
 
-				ImGui::PopID();
-			}
+			//	ImGui::PopID();
+			//}
 
-			ImGui::Text("Ignored Named Damage: ");
-			for( u32 i = 0; i < health.ignoredDamaged.size(); i++ )
-			{
-				ImGui::PushID(1000 + i);
+			//ImGui::Text("Ignored Named Damage: ");
+			//for( u32 i = 0; i < health.ignoredDamaged.size(); i++ )
+			//{
+			//	ImGui::PushID(1000 + i);
 
-				if(const char* name = ecs->GetEntityName(health.ignoredDamaged[i]))
-					ImGui::Text("%s", name);
+			//	if(const char* name = ecs->GetEntityName(health.ignoredDamaged[i]))
+			//		ImGui::Text("%s", name);
 
-				ImGui::PopID();
-			}
+			//	ImGui::PopID();
+			//}
 
 			ImGui::TreePop();
 		}

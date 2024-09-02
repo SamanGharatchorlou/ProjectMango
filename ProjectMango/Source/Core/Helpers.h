@@ -65,6 +65,21 @@ bool EraseSwap(std::vector<T>& vector, const T& item)
 	return false;
 }
 
+template<typename T>
+T Power(T value, int count )
+{
+	T out_value = value;
+	for( int i = 0; i < count - 1; i++ )
+	{
+		out_value *= out_value;
+	}
+
+	return out_value;
+}
+
+
+float EaseOut(float value, int easing_factor);
+
 
 //--------------------------------------------------------
 // String helpers

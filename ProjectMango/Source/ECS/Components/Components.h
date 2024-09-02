@@ -87,8 +87,6 @@ namespace ECS
 		VectorI currentTarget;
 
 		std::vector<VectorI> path;
-
-		void UpdateTargetPosition();
 	};
 
 	struct Damage
@@ -101,7 +99,11 @@ namespace ECS
 		// may apply a force
 		VectorF force;
 
-		static void Apply(Entity entity, const Damage& damage);
+		// which entity we've already applied to, dont apply again
+		std::vector<Entity> appliedTo;
+
+		bool CanApplyTo(Entity entity) const;
+		void ApplyTo(Entity entity);
 	};
 
 	struct Health
@@ -112,10 +114,6 @@ namespace ECS
 		float currentHealth = 0.0f;
 
 		bool invulnerable = false;
-
-		// todo: every few frames look through this list and
-		// remove any dead entities // new system? health system?w
-		std::vector<Entity> ignoredDamaged;
 
 		void ApplyDamage(const Damage& damage);
 	};

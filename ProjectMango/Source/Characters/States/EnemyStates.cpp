@@ -41,11 +41,40 @@ namespace Enemy
 				PushNewState(TakeHit);
 			}
 		}
-
-		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		
+		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+		physics.ApplyDrag(0.5f);
+		
+		ECS::AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		if( ai_controller.moveToTarget ) // can move  to target
 		{
-			physics->ApplyDrag(0.1f);
+			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			PushNewState(Run);
 		}
+	}
+
+	// Run
+	// ---------------------------------------------------------
+	RunState::RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
+
+	void RunState::Init()
+	{
+		StartAnimation();
+	}
+	void RunState::Resume()
+	{
+		StartAnimation();
+	}
+
+	void RunState::Update(float dt)
+	{
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+
+		const VectorI facing_direction = state.GetFacingDirection();
+		physics.maxSpeed.x = 4.0f;
+		physics.ApplyMovement(facing_direction.toFloat(), dt);
 	}
 
 	// TakeHitState

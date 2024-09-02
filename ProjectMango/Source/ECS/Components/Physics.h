@@ -17,5 +17,7 @@ namespace ECS
 
 		void ApplyMovement(VectorF movement_direction, float dt);
 		void ApplyDrag(float drag_coefficient);
+
+		void ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor);
 	};
 }

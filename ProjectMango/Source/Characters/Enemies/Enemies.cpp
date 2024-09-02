@@ -63,8 +63,9 @@ ECS::Entity Enemy::Create()
 
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, entity);
-	health.maxHealth = 10000;
+	health.maxHealth = 100;
 	health.currentHealth = health.maxHealth;
+	health.invulnerable = true;
 
 	// AI
 	ECS::AIController& ai = ecs->AddComponent(AIController, entity);
