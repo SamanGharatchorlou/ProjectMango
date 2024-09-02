@@ -11,27 +11,21 @@ template <typename T>
 class Timer
 {
 public:
-	enum Command
-	{
-		Stop,
-		Start
-	};
-
-public:
-	Timer(Command startingState = Stop);
+	Timer() : startTicks(0), pauseTicks(0), state(TimeState::Stopped) { };
 
 	// Controls
-	void start();
-	void pause();
-	void resume();
-	void stop();
-	void restart();
+	void Start();
+	void Pause();
+	void Resume();
+	void Stop();
+	void Restart();
 
-	T getMilliseconds() const;
-	T getSeconds() const { return getMilliseconds() / 1000; }
+	T GetMilliseconds() const;
+	T GetSeconds() const { return GetMilliseconds() / 1000; }
 
-	bool isPaused() const { return state == TimeState::Paused; }
-	bool isStarted() const { return state == TimeState::Running || state == TimeState::Paused; }
+	bool IsPaused() const { return state == TimeState::Paused; }
+	bool IsStarted() const { return state == TimeState::Running || state == TimeState::Paused; }
+	bool IsRunning() const { return state == TimeState::Running; }
 
 private:
 	T startTicks;
@@ -43,22 +37,7 @@ private:
 using TimerF = Timer<float>;
 
 template <typename T>
-Timer<T>::Timer(Command startingState) : startTicks(0), pauseTicks(0)
-{
-	if (startingState == Start)
-	{
-		state = TimeState::Running;
-		start();
-	}
-	else
-	{
-		state = TimeState::Stopped;
-	}
-}
-
-
-template <typename T>
-inline void Timer<T>::start() 
+inline void Timer<T>::Start() 
 {
 	state = TimeState::Running;
 
@@ -67,7 +46,7 @@ inline void Timer<T>::start()
 
 
 template <typename T>
-inline void Timer<T>::pause()
+inline void Timer<T>::Pause()
 {
 	if(state == TimeState::Running)
 	{
@@ -80,7 +59,7 @@ inline void Timer<T>::pause()
 
 
 template <typename T>
-inline void Timer<T>::resume()
+inline void Timer<T>::Resume()
 {
 	if(state == TimeState::Paused)
 	{
@@ -93,7 +72,7 @@ inline void Timer<T>::resume()
 
 
 template <typename T>
-inline void Timer<T>::stop()
+inline void Timer<T>::Stop()
 {
 	if(state == TimeState::Running || state == TimeState::Paused)
 	{
@@ -106,7 +85,7 @@ inline void Timer<T>::stop()
 
 
 template <typename T>
-inline void Timer<T>::restart()
+inline void Timer<T>::Restart()
 { 
 	state = TimeState::Running;
 
@@ -116,7 +95,7 @@ inline void Timer<T>::restart()
 
 
 template <typename T>
-inline T Timer<T>::getMilliseconds() const
+inline T Timer<T>::GetMilliseconds() const
 {
 	if (state == TimeState::Running)
 		return SDL_GetTicks() - startTicks;

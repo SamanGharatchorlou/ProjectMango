@@ -18,12 +18,12 @@ FrameRateController::FrameRateController() : dt(0.0f), frameRateCap(0.0f), frame
 
 void FrameRateController::start()
 {
-	frameTimer.start();
-	gameTimer.start();
+	frameTimer.Start();
+	gameTimer.Start();
 
 #if FRAMERATE_CAP
 	frameRateCap = FRAMERATE_CAP;
-	capTimer.start();
+	capTimer.Start();
 #endif
 #if PRINT_FRAMERATE_EVERY
 	fpsTimer.start();
@@ -33,13 +33,13 @@ void FrameRateController::start()
 
 void FrameRateController::update()
 {
-	dt = frameTimer.getSeconds();
+	dt = frameTimer.GetSeconds();
 
 #if PRINT_FRAMERATE_EVERY
 	printfFrameRate();
 #endif
 
-	frameTimer.restart();
+	frameTimer.Restart();
 	frameNumber++;
 
 #if FRAMERATE_CAP
@@ -50,13 +50,13 @@ void FrameRateController::update()
 
 void FrameRateController::resetCapTimer()
 {
-	capTimer.restart();
+	capTimer.Restart();
 }
 
 void FrameRateController::capFrameRate()
 {
 	//If frame finished early
-	int frameTicks = (int)capTimer.getMilliseconds();
+	int frameTicks = (int)capTimer.GetMilliseconds();
 	if (frameTicks < (1000 / frameRateCap))
 	{
 		//Wait remaining time

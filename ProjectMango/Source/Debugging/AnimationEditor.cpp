@@ -432,9 +432,11 @@ namespace AnimationEditor
                     c.animator.frameIndex = c.animator.frameIndex % active_animation.frameCount;
 			    }
 
-
-
-                ECS::AnimationSystem::UpdateAnimator(c.animator, fc.delta()); 		
+                ECS::AnimationSystem::UpdateAnimator(c.animator, fc.delta()); 	
+                
+                const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
+                ImGui::Text("Frame %d / %d", c.animator.frameIndex + 1, active_animation.frameCount );
+	
 
                 c.animator.SetActiveSpriteFrame(c.sprite);
 

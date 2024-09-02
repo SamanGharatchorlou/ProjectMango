@@ -25,14 +25,19 @@ namespace Enemy
 		StartAnimation();
 	}
 	void IdleState::Resume()
-	{
-		StartAnimation();
+	{		
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
+		
+		StartAnimation(can_flip_sprite);
 	}
 	void IdleState::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
+		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 
-		if(const ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+		if(const Collider* collider = ecs->GetComponent(Collider, entity))
 		{
 			const FrameRateController& frc = FrameRateController::Get();
 			if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.frameCount())
@@ -42,13 +47,20 @@ namespace Enemy
 			}
 		}
 		
-		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+		Physics& physics = ecs->GetComponentRef(Physics, entity);
 		physics.ApplyDrag(0.5f);
 		
-		ECS::AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		if( ai_controller.cooldownTimer.IsRunning() )
+		{
+			if(ai_controller.cooldownTimer.GetSeconds() < ai_controller.attackCooldownTime)
+				return;
+			
+			ai_controller.cooldownTimer.Stop();
+		}
+		
 		if( ai_controller.moveToTarget ) // can move  to target
 		{
-			ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			PushNewState(Run);
 		}
 	}
@@ -62,19 +74,46 @@ namespace Enemy
 		StartAnimation();
 	}
 	void RunState::Resume()
-	{
-		StartAnimation();
+	{		
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
+		
+		StartAnimation(can_flip_sprite);
 	}
 
 	void RunState::Update(float dt)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		Physics& physics = ecs->GetComponentRef(Physics, entity);
+		Transform& transform = ecs->GetComponentRef(Transform, entity);
+		const AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+
+		if( ai_controller.cooldownTimer.IsRunning() )
+		{		
+			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+			sprite.canFlip = false;
+
+			state.actions.Pop();
+			return;
+		}
 
 		const VectorI facing_direction = state.GetFacingDirection();
-		physics.maxSpeed.x = 4.0f;
+		physics.maxSpeed.x = 3.0f;
 		physics.ApplyMovement(facing_direction.toFloat(), dt);
+
+		if(ai_controller.target != EntityInvalid)
+		{
+			const Transform& target_transform = ecs->GetComponentRef(Transform, ai_controller.target);
+			const float distance_to_target = std::abs( transform.GetCharacterCenter().x - target_transform.GetCharacterCenter().x );
+			const float attack_range = GetAttackRange(ActionState::BasicAttack);
+
+			if(attack_range > 0.0f && attack_range > distance_to_target)
+			{
+				PushNewState(BasicAttack);
+			}
+		}
 	}
 
 	// TakeHitState
@@ -87,9 +126,9 @@ namespace Enemy
 	void TakeHitState::Update(float dt)
 	{	
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animation = ecs->GetComponentRef(Animator, entity);
+		const Animator& animator = ecs->GetComponentRef(Animator, entity);
 
-		if(animation.loopCount > 0)
+		if(animator.loopCount > 0)
 		{
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			state.actions.Pop();
@@ -100,7 +139,7 @@ namespace Enemy
 	void TakeHitState::Exit()
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+		if(Collider* collider = ecs->GetComponent(Collider, entity))
 		{
 			collider->lastHitFrame = -1;
 		}
@@ -110,7 +149,7 @@ namespace Enemy
 	// ---------------------------------------------------------
 	void DeathState::Init()
 	{
-		StartAnimation();
+		StartAnimation(false);
 
 		can_kill = false;
 
@@ -129,7 +168,7 @@ namespace Enemy
 
 	void DeathState::Resume()
 	{
-		StartAnimation();
+		StartAnimation(false);
 	}
 
 	void DeathState::Update(float dt)
@@ -139,6 +178,50 @@ namespace Enemy
 
 		if(animation.loopCount > 0)
 			can_kill = true;
+	}
+
+	// BasicAttack
+	// ---------------------------------------------------------
+	BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+
+	void BasicAttackState::Init()
+	{
+		StartAnimation(true);
+	}
+
+	void BasicAttackState::Update(float dt)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.canFlip = animator.frameIndex < 3;
+
+		if(animator.frameIndex >= 6 && attackCollider == EntityInvalid)
+		{
+			attackCollider = CreateNewAttackCollider("enemy attack collider", 10.0f, 30.0f);
+		}
+
+		if(animator.loopCount > 0)
+		{
+			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+			ai_controller.cooldownTimer.Start();
+
+			state.actions.Pop();
+			return;
+		}
+
+		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		{
+			physics->ApplyDrag(0.5f);
+		}
+	}
+
+	void BasicAttackState::Exit()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		//ecs->entities.KillEntity(attackCollider);
 	}
 }
 

@@ -3,44 +3,44 @@
 
 PerformanceProfiler::PerformanceProfiler() : mTotalTime(0.0f), mCount(0), averageResetTime(-1.0f)
 {
-	mDisplayTimer.start();
-	averageResetTimer.start();
+	mDisplayTimer.Start();
+	averageResetTimer.Start();
 }
 
 void PerformanceProfiler::displayAverageTimeEvery(float seconds)
 {
-	if (mDisplayTimer.getSeconds() > seconds)
+	if (mDisplayTimer.GetSeconds() > seconds)
 	{
 		if(mCount > 0)
 			DebugPrint(Profile, "Profiler %s average time %fms", mName.c_str(), mTotalTime / mCount);
-		mDisplayTimer.restart();
+		mDisplayTimer.Restart();
 	}
 
-	if (averageResetTime > 0.0f && averageResetTimer.getSeconds() > averageResetTime)
+	if (averageResetTime > 0.0f && averageResetTimer.GetSeconds() > averageResetTime)
 	{
 		mTotalTime = 0.0f;
 		mCount = 0;
-		averageResetTimer.restart();
+		averageResetTimer.Restart();
 	}
 }
 
 
 void PerformanceProfiler::saveToAverage()
 {
-	mTotalTime += mTimer.getMilliseconds();
+	mTotalTime += mTimer.GetMilliseconds();
 	mCount++;
 }
 
 
 void PerformanceProfiler::displayTimeSeconds()
 {
-	DebugPrint(Profile, "Profiler %s time %fs", mName.c_str(), mTimer.getSeconds());
+	DebugPrint(Profile, "Profiler %s time %fs", mName.c_str(), mTimer.GetSeconds());
 }
 
 
 void PerformanceProfiler::displayTimeMilliSeconds()
 {
-	DebugPrint(Profile, "Profiler %s time %fms", mName.c_str(), mTimer.getMilliseconds());
+	DebugPrint(Profile, "Profiler %s time %fms", mName.c_str(), mTimer.GetMilliseconds());
 }
 
 

@@ -59,6 +59,7 @@ namespace ECS
 		void StartAnimation(ActionState action);
 
 		const Animation& GetActiveAnimation() const;
+		const Animation* GetAnimation(ActionState action) const;
 
 		bool OnLastFrame() const;
 	};

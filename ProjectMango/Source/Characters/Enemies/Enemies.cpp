@@ -54,7 +54,7 @@ ECS::Entity Enemy::Create()
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
-	sprite.renderLayer = 9;
+	sprite.renderLayer = 8;
 	
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);

@@ -18,7 +18,7 @@ public:
 	void capFrameRate();
 
 	unsigned long frameCount() const { return frameNumber; }
-	float GameSeconds() const { return gameTimer.getSeconds(); }
+	float GameSeconds() const { return gameTimer.GetSeconds(); }
 
 #if PRINT_FRAMERATE_EVERY
 	void printfFrameRate();

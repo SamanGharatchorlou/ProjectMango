@@ -47,6 +47,8 @@ namespace ECS
 		}
 
 		void SetLocalPosition(VectorF pos);
+
+		VectorF GetCharacterCenter() const;
 	};
 
 	struct Sprite

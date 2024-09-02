@@ -6,8 +6,8 @@ class PerformanceProfiler
 public:
 	PerformanceProfiler();
 
-	void start() { mTimer.start(); }
-	void restart() { mTimer.restart(); }
+	void start() { mTimer.Start(); }
+	void restart() { mTimer.Restart(); }
 
 	void displayTimeSeconds();
 	void displayTimeMilliSeconds();

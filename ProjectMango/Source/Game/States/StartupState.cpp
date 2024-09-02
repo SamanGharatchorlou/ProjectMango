@@ -26,7 +26,7 @@ static void loadGameAssets()
 void renderLoadingBar(LoadingManager* loading)
 {
 	TimerF timer;
-	timer.start();
+	timer.Start();
 	float renderFPS = 20;
 
 	while (loading->isLoadingAssets())
@@ -37,10 +37,10 @@ void renderLoadingBar(LoadingManager* loading)
 		}
 
 		// Dont want to hog the renderer too much as its used for loading textures, fonts etc
-		if (timer.getMilliseconds() > (1000 / renderFPS))
+		if (timer.GetMilliseconds() > (1000 / renderFPS))
 		{
 			loading->render();
-			timer.restart();
+			timer.Restart();
 		}
 	}
 }
@@ -48,7 +48,7 @@ void renderLoadingBar(LoadingManager* loading)
 void StartupState::Init()
 {
 	DebugPrint(Log, " -------------------------- starting loader thread -------------------------- ");
-	timer.start();
+	timer.Start();
 
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));
 
@@ -86,6 +86,6 @@ void StartupState::Update(float dt)
 
 void StartupState::Exit()
 {
-	DebugPrint(Log, "\n\nloading time taken: %fs", timer.getSeconds());
+	DebugPrint(Log, "\n\nloading time taken: %fs", timer.GetSeconds());
 	DebugPrint(Log, " -------------------------- exiting loader thread -------------------------- ");
 }

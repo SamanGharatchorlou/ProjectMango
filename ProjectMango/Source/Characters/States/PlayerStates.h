@@ -44,8 +44,6 @@ namespace Player
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
-
-		void CreateNewAttackCollider();
 		
 		ECS::Entity attackCollider = ECS::EntityInvalid;
 

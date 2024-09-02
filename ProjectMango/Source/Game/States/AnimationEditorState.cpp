@@ -18,7 +18,7 @@ void AnimationEditorState::Init()
 {	
 	DebugMenu::OpenEditorWindow();
 
-	s_timer.start();
+	s_timer.Start();
 }
 
 void AnimationEditorState::HandleInput()
@@ -34,7 +34,7 @@ void AnimationEditorState::Update(float dt)
 	//s_state.HandleInput();
 	if (InputManager* im = GameData::Get().inputManager)
 	{
-		if (im->isPressed(Button::F11) && s_timer.getSeconds() > 1.0f)
+		if (im->isPressed(Button::F11) && s_timer.GetSeconds() > 1.0f)
 		{
 			GameData::Get().systemStateManager->mStates.popState();
 			return;
@@ -48,5 +48,5 @@ void AnimationEditorState::Update(float dt)
 
 void AnimationEditorState::Exit()
 {
-	s_timer.stop();
+	s_timer.Stop();
 }

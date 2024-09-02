@@ -176,7 +176,7 @@ void RollState::Init()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
-	StartAnimation(ActionState::Roll);
+	StartAnimation(ActionState::Roll, false);
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics,entity))
 	{
@@ -190,9 +190,6 @@ void RollState::Init()
 	{
 		collider->SetFlag(ECS::Collider::TerrainOnly);
 	}
-
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	sprite.canFlip = false;
 }
 
 void RollState::Update(float dt)
@@ -230,14 +227,10 @@ BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(Action
 
 void BasicAttackState::Init()
 {
-	StartAnimation();
+	StartAnimation(false);
 	
-	CreateNewAttackCollider();
+	attackCollider = CreateNewAttackCollider("player attack collider", 10.0f, 30.0f);
 	damageOnLoopCount = -1;
-	
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	sprite.canFlip = false;
 }
 
 void BasicAttackState::Update(float dt)
@@ -295,47 +288,7 @@ void BasicAttackState::Exit()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->entities.KillEntity(attackCollider);
-			
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	sprite.canFlip = true;
 }
-
-void BasicAttackState::CreateNewAttackCollider()
-{
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ecs->entities.KillEntity(attackCollider);
-	
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	const ECS::Animation& animation = animator.GetActiveAnimation();
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	VectorF pos =  transform.size * animation.attackColliderPos;
-	VectorF size = transform.size * animation.attackColliderSize;
-	RectF collider_rect(pos, size);
-	
-	attackCollider = ecs->CreateEntity("player attack collider");
-	ECS::EntityData::SetParent(attackCollider, entity);
-
-	// Transform
-	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attackCollider);
-	attack_transform.SetLocalPosition(pos);
-	attack_transform.size = size;
-
-	// Collider
-	ECS::Collider& collider = ecs->AddComponent(Collider, attackCollider);
-	collider.SetBaseRect(collider_rect);
-	collider.SetFlag(ECS::Collider::IsDamage);
-
-	// Damage
-	ECS::Damage& damage = ecs->AddComponent(Damage, attackCollider);
-	damage.value = 10;
-
-	// dont damage our self
-	damage.appliedTo.push_back(entity);
-	
-	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
-	damage.force = character_state.GetFacingDirection().toFloat() * 30.0f;
-}
-
 
 // DeathState
 // ---------------------------------------------------------
@@ -345,7 +298,7 @@ void DeathState::Init()
 {
 	can_respawn = false;
 
-	StartAnimation();
+	StartAnimation(false);
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))

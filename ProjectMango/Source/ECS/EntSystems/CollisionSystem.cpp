@@ -66,7 +66,9 @@ namespace ECS
 				continue;
 
 			const u32 index = colliders.GetComponentIndex(entity);
+			
 			Damage* A_damage = ecs->GetComponent(Damage, entity);
+			bool is_damage = A_collider.HasFlag(Collider::IsDamage);
 
 			for (u32 i = 0; i < count; i++) 
 			{
@@ -78,7 +80,7 @@ namespace ECS
 
 				// if IgnorePhysical then its damage we only check from these (i.e. when its collider A, not B)
 				if(B_collider.HasFlag(Collider::IgnoreAll) || B_collider.HasFlag(Collider::IsDamage) )
-					continue;
+					continue; 
 
 				if( A_collider.HasFlag(Collider::TerrainOnly) && !B_collider.HasFlag(Collider::IsTerrain) )
 					continue;
@@ -89,17 +91,17 @@ namespace ECS
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
 
-					if( A_damage && !B_collider.HasFlag(Collider::IgnoreDamage) )
+					if( is_damage && !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
-						if(A_damage->CanApplyTo(B_entity))
+						if(A_damage && A_damage->CanApplyTo(B_entity))
 						{
 							B_collider.lastHitFrame = frame_count;
 							A_damage->ApplyTo(B_entity);
 						}
 					}
 
-					// ghost colliders just check for collisions and have no effect so dont compute anything below
-					if(A_collider.HasFlag(Collider::Flags::GhostCollider))
+					// damage and ghost colliders just check for collisions and have no effect so dont compute anything below
+					if(is_damage || A_collider.HasFlag(Collider::Flags::GhostCollider))
 						continue;
 
 					// Physical, can we slide 

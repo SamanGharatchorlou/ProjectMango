@@ -28,7 +28,6 @@ namespace ECS
 		sprite.flipPoint = VectorF(animation.flipPointX, 0.5f);
 	}
 
-	
 	void Animator::StartAnimation(ActionState action)
 	{
 		for( u32 i = 0; i < animations.size(); i++ )
@@ -53,6 +52,18 @@ namespace ECS
 		return animations[activeAnimation];
 	}
 
+	const Animation* Animator::GetAnimation(ActionState action) const
+	{
+		for( u32 i = 0; i < animations.size(); i++ )
+		{
+			if(animations[i].action == action)
+			{
+				return &animations[i];
+			}
+		}
+
+		return nullptr;
+	}
 
 	bool Animator::OnLastFrame() const
 	{

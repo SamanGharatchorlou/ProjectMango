@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Physics.h"
 #include "Core/Helpers.h"
+#include "ECS/Components/Collider.h"
 
 namespace ECS
 {
@@ -45,6 +46,21 @@ namespace ECS
 		EntityData& entity_data = ecs->GetComponentRef(EntityData, entity);
 		Transform& parent_transform = ecs->GetComponentRef(Transform, entity_data.parent);
 		SetWorldPosition(parent_transform.worldPosition + localPosition);
+	}
+
+	VectorF Transform::GetCharacterCenter() const
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		if(const Collider* collider = ecs->GetComponent(Collider, entity))
+		{
+			return collider->rect.Center();
+		}
+		else if(const Transform* transform = ecs->GetComponent(Transform, entity))
+		{
+			return transform->worldPosition;
+		}
+
+		return VectorF::zero();
 	}
 	
 	// Health

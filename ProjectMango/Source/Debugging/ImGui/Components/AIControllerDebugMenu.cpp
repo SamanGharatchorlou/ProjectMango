@@ -6,7 +6,6 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 
 static bool s_enemyCanMove = true;
-static bool s_showAttackColliders = true;
 
 bool EnemyCanMove() 
 { 
@@ -21,14 +20,13 @@ ECS::Component::Type DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		if (ImGui::TreeNode("Displaay"))
-		{
-			ImGui::Checkbox("Allow Enemy Movement", &s_enemyCanMove);
+		ECS::AIController& aic = ecs->GetComponentRef(AIController, entity);
 
-			ImGui::Checkbox("Display Attack Colliders", &s_showAttackColliders);
+		ImGui::Checkbox("Allow Enemy Movement", &s_enemyCanMove);
 
-			ImGui::TreePop();
-		}
+		ImGui::Text("Has target: %s", ecs->GetEntityName(aic.target));
+
+		ImGui::Text("Distance to target %f", aic.DistanceToTarget());
 	}
 		
 	ImGui::PopID();

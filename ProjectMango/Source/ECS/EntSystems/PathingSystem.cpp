@@ -5,7 +5,6 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/ComponentCommon.h"
-#include "ECS/Components/Physics.h"
 
 namespace ECS
 {

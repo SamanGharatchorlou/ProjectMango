@@ -40,4 +40,15 @@ namespace Enemy
 		
 		bool can_kill = false;
 	};
+	
+	struct BasicAttackState : public CharacterAction
+	{
+		BasicAttackState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+		void Exit() override;
+		
+		ECS::Entity attackCollider = ECS::EntityInvalid;
+	};
 }
