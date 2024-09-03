@@ -6,7 +6,7 @@ namespace DebugDraw
 {
 	void Shape(DebugDrawType renderType, RectF rect, Colour colour);
 
-	void Point(VectorF point, float size, Colour colour);
+	void Point(VectorF point, Colour colour, float size = 8.0f);
 	void Line(VectorF pointA, VectorF pointB, Colour colour);
 	void RectOutline(const RectF& rect, Colour colour);
 	void RectFill(const RectF& rect, Colour colour);

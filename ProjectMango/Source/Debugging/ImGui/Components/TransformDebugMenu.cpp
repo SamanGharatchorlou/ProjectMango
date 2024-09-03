@@ -7,7 +7,7 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 
 bool s_displayRect = false;
-bool s_displayPosition = false;
+bool s_displayCharacterPosition = false;
 bool s_displayFlipPoint = false;
 bool s_outputPosition = false;
 
@@ -28,10 +28,11 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			DebugDraw::RectOutline(rect, Colour::Blue);
 		}
 
-		ImGui::Checkbox("Display Position", &s_displayPosition);
-		if (s_displayPosition)
+		ImGui::Checkbox("Display Character Position", &s_displayCharacterPosition);
+		if (s_displayCharacterPosition)
 		{
-			DebugDraw::Point(transform.worldPosition, 4.0f, Colour::Green);
+			VectorF position = transform.GetCharacterCenter();
+			DebugDraw::Point(position, Colour::Green);
 		}
 
 		ImGui::Checkbox("Display Flip Point", &s_displayFlipPoint);
@@ -41,7 +42,7 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			if(ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
 				flip_point = (sprite->flipPoint * transform.size) + transform.worldPosition;
 
-			DebugDraw::Point(flip_point, 10.0f, Colour::Red);
+			DebugDraw::Point(flip_point, Colour::Red);
 		}
 
 		ImGui::Checkbox("Output Position", &s_outputPosition);

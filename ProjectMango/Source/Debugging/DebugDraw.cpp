@@ -38,7 +38,7 @@ namespace DebugDraw
 	  }
 	}
 
-	void Point(VectorF point, float size, Colour colour)
+	void Point(VectorF point, Colour colour, float size)
 	{
 		RectF rect;
 		rect.SetSize(size, size);

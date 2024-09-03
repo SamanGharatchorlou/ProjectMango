@@ -17,11 +17,7 @@ struct Camera
 
 	void setMapBoundaries(RectF boundaries) { boundaries = boundaries; }
 
-	// follow this object
-	void follow(ECS::Entity entity);
-
 	void Update(float dt);
-	void fastUpdate(float dt);
 
 	template <typename T>
 	bool inView(const Rect<T>& object) const;
@@ -40,15 +36,7 @@ struct Camera
 	void initShakeyCam(float maxTrauma, float traumaReduction) { shakeyCam.init(maxTrauma, traumaReduction); }
 	CameraShake* getShake() { return &shakeyCam; }
 
-
-
-	VectorF lerpMovement(float dt);
-
 	RectF rect;
-	//RectF boundaries;
-
-	VectorF xBoundary;
-	VectorF yBoundary;
 
 	ECS::Entity targetEntity;
 
@@ -60,6 +48,8 @@ struct Camera
 private:
 	Camera();
 	~Camera() { }
+
+	void LerpToTarget();
 };
 
 template <typename T>

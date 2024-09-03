@@ -10,19 +10,10 @@
 
 Cursor::Cursor() : mTexture(nullptr), mMoving(false), mVisibility(false), mMode(Cursor::None) { }
 
-
 void Cursor::render()
 {
-#if DEBUG_CURSOR
-	debugDrawRect(mRect, RenderColour::LightGrey);
-#endif
-
 	if(mTexture)
 		mTexture->render(mRect);
-
-#if DEBUG_CURSOR // ERROR: Needs to be converted to camera coords
-	debugDrawPoint(position(), 5.0f, RenderColour::Black);
-#endif
 }
 
 void Cursor::setButton(ButtonType type, Button button)
@@ -45,7 +36,7 @@ bool Cursor::isHeld(ButtonType type) const
 bool Cursor::isPressed(ButtonType type, int frame_buffer) const
 {	
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
+	const int frame_count = frc.FrameCount();
 
 	return mButtons[type].isPressed(frame_count - frame_buffer);
 }
@@ -53,7 +44,7 @@ bool Cursor::isPressed(ButtonType type, int frame_buffer) const
 bool Cursor::isReleased(ButtonType type, int frame_buffer) const
 {	
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
+	const int frame_count = frc.FrameCount();
 
 	return mButtons[type].isReleased(frame_count - frame_buffer);
 }

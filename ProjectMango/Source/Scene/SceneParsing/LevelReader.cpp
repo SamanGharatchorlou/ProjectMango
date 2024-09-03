@@ -51,6 +51,13 @@ namespace Level
 
 		Value& levels = parser.document["levels"];
 		Value& numbered_level = levels[level_number - 1];
+		
+		const VectorF window_size = GameData::Get().window->size();
+
+		// base screen level width is 256, i.e. thats the non-streched size of the screen
+		const float level_to_window_x = window_size.x / parser.document["defaultLevelWidth"].GetFloat();;
+		const float level_to_window_y = window_size.y / parser.document["defaultLevelHeight"].GetFloat();
+		VectorF level_to_window(level_to_window_x, level_to_window_y);
 
 		int level_px_width = numbered_level["pxWid"].GetInt();
 		int level_px_height = numbered_level["pxHei"].GetInt();
@@ -61,13 +68,8 @@ namespace Level
 
 		int world_offset_x = numbered_level["worldX"].GetInt();
 		int world_offset_y = numbered_level["worldY"].GetInt();
-		VectorF world_offset((float)world_offset_x, (float)world_offset_y);
-
-		const VectorF window_size = GameData::Get().window->size();
-
-		const float level_to_window_x = window_size.x / (float)level_px_width;
-		const float level_to_window_y = window_size.y / (float)level_px_height;
-		VectorF level_to_window(level_to_window_x, level_to_window_y);
+		level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat();
+		level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
 		Value& layers = numbered_level["layerInstances"];
 		for (SizeType i = 0; i < layers.Size(); i++)
@@ -88,8 +90,10 @@ namespace Level
 					float px_x = px[0].GetFloat() + (width * 0.5f);
 					float px_y = px[1].GetFloat() - (height);
 
+					VectorF spawn_pos = VectorF(px_x, px_y) + level.worldPos;
+					spawn_pos *= level_to_window;
+
 					const char* id = entry["__identifier"].GetString();
-					VectorF spawn_pos = (VectorF(px_x, px_y) + world_offset) * level_to_window;
 					level.spawnPositions[id] = spawn_pos;
 				}
 			}
@@ -183,8 +187,12 @@ namespace Level
 
 				for( u32 b = 0; b < blocks.size(); b++ )
 				{
-					VectorF top_left = (blocks[b].top_left.toFloat() * grid_size + world_offset) * level_to_window;
-					VectorF size = (((blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left).toFloat()) * grid_size + world_offset) * level_to_window;
+					VectorF top_left = blocks[b].top_left.toFloat() * grid_size + level.worldPos;
+					top_left *= level_to_window;
+
+					VectorI block_size = blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left;
+					VectorF size = block_size.toFloat() * grid_size;
+					size *= level_to_window;
 
 					RectF collider_rect(top_left, size);
 
@@ -227,15 +235,18 @@ namespace Level
 					Value& entry = grid_array[i];
 
 					Value& px = entry["px"];
-					float px_x = px[0].GetFloat() + world_offset_x;
-					float px_y = px[1].GetFloat() + world_offset_y;
+					float px_x = px[0].GetFloat();
+					float px_y = px[1].GetFloat();
+
+					VectorF tile_pos = VectorF(px_x, px_y) + level.worldPos;
+					tile_pos *= level_to_window;
 					 
 					Value& src = entry["src"];
 					float src_x = src[0].GetFloat();
 					float src_y = src[1].GetFloat();
-
+					
 					ECS::Layer::Tile tile;
-					tile.draw_pos = VectorF(px_x, px_y) * level_to_window;
+					tile.draw_pos = tile_pos;
 					tile.tileset_pos = VectorF(src_x, src_y);
 					level_layer.tiles.push_back(tile);
 				}

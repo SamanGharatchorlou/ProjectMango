@@ -186,7 +186,7 @@ void DebugMenu::DoInputWindow()
             ImGui::Text("Cursor: %s", cursorState.c_str());
 
             const FrameRateController& frc = FrameRateController::Get();
-	        const int frame_count = frc.frameCount();
+	        const int frame_count = frc.FrameCount();
 
             for (u32 i = 0; i < im->mButtons.size(); i++)
             {
@@ -286,6 +286,19 @@ DebugMenu::GamePlayerState& DebugMenu::GetGamePlayerState()
 static bool s_gamePlayer = false;
 static bool s_nextFrame = false;
 
+struct FrameData
+{
+    TimerF update_timer;
+
+    float frameRate;
+    float gameTime;
+    float realTime;
+    float waitTime;
+    float waitPercentage;
+};
+
+static FrameData s_frameData;
+
 void DebugMenu::DoGameStateWindow() 
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -301,15 +314,42 @@ void DebugMenu::DoGameStateWindow()
     {
         s_gamePlayerState.nextFrame = true;
     }
+    
+    if (ImGui::TreeNode("Frame Info"))
+    {
+        if(!s_frameData.update_timer.IsRunning())
+            s_frameData.update_timer.Start();
 
-    Window* window = GameData::Get().window;
-    window->size();
-    DebugDraw::Point(window->size() * 0.0f, 5.0f, Colour::Red);
+        if(s_frameData.update_timer.GetSeconds() > 1.0f)
+        {
+            const FrameRateController& fc = FrameRateController::Get();
 
+            s_frameData.update_timer.Restart();
+            s_frameData.frameRate = fc.FrameCount() / fc.gameTimer.GetSeconds();
+            s_frameData.gameTime = fc.frameTimer.GetMilliseconds();
+            s_frameData.realTime = fc.capTimer.GetMilliseconds();
+            
+            float wait_time = (1000.0f / fc.frameRateCap) - fc.capTimer.GetMilliseconds();
+            float percentage = wait_time / (1000.0f / fc.frameRateCap);
+            s_frameData.waitTime = wait_time;
+            s_frameData.waitPercentage = percentage;
+        }
+
+        ImGui::Text( "Framerate(ms): %.f", s_frameData.frameRate );
+        ImGui::Text( "Game frame time(ms): %.f", s_frameData.gameTime);
+        ImGui::Text( "Real frame time(ms): %.f", s_frameData.realTime );
+        ImGui::Text( "Frame wait time(ms): %.f (%.f)", s_frameData.waitTime, s_frameData.waitPercentage );
+
+
+        ImGui::TreePop();
+    }
 }
 
 static bool s_drawRaycasts = false;
 static bool s_debugCamera = false;
+
+static bool s_getRenderLayerData = false;
+std::vector<int> s_renderPacks;
 
 bool DebugMenu::DrawRaycasts()
 {
@@ -334,13 +374,39 @@ void DebugMenu::DoTweakerWindow()
         Camera* cam = Camera::Get();
         RectF rect = cam->GetRect();
         DebugDraw::RectOutline(rect, Colour::Green);
-        DebugDraw::Point(rect.Center(), 5.0f, Colour::Green);
-
-        //DebugDraw::RectOutline(cam->boundaries, Colour::Red);
+        DebugDraw::Point(rect.Center(), Colour::Green);
 
         const ECS::Transform& transform = ecs->GetComponentRef(Transform, cam->targetEntity);
-        VectorF target_position = transform.worldPosition;
-        DebugDraw::Point(target_position, 5.0f, Colour::Blue);
+        DebugDraw::Point(transform.GetCharacterCenter(),Colour::Red);
     }
 
+    s_getRenderLayerData = false;
+    if (ImGui::TreeNode("Render Layers"))
+	{
+        s_getRenderLayerData = true; 
+
+        RenderManager* rm = RenderManager::Get();
+        for( u32 i = 0; i < s_renderPacks.size(); i++ )
+        {
+            ImGui::Text("%d. %d", i, s_renderPacks[i]);
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+
+void DebugMenu::SendRenderLayerInfo(const std::vector<RenderPack>* render_packs)
+{
+    if(!s_getRenderLayerData)
+        return;
+
+    s_renderPacks.clear();
+
+    for( u32 i = 0; i < c_RenderLayers; i++ )
+    {
+        const std::vector<RenderPack>& layer = render_packs[i];
+
+        s_renderPacks.push_back(layer.size());
+    }
 }

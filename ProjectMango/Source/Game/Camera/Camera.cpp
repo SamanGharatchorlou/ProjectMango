@@ -5,21 +5,20 @@
 #include "ECS/EntityCoordinator.h"
 
 
+#include "ECS/Components/Level.h"
+
 Camera* Camera::Get()
 {
 	static Camera sInstance;
 	return &sInstance;
 }
 
-
 void Camera::clear()
 {
 	shakeyCam.clear();
 }
 
-
 Camera::Camera() : mScale(1.0f) { }
-
 
 void Camera::setScale(float scale)
 {
@@ -27,88 +26,49 @@ void Camera::setScale(float scale)
 	setViewport(rect.Size() / mScale);
 }
 
-
-//void Camera::setPosition(VectorF position)
-//{
-//	rect.SetLeftCenter(position);
-//	mActiveRect = &mRect;
-//}
-
 void Camera::setViewport(VectorF viewport) 
 { 
 	rect.SetSize(viewport); 
 }
 
-void Camera::follow(ECS::Entity entity)
-{
-	targetEntity = entity;
-
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	VectorF position = transform.worldPosition;
-
-	rect.SetCenter(position);
-
-	if (rect.TopPoint() < yBoundary.x)
-	{
-		float diff = yBoundary.x - rect.TopPoint();
-		rect.Translate( VectorF(0.0f, diff) );
-	}
-
-	if (rect.BotPoint() > yBoundary.y)
-	{
-		float diff = rect.BotPoint() - yBoundary.y;
-		rect.Translate(VectorF(0.0f, -diff));
-	}
-}
-
-
-void Camera::fastUpdate(float dt)
-{
-	VectorF translation = lerpMovement(dt);
-
-	//rect.SetCenter(t)
-
-//#if !CAMERA_IGNORE_BOUNDARIES
-//	if( rect.LeftPoint() + translation.x >= boundaries.x1 &&
-//		rect.RightPoint() + translation.x <= boundaries.x2)
-//#endif
-	{
-		rect.Translate( VectorF(translation.x, 0.0f) );
-	}
-
-
-//#if !CAMERA_IGNORE_BOUNDARIES
-//	if (rect.TopPoint() + translation.y >= boundaries.y1 &&
-//		rect.BotPoint() + translation.y <= boundaries.y2)
-//#endif
-	{
-		rect.Translate( VectorF(0.0f, translation.y) );
-	}
-
-	if (rect.TopPoint() < yBoundary.x)
-	{
-		float diff = yBoundary.x - rect.TopPoint();
-		rect.Translate(VectorF(0.0f, diff));
-	}
-
-	if (rect.BotPoint() > yBoundary.y)
-	{
-		float diff = rect.BotPoint() - yBoundary.y;
-		rect.Translate(VectorF(0.0f, -diff));
-	}
-
-	//if (shakeyCam.hasTrauma())
-	//{
-	//	shakeyCam.enable(rect, mBoundaries);
-	//	shakeyCam.fastUpdate(dt);
-	//}
-}
-
-
-
 void Camera::Update(float dt)
 {
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	const ECS::Transform& transform = ecs->GetComponentRef(Transform, targetEntity);
+	const VectorF translation = (transform.GetCharacterCenter() - rect.Center()) * dt * 5.0f;
+
+	rect.Translate( translation );
+
+	ECS::Entity level_entity = ECS::Level::GetActive();
+	const ECS::Level& level = ecs->GetComponentRef(Level, level_entity);
+	VectorF bounds_translation;
+
+	// restrict within x bounds
+	const float left_point = level.worldPos.x;
+	const float right_point = level.worldPos.x + level.size.x;
+	if(rect.LeftPoint() < left_point)
+	{
+		bounds_translation.x = left_point - rect.LeftPoint();
+	}
+	else if(rect.RightPoint() > right_point)
+	{
+		bounds_translation.x = right_point - rect.RightPoint();
+	}
+
+	// restrict within y bounds
+	const float top_point = level.worldPos.y;
+	const float bot_point = level.worldPos.y + level.size.y;
+	if (rect.TopPoint() < top_point)
+	{
+		bounds_translation.y = top_point - rect.TopPoint();
+	}
+	else if (rect.BotPoint() > bot_point)
+	{
+		bounds_translation.y = bot_point - rect.BotPoint();
+	}
+	
+	rect.Translate(bounds_translation);
+
 	if (shakeyCam.hasTrauma())
 	{
 		//mActiveRect = shakeyCam.rect();
@@ -140,17 +100,3 @@ void Camera::Update(float dt)
 //
 //	return newQuad;
 //}
-
-
-VectorF Camera::lerpMovement(float dt)
-{
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, targetEntity);
-	VectorF target_position = transform.worldPosition;
-
-	VectorF current_center = rect.Center();
-
-	VectorF position = (target_position - current_center) * dt * 0.99;
-	position.y = 0.0f;
-	return position;
-}

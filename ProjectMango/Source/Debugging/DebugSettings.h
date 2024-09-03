@@ -15,11 +15,6 @@
 #define SET_GAME_SCALE 0
 constexpr float game_scale = 0.5f;
 
-
-// Framerate
-#define FRAMERATE_CAP 30 // Use the FPS cap you want
-#define PRINT_FRAMERATE_EVERY 0 // Print at the rate you specify in milliseconds i.e. 500 = print every 0.5 seconds
-
 // Player
 #define DRAW_PLAYER_RECT 1
 #define DRAW_PLAYER_WEAPON_RECT 1

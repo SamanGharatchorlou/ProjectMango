@@ -1,6 +1,8 @@
 #pragma once
 
-// todo: this shouldnt be in debug
+
+#define FRAMERATE_CAP 60 // Use the FPS cap you want
+#define PRINT_FRAMERATE_EVERY 1 // Print at the rate you specify in milliseconds i.e. 500 = print every 0.5 seconds
 
 class FrameRateController
 {
@@ -17,15 +19,10 @@ public:
 	void resetCapTimer();
 	void capFrameRate();
 
-	unsigned long frameCount() const { return frameNumber; }
+	int FrameCount() const { return frameCount; }
 	float GameSeconds() const { return gameTimer.GetSeconds(); }
-
-#if PRINT_FRAMERATE_EVERY
-	void printfFrameRate();
-#endif
-
-
-private:
+	
+	// --- debugging --- //
 	TimerF frameTimer;
 	float dt;
 
@@ -33,18 +30,5 @@ private:
 	float frameRateCap;
 
 	TimerF gameTimer;
-	unsigned long frameNumber;
-
-	// --- debugging --- //
-#if PRINT_FRAMERATE_EVERY
-	float fpsSum = 0.0f;
-	int fpsCounter = 0;
-	float totalFrameTime = 0.0f;
-	int totalFrames = 0;
-#endif
-
-
-#if PRINT_FRAMERATE_EVERY
-	TimerF fpsTimer;
-#endif
+	int frameCount;
 };

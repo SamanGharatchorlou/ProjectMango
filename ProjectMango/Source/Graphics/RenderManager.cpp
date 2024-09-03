@@ -5,7 +5,9 @@
 #include "Renderer.h"
 #include "System/Window.h"
 #include "Game/Camera/Camera.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 
+// WARNING: dont remove this, it doesnt complain except remove all the imgi stuff.. weird
 #include "Debugging/ImGui/ImGuiMenu.h"
 
 
@@ -32,6 +34,8 @@ void RenderManager::AddRenderPacket(RenderPack renderPacket)
 
 void RenderManager::render()
 {
+	DebugMenu::SendRenderLayerInfo(mRenderPackets);
+
 	SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
 
 	// handle window scaling
@@ -44,7 +48,7 @@ void RenderManager::render()
 	Renderer::Get()->setScale(render_scale);
 
 
-	VectorF camera_top_left = Camera::Get()->GetRect().TopLeft();
+	VectorF camera_shift = Camera::Get()->GetRect().TopLeft() * -1.0f;
 
 	// clear screen
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -65,33 +69,18 @@ void RenderManager::render()
 					render_packs[i].rect.Translate(diff * -1);
 				}
 
-				RectF render_rect = render_packs[i].rect;
-
-				VectorF rect_top_left = render_rect.TopLeft();
-				VectorF shift = camera_top_left * -1.0f;// -rect_top_left;
-
-				render_rect.Translate(shift);
-
-				render_packs[i].texture->renderSubTexture(render_rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
+				render_packs[i].rect.Translate(camera_shift);
+				render_packs[i].texture->renderSubTexture(render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
 			}
 			else
 			{
-				RectF render_rect = render_packs[i].rect;
-
-				VectorF rect_top_left = render_rect.TopLeft();
-				VectorF shift = camera_top_left * -1.0f;// -rect_top_left;
-				//VectorF shift = VectorF(100.0f, 100.0f); //camera_top_left - rect_top_left;
-
-				render_rect.Translate(shift);
-
-				render_packs[i].texture->render(render_rect, render_packs[i].flip);
+				render_packs[i].rect.Translate(camera_shift);
+				render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip);
 			}
 		}
 
 		render_packs.clear();
 	}
-
-	//VectorF top_left = Camera::Get()->GetRect().TopLeft();
 
 	// always debug draw last
 	for (u32 i = 0; i < mDebugRenders.size(); i++)
@@ -104,7 +93,7 @@ void RenderManager::render()
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 
 			const RectF& rect = mDebugRenders[i].rect;
-			const Vector2D<int> A = rect.TopLeft().toInt();
+			const Vector2D<int> A = (rect.TopLeft() + camera_shift).toInt();
 			const Vector2D<int> B = rect.Size().toInt();
 
 			SDL_RenderDrawLine(renderer, A.x, A.y, B.x, B.y);
@@ -117,8 +106,8 @@ void RenderManager::render()
 			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 			RectF& rect = mDebugRenders[i].rect;
-			SDL_Rect renderQuadb = { static_cast<int>(rect.x1),
-				static_cast<int>(rect.y1),
+			SDL_Rect renderQuadb = { static_cast<int>(rect.x1 + camera_shift.x),
+				static_cast<int>(rect.y1 + camera_shift.y),
 				static_cast<int>(rect.Width()),
 				static_cast<int>(rect.Height()) };
 
@@ -132,8 +121,8 @@ void RenderManager::render()
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 			
 			RectF& rect = mDebugRenders[i].rect;
-			SDL_Rect renderQuadb = {	static_cast<int>(rect.x1),
-										static_cast<int>(rect.y1),
+			SDL_Rect renderQuadb = {	static_cast<int>(rect.x1 + camera_shift.x),
+										static_cast<int>(rect.y1 + camera_shift.y),
 										static_cast<int>(rect.Width()),
 										static_cast<int>(rect.Height()) };
 

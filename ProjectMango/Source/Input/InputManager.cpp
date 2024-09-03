@@ -35,7 +35,7 @@ InputManager* InputManager::Get()
 void InputManager::consumeBufferedInputs()
 {	
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
+	const int frame_count = frc.FrameCount();
 
 	for( u32 i = 0; i < mPressedButtons.size(); i++ )
 	{
@@ -98,8 +98,7 @@ bool InputManager::isHeld(Button::Key key, int frame_buffer) const
 bool InputManager::HandlePressedButton(const Button& button, int frame_buffer)
 {
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
-
+	const int frame_count = frc.FrameCount();
 	const bool is_pressed = button.isPressed(frame_count - frame_buffer);
 
 	// set the pressed frame for this button to be older, so it cant be triggered multiple times
@@ -115,8 +114,7 @@ bool InputManager::HandlePressedButton(const Button& button, int frame_buffer)
 bool InputManager::HandleReleaseButton(const Button& button, int frame_buffer)
 {
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
-
+	const int frame_count = frc.FrameCount();
 	const bool is_released = button.isReleased(frame_count - frame_buffer);
 
 	// set the released frame for this button to be older, so it cant be triggered multiple times
@@ -171,7 +169,7 @@ void InputManager::processMouseMovementEvent()
 void InputManager::processMouseButtonEvent(SDL_Event& event)
 {
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
+	const int frame_count = frc.FrameCount();
 
 	SDL_MouseButtonEvent buttonEvent = event.button;
 
@@ -203,7 +201,7 @@ void InputManager::processMouseButtonEvent(SDL_Event& event)
 void InputManager::processButtonEvent(SDL_Event& event)
 { 
 	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
+	const int frame_count = frc.FrameCount();
 
 	for (Button& button : mButtons)
 	{
@@ -236,9 +234,6 @@ static void HandleButtonHoldFrameCounter(Button& button)
 
 void InputManager::updateHeldFrame()
 {
-	const FrameRateController& frc = FrameRateController::Get();
-	const int frame_count = frc.frameCount();
-
 	for (Button& button : mButtons)
 	{
 		HandleButtonHoldFrameCounter(button);

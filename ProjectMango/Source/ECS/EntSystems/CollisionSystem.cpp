@@ -34,7 +34,7 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		const FrameRateController& frc = FrameRateController::Get();
-		const int frame_count = frc.frameCount();
+		const int frame_count = frc.FrameCount();
 
 		ComponentArray<Collider>& colliders =  ecs->GetComponents<Collider>(Component::Type::Collider);
 		std::vector<Collider>& collider_list = colliders.components;

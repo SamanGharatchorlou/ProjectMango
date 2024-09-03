@@ -24,10 +24,6 @@ void GameState::Init()
 	ECS::Level& level_1 = ecs->AddComponent(Level, entity);
 	Level::BuildLevel(level_1, 1);
 
-	ECS::Entity entity2 = ecs->CreateEntity("Map_2");
-	ECS::Level& level_2 = ecs->AddComponent(Level, entity2);
-	Level::BuildLevel(level_2, 2);
-
 	activeLevel = entity;
 
 	ECS::Entity player = Player::Spawn();
@@ -36,11 +32,8 @@ void GameState::Init()
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
 
-	camera->xBoundary = VectorF(-10000, 100000);
-	camera->yBoundary = VectorF(0, window->size().y);
-
 	camera->setViewport(window->size());
-	camera->follow(Player::Get());
+	camera->targetEntity = Player::Get();
 
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
@@ -62,7 +55,7 @@ void GameState::HandleInput()
 
 void GameState::FastUpdate(float dt)
 {
-	Camera::Get()->fastUpdate(dt);
+	//Camera::Get()->fastUpdate(dt);
 }
 
 
@@ -72,7 +65,6 @@ void GameState::Update(float dt)
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);
-
 
 	Cursor* cursor = GameData::Get().inputManager->getCursor();
 	cursor->mode();

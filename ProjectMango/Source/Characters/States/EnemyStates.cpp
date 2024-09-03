@@ -40,7 +40,7 @@ namespace Enemy
 		if(const Collider* collider = ecs->GetComponent(Collider, entity))
 		{
 			const FrameRateController& frc = FrameRateController::Get();
-			if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.frameCount())
+			if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
 			{
 				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 				PushNewState(TakeHit);

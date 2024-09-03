@@ -1,5 +1,7 @@
 #pragma once
 
+struct RenderPack;
+
 namespace DebugMenu
 {
 	void DoEntitySystemWindow();
@@ -20,4 +22,6 @@ namespace DebugMenu
 	};
 
 	GamePlayerState& GetGamePlayerState();
+
+	void SendRenderLayerInfo(const std::vector<RenderPack>* render_packs);
 }
