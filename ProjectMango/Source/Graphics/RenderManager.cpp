@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Renderer.h"
 #include "System/Window.h"
+#include "Game/Camera/Camera.h"
 
 #include "Debugging/ImGui/ImGuiMenu.h"
 
@@ -42,6 +43,9 @@ void RenderManager::render()
 	const float render_scale = real_window_size.x / fake_window_size.x;
 	Renderer::Get()->setScale(render_scale);
 
+
+	VectorF camera_top_left = Camera::Get()->GetRect().TopLeft();
+
 	// clear screen
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);
@@ -61,14 +65,33 @@ void RenderManager::render()
 					render_packs[i].rect.Translate(diff * -1);
 				}
 
-				render_packs[i].texture->renderSubTexture(render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
+				RectF render_rect = render_packs[i].rect;
+
+				VectorF rect_top_left = render_rect.TopLeft();
+				VectorF shift = camera_top_left * -1.0f;// -rect_top_left;
+
+				render_rect.Translate(shift);
+
+				render_packs[i].texture->renderSubTexture(render_rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
 			}
 			else
-				render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip);
+			{
+				RectF render_rect = render_packs[i].rect;
+
+				VectorF rect_top_left = render_rect.TopLeft();
+				VectorF shift = camera_top_left * -1.0f;// -rect_top_left;
+				//VectorF shift = VectorF(100.0f, 100.0f); //camera_top_left - rect_top_left;
+
+				render_rect.Translate(shift);
+
+				render_packs[i].texture->render(render_rect, render_packs[i].flip);
+			}
 		}
 
 		render_packs.clear();
 	}
+
+	//VectorF top_left = Camera::Get()->GetRect().TopLeft();
 
 	// always debug draw last
 	for (u32 i = 0; i < mDebugRenders.size(); i++)
@@ -109,10 +132,10 @@ void RenderManager::render()
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 			
 			RectF& rect = mDebugRenders[i].rect;
-			SDL_Rect renderQuadb = { static_cast<int>(rect.x1),
-							static_cast<int>(rect.y1),
-							static_cast<int>(rect.Width()),
-							static_cast<int>(rect.Height()) };
+			SDL_Rect renderQuadb = {	static_cast<int>(rect.x1),
+										static_cast<int>(rect.y1),
+										static_cast<int>(rect.Width()),
+										static_cast<int>(rect.Height()) };
 
 			SDL_RenderFillRect(renderer, &renderQuadb);
 			break;

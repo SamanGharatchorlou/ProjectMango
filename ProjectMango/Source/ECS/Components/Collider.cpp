@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Collider.h"
 
+#include "ECS/EntityCoordinator.h"
+#include "ECS/Components/Components.h"
+
 #if TRACK_COLLISIONS
 #include "Debugging/DebugDraw.h"
 #endif
@@ -84,6 +87,16 @@ namespace ECS
 	{
 		baseRect.SetTopLeft(forward);
 		rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
+	}
+
+	void Collider::SetPosFromTransform()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+
+		back = transform.worldPosition;
+		forward = transform.targetWorldPosition;
+		RollForwardPosition();
 	}
 
 	#if TRACK_COLLISIONS

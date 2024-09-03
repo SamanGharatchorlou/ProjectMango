@@ -221,7 +221,7 @@ namespace Enemy
 	void BasicAttackState::Exit()
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		//ecs->entities.KillEntity(attackCollider);
+		ecs->entities.KillEntity(attackCollider);
 	}
 }
 

@@ -12,6 +12,7 @@
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
 #include "Scene/SceneParsing/LevelReader.h"
+#include "System/Window.h"
 
 void GameState::Init()
 {
@@ -19,17 +20,27 @@ void GameState::Init()
 	ECS::RegisterAllSystems();
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity("Map");
-
+	ECS::Entity entity = ecs->CreateEntity("Map_1");
 	ECS::Level& level_1 = ecs->AddComponent(Level, entity);
 	Level::BuildLevel(level_1, 1);
+
+	ECS::Entity entity2 = ecs->CreateEntity("Map_2");
+	ECS::Level& level_2 = ecs->AddComponent(Level, entity2);
+	Level::BuildLevel(level_2, 2);
 
 	activeLevel = entity;
 
 	ECS::Entity player = Player::Spawn();
 	ECS::Entity enemy = Enemy::Create();
 
-	initCamera();
+	Camera* camera = Camera::Get();
+	Window* window = GameData::Get().window;
+
+	camera->xBoundary = VectorF(-10000, 100000);
+	camera->yBoundary = VectorF(0, window->size().y);
+
+	camera->setViewport(window->size());
+	camera->follow(Player::Get());
 
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
@@ -61,6 +72,7 @@ void GameState::Update(float dt)
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);
+
 
 	Cursor* cursor = GameData::Get().inputManager->getCursor();
 	cursor->mode();
@@ -112,13 +124,16 @@ void GameState::Exit()
 
 void GameState::initCamera()
 {
-	Camera* camera = Camera::Get();
+	//Camera* camera = Camera::Get();
 
-	VectorF cameraPosition = VectorF(0.0f, 0.0f);
-	camera->setPosition(cameraPosition);
+	//camera->setViewport(VectorF(100.0f, 100.0f));
+	//camera->follow(Player::Get());
+
+	//VectorF cameraPosition = VectorF(0.0f, 0.0f);
+	//camera->SetPosition(cameraPosition);
 
 	// TODO: fix these values
-	camera->initShakeyCam(100.0f, 80.0f);
+	//camera->initShakeyCam(100.0f, 80.0f);
 
 	//RectF* playerRect = &mGameData->environment->actors()->player()->get()->rectRef();
 	//camera->follow(playerRect);

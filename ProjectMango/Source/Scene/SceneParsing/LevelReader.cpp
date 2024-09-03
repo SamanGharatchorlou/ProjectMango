@@ -46,7 +46,7 @@ namespace Level
 
 	void BuildLevel(ECS::Level& level, u32 level_number)
 	{
-		BasicString string = FileManager::Get()->findFile(FileManager::Maps, "test");
+		BasicString string = FileManager::Get()->findFile(FileManager::Maps, "test - Copy");
 		JSONParser parser(string.c_str());
 
 		Value& levels = parser.document["levels"];
@@ -58,6 +58,10 @@ namespace Level
 		int grid_length = parser.document["defaultGridSize"].GetInt();
 		int level_width = level_px_width / grid_length;
 		int level_height = level_px_height / grid_length;
+
+		int world_offset_x = numbered_level["worldX"].GetInt();
+		int world_offset_y = numbered_level["worldY"].GetInt();
+		VectorF world_offset((float)world_offset_x, (float)world_offset_y);
 
 		const VectorF window_size = GameData::Get().window->size();
 
@@ -85,7 +89,7 @@ namespace Level
 					float px_y = px[1].GetFloat() - (height);
 
 					const char* id = entry["__identifier"].GetString();
-					VectorF spawn_pos = VectorF(px_x, px_y) * level_to_window;
+					VectorF spawn_pos = (VectorF(px_x, px_y) + world_offset) * level_to_window;
 					level.spawnPositions[id] = spawn_pos;
 				}
 			}
@@ -179,8 +183,8 @@ namespace Level
 
 				for( u32 b = 0; b < blocks.size(); b++ )
 				{
-					VectorF top_left = blocks[b].top_left.toFloat() * grid_size * level_to_window;
-					VectorF size = (blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left).toFloat() * grid_size * level_to_window;
+					VectorF top_left = (blocks[b].top_left.toFloat() * grid_size + world_offset) * level_to_window;
+					VectorF size = (((blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left).toFloat()) * grid_size + world_offset) * level_to_window;
 
 					RectF collider_rect(top_left, size);
 
@@ -223,8 +227,8 @@ namespace Level
 					Value& entry = grid_array[i];
 
 					Value& px = entry["px"];
-					float px_x = px[0].GetFloat();
-					float px_y = px[1].GetFloat();
+					float px_x = px[0].GetFloat() + world_offset_x;
+					float px_y = px[1].GetFloat() + world_offset_y;
 					 
 					Value& src = entry["src"];
 					float src_x = src[0].GetFloat();

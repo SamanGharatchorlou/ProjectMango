@@ -7,6 +7,7 @@
 #include "ECS/Components/Collider.h"
 #include "Core/Helpers.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/EntSystems/TransformSystem.h"
 
 
 CharacterAction::CharacterAction() : action(ActionState::None), entity(ECS::EntityInvalid)  { }
@@ -39,12 +40,11 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 	const ECS::Animation& animation = animator.GetActiveAnimation();
 	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
 
-	const VectorF pos =  transform.size * animation.attackColliderPos;
-	const VectorF size = transform.size * animation.attackColliderSize;
-	const RectF collider_rect(pos, size);
-	
 	ECS::Entity attack_collider = ecs->CreateEntity(collider_name); 
 	ECS::EntityData::SetParent(attack_collider, entity);
+
+	const VectorF pos = transform.size * animation.attackColliderPos;
+	const VectorF size = transform.size * animation.attackColliderSize;
 
 	// Transform
 	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attack_collider);
@@ -53,8 +53,9 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, attack_collider);
-	collider.SetBaseRect(collider_rect);
+	collider.SetBaseRect(RectF(pos, size));
 	collider.SetFlag(ECS::Collider::IsDamage);
+	collider.SetPosFromTransform();
 
 	// Damage
 	ECS::Damage& damage = ecs->AddComponent(Damage, attack_collider);

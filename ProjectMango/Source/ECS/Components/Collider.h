@@ -55,6 +55,9 @@ namespace ECS
 		void SetTopLeft(const VectorF& pos);
 		void SetRelativeRect(VectorF position, VectorF size);
 
+		// assumes the rect size has been set
+		void SetPosFromTransform();
+
 		void RollBackPosition();
 		void RollForwardPosition();
 

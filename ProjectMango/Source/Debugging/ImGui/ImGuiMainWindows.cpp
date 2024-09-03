@@ -22,9 +22,12 @@
 #include "ECS/Components/TileMap.h"
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "ECS/Components/Animator.h"
+#include "Game/Camera/Camera.h"
 
 #include "Characters/Player/PlayerCharacter.h"
 #include "Characters/Spawner.h"
+
+#include "System/Window.h"
 
 ECS::Entity s_selectedEntity = 0;
 
@@ -298,9 +301,15 @@ void DebugMenu::DoGameStateWindow()
     {
         s_gamePlayerState.nextFrame = true;
     }
+
+    Window* window = GameData::Get().window;
+    window->size();
+    DebugDraw::Point(window->size() * 0.0f, 5.0f, Colour::Red);
+
 }
 
 static bool s_drawRaycasts = false;
+static bool s_debugCamera = false;
 
 bool DebugMenu::DrawRaycasts()
 {
@@ -318,5 +327,20 @@ void DebugMenu::DoTweakerWindow()
     }
 
     ImGui::Checkbox("Draw Raycasts", &s_drawRaycasts);
+
+    ImGui::Checkbox("Display Camera bits", &s_debugCamera);
+    if (s_debugCamera)
+    {
+        Camera* cam = Camera::Get();
+        RectF rect = cam->GetRect();
+        DebugDraw::RectOutline(rect, Colour::Green);
+        DebugDraw::Point(rect.Center(), 5.0f, Colour::Green);
+
+        //DebugDraw::RectOutline(cam->boundaries, Colour::Red);
+
+        const ECS::Transform& transform = ecs->GetComponentRef(Transform, cam->targetEntity);
+        VectorF target_position = transform.worldPosition;
+        DebugDraw::Point(target_position, 5.0f, Colour::Blue);
+    }
 
 }

@@ -36,7 +36,8 @@ void GameData::init(Window* newWindow)
 	window = newWindow;
 
 	// Set camera before UIManager
-	Camera::Get()->setViewport(window->size().toFloat());
+	//VectorF size(100.0f, 100.0f);
+	//Camera::Get()->setViewport(size);// window->size().toFloat());
 
 	// Rendering
 	renderManager = new RenderManager;
@@ -97,7 +98,8 @@ void GameData::load()
 		return;
 
 	// Set camera before UIManager
-	Camera::Get()->setViewport(window->size().toFloat());
+	//VectorF size(100.0f, 100.0f);
+	//Camera::Get()->setViewport(size);// window->size().toFloat());
 
 	// Input
 	inputManager->init();
