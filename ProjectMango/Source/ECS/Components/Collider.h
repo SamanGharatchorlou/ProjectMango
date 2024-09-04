@@ -8,8 +8,6 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Collider)
 
-			// todod stop the 1 << x thing and do that in the function call, make one for
-			// colliders, this way i dont need to keep updating it like a mug
 		enum Flags
 		{
 			// base type
@@ -36,18 +34,14 @@ namespace ECS
 			// or only for more complex moving colliders maybe
 			CanBump
 		};
-
-		enum RuntimeFlags 
-		{ 
-			RestrictLeft	= 1 << 0, 
-			RestrictRight	= 2 << 0, 
-			RestrictUp		= 3 << 0, 
-			RestrictDown	= 4 << 0
-		};
 		
 		virtual bool intersects(const Collider& collider) const;
 		virtual bool intersects(const RectF& rect) const;
+		
 		bool contains(VectorF position) const;
+
+		static bool Contains(const RectF& rect, VectorF point);
+		static bool Intersects(const RectF& rect_a, const RectF& rect_b);
 	
 		static bool test1DOverlap(float minA, float maxA, float minB, float maxB);
 
@@ -65,15 +59,10 @@ namespace ECS
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
 
-	#if TRACK_COLLISIONS
-		virtual void renderCollider();	
-	#endif
-		
 		u32 flags = 0;
 		int lastHitFrame = -1;
 
 		VectorF allowedMovement;
-
 		VectorF forward;
 		VectorF back;
 

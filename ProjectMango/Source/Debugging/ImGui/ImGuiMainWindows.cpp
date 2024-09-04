@@ -319,26 +319,35 @@ void DebugMenu::DoGameStateWindow()
     {
         if(!s_frameData.update_timer.IsRunning())
             s_frameData.update_timer.Start();
+        
+        const FrameRateController& fc = FrameRateController::Get();
 
         if(s_frameData.update_timer.GetSeconds() > 1.0f)
         {
-            const FrameRateController& fc = FrameRateController::Get();
 
             s_frameData.update_timer.Restart();
             s_frameData.frameRate = fc.FrameCount() / fc.gameTimer.GetSeconds();
             s_frameData.gameTime = fc.frameTimer.GetMilliseconds();
-            s_frameData.realTime = fc.capTimer.GetMilliseconds();
+
+            if(fc.capTimer.IsRunning())
+            {
+                s_frameData.realTime = fc.capTimer.GetMilliseconds();
             
-            float wait_time = (1000.0f / fc.frameRateCap) - fc.capTimer.GetMilliseconds();
-            float percentage = wait_time / (1000.0f / fc.frameRateCap);
-            s_frameData.waitTime = wait_time;
-            s_frameData.waitPercentage = percentage;
+                float wait_time = (1000.0f / fc.frameRateCap) - fc.capTimer.GetMilliseconds();
+                float percentage = wait_time / (1000.0f / fc.frameRateCap);
+                s_frameData.waitTime = wait_time;
+                s_frameData.waitPercentage = percentage;
+            }
         }
 
-        ImGui::Text( "Framerate(ms): %.f", s_frameData.frameRate );
+        ImGui::Text( "Framerate(fps): %.f", s_frameData.frameRate );
         ImGui::Text( "Game frame time(ms): %.f", s_frameData.gameTime);
-        ImGui::Text( "Real frame time(ms): %.f", s_frameData.realTime );
-        ImGui::Text( "Frame wait time(ms): %.f (%.f)", s_frameData.waitTime, s_frameData.waitPercentage );
+        
+        if(fc.capTimer.IsRunning())
+        {
+            ImGui::Text( "Real frame time(ms): %.f", s_frameData.realTime );
+            ImGui::Text( "Frame wait time(ms): %.f (%.f)", s_frameData.waitTime, s_frameData.waitPercentage );
+        }
 
 
         ImGui::TreePop();

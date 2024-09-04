@@ -61,7 +61,7 @@ namespace ECS
 			Physics* physics = ecs->GetComponent(Physics, entity);
 			if (physics)
 			{
-				transform.targetWorldPosition = transform.worldPosition + physics->speed;
+				transform.targetWorldPosition = transform.worldPosition + (physics->speed * dt);
 			}
 
 			// set collider paramters

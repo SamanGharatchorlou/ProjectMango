@@ -38,9 +38,8 @@ void GameController::run()
 	// main game loop
 	while (!sm->mQuit)
 	{
-#if FRAMERATE_CAP
-		frc.resetCapTimer();
-#endif
+		if(frc.capTimer.IsRunning())
+			frc.capTimer.Restart();
 
 		handleInput(event);
 		updateLoops(frc.delta());

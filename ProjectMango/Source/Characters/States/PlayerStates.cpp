@@ -89,7 +89,7 @@ void RunState::Update(float dt)
 	}
 
 	const int run_acceleration_factor = 3;
-	physics.maxSpeed.x = 15.0f;
+	physics.maxSpeed.x = 800.0f;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, run_acceleration_factor);
 	
 	InputManager* input = InputManager::Get();
@@ -125,8 +125,8 @@ void JumpState::Init()
 		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
 		// apply walk speed
-		physics->maxSpeed.y = 100.0f;
-		physics->speed.y = -30.0f;
+		physics->maxSpeed.y = 1000.0f;
+		physics->speed.y = -300.0f;
 	}
 }
 

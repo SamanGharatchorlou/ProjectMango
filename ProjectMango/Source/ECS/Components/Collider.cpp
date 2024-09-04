@@ -10,33 +10,35 @@
 
 namespace ECS 
 {
+	bool Collider::Contains(const RectF& rect, VectorF point)
+	{
+		return !(	point.x > rect.RightPoint() || 
+					point.x < rect.LeftPoint()  || 
+					point.y > rect.BotPoint()   || 
+					point.y < rect.TopPoint());
+	}
+
+	bool Collider::Intersects(const RectF& rect_a, const RectF& rect_b)
+	{
+		return !(	rect_a.LeftPoint()  > rect_b.RightPoint() || 
+					rect_a.RightPoint() < rect_b.LeftPoint()  || 
+					rect_a.TopPoint()   > rect_b.BotPoint()   || 
+					rect_a.BotPoint()   < rect_b.TopPoint());
+	}
+
 	bool Collider::intersects(const RectF& _rect) const
 	{
-		return !(	rect.LeftPoint()  > _rect.RightPoint() || 
-					rect.RightPoint() < _rect.LeftPoint()  || 
-					rect.TopPoint()   > _rect.BotPoint()   || 
-					rect.BotPoint()   < _rect.TopPoint());
+		return Intersects(rect, _rect);
 	}
 
 	bool Collider::intersects(const Collider& collider) const
 	{
-		return intersects(collider.rect);
+		return Intersects(rect, collider.rect);
 	}
 
 	bool Collider::contains(VectorF position) const 
 	{
-#if DEBUG_MODE
-		bool a = position.x > rect.RightPoint();
-		bool b = position.x < rect.LeftPoint();
-		bool c = position.y > rect.BotPoint(); 
-		bool d = position.y < rect.TopPoint();
-		int z = 4;
-#endif
-
-		return !(	position.x > rect.RightPoint() || 
-					position.x < rect.LeftPoint()  || 
-					position.y > rect.BotPoint()   || 
-					position.y < rect.TopPoint());
+		return Contains(rect, position);
 	}
 
 	bool Collider::test1DOverlap(float minA, float maxA, float minB, float maxB)
@@ -98,22 +100,4 @@ namespace ECS
 		forward = transform.targetWorldPosition;
 		RollForwardPosition();
 	}
-
-	#if TRACK_COLLISIONS
-	void Collider::renderCollider()
-	{
-		if (didHit())
-		{
-			debugDrawRect(scaledRect(), RenderColour::Blue);
-		}
-		else if (gotHit())
-		{
-			debugDrawRect(scaledRect(), RenderColour::Red);
-		}
-		else
-		{
-			debugDrawRect(scaledRect(), RenderColour::LightGrey);
-		}
-	}
-	#endif
 }

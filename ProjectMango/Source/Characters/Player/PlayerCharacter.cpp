@@ -37,7 +37,7 @@ ECS::Entity Player::Spawn()
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
 	physics.applyGravity = true;	
 	physics.acceleration = VectorF(100.0f, 100.0f);
-	physics.maxSpeed = VectorF(5.0f, 20.0f);
+	physics.maxSpeed = VectorF(800.0f, 800.0f);
 
 	// Animation
 	ECS::Animator& animation = ecs->AddComponent(Animator, s_playerEntity);
