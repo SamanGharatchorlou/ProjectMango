@@ -72,6 +72,5 @@ public:
 	}
 
 private:
-	//std::unordered_map<StringBuffer32, Config*> mConfigs;
 	std::unordered_map<StringBuffer32, Config*> mConfigs;
 };

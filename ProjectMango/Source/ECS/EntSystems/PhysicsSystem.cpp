@@ -41,8 +41,8 @@ namespace ECS
 				if(physics.speed.y > 0.0f)
 					multiplyer *= 1.5f;
 				
-				physics.speed += VectorF(0.0f, 9.8f) * multiplyer * dt;
-				physics.speed = physics.speed.clamp(physics.maxSpeed * -1.0f, physics.maxSpeed);
+				physics.speed += VectorF(0.0f, 9.0f) * multiplyer * dt;
+				physics.speed = physics.speed.clamp(physics.maxSpeed * -dt, physics.maxSpeed * dt);
 			}
 		}
 	}

@@ -177,7 +177,7 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\TileMapDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\VelocityDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp" />
     <ClCompile Include="Source\Debugging\Logging.cpp" />

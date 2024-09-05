@@ -9,9 +9,7 @@ enum class ActionState
 	Run,
 
 	Jump,
-
-	JumpMovingUp,
-	JumpMovingDown,
+	Fall,
 
 	Roll,
 
@@ -30,4 +28,6 @@ enum class ActionState
 ActionState StringToAction(const char* action);
 const char* ActionToString(ActionState action);
 
-#define PushNewState(action) state.actions.Push(new action##State(entity))
+#define PushState(action) state.actions.Push(new action##State(entity))
+#define PopState() state.actions.Pop()
+#define ReplaceState(action) state.actions.Replace(new action##State(entity))

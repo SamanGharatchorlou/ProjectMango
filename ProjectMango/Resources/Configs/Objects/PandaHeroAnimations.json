@@ -29,14 +29,14 @@
 			"flip_point_x": 0.426
 		},
 		{
-			"action": "JumpMovingUp",
+			"action": "Jump",
 			"startIndex": 68,
 			"frameCount": 4,
 			"frameTime": 0.1,
 			"flip_point_x": 0.426
 		},
 		{
-			"action": "JumpMovingDown",
+			"action": "Fall",
 			"startIndex": 85,
 			"frameCount": 4,
 			"frameTime": 0.1,

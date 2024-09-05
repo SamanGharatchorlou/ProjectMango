@@ -28,6 +28,14 @@ namespace Player
 		void Update(float dt) override;
 	};
 
+	struct FallState : public CharacterAction
+	{
+		FallState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+	};
+
 	struct RollState : public CharacterAction
 	{
 		RollState(ECS::Entity _entity);

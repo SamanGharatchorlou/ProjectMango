@@ -114,7 +114,7 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\VelocityDebugMenu.cpp">
+    <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp">

@@ -9,6 +9,7 @@
 #include "Characters/Player/PlayerCharacter.h"
 #include "Characters/States/PlayerStates.h"
 #include "Animations/CharacterStates.h"
+#include "ECS/Components/Physics.h"
 
 namespace ECS
 {
@@ -47,6 +48,17 @@ namespace ECS
 						{
 							state.actions.Pop();
 							state.actions.Push( new Player::DeathState(entity) );
+						}
+					}
+				}
+
+				if(Physics* physics = ecs->GetComponent(Physics, entity))
+				{
+					if(!physics->onFloor && physics->speed.y >= 0.0f)
+					{
+						if( character_state->action != ActionState::Fall )
+						{
+							state.actions.Push( new Player::FallState(entity) );
 						}
 					}
 				}

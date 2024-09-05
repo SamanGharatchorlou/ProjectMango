@@ -43,7 +43,7 @@ namespace Enemy
 			if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
 			{
 				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-				PushNewState(TakeHit);
+				PushState(TakeHit);
 			}
 		}
 		
@@ -61,7 +61,7 @@ namespace Enemy
 		if( ai_controller.moveToTarget ) // can move  to target
 		{
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			PushNewState(Run);
+			PushState(Run);
 		}
 	}
 
@@ -94,8 +94,8 @@ namespace Enemy
 		{		
 			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 			sprite.canFlip = false;
-
-			state.actions.Pop();
+			
+			PopState();
 			return;
 		}
 
@@ -111,7 +111,7 @@ namespace Enemy
 
 			if(attack_range > 0.0f && attack_range > distance_to_target)
 			{
-				PushNewState(BasicAttack);
+				ReplaceState(BasicAttack);
 			}
 		}
 	}
@@ -131,7 +131,7 @@ namespace Enemy
 		if(animator.loopCount > 0)
 		{
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			state.actions.Pop();
+			PopState();
 			return;
 		}
 	}
@@ -208,7 +208,7 @@ namespace Enemy
 			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 			ai_controller.cooldownTimer.Start();
 
-			state.actions.Pop();
+			PopState();
 			return;
 		}
 
