@@ -36,6 +36,8 @@ namespace ECS
 		VectorF targetWorldPosition;
 		VectorF worldPosition;
 
+		VectorF renderOffset;
+
 		VectorF localPosition;
 
 		VectorF size;
@@ -126,4 +128,6 @@ namespace ECS
 	{
 		return (u64)1 << type;
 	}
+
+	Entity GetParent(Entity child);
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Animator.h"
 
+#include "ECS/EntityCoordinator.h"
 #include "Components.h"
 #include "Core/Helpers.h"
 #include "Animations/CharacterStates.h"
@@ -28,6 +29,11 @@ namespace ECS
 		sprite.flipPoint = VectorF(animation.flipPointX, 0.5f);
 	}
 
+	void Animator::AdjustPositionOnAnimationEnd()
+	{
+
+	}
+
 	void Animator::StartAnimation(ActionState action)
 	{
 		for( u32 i = 0; i < animations.size(); i++ )
@@ -40,6 +46,9 @@ namespace ECS
 				frameIndex = 0;
 				loopCount = 0;
 				timer = 0;
+
+
+
 				return;
 			}
 		}

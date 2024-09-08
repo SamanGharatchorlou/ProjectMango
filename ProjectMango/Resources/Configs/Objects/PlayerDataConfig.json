@@ -1,0 +1,16 @@
+{
+	"animation": "PandaHero",
+	"values" : {
+		"size_x" : 412,
+		"size_y" : 122,
+		"acceleration_x": 100,
+		"acceleration_y": 100,
+		"max_run_speed": 500,
+		"max_fall_speed": 1000,
+		"jump_impulse": 900,
+		"roll_impulse" : 1200,
+		"basic_attack_damage" : 10,
+		"basic_attack_force" : 300,
+		"max_health": 100
+	}
+}

@@ -11,6 +11,7 @@
 
 #include "Debugging/ImGui/ImGuiMenu.h"
 #include "Core/Timer.h"
+#include "Game/Camera/Camera.h"
 
 TimerF s_timer;
 
@@ -19,6 +20,8 @@ void AnimationEditorState::Init()
 	DebugMenu::OpenEditorWindow();
 
 	s_timer.Start();
+
+	Camera::Get()->rect.SetTopLeft(VectorF::zero());
 }
 
 void AnimationEditorState::HandleInput()

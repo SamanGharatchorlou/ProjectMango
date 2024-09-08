@@ -48,7 +48,7 @@ namespace Enemy
 		}
 		
 		Physics& physics = ecs->GetComponentRef(Physics, entity);
-		physics.ApplyDrag(0.5f);
+		physics.ApplyDrag(0.05f);
 		
 		if( ai_controller.cooldownTimer.IsRunning() )
 		{

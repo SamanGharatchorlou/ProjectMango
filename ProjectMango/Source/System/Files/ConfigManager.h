@@ -26,12 +26,13 @@ public:
 			mConfigs[path] = new_config;
 		}
 
-		load();
+		Load();
 
 		return static_cast<T*>(mConfigs[path]);
 	}
 	
-	void load();
+	void Load();
+	void Reload();
 
 	static void GetFullPath(const char* name, BasicString& out_path);
 
@@ -59,9 +60,9 @@ public:
 	}
 
 	template<class T>
-	T* getConfig(const char* config)
+	T* GetConfig(const char* config)
 	{
-		if (mConfigs.count(config) > 0)
+		if (mConfigs.contains(config))
 		{
 			ASSERT(mConfigs[config]->parsed, "config %s has not been parsed yet, no data");
 			return static_cast<T*>(mConfigs[config]);

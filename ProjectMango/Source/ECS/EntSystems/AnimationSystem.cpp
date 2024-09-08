@@ -56,8 +56,26 @@ namespace ECS
 			if( Collider* collider = ecs->GetComponent(Collider, entity) )
 			{
 				const Animation& animation = animator.GetActiveAnimation();
-				if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
+
+				if(animation.entityColliderEndPos.isPositive())
+				{
+					const VectorF relative_movement = animation.entityColliderEndPos - animation.entityColliderPos;
+					VectorF movement = relative_movement * transform.size;
+					if(sprite.IsFlipped())
+						movement = movement * -1.0f;
+					
+					const float animation_time = (float)animation.frameCount * animation.frameTime;
+					const float frames = animation_time / dt;
+					const VectorF movement_dt = movement / frames;
+									
+					collider->forward = collider->forward + movement_dt;
+					transform.renderOffset -= movement_dt;
+				}
+				else if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
+				{
 					collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
+					transform.renderOffset = VectorF::zero();
+				}
 			}
 		}
 	}

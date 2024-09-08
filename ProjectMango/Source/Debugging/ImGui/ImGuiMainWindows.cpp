@@ -23,6 +23,7 @@
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "ECS/Components/Animator.h"
 #include "Game/Camera/Camera.h"
+#include "System/Files/ConfigManager.h"
 
 #include "Characters/Player/PlayerCharacter.h"
 #include "Characters/Spawner.h"
@@ -290,11 +291,11 @@ struct FrameData
 {
     TimerF update_timer;
 
-    float frameRate;
-    float gameTime;
-    float realTime;
-    float waitTime;
-    float waitPercentage;
+    float frameRate = 0.0f;
+    float gameTime = 0.0f;
+    float realTime = 0.0f;
+    float waitTime = 0.0f;
+    float waitPercentage = 0.0f;
 };
 
 static FrameData s_frameData;
@@ -308,6 +309,11 @@ void DebugMenu::DoGameStateWindow()
         GameData::Get().systemStateManager->mStates.replaceState(new GameState);
     }
 
+    if(ImGui::Button("Reload Configs"))
+    {
+        GameData::Get().configs->Reload();
+    }
+
     ImGui::Checkbox("Game Player", &s_gamePlayerState.isActive);
 
     if(ImGui::Button("Next Frame"))
@@ -317,10 +323,22 @@ void DebugMenu::DoGameStateWindow()
     
     if (ImGui::TreeNode("Frame Info"))
     {
+        FrameRateController& fc =  FrameRateController::Get();
+        ImGui::Text("max frme rate: %d", fc.frameRateCap);
+        if(ImGui::Button("Update Framerate Cap"))
+        {
+            GameData::Get().configs->Reload();
+
+	        ConfigManager* cm = ConfigManager::Get();
+	        GameSettingsConfig* gs = cm->GetConfig<GameSettingsConfig>("GameSettings");
+            
+            fc.start();
+
+            s_frameData = FrameData();
+        } 
+
         if(!s_frameData.update_timer.IsRunning())
             s_frameData.update_timer.Start();
-        
-        const FrameRateController& fc = FrameRateController::Get();
 
         if(s_frameData.update_timer.GetSeconds() > 1.0f)
         {

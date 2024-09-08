@@ -21,7 +21,7 @@ static void initActionMap()
 
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
 	s_actionMap["BasicAttackHold"] = ActionState::BasicAttackHold;
-	s_actionMap["ChopAttack"] = ActionState::ChopAttack;
+	s_actionMap["LungeAttack"] = ActionState::LungeAttack;
 	
 	s_actionMap["TakeHit"] = ActionState::TakeHit;
 	s_actionMap["Death"] = ActionState::Death;

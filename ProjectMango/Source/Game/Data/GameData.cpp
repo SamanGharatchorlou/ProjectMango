@@ -114,7 +114,7 @@ void GameData::load()
 		return;
 
 	// load this right at the end since some of the above init's might add more configs to load
-	configs->load();
+	configs->Load();
 
 	loader->setLoadingAssets(false);
 

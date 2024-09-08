@@ -404,7 +404,7 @@ namespace AnimationEditor
                     c.animator.state = TimeState::Paused;
 
                     c.animator.frameIndex--;
-                    if(c.animator.frameIndex < 0)
+                    if(c.animator.frameIndex == (u32)-1)
                     {
                         const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
                         c.animator.frameIndex = active_animation.frameCount - 1;

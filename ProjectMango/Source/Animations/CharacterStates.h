@@ -15,8 +15,7 @@ enum class ActionState
 
 	BasicAttack,
 	BasicAttackHold,
-
-	ChopAttack,
+	LungeAttack,
 
 	TakeHit,
 	Death,

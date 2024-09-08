@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "FrameRateController.h"
+#include "System/Files/ConfigManager.h"
 
 static FrameRateController s_frameRateController;
 
@@ -9,9 +10,11 @@ void FrameRateController::start()
 {
 	frameTimer.Start();
 	gameTimer.Start();
-
-	frameRateCap = 60.0f;
-	if(frameRateCap > 0.0f)
+	
+	ConfigManager* cm = ConfigManager::Get();
+	GameSettingsConfig* gs = cm->GetConfig<GameSettingsConfig>("GameSettings");
+	frameRateCap = gs->settings.getInt("FramerateCap");
+	if(frameRateCap > 0)
 		capTimer.Start();
 }
 
@@ -29,7 +32,7 @@ void FrameRateController::update()
 		if (frameTicks < (1000 / frameRateCap))
 		{
 			// wait remaining time
-			SDL_Delay((1000 / (int)frameRateCap) - frameTicks);
+			SDL_Delay((1000 / frameRateCap) - frameTicks);
 		}
 	}
 }

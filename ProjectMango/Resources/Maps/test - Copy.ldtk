@@ -417,7 +417,7 @@
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
@@ -443,7 +443,7 @@
 						},
 						{
 							"__identifier": "TrainingDummy",
-							"__grid": [10,13],
+							"__grid": [7,13],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 6, "x": 176, "y": 416, "w": 16, "h": 16 },
@@ -452,9 +452,9 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [160,208],
+							"px": [112,208],
 							"fieldInstances": [],
-							"__worldX": 160,
+							"__worldX": 112,
 							"__worldY": 208
 						}
 					]

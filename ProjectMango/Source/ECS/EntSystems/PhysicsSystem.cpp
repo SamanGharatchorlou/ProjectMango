@@ -6,6 +6,7 @@
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Collider.h"
+#include "Animations/CharacterStates.h"
 
 #include "Graphics/Raycast.h"
 
@@ -32,17 +33,32 @@ namespace ECS
 				Raycast(ray_start, direction, 2.0f, result, &self);
 
 				physics.onFloor = result.entity != EntityInvalid;
+								
+				if(CharacterState* state = ecs->GetComponent(CharacterState, entity))
+				{
+					if(state->actions.HasAction() && state->actions.Top().action == ActionState::Jump)
+					{
+						physics.onFloor = false;
+					}
+				}
 			}
 			 
-			if(physics.applyGravity && !physics.onFloor)
+			if(physics.applyGravity)
 			{
-				float multiplyer = 7.0f;
+				if(!physics.onFloor)
+				{
+					float multiplyer = 200.0;
 
-				if(physics.speed.y > 0.0f)
-					multiplyer *= 1.5f;
+					if(physics.speed.y > 0.0f)
+						multiplyer *= 2.2f;
 				
-				physics.speed += VectorF(0.0f, 9.0f) * multiplyer * dt;
-				physics.speed = physics.speed.clamp(physics.maxSpeed * -dt, physics.maxSpeed * dt);
+					physics.speed += VectorF(0.0f, 9.8) * multiplyer * dt;
+				}
+				else
+				{
+					physics.speed.y = 0.0f;
+				}
+
 			}
 		}
 	}

@@ -48,8 +48,8 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 
 	// Transform
 	ECS::Transform& attack_transform = ecs->AddComponent(Transform, attack_collider);
-	attack_transform.SetLocalPosition(pos);
 	attack_transform.size = size;
+	attack_transform.SetLocalPosition(pos);
 
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, attack_collider);

@@ -3,7 +3,8 @@
 struct Config
 {
 	Config(const char* config_name) : name(config_name) { };
-	virtual void Read(XMLParser& parser) = 0;
+	
+	virtual void Read(const char* path) = 0;
 
 	StringBuffer32 name;
 	bool parsed = false;
@@ -12,17 +13,18 @@ struct Config
 struct GameSettingsConfig : public Config
 {
 	GameSettingsConfig(const char* config_name) : Config(config_name) { }
-	void Read(XMLParser& parser) override;
+
+	void Read(const char* path) override;
 
 	StringMap32 settings;
 };
 
-
-struct PopupConfig : public Config
+struct PlayerDataConfig : public Config
 {
-	PopupConfig(const char* config_name) : Config(config_name) { }
-	void Read(XMLParser& parser) override;
-
-	BasicString title;
-	BasicString body;
+	PlayerDataConfig(const char* config_name) : Config(config_name) { }
+	
+	void Read(const char* path) override;
+	
+	BasicString animation;
+	std::unordered_map<StringBuffer32, float> settings;
 };

@@ -8,7 +8,6 @@
 #include "System/Window.h"
 #include "Audio/AudioManager.h"
 #include "Game/Data/GameData.h"
-#include "System/Files/Config.h"
 #include "System/Files/ConfigManager.h"
 
 
@@ -30,13 +29,15 @@ void GameSetup::initGameData(GameData& game_data)
 {
 	game_data.setup();
 
-	ConfigManager::Get()->add<GameSettingsConfig>("GameSettings");
-	ConfigManager::Get()->load();
+	ConfigManager* cm = ConfigManager::Get();
+	cm->add<GameSettingsConfig>("GameSettings");
+	cm->add<PlayerDataConfig>("PlayerDataConfig");
+	cm->Load();
 
 	Window* window = initSDLWindow();
 	game_data.init(window);
 
-	GameSettingsConfig* gs = ConfigManager::Get()->getConfig<GameSettingsConfig>("GameSettings");
+	GameSettingsConfig* gs = cm->GetConfig<GameSettingsConfig>("GameSettings");
 
 	// set default audio values from settings
 	AudioManager* audio = AudioManager::Get();
@@ -148,7 +149,7 @@ Window* GameSetup::createWindow()
 {
 	Window* window = new Window;
 	
-	GameSettingsConfig* gs = ConfigManager::Get()->getConfig<GameSettingsConfig>("GameSettings");
+	GameSettingsConfig* gs = ConfigManager::Get()->GetConfig<GameSettingsConfig>("GameSettings");
 
 	const int width = gs->settings.getInt("Width");
 	const int height = gs->settings.getInt("Height");

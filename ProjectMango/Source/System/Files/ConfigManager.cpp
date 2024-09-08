@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "ConfigManager.h"
 
-#include "Config.h"
-
 
 ConfigManager* ConfigManager::Get()
 {
@@ -20,49 +18,32 @@ void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
 	}
 }
 
-//template<class T>
-//T* ConfigManager::Parse(T& config)
-//{
-//	BasicString full_path;
-//	GetFullPath(config.name, full_path);
-//
-//	if (full_path.empty())
-//		return nullptr;
-//
-//	XMLParser* parser = new XMLParser;
-//	parser->parseXML(full_path.c_str());
-//
-//	// todo: check the size of these, i was getting warnings about the parser being too
-//	// big for stack allocation, better to heap. buuuut, once i read it and turn it into useable
-//	// data im sure its fine? so here i am trying that, untested ofc...
-//	// well i pass it in, so i assumme thats a stacky one
-//	config->Read(*parser);
-//	config->parsed = true;
-//
-//	delete parser;
-//}
-
-void ConfigManager::load()
+void ConfigManager::Load()
 {
-	XMLParser* parser = nullptr;
-
 	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
 	{
 		Config* config = iter->second;
 		if (config->parsed)
 			continue;
 
-		if(!parser)
-			parser = new XMLParser;
+		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, iter->first.c_str());
+		if(!file_path.empty())
+		{
+			config->Read(file_path.c_str());
+			continue;
+		}
 
-		BasicString full_path;
-		GetFullPath(iter->first.c_str(), full_path);
-		parser->parseXML(full_path.c_str());
-
-		config->Read(*parser);
-		config->parsed = true;
+		DebugPrint(Warning, "No config file found named %s found in config folder", iter->first.c_str());
 	}
-
-	delete parser;
 }
 
+
+void ConfigManager::Reload()
+{
+	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
+	{
+		iter->second->parsed = false;
+	}
+
+	Load();
+}

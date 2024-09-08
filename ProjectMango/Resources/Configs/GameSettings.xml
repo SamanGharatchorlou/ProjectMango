@@ -6,5 +6,6 @@
 	<SoundVolume>50</SoundVolume>
 	<Tutorial>OFF</Tutorial>
 	<Popups>true</Popups>
+	<FramerateCap>120</FramerateCap>
 </Settings>
 

@@ -14,7 +14,7 @@ namespace AnimationReader
 {	
 	using namespace rapidjson;
 
-	static void PopulateColliderData(const char* prefix, Value& animation, VectorF& out_pos, VectorF& out_size)
+	static void PopulateColliderData(const char* prefix, Value& animation, VectorF* out_pos, VectorF* out_size)
 	{
 		const u32 len = 64;
 		char pos[len];
@@ -22,19 +22,19 @@ namespace AnimationReader
 		char size[len];
 		snprintf(size, len, "%s_size", prefix);
 
-		if (animation.HasMember(pos))
+		if (out_pos && animation.HasMember(pos))
 		{
 			Value& relative_pos = animation[pos];
 
-			out_pos.x = relative_pos[0].GetFloat();
-			out_pos.y = relative_pos[1].GetFloat();
+			out_pos->x = relative_pos[0].GetFloat();
+			out_pos->y = relative_pos[1].GetFloat();
 		}
-		if (animation.HasMember(size))
+		if (out_size && animation.HasMember(size))
 		{
 			Value& relative_size = animation[size];
 
-			out_size.x = relative_size[0].GetFloat();
-			out_size.y = relative_size[1].GetFloat();
+			out_size->x = relative_size[0].GetFloat();
+			out_size->y = relative_size[1].GetFloat();
 		}
 	}
 
@@ -89,9 +89,9 @@ namespace AnimationReader
 
 			anim.entityColliderPos = VectorF::zero();
 			anim.entityColliderSize = VectorF(1, 1);
-			PopulateColliderData("entity_collider", animation, anim.entityColliderPos, anim.entityColliderSize);
-
-			PopulateColliderData("attack_collider", animation, anim.attackColliderPos, anim.attackColliderSize);
+			PopulateColliderData("entity_collider", animation, &anim.entityColliderPos, &anim.entityColliderSize);
+			PopulateColliderData("attack_collider", animation, &anim.attackColliderPos, &anim.attackColliderSize);
+			PopulateColliderData("entity_collider_end", animation, &anim.entityColliderEndPos, nullptr);
 		}
 	}
 }

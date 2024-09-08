@@ -29,7 +29,7 @@ namespace ECS
 				continue;
 			
 			const Transform& transform = ecs->GetComponentRef(Transform, entity);
-			const RectF render_rect(transform.worldPosition, transform.size);
+			const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
 
 			if(!camera_rect.Intersect(render_rect))
 				continue;

@@ -10,5 +10,7 @@ namespace ECS
 		TransformSystem(Archetype type) : EntitySystem(type) { }
 
 		void Update(float dt) override;
+
+		static void UpdateChildrenTransforms(Entity parent);
 	};
 }

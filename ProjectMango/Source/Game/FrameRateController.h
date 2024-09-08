@@ -16,7 +16,7 @@ public:
 	float dt = 0.0f;
 
 	TimerF capTimer;
-	float frameRateCap = 0.0f; 
+	int frameRateCap = 0; 
 
 	TimerF gameTimer;
 	int frameCount = 0;
