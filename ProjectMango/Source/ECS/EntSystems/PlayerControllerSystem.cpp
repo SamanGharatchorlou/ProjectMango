@@ -52,16 +52,17 @@ namespace ECS
 					}
 				}
 
-				if(Physics* physics = ecs->GetComponent(Physics, entity))
+				Physics& physics = ecs->GetComponentRef(Physics, entity);
+				if(!physics.onFloor && physics.speed.y > 0.0f)
 				{
-					if(!physics->onFloor && physics->speed.y >= 0.0f)
+					if( character_state->action != ActionState::Fall && character_state->action != ActionState::FloorSlam )
 					{
-						if( character_state->action != ActionState::Fall )
-						{
-							state.actions.Push( new Player::FallState(entity) );
-						}
+  						state.actions.Push( new Player::FallState(entity) );
 					}
 				}
+
+				if(physics.onFloor)
+					pc.canEnterHover = true;
 			}
 			else
 			{

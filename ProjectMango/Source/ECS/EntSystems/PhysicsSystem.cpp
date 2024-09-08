@@ -29,8 +29,11 @@ namespace ECS
 				std::vector<Entity> self;
 				self.push_back(entity);
 				
+				std::vector<u32> collider_flags;
+				collider_flags.push_back(ECS::Collider::IsTerrain);
+
 				RaycastResult result;
-				Raycast(ray_start, direction, 2.0f, result, &self);
+				Raycast(ray_start, direction, 2.0f, result, &self, &collider_flags);
 
 				physics.onFloor = result.entity != EntityInvalid;
 								

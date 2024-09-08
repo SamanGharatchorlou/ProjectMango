@@ -14,14 +14,16 @@ static void initActionMap()
 	s_actionMap["Walk"] = ActionState::Walk;
 	s_actionMap["Run"] = ActionState::Run;
 	
-	s_actionMap["Jump"] = ActionState::Jump;
 	s_actionMap["Fall"] = ActionState::Fall;
+	s_actionMap["Jump"] = ActionState::Jump;
+	s_actionMap["Hover"] = ActionState::Hover;
 
 	s_actionMap["Roll"] = ActionState::Roll;
 
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
 	s_actionMap["BasicAttackHold"] = ActionState::BasicAttackHold;
 	s_actionMap["LungeAttack"] = ActionState::LungeAttack;
+	s_actionMap["FloorSlam"] = ActionState::FloorSlam;
 	
 	s_actionMap["TakeHit"] = ActionState::TakeHit;
 	s_actionMap["Death"] = ActionState::Death;

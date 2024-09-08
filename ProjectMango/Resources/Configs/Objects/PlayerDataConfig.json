@@ -10,7 +10,9 @@
 		"jump_impulse": 900,
 		"roll_impulse" : 1200,
 		"basic_attack_damage" : 10,
-		"basic_attack_force" : 300,
+		"basic_attack_force" : 150,
+		"jump_attack_damage" : 15,
+		"jump_attack_force" : 300,
 		"max_health": 100
 	}
 }

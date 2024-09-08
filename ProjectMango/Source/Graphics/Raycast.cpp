@@ -8,7 +8,7 @@
 
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
-void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored)
+void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	const ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
@@ -21,6 +21,23 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 
 		if(collider.HasFlag(ECS::Collider::IgnoreAll))
 			continue;
+
+		if(collider_flags)
+		{	
+			bool should_ignore = false;
+			for( u32 cf = 0; cf < collider_flags->size(); cf++ )
+			{
+				ECS::Collider::Flags flag = (ECS::Collider::Flags)collider_flags->at(cf);
+				if(!collider.HasFlag(flag))
+				{
+					should_ignore = true;
+					break;
+				}
+			}
+					
+			if(should_ignore)
+				continue;
+		}
 
 		ECS::Entity ent = collider.entity;
 		if(ignored)

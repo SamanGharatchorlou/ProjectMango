@@ -34,6 +34,27 @@ namespace Player
 
 		void Init() override;
 		void Update(float dt) override;
+		void Resume() override;
+	};
+
+	struct FloorSlamState : public CharacterAction
+	{
+		FloorSlamState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+		void Exit() override;
+
+		bool slammingFloor = false;
+	};
+
+	struct HoverState : public CharacterAction
+	{
+		HoverState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+		void Exit() override;
 	};
 
 	struct RollState : public CharacterAction

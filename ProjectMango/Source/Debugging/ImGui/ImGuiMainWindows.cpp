@@ -434,6 +434,6 @@ void DebugMenu::SendRenderLayerInfo(const std::vector<RenderPack>* render_packs)
     {
         const std::vector<RenderPack>& layer = render_packs[i];
 
-        s_renderPacks.push_back(layer.size());
+        s_renderPacks.push_back((int)layer.size());
     }
 }

@@ -7,15 +7,17 @@ enum class ActionState
 	Idle,
 	Walk,
 	Run,
-
-	Jump,
+	
 	Fall,
+	Jump,
+	Hover,
 
 	Roll,
 
 	BasicAttack,
 	BasicAttackHold,
 	LungeAttack,
+	FloorSlam,
 
 	TakeHit,
 	Death,

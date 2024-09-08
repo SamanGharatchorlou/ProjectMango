@@ -43,26 +43,26 @@ void IdleState::Update(float dt)
 	if(!state.movementInput.isZero())
 	{
 		PushState(Run);
+		return;
 	}
 	else
 	{
-		if (Physics* physics = ecs->GetComponent(Physics, entity))
-		{
-			physics->ApplyDrag(0.6f);
-		}
+		Physics& physics = ecs->GetComponentRef(Physics, entity);
+		physics.ApplyDrag(0.4f);
 	}
 
 	// Basic Attack
 	InputManager* input = InputManager::Get();
 	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
 	{
-		//PushState(LungeAttack);
 		PushState(BasicAttack);
+		return;
 	}
 
 	if (input->isPressed(Button::Space, c_inputBuffer))
 	{
 		PushState(Jump);
+		return;
 	}
 }
 
@@ -99,11 +99,13 @@ void RunState::Update(float dt)
 	if (input->isPressed(Button::Space, c_inputBuffer))
 	{
 		PushState(Jump);
+		return;
 	}
 
 	if (input->isPressed(Button::Shift, c_inputBuffer))
 	{
 		PushState(Roll);
+		return;
 	}
 
 	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
@@ -115,10 +117,12 @@ void RunState::Update(float dt)
 		if (should_lunge)
 		{
 			ReplaceState(LungeAttack);
+			return;
 		}
 		else
 		{
 			ReplaceState(BasicAttack);
+			return;
 		}
 	}
 }
@@ -147,6 +151,7 @@ void JumpState::Update(float dt)
 
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
+	physics.ApplyDrag(0.2f);
 
 	// rapidly slow upwards movement while not holding space
 	InputManager* input = InputManager::Get();
@@ -158,10 +163,21 @@ void JumpState::Update(float dt)
 		}
 	}
 
+	if(input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
+	{
+		PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
+		if(pc.canEnterHover)
+		{
+			ReplaceState(Hover);
+			return;
+		}
+	}
+
 	// moving downwards
 	if (physics.speed.y >= 0.0f)
 	{
 		PopState();
+		return;
 	}
 }
 
@@ -173,15 +189,151 @@ void FallState::Init()
 {
 	StartAnimation();
 }
+void FallState::Resume()
+{
+	StartAnimation();
+}
 
 void FallState::Update(float dt)
 {
 	EntityCoordinator* ecs = GameData::Get().ecs;
+	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
+
+	const int jump_acceleration_factor = 2;
+	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
+	physics.ApplyDrag(0.2f);
+	
+	InputManager* input = InputManager::Get();
+	if(input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
+	{
+		PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
+		if(pc.canEnterHover)
+		{
+			PushState(Hover);
+			return;
+		}
+	}
+
 	if(physics.onFloor)
 	{
 		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		PopState();
+		return;
+	}
+}
+
+// HoverState
+// ---------------------------------------------------------
+HoverState::HoverState(ECS::Entity _entity) : CharacterAction(ActionState::Hover, _entity) { }
+
+void HoverState::Init()
+{
+	StartAnimation();
+	
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	physics.applyGravity = false;
+	physics.speed.y = 0.0f;
+
+	PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
+	//pc.canEnterHover = false;
+}
+
+void HoverState::Update(float dt)
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	
+	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	const int jump_acceleration_factor = 2;
+	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
+	physics.ApplyDrag(0.3f);
+
+	InputManager* input = InputManager::Get();
+	if(input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer))
+	{
+		ReplaceState(FloorSlam);
+		return;
+	}
+
+	const Animator& animation = ecs->GetComponentRef(Animator, entity);
+	if (animation.loopCount > 0)
+	{
+		PopState();
+		return;
+	}
+
+}
+
+void HoverState::Exit()
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	physics.applyGravity = true;
+}
+
+
+// FloorSlamState
+// ---------------------------------------------------------
+FloorSlamState::FloorSlamState(ECS::Entity _entity) : CharacterAction(ActionState::FloorSlam, _entity) { }
+
+void FloorSlamState::Init()
+{
+	StartAnimation(ActionState::Hover, false);
+	
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	if(Collider* collider = ecs->GetComponent(Collider, entity))
+	{
+		collider->SetFlag(ECS::Collider::TerrainOnly);
+	}
+}
+
+void FloorSlamState::Update(float dt)
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+
+	// falling
+	if(!physics.onFloor)
+	{
+		const int fall_acceleration_factor = 3;
+		
+		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		VectorF direction = state.movementInput.toFloat();
+		direction.y = 1.0f;
+
+		physics.ApplyMovementEase(VectorF(0,1.0f), dt, fall_acceleration_factor);
+		physics.ApplyDrag(0.1f);
+	}
+	// slammin
+	else
+	{
+		if(!slammingFloor)
+		{
+			StartAnimation(ActionState::FloorSlam, false);
+			slammingFloor = true;
+		}
+
+		const Animator& animation = ecs->GetComponentRef(Animator, entity);
+		if (animation.loopCount > 0)
+		{
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			PopState();
+			return;
+		}
+	}
+}
+
+void FloorSlamState::Exit()
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	physics.applyGravity = true;
+
+	if(Collider* collider = ecs->GetComponent(Collider, entity))
+	{
+		collider->RemoveFlag(Collider::TerrainOnly);
 	}
 }
 
@@ -271,6 +423,11 @@ void BasicAttackState::Update(float dt)
 				return;
 			}
 		}
+		else
+		{
+			PopState();
+			return;
+		}
 	}
 	
 	if(animator.loopCount > damageOnLoopCount)
@@ -353,7 +510,7 @@ void LungeAttackState::Update(float dt)
 	if(attackCollider == EntityInvalid && animation.frameIndex >= 9)
 	{
 		const PlayerDataConfig* gs = ConfigManager::Get()->GetConfig<PlayerDataConfig>("PlayerDataConfig");
-		attackCollider = CreateNewAttackCollider("player lunge attack collider", gs->settings.at("basic_attack_damage"), gs->settings.at("basic_attack_force"));
+		attackCollider = CreateNewAttackCollider("player lunge attack collider", gs->settings.at("jump_attack_damage"), gs->settings.at("jump_attack_force"));
 	}
 
 	if(attackCollider != EntityInvalid && animation.frameIndex >= 11)

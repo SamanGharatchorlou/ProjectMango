@@ -74,4 +74,15 @@ void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing
 
 		speed.x = EaseOut(tx, easing_factor) * max_speed_x;
 	}
+
+	if(movement_direction.y != 0)
+	{
+		float max_speed_y = movement_direction.y >= 0 ? maxSpeed.y : -maxSpeed.y;
+
+		float ty = speed.y / max_speed_y;
+		ty += dt; // * speed;
+		ty = Maths::clamp(ty, 0.0f, 1.0f);
+
+		speed.y = EaseOut(ty, easing_factor) * max_speed_y;
+	}
 }

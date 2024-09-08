@@ -6,5 +6,6 @@ namespace ECS
 	{
 		COMPONENT_TYPE(PlayerController)
 
+		bool canEnterHover = true;
 	};
 }

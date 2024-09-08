@@ -51,6 +51,15 @@
 			"entity_collider_size": [ 0.0889, 0.457 ]
 		},
 		{
+			"action": "Hover",
+			"startIndex": 102,
+			"frameCount": 4,
+			"frameTime": 0.1,
+			"flip_point_x": 0.426,
+			"entity_collider_pos": [ 0.38, 0.42 ],
+			"entity_collider_size": [ 0.0889, 0.457 ]
+		},
+		{
 			"action": "Roll",
 			"startIndex": 34,
 			"frameCount": 4,
@@ -68,8 +77,8 @@
 			"flip_point_x": 0.426,
 			"entity_collider_pos": [ 0.38, 0.42 ],
 			"entity_collider_size": [ 0.0889, 0.457 ],
-			"attack_collider_pos": [ 0.529, 0.513 ],
-			"attack_collider_size": [ 0.232, 0.364 ]
+			"attack_collider_pos": [ 0.481, 0.581 ],
+			"attack_collider_size": [ 0.363, 0.305 ]
 		},
 		{
 			"action": "BasicAttackHold",
@@ -79,8 +88,8 @@
 			"flip_point_x": 0.426,
 			"entity_collider_pos": [ 0.38, 0.42 ],
 			"entity_collider_size": [ 0.0889, 0.457 ],
-			"attack_collider_pos": [ 0.529, 0.513 ],
-			"attack_collider_size": [ 0.232, 0.364 ]
+			"attack_collider_pos": [ 0.481, 0.581 ],
+			"attack_collider_size": [ 0.363, 0.305 ]
 		},
 		{
 			"action": "LungeAttack",
@@ -92,8 +101,18 @@
 			"entity_collider_pos": [ 0.38, 0.42 ],
 			"entity_collider_size": [ 0.0889, 0.457 ],
 			"entity_collider_end_pos": [ 0.59, 0.42 ],
-			"attack_collider_pos": [ 0.31, 0.602 ],
-			"attack_collider_size": [ 0.479, 0.277 ]
+			"attack_collider_pos": [ 0.45, 0.602 ],
+			"attack_collider_size": [ 0.38, 0.277 ]
+		},
+		{
+			"action": "FloorSlam",
+			"startIndex": 120,
+			"frameCount": 9,
+			"frameTime": 0.1,
+			"looping": false,
+			"flip_point_x": 0.426,
+			"entity_collider_pos": [ 0.38, 0.42 ],
+			"entity_collider_size": [ 0.0889, 0.457 ]
 		}
 	]
 }

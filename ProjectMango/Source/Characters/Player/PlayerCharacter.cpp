@@ -40,7 +40,6 @@ ECS::Entity Player::Spawn()
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
 	physics.applyGravity = true;	
 	physics.acceleration = VectorF(gs->settings.at("acceleration_x"), gs->settings.at("acceleration_y"));
-	//physics.maxSpeed = VectorF(800.0f, 800.0f);
 	physics.maxSpeed.x = gs->settings.at("max_run_speed");
 	physics.maxSpeed.y = gs->settings.at("max_fall_speed");
 
@@ -71,6 +70,9 @@ ECS::Entity Player::Spawn()
 	health.currentHealth = health.maxHealth;
 
 	DebugMenu::SelectEntity(s_playerEntity);
+
+	
+	collider.SetFlag(ECS::Collider::TerrainOnly);
 
 	return s_playerEntity;
 } 
