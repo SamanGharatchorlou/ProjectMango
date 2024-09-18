@@ -65,7 +65,8 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 	damage.appliedTo.push_back(entity);
 	
 	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
-	damage.force = character_state.GetFacingDirection().toFloat() * force_value;
+	damage.force = force_value;
+	damage.source = transform.GetObjectCenter();
 
 	return attack_collider;
 }
@@ -85,7 +86,7 @@ float CharacterAction::GetAttackRange(ActionState action)
 			const VectorF size = transform.size * animation->attackColliderSize;
 			const RectF collider_rect(pos, size);
 
-			const VectorF position = transform.GetCharacterCenter();
+			const VectorF position = transform.GetObjectCenter();
 
 			const float distance = std::max( std::abs(position.x - collider_rect.RightCenter().x), std::abs(position.x - collider_rect.LeftCenter().x) );
 

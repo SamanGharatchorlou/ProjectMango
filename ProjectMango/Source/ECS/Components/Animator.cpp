@@ -5,9 +5,17 @@
 #include "Components.h"
 #include "Core/Helpers.h"
 #include "Animations/CharacterStates.h"
+#include "Animations/AnimationReader.h"
 
 namespace ECS
 {
+	
+	void Animator::Init(const char* animation)
+	{
+		AnimationReader::BuildAnimatior( animation, animations );
+		activeAnimation = 0;
+	}
+
 	void Animator::SetActiveSpriteFrame(Sprite& sprite)
 	{
 		if(animations.size() == 0)

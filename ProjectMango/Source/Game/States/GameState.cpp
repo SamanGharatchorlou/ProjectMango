@@ -5,7 +5,7 @@
 #include "Characters/Enemies/Enemies.h"
 #include "Characters/Player/PlayerCharacter.h"
 #include "ECS/Components/ComponentsSetup.h"
-#include "ECS/Components/Level.h"
+#include "ECS/Components/Biome.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Game/States/AnimationEditorState.h"
@@ -21,8 +21,8 @@ void GameState::Init()
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Map_1");
-	ECS::Level& level_1 = ecs->AddComponent(Level, entity);
-	Level::BuildLevel(level_1, 1);
+	ECS::Biome& biome_1 = ecs->AddComponent(Biome, entity);
+	Level::BuildBiome( "Biome1", biome_1 );
 
 	activeLevel = entity;
 

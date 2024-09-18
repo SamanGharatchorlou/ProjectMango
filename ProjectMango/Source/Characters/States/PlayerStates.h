@@ -44,7 +44,8 @@ namespace Player
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
-
+		
+		ECS::Entity attackCollider = ECS::EntityInvalid;
 		bool slammingFloor = false;
 	};
 

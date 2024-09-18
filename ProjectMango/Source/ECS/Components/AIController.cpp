@@ -15,7 +15,7 @@ namespace ECS
 		if(target != ECS::EntityInvalid)
 		{
 			const ECS::Transform& target_transform = ecs->GetComponentRef(Transform, target);
-			return std::abs( transform.GetCharacterCenter().x - target_transform.GetCharacterCenter().x );
+			return std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
 		}
 
 		return -1.0f;

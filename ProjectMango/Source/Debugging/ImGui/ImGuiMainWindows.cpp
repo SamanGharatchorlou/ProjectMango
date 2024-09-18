@@ -404,7 +404,7 @@ void DebugMenu::DoTweakerWindow()
         DebugDraw::Point(rect.Center(), Colour::Green);
 
         const ECS::Transform& transform = ecs->GetComponentRef(Transform, cam->targetEntity);
-        DebugDraw::Point(transform.GetCharacterCenter(),Colour::Red);
+        DebugDraw::Point(transform.GetObjectCenter(),Colour::Red);
     }
 
     s_getRenderLayerData = false;

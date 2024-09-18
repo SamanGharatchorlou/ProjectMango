@@ -28,18 +28,27 @@ namespace ECS
 
 	struct Level
 	{
-		COMPONENT_TYPE(Level)
-
 		VectorF worldPos;
 		VectorF size;
 
+		u32 index;
+
 		std::vector<Layer> layers;
-
 		std::vector<ECS::Entity> colliders;
-
 		std::unordered_map<StringBuffer64, VectorF> spawnPositions;
+	};
+
+	struct Biome
+	{
+		COMPONENT_TYPE(Level)
+
+		std::vector<Level> levels;
+
+		const Level& GetLevel(ECS::Entity entity) const;
+		const Level& GetLevel(VectorF position) const;
+		const Level& GetVisibleLevel() const;
 
 		static const Entity GetActive();
-		static VectorF GetSpawnPos(const char* spawn_id);
+		static bool GetSpawnPos(const char* spawn_id, VectorF& out_pos);
 	};
 }

@@ -9,6 +9,7 @@
 
 class Texture;
 enum class ActionState;
+typedef std::unordered_map<StringBuffer32, float> SettingValues;
 
 namespace ECS
 {
@@ -35,22 +36,22 @@ namespace ECS
 
 		VectorF targetWorldPosition;
 		VectorF worldPosition;
+		VectorF localPosition;
 
 		VectorF renderOffset;
 
-		VectorF localPosition;
-
 		VectorF size;
+		
+		void Init(const SettingValues& values);
 
+		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos) 
 		{
 			targetWorldPosition = pos;
 			worldPosition = pos;
 		}
 
-		void SetLocalPosition(VectorF pos);
-
-		VectorF GetCharacterCenter() const;
+		VectorF GetObjectCenter() const;
 	};
 
 	struct Sprite
@@ -101,7 +102,8 @@ namespace ECS
 		float value = 0;
 
 		// may apply a force
-		VectorF force;
+		float force;
+		VectorF source;
 
 		// which entity we've already applied to, dont apply again
 		std::vector<Entity> appliedTo;
@@ -118,7 +120,8 @@ namespace ECS
 		float currentHealth = 0.0f;
 
 		bool invulnerable = false;
-
+		
+		void Init(const SettingValues& values);
 		void ApplyDamage(const Damage& damage);
 	};
 
@@ -130,4 +133,5 @@ namespace ECS
 	}
 
 	Entity GetParent(Entity child);
+	VectorF GetPosition(Entity entity);
 }

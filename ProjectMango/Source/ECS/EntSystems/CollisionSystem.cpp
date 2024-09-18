@@ -60,6 +60,9 @@ namespace ECS
 			}
 
 			A_collider.allowedMovement = A_collider.forward - A_collider.back;
+			A_collider.desiredMovement = A_collider.allowedMovement;
+
+			memset(A_collider.collisionSide, false, sizeof(bool) * 4);
 
 			// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
 			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
@@ -96,7 +99,7 @@ namespace ECS
 						if(A_damage && A_damage->CanApplyTo(B_entity))
 						{
 							B_collider.lastHitFrame = frame_count;
-							A_damage->ApplyTo(B_entity);
+ 							A_damage->ApplyTo(B_entity);
 						}
 					}
 
@@ -105,7 +108,7 @@ namespace ECS
 						continue;
 
 					// Physical, can we slide 
-					VectorF& velocity = A_collider.allowedMovement; //forward - A_collider.back;
+					VectorF& velocity = A_collider.allowedMovement;
 					if (velocity.isZero())
 						continue;
 
@@ -125,6 +128,12 @@ namespace ECS
 						if(cannot_move_horizontally)
 						{
 							velocity.x = 0;
+
+							// left/right collisions
+							if(A_collider.desiredMovement.x > 0.0f)
+								A_collider.collisionSide[Collider::Right] = true;
+							else if(A_collider.desiredMovement.x < 0.0f)
+								A_collider.collisionSide[Collider::Left] = true;
 						}
 
 						const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
@@ -140,6 +149,15 @@ namespace ECS
 								float distance = b_top - a_bot - c_colliderGap;
 								if( distance > 0)
 									velocity.y = distance;
+							}
+
+							// top/bot collisions
+							if( velocity.y == 0 )
+							{
+								if(A_collider.desiredMovement.y < 0.0f)
+									A_collider.collisionSide[Collider::Top] = true;
+								else if(A_collider.desiredMovement.y > 0.0f)
+									A_collider.collisionSide[Collider::Bottom] = true;
 							}
 						}
 					}

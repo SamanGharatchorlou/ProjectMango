@@ -3,9 +3,8 @@
 
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-
-
-#include "ECS/Components/Level.h"
+#include "ECS/Components/Biome.h"
+#include "Characters/Player/PlayerCharacter.h"
 
 Camera* Camera::Get()
 {
@@ -34,13 +33,18 @@ void Camera::setViewport(VectorF viewport)
 void Camera::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, targetEntity);
-	const VectorF translation = (transform.GetCharacterCenter() - rect.Center()) * dt * 5.0f;
+	const ECS::Transform* transform = ecs->GetComponent(Transform, targetEntity);
+	if(!transform)
+		return;
 
+	ECS::Entity biome_entity = ECS::Biome::GetActive();
+	const ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
+	ECS::Entity player = Player::Get();
+	const ECS::Level& level = biome.GetLevel(player);
+	
+	const VectorF translation = (transform->GetObjectCenter() - rect.Center()) * dt * 5.0f;
 	rect.Translate( translation );
 
-	ECS::Entity level_entity = ECS::Level::GetActive();
-	const ECS::Level& level = ecs->GetComponentRef(Level, level_entity);
 	VectorF bounds_translation;
 
 	// restrict within x bounds

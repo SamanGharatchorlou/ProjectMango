@@ -54,7 +54,7 @@ bool EraseSwap(std::vector<T>& vector, const T& item)
 {
 	for( auto iter = vector.begin(); iter != vector.end(); iter++ )
 	{
-		if(*iter = item)
+		if(*iter == item)
 		{
 			*iter = vector.back();
 			vector.resize(vector.size() - 1);

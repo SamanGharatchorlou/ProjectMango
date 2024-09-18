@@ -5,6 +5,14 @@
 
 using namespace ECS;
 
+void Physics::Init(const SettingValues& values)
+{	
+	applyGravity = values.at("gravity") != 0;	
+	acceleration = VectorF(values.at("acceleration_x"), values.at("acceleration_y"));
+	maxSpeed.x = values.at("max_run_speed");
+	maxSpeed.y = values.at("max_fall_speed");
+}
+
 void Physics::ApplyDrag(float drag_coefficient)
 {
 	const float dragFractor = 1.0f - drag_coefficient;
@@ -18,14 +26,8 @@ void Physics::ApplyDrag(float drag_coefficient)
 		speed.x = 0;
 }
 
-
 void Physics::ApplyMovement(VectorF movement_direction, float dt)
 {
-	// peeeeoooowwwwwwmmmm
-	//speed += movement_direction * acceleration * dt;
-	//speed.x = Maths::clamp(speed.x, maxSpeed.x * -1.0f, maxSpeed.x);
-	//speed.y = Maths::clamp(speed.y, maxSpeed.y * -1.0f, maxSpeed.y);
-
 	// only clamp our acceleration, i.e. if something pushes us past our max speed thats fine
 	if(movement_direction.x > 0)
 	{

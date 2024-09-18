@@ -59,10 +59,16 @@ namespace ECS
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
 
+		// does collide: top, left, bot, right
+		enum Side { Top, Right, Bottom, Left, Sides };
+		bool collisionSide[Sides];
+
 		u32 flags = 0;
 		int lastHitFrame = -1;
 
 		VectorF allowedMovement;
+		VectorF desiredMovement; // same as allowed but not edited based on collisions, more for tracking
+
 		VectorF forward;
 		VectorF back;
 

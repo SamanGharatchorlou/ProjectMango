@@ -12,7 +12,7 @@ namespace ECS
 	void TransformSystem::UpdateChildrenTransforms(Entity parent)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		Transform& transform = ecs->GetComponentRef(Transform, parent);
+		Transform& parent_transform = ecs->GetComponentRef(Transform, parent);
 
 		// update children positions
 		if (EntityData* entity_data = ecs->GetComponent(EntityData, parent))
@@ -21,7 +21,7 @@ namespace ECS
 			if (ECS::Sprite* sprite = ecs->GetComponent(Sprite, parent))
 			{
 				if (sprite->IsFlipped())
-					flip_point = sprite->flipPoint * transform.size;
+					flip_point = sprite->flipPoint * parent_transform.size;
 			}
 
 			// handle horizontal flip 
@@ -29,8 +29,7 @@ namespace ECS
 			{
 				Entity child = entity_data->children[i];
 				Transform& child_transform = ecs->GetComponentRef(Transform, child);
-
-				VectorF child_world_pos = transform.worldPosition + child_transform.localPosition;
+				VectorF child_world_pos = parent_transform.worldPosition + child_transform.localPosition;
 
 				if (!flip_point.isZero())
 				{

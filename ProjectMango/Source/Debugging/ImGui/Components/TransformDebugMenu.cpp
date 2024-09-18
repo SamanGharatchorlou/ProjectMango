@@ -31,7 +31,7 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 		ImGui::Checkbox("Display Character Position", &s_displayCharacterPosition);
 		if (s_displayCharacterPosition)
 		{
-			VectorF position = transform.GetCharacterCenter();
+			VectorF position = transform.GetObjectCenter();
 			DebugDraw::Point(position, Colour::Green);
 		}
 

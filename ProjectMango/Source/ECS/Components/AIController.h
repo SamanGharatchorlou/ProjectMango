@@ -8,7 +8,7 @@ namespace ECS
 
 		Entity target = EntityInvalid;
 
-		bool moveToTarget = false;
+		bool moveToTarget = true;
 
 		float attackCooldownTime = 1.0f;
 		TimerF cooldownTimer;

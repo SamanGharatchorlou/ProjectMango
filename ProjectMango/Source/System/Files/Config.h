@@ -10,6 +10,8 @@ struct Config
 	bool parsed = false;
 };
 
+typedef std::unordered_map<StringBuffer32, float> SettingValues;
+
 struct GameSettingsConfig : public Config
 {
 	GameSettingsConfig(const char* config_name) : Config(config_name) { }
@@ -19,12 +21,22 @@ struct GameSettingsConfig : public Config
 	StringMap32 settings;
 };
 
-struct PlayerDataConfig : public Config
+struct PlayerConfig : public Config
 {
-	PlayerDataConfig(const char* config_name) : Config(config_name) { }
+	PlayerConfig(const char* config_name) : Config(config_name) { }
 	
 	void Read(const char* path) override;
 	
 	BasicString animation;
-	std::unordered_map<StringBuffer32, float> settings;
+	SettingValues values;
+};
+
+struct EnemyConfig : public Config
+{
+	EnemyConfig(const char* config_name) : Config(config_name) { }
+	
+	void Read(const char* path) override;
+	
+	BasicString animation;
+	SettingValues values;
 };

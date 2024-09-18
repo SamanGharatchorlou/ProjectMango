@@ -1,5 +1,7 @@
 #pragma once
 
+typedef std::unordered_map<StringBuffer32, float> SettingValues;
+
 namespace ECS
 {
 	struct Physics
@@ -14,6 +16,8 @@ namespace ECS
 
 		bool applyGravity;
 		bool onFloor;
+
+		void Init(const SettingValues& values);
 
 		void ApplyMovement(VectorF movement_direction, float dt);
 		void ApplyDrag(float drag_coefficient);

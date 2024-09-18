@@ -1,56 +1,39 @@
 #include "pch.h"
 #include "Enemies.h"
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Level.h"
-#include "ECS/Components/Physics.h"
-#include "ECS/Components/AIController.h"
 #include "ECS/EntityCoordinator.h"
-#include "Graphics/TextureManager.h"
-#include "Core/Helpers.h"
-
-#include "Animations/AnimationReader.h"
+#include "ECS/Components/AIController.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/Collider.h"
+#include "ECS/Components/Components.h"
+#include "ECS/Components/Biome.h"
+#include "ECS/Components/Physics.h"
 
-static void ParseEnemyData(const char* file)
-{
-	BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, "BasicEnemy");
-	XMLParser* parser = new XMLParser;
-	parser->parseXML(full_path.c_str());
-
-	const XMLNode root = parser->rootNode();
-	XMLNode transformNode = parser->rootChild("Transform");
-
-	std::map<BasicString, VectorF> values;
-	while (transformNode)
-	{
-		StringMap32 map;
-		map.fillAtributes(transformNode);
-		transformNode = transformNode.next();
-	}
-}
+#include "System/Files/ConfigManager.h"
 
 ECS::Entity Enemy::Create()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
+	VectorF spawn_pos;
+	bool can_spawn = ECS::Biome::GetSpawnPos("TrainingDummy", spawn_pos);
+	if(!can_spawn)
+		return ECS::EntityInvalid;
+
 	ECS::Entity entity = ecs->CreateEntity("Enemy");
+	const EnemyConfig* config = ConfigManager::Get()->GetConfig<EnemyConfig>("ShockEnemyConfig");
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	transform.SetWorldPosition(ECS::Level::GetSpawnPos("TrainingDummy"));
-	transform.size = VectorF(352, 120);
+	transform.Init(config->values);
+	transform.SetWorldPosition(spawn_pos);
 
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, entity);
-	physics.applyGravity = true;		
-	physics.acceleration = VectorF(80.0f, 80.0f);
-	physics.maxSpeed = VectorF(15.0f, 20.0f);
+	physics.Init(config->values);
 
 	ECS::Animator& animation = ecs->AddComponent(Animator, entity);
-	AnimationReader::BuildAnimatior( "ShockSweeperAnimations", animation.animations );
-	animation.activeAnimation = 0;
+	animation.Init(config->animation.c_str());
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
@@ -63,8 +46,7 @@ ECS::Entity Enemy::Create()
 
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, entity);
-	health.maxHealth = 100;
-	health.currentHealth = health.maxHealth;
+	health.Init(config->values);
 	health.invulnerable = true;
 
 	// AI

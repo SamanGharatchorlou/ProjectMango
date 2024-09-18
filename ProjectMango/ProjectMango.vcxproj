@@ -189,7 +189,7 @@
     <ClCompile Include="Source\ECS\Components\ComponentCommon.cpp" />
     <ClCompile Include="Source\ECS\Components\Components.cpp" />
     <ClCompile Include="Source\ECS\Components\ComponentsSetup.cpp" />
-    <ClCompile Include="Source\ECS\Components\Level.cpp" />
+    <ClCompile Include="Source\ECS\Components\Biome.cpp" />
     <ClCompile Include="Source\ECS\Components\Physics.cpp" />
     <ClCompile Include="Source\ECS\Components\PlayerController.cpp" />
     <ClCompile Include="Source\ECS\Components\TileMap.cpp" />
@@ -309,7 +309,7 @@
     <ClInclude Include="Source\ECS\Components\ComponentCommon.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\ComponentsSetup.h" />
-    <ClInclude Include="Source\ECS\Components\Level.h" />
+    <ClInclude Include="Source\ECS\Components\Biome.h" />
     <ClInclude Include="Source\ECS\Components\Physics.h" />
     <ClInclude Include="Source\ECS\Components\PlayerController.h" />
     <ClInclude Include="Source\ECS\Components\TileMap.h" />

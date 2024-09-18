@@ -2,10 +2,10 @@
 
 namespace ECS
 {
-	struct Level;
+	struct Biome;
 }
 
 namespace Level
 {
-	void BuildLevel(ECS::Level& level, u32 level_number);
+	void BuildBiome(const char* biome_id, ECS::Biome& biome);
 }

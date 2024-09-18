@@ -10,6 +10,7 @@
 #include "Characters/States/PlayerStates.h"
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Physics.h"
+#include "ECS/Components/Collider.h"
 
 namespace ECS
 {
@@ -52,8 +53,13 @@ namespace ECS
 					}
 				}
 
-				Physics& physics = ecs->GetComponentRef(Physics, entity);
-				if(!physics.onFloor && physics.speed.y > 0.0f)
+				const Physics& physics = ecs->GetComponentRef(Physics, entity);
+				
+				const Collider& collider = ecs->GetComponentRef(Collider, entity);
+
+				bool not_moving_upwards = physics.speed.y > 0.0f|| collider.collisionSide[Collider::Top];
+
+				if(!physics.onFloor && not_moving_upwards)
 				{
 					if( character_state->action != ActionState::Fall && character_state->action != ActionState::FloorSlam )
 					{

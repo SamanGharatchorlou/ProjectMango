@@ -2,7 +2,7 @@
 
 namespace ECS
 {
-	VectorF GetPosition(Entity entity);
+	//VectorF GetPosition(Entity entity);
 
-	Entity GetParent(Entity child);
+	//Entity GetParent(Entity child);
 }

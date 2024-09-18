@@ -2,7 +2,7 @@
 #include "TileMapSystem.h"
 
 #include "ECS/Components/Components.h"
-#include "ECS/Components/Level.h"
+#include "ECS/Components/Biome.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
@@ -24,27 +24,33 @@ namespace ECS
 
 		for (Entity entity : entities)
 		{
-			const Level& level = ecs->GetComponentRef(Level, entity);
+			const Biome& biome = ecs->GetComponentRef(Biome, entity);
+			//const Level& level = biome.GetVisibleLevel();
 
-			for( int i = (int)level.layers.size() - 1; i >= 0; i-- )
+			for( u32 l = 0; l < biome.levels.size(); l++ )
 			{
-				const Layer& layer = level.layers[i];
-				const VectorF& tile_size = layer.tileSet->tileSize;
-				const Texture* tile_texture = layer.tileSet->texture;
+				const Level& level = biome.levels[l];
 
-				for( u32 j = 0; j < layer.tiles.size(); j++ )
+				for( int i = (int)level.layers.size() - 1; i >= 0; i-- )
 				{
-					RectF rect(layer.tiles[j].draw_pos, layer.tileSize);
+					const Layer& layer = level.layers[i];
+					const VectorF& tile_size = layer.tileSet->tileSize;
+					const Texture* tile_texture = layer.tileSet->texture;
 
-					if(!camera_rect.Intersect(rect))
-						continue;
+					for( u32 j = 0; j < layer.tiles.size(); j++ )
+					{
+						RectF rect(layer.tiles[j].draw_pos, layer.tileSize);
 
-					RectF subRect(layer.tiles[j].tileset_pos, tile_size);
+						if(!camera_rect.Intersect(rect))
+							continue;
 
-					RenderPack pack(tile_texture, rect, 5);
-					pack.subRect = subRect;
+						RectF subRect(layer.tiles[j].tileset_pos, tile_size);
 
-					rm->AddRenderPacket(pack);
+						RenderPack pack(tile_texture, rect, 5);
+						pack.subRect = subRect;
+
+						rm->AddRenderPacket(pack);
+					}
 				}
 			}
 		}

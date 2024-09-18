@@ -2,7 +2,7 @@
 
 enum class ActionState;
 class Texture;
-
+typedef std::unordered_map<StringBuffer32, float> SettingValues;
 
 namespace ECS
 {
@@ -56,6 +56,8 @@ namespace ECS
 
 		int loopCount;
 		float timer;
+
+		void Init(const char* animation);
 
 		void SetActiveSpriteFrame(Sprite& sprite);
 		void StartAnimation(ActionState action);

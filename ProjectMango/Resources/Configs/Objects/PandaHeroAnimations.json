@@ -112,7 +112,9 @@
 			"looping": false,
 			"flip_point_x": 0.426,
 			"entity_collider_pos": [ 0.38, 0.42 ],
-			"entity_collider_size": [ 0.0889, 0.457 ]
+			"entity_collider_size": [ 0.0889, 0.457 ],
+			"attack_collider_pos": [ 0.06, 0.11 ],
+			"attack_collider_size": [ 0.71, 0.76 ]
 		}
 	]
 }

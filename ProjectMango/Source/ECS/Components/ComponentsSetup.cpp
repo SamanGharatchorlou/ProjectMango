@@ -5,7 +5,7 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/Level.h"
+#include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
@@ -36,7 +36,7 @@ void ECS::RegisterAllComponents()
 	ecs->RegisterComponent(Pathing, 32);
 	ecs->RegisterComponent(Damage, 32);
 	ecs->RegisterComponent(Health, 32);
-	ecs->RegisterComponent(Level, 4);
+	ecs->RegisterComponent(Biome, 4);
 }
 
 void ECS::RegisterAllSystems()
@@ -63,9 +63,10 @@ void ECS::RegisterAllSystems()
 	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterSystem<AnimationSystem>(animationSignature);
 
+	// todo: change name to BiomeSystem or something
 	// Map
-	Signature levelSignature = ArcheBit(Level);
-	ecs->RegisterSystem<TileMapSystem>(levelSignature);
+	Signature biomeSignature = ArcheBit(Biome);
+	ecs->RegisterSystem<TileMapSystem>(biomeSignature);
 
 	// Collisions
 	Signature collisionSignature = ArcheBit(Collider);
@@ -95,7 +96,7 @@ void ECS::RemoveAllComponents(Entity entity)
 	ecs->RemoveComponent(PlayerController, entity);
 	ecs->RemoveComponent(Physics, entity);
 	ecs->RemoveComponent(Animator, entity);
-	ecs->RemoveComponent(Level, entity);
+	ecs->RemoveComponent(Biome, entity);
 	ecs->RemoveComponent(Collider, entity);
 	ecs->RemoveComponent(AIController, entity);
 	ecs->RemoveComponent(Pathing, entity);

@@ -1,17 +1,15 @@
 #include "pch.h"
 #include "PlayerCharacter.h"
 
+#include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
-#include "ECS/EntityCoordinator.h"
-
-#include "Animations/AnimationReader.h"
 #include "ECS/Components/Animator.h"
-#include "ECS/Components/Level.h"
+#include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
-#include "System/Files/ConfigManager.h"
 
+#include "System/Files/ConfigManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
 ECS::Entity s_playerEntity = ECS::EntityInvalid;
@@ -25,28 +23,29 @@ ECS::Entity Player::Spawn()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	
-	const PlayerDataConfig* gs = ConfigManager::Get()->GetConfig<PlayerDataConfig>("PlayerDataConfig");
-
 	ecs->entities.KillEntity(s_playerEntity);
+
+	VectorF spawn_pos;
+	bool can_spawn = ECS::Biome::GetSpawnPos("PlayerSpawn", spawn_pos);
+	if(!can_spawn)
+		return ECS::EntityInvalid;
+
 	s_playerEntity = ecs->CreateEntity("Player");
+
+	const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
-	const VectorF size = VectorF(gs->settings.at("size_x"), gs->settings.at("size_y"));
-	transform.SetWorldPosition(ECS::Level::GetSpawnPos("PlayerStart") - (size / 2.0f));
-	transform.size = size;
+	transform.Init(config->values);
+	transform.SetWorldPosition(spawn_pos - (transform.size / 2.0f));
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
-	physics.applyGravity = true;	
-	physics.acceleration = VectorF(gs->settings.at("acceleration_x"), gs->settings.at("acceleration_y"));
-	physics.maxSpeed.x = gs->settings.at("max_run_speed");
-	physics.maxSpeed.y = gs->settings.at("max_fall_speed");
+	physics.Init(config->values);
 
 	// Animation
 	ECS::Animator& animation = ecs->AddComponent(Animator, s_playerEntity);
-	AnimationReader::BuildAnimatior( "PandaHeroAnimations", animation.animations );
-	animation.activeAnimation = 0;
+	animation.Init(config->animation.c_str());
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, s_playerEntity);
@@ -66,13 +65,9 @@ ECS::Entity Player::Spawn()
 	
 	// Health
 	ECS::Health& health = ecs->AddComponent(Health, s_playerEntity);
-	health.maxHealth = gs->settings.at("max_health");
-	health.currentHealth = health.maxHealth;
+	health.Init(config->values);
 
 	DebugMenu::SelectEntity(s_playerEntity);
-
-	
-	collider.SetFlag(ECS::Collider::TerrainOnly);
 
 	return s_playerEntity;
 } 

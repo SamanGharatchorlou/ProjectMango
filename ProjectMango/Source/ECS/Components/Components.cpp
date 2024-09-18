@@ -37,6 +37,11 @@ namespace ECS
 	}
 
 	// Transform
+	void Transform::Init(const SettingValues& values)
+	{
+		size = VectorF(values.at("size_x"), values.at("size_y"));
+	}
+
 	void Transform::SetLocalPosition(VectorF pos)
 	{
 		ASSERT(!size.isZero(), "Make sure to set the size BEFORE you set the local position");
@@ -53,22 +58,28 @@ namespace ECS
 		TransformSystem::UpdateChildrenTransforms(entity_data.parent);
 	}
 
-	VectorF Transform::GetCharacterCenter() const
+	VectorF Transform::GetObjectCenter() const
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		if(const Collider* collider = ecs->GetComponent(Collider, entity))
 		{
 			return collider->rect.Center();
 		}
-		else if(const Transform* transform = ecs->GetComponent(Transform, entity))
+		else
 		{
-			return transform->worldPosition;
+			return worldPosition;
 		}
 
 		return VectorF::zero();
 	}
 	
 	// Health
+	void Health::Init(const SettingValues& values)
+	{
+		maxHealth = values.at("max_health");
+		currentHealth = maxHealth;
+	}
+
 	void Health::ApplyDamage(const Damage& damage)
 	{
 		if(invulnerable)
@@ -104,14 +115,12 @@ namespace ECS
 		{
 			float speed = physics->speed.x;
 
-			VectorF impulse = force / physics->mass;
-			physics->speed += impulse;
-			
+			const Transform& transform = ecs->GetComponentRef(Transform, _entity);
 
-			DebugPrint(PriorityLevel::Debug, "speed %f -> %f", speed, physics->speed);
+			const float force_direction = source.x < transform.GetObjectCenter().x ? force : -force;
+			const float impulse = force_direction / physics->mass;
+			physics->speed += VectorF(impulse, 0.0f);
 		}
-
-		DebugPrint(PriorityLevel::Log, "Apply damage to %d", _entity);
 	}
 
 	// CharacterState
@@ -135,5 +144,16 @@ namespace ECS
 		}
 
 		return EntityInvalid;
+	}
+
+	VectorF GetPosition(Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		if(Transform* transform = ecs->GetComponent(Transform, entity))
+		{
+			return transform->GetObjectCenter();
+		}
+
+		return VectorF::zero();
 	}
 }

@@ -1,12 +1,12 @@
 {
-	"id" : "ShockHero",
-	"animation": "ShockHero",
+	"animation": "ShockSweeperAnimations",
 	"values" : {
 		"size_x" : 352,
 		"size_y" : 120,
+		"gravity" : true,
 		"acceleration_x": 80,
 		"acceleration_y": 80,
-		"max_run_speed": 200,
+		"max_run_speed": 100,
 		"max_fall_speed": 1000,
 		"basic_attack_damage" : 10,
 		"basic_attack_force" : 150,

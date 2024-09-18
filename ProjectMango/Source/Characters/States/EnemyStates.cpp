@@ -98,15 +98,15 @@ namespace Enemy
 			PopState();
 			return;
 		}
-
+		
+		const int run_acceleration_factor = 1;
 		const VectorI facing_direction = state.GetFacingDirection();
-		physics.maxSpeed.x = 3.0f;
-		physics.ApplyMovement(facing_direction.toFloat(), dt);
+		physics.ApplyMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
 
 		if(ai_controller.target != EntityInvalid)
 		{
 			const Transform& target_transform = ecs->GetComponentRef(Transform, ai_controller.target);
-			const float distance_to_target = std::abs( transform.GetCharacterCenter().x - target_transform.GetCharacterCenter().x );
+			const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
 			const float attack_range = GetAttackRange(ActionState::BasicAttack);
 
 			if(attack_range > 0.0f && attack_range > distance_to_target)
@@ -196,7 +196,7 @@ namespace Enemy
 		Animator& animator = ecs->GetComponentRef(Animator, entity);
 		
 		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		sprite.canFlip = animator.frameIndex < 3;
+		sprite.canFlip = animator.frameIndex < 2;
 
 		if(animator.frameIndex >= 6 && attackCollider == EntityInvalid)
 		{

@@ -318,7 +318,7 @@
     <ClCompile Include="Source\Scene\SceneParsing\LevelReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Components\Level.cpp">
+    <ClCompile Include="Source\ECS\Components\Biome.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\States\AnimationEditorState.cpp">
@@ -1073,7 +1073,7 @@
     <ClInclude Include="Source\Scene\SceneParsing\LevelReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Level.h">
+    <ClInclude Include="Source\ECS\Components\Biome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\States\AnimationEditorState.h">
