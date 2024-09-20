@@ -62,33 +62,6 @@ namespace AnimationEditor
 		bool isPlayingFrames = true;
 	};
 
-    static void AddOrRemoveIndex(std::vector<VectorI>& list, VectorI index)
-    {
-        if (list.back() == index)
-        {
-            list.resize(list.size() - 1);
-        }
-        {
-            list.push_back(index);
-        }
-
-        //if (Contains(list, index))
-        //{
-        //    for (auto iter = list.begin(); iter != list.end(); iter++)
-        //    {
-        //        if (*iter == index) 
-        //        {
-        //            list.erase(iter);
-        //            return;
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    list.push_back(index);
-        //}
-    }
-
     static AnimationState s_state;
     static VectorF s_targetWindowSize = VectorF(640, 640);
 
@@ -350,7 +323,7 @@ namespace AnimationEditor
             if (ImGui::BeginCombo("Build Animator From Config", c.selected.c_str()))
             {
                 FileManager* fm = FileManager::Get();
-                std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Config_Objects);
+                std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Config_Animations);
 
                 for( u32 i = 0; i < file_names.size(); i++ )
                 {
@@ -573,7 +546,7 @@ namespace AnimationEditor
 	    RenderManager* rm = GameData::Get().renderManager;
 
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
-	    Texture* bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
+	    Texture* bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
 	    RenderPack pack(bg, screen, 0);
 	    rm->AddRenderPacket(pack);
     }

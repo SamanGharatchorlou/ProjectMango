@@ -37,25 +37,24 @@ namespace ECS
 		std::vector<ECS::Entity> colliders;
 
 		// can i assime the entity a value? do i care? a string is probably fine
-		std::unordered_map<BasicString, VectorF> entities;
+		std::unordered_map<BasicString, std::vector<VectorF>> entities;
 	};
 
 	struct Biome
 	{
-		COMPONENT_TYPE(Level)
+		COMPONENT_TYPE(Biome)
 
 		std::vector<Level> levels;
 
 		VectorF aabb[2];
 
-		const Level& GetLevel(ECS::Entity entity) const;
-		const Level& GetLevel(VectorF position) const;
-		const Level& GetVisibleLevel() const;
+		static const Level& GetLevel(ECS::Entity entity);
+		static const Level& GetLevel(VectorF position);
+		static const Level& GetVisibleLevel();
 
 		static const Entity GetActive();
-		static const Biome* GetActiveBiome();
+		static const Biome& GetActiveBiome();
 
-		static bool GetBiomeSpawnPos(const char* spawn_id, VectorF& out_pos);
-		static bool GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos);
+		//static bool GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos);
 	};
 }

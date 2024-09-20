@@ -1,0 +1,19 @@
+{
+	"id": "Torch",
+	"frameSize_x": 16,
+	"frameSize_y": 16,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Torch 16x16",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.2
+				}
+			]
+		}
+	]
+}

@@ -25,7 +25,6 @@ namespace ECS
 		for (Entity entity : entities)
 		{
 			const Biome& biome = ecs->GetComponentRef(Biome, entity);
-			//const Level& level = biome.GetVisibleLevel();
 
 			for( u32 l = 0; l < biome.levels.size(); l++ )
 			{
@@ -46,7 +45,7 @@ namespace ECS
 
 						RectF subRect(layer.tiles[j].tileset_pos, tile_size);
 
-						RenderPack pack(tile_texture, rect, 5);
+						RenderPack pack(tile_texture, rect, 1);
 						pack.subRect = subRect;
 
 						rm->AddRenderPacket(pack);

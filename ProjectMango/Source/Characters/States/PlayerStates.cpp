@@ -493,9 +493,9 @@ void DeathState::Init()
 void DeathState::Update(float dt)
 {	
 	EntityCoordinator* ecs = GameData::Get().ecs;
-	Animator& animation = ecs->GetComponentRef(Animator, entity);
+	Animator& animator = ecs->GetComponentRef(Animator, entity);
 
-	if(animation.loopCount > 0)
+	if(animator.loopCount > 0)
 		can_respawn = true;
 }
 

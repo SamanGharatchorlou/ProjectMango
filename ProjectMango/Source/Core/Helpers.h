@@ -176,3 +176,8 @@ static VectorI IndexToGrid(int index, int grid_width)
 	int index_x = (int)(index - (index_y * grid_width));
 	return VectorI(index_x, index_y);
 }
+
+
+
+//--------------------------------------------------------
+bool RaycastToFloor(ECS::Entity entity, float& out_distance);

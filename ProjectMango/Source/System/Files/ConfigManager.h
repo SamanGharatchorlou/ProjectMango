@@ -18,7 +18,7 @@ public:
 	}
 
 	template<class T>
-	T* addAndLoad(const char* path)
+	T* AddAndLoad(const char* path)
 	{
 		if (mConfigs.count(path) == 0)
 		{
@@ -66,6 +66,10 @@ public:
 		{
 			ASSERT(mConfigs[config]->parsed, "config %s has not been parsed yet, no data");
 			return static_cast<T*>(mConfigs[config]);
+		}
+		else
+		{
+			return AddAndLoad<T>(config);
 		}
 
 		DebugPrint(Warning, "No config in the config manager with name: %s", config);

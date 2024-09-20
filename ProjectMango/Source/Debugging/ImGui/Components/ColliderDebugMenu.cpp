@@ -23,6 +23,10 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 			ImGui::Text("IsEnemy");
 		if (collider.HasFlag(ECS::Collider::IsTerrain))
 			ImGui::Text("IsTerrain");
+		if (collider.HasFlag(ECS::Collider::IsFloor))
+			ImGui::Text("IsTerrain");
+		if (collider.HasFlag(ECS::Collider::IsWall))
+			ImGui::Text("IsTerrain");
 		if (collider.HasFlag(ECS::Collider::IsDamage))
 			ImGui::Text("IsDamage");
 		if (collider.HasFlag(ECS::Collider::IgnoreAll))

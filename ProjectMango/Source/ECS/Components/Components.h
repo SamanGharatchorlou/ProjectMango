@@ -41,17 +41,16 @@ namespace ECS
 		VectorF renderOffset;
 
 		VectorF size;
+
+		bool ignoreOutOfBounds = false;
 		
 		void Init(const SettingValues& values);
 
 		void SetLocalPosition(VectorF pos);
-		void SetWorldPosition(VectorF pos) 
-		{
-			targetWorldPosition = pos;
-			worldPosition = pos;
-		}
+		void SetWorldPosition(VectorF pos);
 
 		VectorF GetObjectCenter() const;
+		RectF GetRect() const;
 	};
 
 	struct Sprite
@@ -59,8 +58,6 @@ namespace ECS
 		COMPONENT_TYPE(Sprite)
 
 		RectF subRect;
-		VectorF renderSize;
-
 		Texture* texture = nullptr;
 		
 		VectorF flipPoint = VectorF(0.5f, 0.5f);
@@ -125,18 +122,21 @@ namespace ECS
 		void ApplyDamage(const Damage& damage);
 	};
 
+	
+	typedef Entity (*EntitySpawnFn)( const char* id, const char* config );
+
 	struct Spawner
 	{
 		COMPONENT_TYPE(Spawner)
 
-		// add a callback here?
-		const char* location = nullptr;
-		const char* entityName = nullptr;
-		const char* entityconfig = nullptr;
+		EntitySpawnFn entitySpawnFn = nullptr;
+		const char* spawnId = nullptr;
+		const char* spawnConfig = nullptr;
 
-		bool isPlayer = false;
+		bool IsSpawning() { return entitySpawnFn != nullptr; }
 
-		bool Spawn();
+		bool Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn);
+		void Update();
 	};
 
 	// ----------------------------------------------------------------------

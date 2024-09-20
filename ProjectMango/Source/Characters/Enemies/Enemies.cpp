@@ -16,9 +16,9 @@ ECS::Entity Enemy::Create()
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("ShockEnemyConfig");
 
 	VectorF spawn_pos;
-	bool can_spawn = ECS::Biome::GetLevelSpawnPos(config->spawnId.c_str(), spawn_pos);
-	if(!can_spawn)
-		return ECS::EntityInvalid;
+	//bool can_spawn = ECS::Biome::GetLevelSpawnPos(config->spawnId.c_str(), spawn_pos);
+	//if(!can_spawn)
+	//	return ECS::EntityInvalid;
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Enemy");
@@ -37,7 +37,7 @@ ECS::Entity Enemy::Create()
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
-	sprite.renderLayer = 8;
+	sprite.renderLayer = 4;
 	
 	// Collider
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);

@@ -1,0 +1,19 @@
+{
+	"id": "Flower",
+	"frameSize_x": 16,
+	"frameSize_y": 16,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "flower glow 16x16",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 10,
+					"frameTime": 0.2
+				}
+			]
+		}
+	]
+}

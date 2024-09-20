@@ -31,7 +31,7 @@ namespace ECS
 			Pathing,
 			Damage,
 			Health,
-			Level,
+			Biome,
 			Spawner,
 
 			Count
@@ -52,7 +52,7 @@ namespace ECS
 		"Pathing",
 		"Damage",
 		"Health",
-		"Level",
+		"Biome",
 		"Spawner"
 	};
 

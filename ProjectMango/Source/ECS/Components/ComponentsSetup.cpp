@@ -19,6 +19,7 @@
 #include "ECS/EntSystems/TileMapSystem.h"
 #include "ECS/EntSystems/TransformSystem.h"
 #include "ECS/EntSystems/HealthSystem.h"
+#include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 void ECS::RegisterAllComponents()
 {
@@ -37,6 +38,7 @@ void ECS::RegisterAllComponents()
 	ecs->RegisterComponent(Damage, 32);
 	ecs->RegisterComponent(Health, 32);
 	ecs->RegisterComponent(Biome, 4);
+	ecs->RegisterComponent(Spawner, 4);
 }
 
 void ECS::RegisterAllSystems()
@@ -80,9 +82,10 @@ void ECS::RegisterAllSystems()
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
 
-	// Health
-	Signature healthSignature = ArcheBit(Health);
-	ecs->RegisterSystem<HealthSystem>(healthSignature);
+	// Compoenent Updates - add any components into here that have an update function you want to run instead
+	Signature ComponentsSignature = ArcheBit(Spawner);
+	ecs->RegisterSystem<ComponentUpdateSystem>(ComponentsSignature);
+
 }
 
 

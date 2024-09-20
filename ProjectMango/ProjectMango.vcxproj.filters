@@ -45,9 +45,6 @@
     <ClCompile Include="Source\Characters\States\PlayerStates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\Spawner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\Events\Dispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,7 +105,7 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\TileMapDebugMenu.cpp">
+    <ClCompile Include="Source\Debugging\ImGui\Components\BiomeDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp">
@@ -345,6 +342,9 @@
     <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\ComponentUpdateSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animations\AnimationReader.h">
@@ -378,9 +378,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Characters\States\PlayerStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Characters\Spawner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Events\Dispatcher.h">
@@ -1095,6 +1092,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\ComponentUpdateSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

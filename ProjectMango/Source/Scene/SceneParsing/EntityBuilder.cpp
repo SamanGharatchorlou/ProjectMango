@@ -6,9 +6,12 @@
 #include "System/Files/ConfigManager.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Animator.h"
+#include "Core/Helpers.h"
 
 
-static ECS::Entity CreateSpawner(const char* id, const char* config_id, const ECS::Level& level)
+typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
+
+static ECS::Entity CreateBasicObject(const char* id, const char* config_id, VectorF spawn_pos)
 {
 	// find the floor
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -16,28 +19,88 @@ static ECS::Entity CreateSpawner(const char* id, const char* config_id, const EC
 
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 
-	if (!level.entities.contains(config->spawnId.c_str()))
-		return ECS::EntityInvalid;
-
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
 	transform.Init(config->values);
-
-	VectorF spawn_pos = level.entities.at(config->spawnId.c_str());
 	transform.SetWorldPosition(spawn_pos - (transform.size / 2.0f));
 
+	if(config->values.contains("snap_to_floor"))
+	{
+		if((bool)config->values.at("snap_to_floor"))
+		{
+			float distance = 0.0f;
+			if( RaycastToFloor(entity, distance) )
+			{
+				transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
+			}
+		}
+	}
+
 	// Animation
-	ECS::Animator& animation = ecs->AddComponent(Animator, entity);
-	animation.Init(config->animation.c_str());
+	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
+	animator.Init(config->animation.c_str());
+		
+	if(config->values.contains("randomise_frame_start"))
+	{
+		if((bool)config->values.at("randomise_frame_start"))
+		{
+			int frame_start = (rand() % animator.GetActiveAnimation().frameCount) + 1;
+			animator.frameIndex = frame_start;
+		}
+	}
+
+	if(config->values.contains("randomise_frame_speed"))
+	{
+		float variation = config->values.at("randomise_frame_speed");
+
+		int var_range = (int)(variation * 100.0f);
+
+		int value = rand() % (int)(var_range * 2);
+		float diff = (float)(value - var_range) / 100.0f;
+
+		ECS::Animation& animation = animator.animations[animator.activeAnimation];
+		animation.frameTime = animation.frameTime + (diff * animation.frameTime);
+	}
+
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
-	sprite.renderLayer = 8;
+	sprite.renderLayer = 6;
+
+	return entity;
+}
+
+static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+
+	// Spawner
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Spawner& spawner = ecs->AddComponent(Spawner, entity);
+
+	return entity;
+}
+
+static ECS::Entity CreateFlower(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	return CreateBasicObject(id, config_id, spawn_pos);
+}
+
+static ECS::Entity CreateTorch(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	return CreateBasicObject(id, config_id, spawn_pos);
 }
 
 
 void CreateEntities(ECS::Biome& biome)
 {
+	srand (time(NULL));
+
+	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
+	CreateEntitiyFunctions["PlayerSpawner"] = CreatePlayerSpawner;
+	CreateEntitiyFunctions["Flower"] = CreateFlower;
+	CreateEntitiyFunctions["Torch"] = CreateTorch;
+
 	for (u32 i = 0; i < biome.levels.size(); i++)
 	{
 		const ECS::Level& level = biome.levels[i];
@@ -45,11 +108,20 @@ void CreateEntities(ECS::Biome& biome)
 		{
 			const char* entity_id = iter->first.c_str();
 
-			if (StringCompare(entity_id, "PlayerSpawner"))
+			if(CreateEntitiyFunctions.contains(entity_id))
 			{
-				CreateSpawner("player_spawner", "PlayerSpawnerConfig", level);
+				CreateEntityFn create_fn = CreateEntitiyFunctions.at(entity_id);
+
+				char buffer[64];
+				snprintf(buffer, 64, "%sConfig", entity_id);
+
+				const std::vector<VectorF>& entity_positions = iter->second;
+				for( u32 e = 0; e < entity_positions.size(); e++ )
+				{
+					VectorF pos = entity_positions[e];
+					create_fn(entity_id, buffer, pos);
+				}
 			}
 		}
-
 	}
 }

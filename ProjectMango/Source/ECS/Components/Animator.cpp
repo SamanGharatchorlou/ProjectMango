@@ -14,6 +14,7 @@ namespace ECS
 	{
 		AnimationReader::BuildAnimatior( animation, animations );
 		activeAnimation = 0;
+		state = TimeState::Running;
 	}
 
 	void Animator::SetActiveSpriteFrame(Sprite& sprite)
@@ -54,8 +55,6 @@ namespace ECS
 				frameIndex = 0;
 				loopCount = 0;
 				timer = 0;
-
-
 
 				return;
 			}

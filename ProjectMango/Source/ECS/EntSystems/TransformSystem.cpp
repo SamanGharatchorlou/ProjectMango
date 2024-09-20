@@ -62,7 +62,7 @@ namespace ECS
 			// only move to the allowed position, otherwise roll back
 			Collider* collider = ecs->GetComponent(Collider, entity);
 			if (collider)
-			{
+			{ 
 				u32 flags = Collider::Flags::Static;
 				if (HasFlag(collider->flags, flags))
 					continue;
@@ -88,14 +88,12 @@ namespace ECS
 			}
 
 			// check out of bounds
-			if (const Biome* biome = Biome::GetActiveBiome())
+			const Biome& biome = Biome::GetActiveBiome();
+			const VectorF position = transform.GetObjectCenter();
+			if (position.x < biome.aabb[0].x || position.y < biome.aabb[0].y || 
+				position.x > biome.aabb[1].x || position.y > biome.aabb[1].y)
 			{
-				const VectorF position = transform.GetObjectCenter();
-				if (position.x < biome->aabb[0].x || position.y < biome->aabb[0].y || 
-					position.x > biome->aabb[1].x || position.y > biome->aabb[1].y)
-				{
-					out_of_bounds_entities.push_back(entity);
-				}
+				out_of_bounds_entities.push_back(entity);
 			}
 		}
 

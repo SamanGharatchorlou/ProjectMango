@@ -37,10 +37,8 @@ void Camera::Update(float dt)
 	if(!transform)
 		return;
 
-	ECS::Entity biome_entity = ECS::Biome::GetActive();
-	const ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
 	ECS::Entity player = Player::Get();
-	const ECS::Level& level = biome.GetLevel(player);
+	const ECS::Level& level = ECS::Biome::GetLevel(player);
 	
 	const VectorF translation = (transform->GetObjectCenter() - rect.Center()) * dt * 5.0f;
 	rect.Translate( translation );
@@ -88,19 +86,3 @@ void Camera::Update(float dt)
 		//mActiveRect = &mRect;
 	}
 }
-
-
-//VectorF Camera::toCameraCoords(const VectorF& worldCoords) const
-//{
-//	return worldCoords - rect->TopLeft();
-//}
-
-
-//Quad2D<float> Camera::toCameraCoords(const Quad2D<float>& worldCoords) const
-//{
-//	VectorF translation = toCameraCoords(worldCoords.at(0)) - worldCoords.at(0);
-//	Quad2D<float> newQuad(worldCoords);
-//	newQuad.translate(translation);
-//
-//	return newQuad;
-//}

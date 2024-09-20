@@ -14,6 +14,8 @@
 #include "Scene/SceneParsing/SceneReader.h"
 #include "System/Window.h"
 
+#include "Scene/SceneParsing/EntityBuilder.h"
+
 void GameState::Init()
 {
 	ECS::RegisterAllComponents();
@@ -21,13 +23,14 @@ void GameState::Init()
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Map_1");
+
 	ECS::Biome& biome_1 = ecs->AddComponent(Biome, entity);
 	Scene::BuildBiome( "Biome1", biome_1 );
-
 	activeLevel = entity;
 
-	ECS::Entity player = Player::Spawn("Player", "PlayerDataConfig");
-	ECS::Entity enemy = Enemy::Create();
+	CreateEntities(biome_1);
+
+	//ECS::Entity enemy = Enemy::Create();
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;

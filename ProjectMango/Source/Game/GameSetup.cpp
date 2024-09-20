@@ -31,9 +31,6 @@ void GameSetup::initGameData(GameData& game_data)
 
 	ConfigManager* cm = ConfigManager::Get();
 	cm->add<GameSettingsConfig>("GameSettings");
-	cm->add<ObjectConfig>("PlayerDataConfig");
-	cm->add<ObjectConfig>("ShockEnemyConfig");
-	cm->add<ObjectConfig>("PlayerSpawnerConfig");
 	cm->Load();
 
 	Window* window = initSDLWindow();

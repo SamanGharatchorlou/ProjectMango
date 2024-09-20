@@ -1,0 +1,55 @@
+{
+	"id": "ShockHero",
+	"frameSize_x": 88,
+	"frameSize_y": 33,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Shock Sweeper All (88x30)",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.25,
+					"entity_collider_pos": [ 0.239, 0.417 ],
+					"entity_collider_size": [ 0.137, 0.492 ],
+					"flip_point_x": 0.307
+				},
+				{
+					"action": "Run",
+					"startIndex": 10,
+					"frameCount": 8,
+					"frameTime": 0.1,
+					"flip_point_x": 0.307
+				},
+				{
+					"action": "BasicAttack",
+					"startIndex": 40,
+					"frameCount": 11,
+					"frameTime": 0.16,
+					"flip_point_x": 0.307,
+					"looping": false,
+					"attack_collider_pos": [ 0.43, 0.33 ],
+					"attack_collider_size": [ 0.28, 0.57 ]
+				},
+				{
+					"action": "TakeHit",
+					"startIndex": 70,
+					"frameCount": 2,
+					"frameTime": 0.07,
+					"looping": false,
+					"flip_point_x": 0.307
+				},
+				{
+					"action": "Death",
+					"startIndex": 80,
+					"frameCount": 5,
+					"frameTime": 0.3,
+					"looping": false,
+					"flip_point_x": 0.307
+				}
+			]
+		}
+	]
+}

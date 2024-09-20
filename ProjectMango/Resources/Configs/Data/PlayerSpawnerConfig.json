@@ -1,0 +1,8 @@
+{
+	"animation": "WarpAnimations",
+	"values": {
+		"size_x": 112,
+		"size_y": 164,
+		"snap_to_floor" : true
+	}
+}

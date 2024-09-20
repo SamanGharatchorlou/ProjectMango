@@ -39,24 +39,10 @@ void FileManager::init()
 	// Font
 	folderPaths[Font] = folderPaths[Root] + "Font\\";
 
-	// Scenes
-	//folderPaths[Scenes] = folderPaths[Root] + "Scenes\\";
-
 	// Configs
 	folderPaths[Configs] = folderPaths[Root] + "Configs\\";
-
-	//folderPaths[Config_Map] = folderPaths[Configs] + "Map\\";
-	folderPaths[Config_Menus] = folderPaths[Configs] + "UIMenus\\";
-	folderPaths[Config_Popups] = folderPaths[Config_Menus] + "PopupInfo\\";
-
-	folderPaths[Config_Objects] = folderPaths[Configs] + "Objects\\";
-	folderPaths[Config_MapObjects] = folderPaths[Config_Objects] + "Map\\";
-	folderPaths[Config_Enemies] = folderPaths[Config_Objects] + "Enemies\\";
-	folderPaths[Config_Player] = folderPaths[Config_Objects] + "Player\\";
-	folderPaths[Config_Abilities] = folderPaths[Config_Objects] + "Abilities\\";
-
-	folderPaths[Config_Weapons] = folderPaths[Config_Objects] + "Weapons\\";
-	folderPaths[Config_MeleeWeapons] = folderPaths[Config_Objects] + "Weapons\\Melee\\";
+	folderPaths[Config_Animations] = folderPaths[Configs] + "Animations\\";
+	folderPaths[Config_Data] = folderPaths[Configs] + "Data\\";
 
 	for (int i = 0; i < Folder::Count; i++)
 	{

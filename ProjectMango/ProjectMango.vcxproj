@@ -149,7 +149,6 @@
     <ClCompile Include="Source\Audio\SoundController.cpp" />
     <ClCompile Include="Source\Characters\Enemies\Enemies.cpp" />
     <ClCompile Include="Source\Characters\Player\PlayerCharacter.cpp" />
-    <ClCompile Include="Source\Characters\Spawner.cpp" />
     <ClCompile Include="Source\Characters\States\CharacterAction.cpp" />
     <ClCompile Include="Source\Characters\States\EnemyStates.cpp" />
     <ClCompile Include="Source\Characters\States\PlayerStates.cpp" />
@@ -175,7 +174,7 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\PathingDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\PlayerControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\TileMapDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\BiomeDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
@@ -198,6 +197,7 @@
     <ClCompile Include="Source\ECS\EntSystems\AIControllerSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\AnimationSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CollisionSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\ComponentUpdateSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\HealthSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\PathingSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\PhysicsSystem.cpp" />
@@ -261,7 +261,6 @@
     <ClInclude Include="Source\Audio\SoundController.h" />
     <ClInclude Include="Source\Characters\Enemies\Enemies.h" />
     <ClInclude Include="Source\Characters\Player\PlayerCharacter.h" />
-    <ClInclude Include="Source\Characters\Spawner.h" />
     <ClInclude Include="Source\Characters\States\CharacterAction.h" />
     <ClInclude Include="Source\Characters\States\EnemyStates.h" />
     <ClInclude Include="Source\Characters\States\PlayerStates.h" />
@@ -320,6 +319,7 @@
     <ClInclude Include="Source\ECS\EntSystems\AIControllerSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\AnimationSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\CollisionSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\ComponentUpdateSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\HealthSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\PathingSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\PhysicsSystem.h" />

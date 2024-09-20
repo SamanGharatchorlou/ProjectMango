@@ -20,13 +20,12 @@
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
 #include "ECS/Components/TileMap.h"
+#include "ECS/Components/Biome.h"
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "ECS/Components/Animator.h"
 #include "Game/Camera/Camera.h"
 #include "System/Files/ConfigManager.h"
-
 #include "Characters/Player/PlayerCharacter.h"
-#include "Characters/Spawner.h"
 
 #include "System/Window.h"
 
@@ -115,6 +114,7 @@ void DebugMenu::DoEntitySystemWindow()
             DoComponentDropdown(AIController);
             DoComponentDropdown(PlayerController);
             DoComponentDropdown(Health);
+            DoComponentDropdown(Biome);
 
             ECS::Archetype entity_type = ecs->entities.GetAchetype(s_selectedEntity);
             for (u32 i = 0; i < ECS::Component::Count; i++) 

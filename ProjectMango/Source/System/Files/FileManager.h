@@ -24,15 +24,8 @@ public:
 		Font,
 
 		Configs,
-		Config_Menus,
-		Config_Popups,
-		Config_Objects,
-		Config_MapObjects,
-		Config_Enemies,
-		Config_Player,
-		Config_Weapons,
-		Config_MeleeWeapons,
-		Config_Abilities,
+		Config_Animations,
+		Config_Data,
 
 		Audio,
 		Audio_Music,

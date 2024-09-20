@@ -1,27 +1,14 @@
 #include "pch.h"
 #include "ComponentDebugMenu.h"
 
-#include "Debugging/ImGui/ImGuiHelpers.h"
 #include "imgui-master/imgui.h"
 
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/TextureManager.h"
 #include "Game/FrameRateController.h"
-#include "ECS/Components/ComponentCommon.h"
 #include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
 #include "Game/FrameRateController.h"
-//#include "Core/BasicString.h"
-
-//static std::vector<ActionState> s_animationPlaylist;
-//static std::vector<Animation> s_animationPlaylist;
-static int s_playlistIndex = 0;
-static bool s_usingPlaylist = false;
-
-static bool s_playingPlaylist = false;
-static bool s_playSingleAnimation = false;
-static bool s_displayRenderRect = false;
-static bool s_forceLooping = true;
 
 struct RenderRects
 {
@@ -31,28 +18,9 @@ struct RenderRects
 };
 
 static RenderRects s_renderRects;
-
 static bool s_flipOverride = false;
 static SDL_RendererFlip s_spriteFlip = SDL_FLIP_NONE;
-
-static ECS::Entity s_activeEnt;
-
-bool DebugMenu::UsingPlaylist(ECS::Entity& entity) { return s_usingPlaylist && s_activeEnt == entity; }
-bool DebugMenu::DisplayRenderRect(ECS::Entity& entity) { return s_displayRenderRect && s_activeEnt == entity; }
-bool DebugMenu::SpriteFlipOverride(ECS::Entity& entity, SDL_RendererFlip& sprite_flip) 
-{ 
-	if(s_flipOverride && s_activeEnt == entity)
-	{
-		sprite_flip = s_spriteFlip;
-		return true;
-	}
-
-	return false;
-}
-
-VectorI facing_direction;
-
-ActionState s_activeAction = ActionState::None;
+static ActionState s_activeAction = ActionState::None;
 
 std::vector<BasicString> s_animationLog;
 

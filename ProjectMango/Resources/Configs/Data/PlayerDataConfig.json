@@ -1,6 +1,5 @@
 {
 	"animation": "PandaHeroAnimations",
-	"spawn_id": "PlayerSpawn",
 	"values": {
 		"size_x": 412,
 		"size_y": 122,

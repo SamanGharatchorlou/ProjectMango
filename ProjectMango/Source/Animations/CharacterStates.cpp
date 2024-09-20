@@ -10,6 +10,8 @@ static void initActionMap()
 
 	s_actionMap["None"] = ActionState::None;
 
+	s_actionMap["Active"] = ActionState::Active;
+
 	s_actionMap["Idle"] = ActionState::Idle;
 	s_actionMap["Walk"] = ActionState::Walk;
 	s_actionMap["Run"] = ActionState::Run;

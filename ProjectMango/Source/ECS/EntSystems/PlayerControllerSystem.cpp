@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PlayerControllerSystem.h"
 
-#include "Characters/Spawner.h"
+//#include "Characters/Spawner.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
@@ -11,9 +11,47 @@
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Biome.h"
+#include "Game/Camera/Camera.h"
+
+#include "ECS/Components/ComponentCommon.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
+	static void SpawnPlayer()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		std::vector<Entity> spawners;
+		ecs->GetEntitiesWithComponent(Spawner, spawners);
+
+		std::vector<Entity> out_spawners;
+
+		const Level& active_level = Biome::GetVisibleLevel();
+		FilterEntitiesInLevel(active_level, spawners, out_spawners);
+
+		Spawner* spawner = nullptr;
+		if(out_spawners.size() > 0)
+		{
+			spawner = ecs->GetComponent(Spawner, out_spawners.front());
+		}
+		if(!spawner && spawners.size() > 0)
+		{
+			spawner = ecs->GetComponent(Spawner, spawners.front());
+		}
+
+		if(spawner && !spawner->IsSpawning())
+		{
+			spawner->Spawn("Player", "PlayerDataConfig", Player::Spawn);
+
+			VectorF spawner_center = GetPosition(spawner->entity);
+
+			Camera* camera = Camera::Get();
+			camera->targetEntity = spawner->entity;
+		}
+	}
+
 	void PlayerControllerSystem::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -34,7 +72,7 @@ namespace ECS
 					Player::DeathState* death_state = static_cast<Player::DeathState*>(character_state);
 					if(death_state->can_respawn)
 					{
-						Player::Spawn("Player", "PlayerDataConfig");
+						SpawnPlayer();
 						return;
 					}
 				}
@@ -97,7 +135,7 @@ namespace ECS
 
 		if (entities.size() == 0)
 		{
-			Player::Spawn("Player", "PlayerDataConfig");
+			SpawnPlayer();
 		}
 	} 
 }

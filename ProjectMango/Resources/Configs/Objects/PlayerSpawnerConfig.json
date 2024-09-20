@@ -1,8 +1,0 @@
-{
-	"animation": "ShockSweeperAnimations",
-	"spawn_id": "SpawnerLocation",
-	"values": {
-		"size_x": 352,
-		"size_y": 120
-	}
-}

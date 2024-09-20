@@ -1,0 +1,8 @@
+{
+	"animation": "FlowerAnimations",
+	"values": {
+		"size_x": 64,
+		"size_y": 64,
+		"snap_to_floor" : true
+	}
+}

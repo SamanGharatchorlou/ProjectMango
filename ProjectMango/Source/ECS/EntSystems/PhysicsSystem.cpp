@@ -29,7 +29,7 @@ namespace ECS
 				self.push_back(entity);
 				
 				std::vector<u32> collider_flags;
-				collider_flags.push_back(ECS::Collider::IsTerrain);
+				collider_flags.push_back(ECS::Collider::IsFloor);
 				
 				// todo:
 				VectorF edge_buffer(collider->rect.Width() * 0.15f, 0.0f);

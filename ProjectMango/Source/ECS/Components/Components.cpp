@@ -6,6 +6,8 @@
 #include "Core/Helpers.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/EntSystems/TransformSystem.h"
+#include "ECS/Components/Animator.h"
+#include "Animations/CharacterStates.h"
 
 namespace ECS
 {
@@ -58,6 +60,23 @@ namespace ECS
 		TransformSystem::UpdateChildrenTransforms(entity_data.parent);
 	}
 
+	
+	void Transform::SetWorldPosition(VectorF pos)
+	{
+		targetWorldPosition = pos;
+		worldPosition = pos;
+
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		// update collider positions
+		if (Collider* collider = ecs->GetComponent(Collider, entity))
+		{
+			collider->back = worldPosition;
+			collider->forward = targetWorldPosition;
+			collider->RollForwardPosition();
+		}
+	}
+
 	VectorF Transform::GetObjectCenter() const
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -67,10 +86,15 @@ namespace ECS
 		}
 		else
 		{
-			return worldPosition;
+			return worldPosition + size * 0.5f;
 		}
 
 		return VectorF::zero();
+	}
+	
+	RectF Transform::GetRect() const
+	{
+		return RectF(worldPosition, size);
 	}
 	
 	// Health
@@ -134,9 +158,50 @@ namespace ECS
 		return VectorI(direction, 0);
 	}
 
-	bool Spawner::Spawn()
+	bool Spawner::Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn)
 	{
+		spawnId = spawn_id;
+		spawnConfig = spawn_config;
+		entitySpawnFn = spawnFn;
+
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+		animator.StartAnimation(ActionState::Active);
 		return true;
+	}
+
+	void Spawner::Update()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Animator& animator = ecs->GetComponentRef(Animator, entity);
+
+		if(animator.GetActiveAnimation().action == ActionState::Active)
+		{
+			if(animator.frameIndex > 1 && entitySpawnFn)
+			{
+				Entity spawned_entity = entitySpawnFn(spawnId, spawnConfig);
+
+				VectorF spawner_center = GetPosition(entity);
+				VectorF spawned_center = GetPosition(spawned_entity);
+
+				float shift_x = spawner_center.x - spawned_center.x;
+				float shift_y = 0.0f;
+
+				float distance = 0.0f;
+				if( RaycastToFloor(spawned_entity, distance) )
+					shift_y = distance;
+
+				ECS::Transform& transform = ecs->GetComponentRef(Transform, spawned_entity);
+				transform.SetWorldPosition( transform.worldPosition + VectorF(shift_x, shift_y));
+
+				entitySpawnFn = nullptr;
+			}
+
+			if(animator.loopCount > 0)
+			{
+				animator.StartAnimation(ActionState::Idle);
+			}
+		}
 	}
 
 	// helpers

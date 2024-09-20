@@ -18,6 +18,8 @@ namespace ECS
 			IsPlayer,
 			IsEnemy,
 			IsTerrain,
+			IsWall,
+			IsFloor,
 			IsDamage,
 
 			// use to enable/disable collisions

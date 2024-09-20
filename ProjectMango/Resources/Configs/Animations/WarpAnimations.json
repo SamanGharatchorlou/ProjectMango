@@ -1,0 +1,31 @@
+{
+	"id": "Warp",
+	"frameSize_x": 28,
+	"frameSize_y": 41,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "idle 28x41",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 9,
+					"frameTime": 0.1
+				}
+			]
+		},
+		{
+			"spriteSheet": "warp 28x41",
+			"animations": [
+				{
+					"action": "Active",
+					"startIndex": 0,
+					"frameCount": 9,
+					"frameTime": 0.15,
+					"looping" : false
+				}
+			]
+		}
+	]
+}

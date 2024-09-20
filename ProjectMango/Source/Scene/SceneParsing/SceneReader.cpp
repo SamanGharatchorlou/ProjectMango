@@ -56,6 +56,23 @@ namespace Scene
 		const float level_to_window_y = window_size.y / parser.document["defaultLevelHeight"].GetFloat();
 		VectorF level_to_window(level_to_window_x, level_to_window_y);
 
+		std::unordered_map<int, const char*> value_defines;
+
+		Value& defines = parser.document["defs"];
+		Value::Array layers = defines["layers"].GetArray();
+		for( u32 i = 0; i < layers.Size(); i++ )
+		{
+			if( StringCompare( layers[i]["identifier"].GetString(), "TerrainColliders" ) )
+			{
+				const Value::Array& grid_values = layers[i]["intGridValues"].GetArray();
+				for( u32 i = 0; i < grid_values.Size(); i++ )
+				{
+					Value& grid_value = grid_values[i];
+					value_defines[grid_value["value"].GetInt()] = grid_value["identifier"].GetString();
+				}
+			}
+		}
+
 		const Value::Array& levels = parser.document["levels"].GetArray();
 		for( u32 i = 0; i < levels.Size(); i++ )
 		{
@@ -100,7 +117,9 @@ namespace Scene
 
 						const char* id = entry["__identifier"].GetString();
 						VectorF entity_pos = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
-						level.entities[id] = entity_pos;
+
+						std::vector<VectorF>& entity_positions = level.entities[id];
+						entity_positions.push_back( entity_pos );
 					}
 				}
 				else if( StringCompare(layer_type, "IntGrid" ) )
@@ -191,8 +210,10 @@ namespace Scene
 					const VectorF grid_size = VectorF((float)grid_length, (float)grid_length) * level_to_window;
 					for( u32 b = 0; b < blocks.size(); b++ )
 					{
-						VectorF top_left = blocks[b].top_left.toFloat() * grid_size + level.worldPos;
-						VectorI block_size = blocks[b].bot_right + VectorI(1,1) - blocks[b].top_left;
+						const GridBlock& block = blocks[b];
+
+						VectorF top_left = block.top_left.toFloat() * grid_size + level.worldPos;
+						VectorI block_size = block.bot_right + VectorI(1,1) - block.top_left;
 						VectorF size = block_size.toFloat() * grid_size;
 
 						RectF collider_rect(top_left, size);
@@ -209,6 +230,19 @@ namespace Scene
 						collider.SetFlag(ECS::Collider::Static);
 						collider.SetFlag(ECS::Collider::IsTerrain);
 						collider.SetFlag(ECS::Collider::IgnoreDamage);
+
+						if(value_defines.contains(block.value))
+						{
+							const char* type = value_defines.at(block.value);
+							if( StringCompare(type, "Floor"))
+							{
+								collider.SetFlag(ECS::Collider::IsFloor);
+							}
+							else if( StringCompare(type, "Wall"))
+							{
+								collider.SetFlag(ECS::Collider::IsWall);
+							}
+						}
 
 						ECS::Transform& transform = ecs->AddComponent(Transform, ent);
 						transform.SetWorldPosition(top_left);

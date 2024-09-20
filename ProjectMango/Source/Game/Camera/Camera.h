@@ -13,7 +13,6 @@ struct Camera
 	float scale() const { return mScale; }
 
 	void setViewport(VectorF viewport);
-	//void setPosition(VectorF position);
 
 	void setMapBoundaries(RectF boundaries) { boundaries = boundaries; }
 
@@ -24,11 +23,6 @@ struct Camera
 
 	template <typename T>
 	bool inView(const Vector2D<T>& point) const;
-
-	//template <typename T>
-	//Rect<T> toCameraCoords(const Rect<T>& worldCoords) const;
-	//VectorF toCameraCoords(const VectorF& worldCoords) const;
-	//Quad2D<float> toCameraCoords(const Quad2D<float>& worldCoords) const;
 
 	RectF GetRect() const { return rect; }
 	VectorF GetSize() const { return rect.Size(); }

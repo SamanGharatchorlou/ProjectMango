@@ -79,6 +79,16 @@ namespace ECS
 		template<class T>
 		ComponentArray<T>& GetComponents(Component::Type type) { return *static_cast<ComponentArray<T>*>(components.componentArrays[type]); }
 
+		template<class T>
+		void GetEntitiesWithComponent(Component::Type type, std::vector<Entity>& entities)
+		{
+			ComponentArray<T>& array = GetComponents<T>(type);
+			for( u32 i = 0; i < array.components.size(); i++ )
+			{
+				entities.push_back(array.components[i].entity);
+			}
+		}
+
 		bool HasComponent(Entity entity, Component::Type type) 
 		{ 
 			return entity != EntityInvalid && entities.HasComponent(entity, type);
@@ -97,4 +107,7 @@ namespace ECS
 #define GetComponentRef(compType, entity) GetComponentRef<ECS::compType>(entity, ECS::compType::type())
 #define RemoveComponent(compType, entity) RemoveComponent<ECS::compType>(entity, ECS::compType::type())
 #define HasComponent(compType, entity) HasComponent(entity, ECS::compType::type())
+
+#define GetEntitiesWithComponent(compType, entities) GetEntitiesWithComponent<ECS::compType>(ECS::compType::type(), entities)
+
 }

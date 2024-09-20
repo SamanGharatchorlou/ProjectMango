@@ -76,6 +76,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 				result.entity = target_colliders[i]->entity;
 				result.distance = ray_distance;
 				result.hitPosition = ray_point;
+				result.hasHit = true;
 
 				if(DebugMenu::DrawRaycasts())
 					DebugDraw::Line(from, ray_point, Colour::Red);

@@ -4,6 +4,8 @@ enum class ActionState
 {
 	None,
 
+	Active,
+
 	Idle,
 	Walk,
 	Run,
