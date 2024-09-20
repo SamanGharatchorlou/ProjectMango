@@ -315,7 +315,7 @@
     <ClCompile Include="Source\System\Files\JSONParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneParsing\LevelReader.cpp">
+    <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Components\Biome.cpp">
@@ -340,6 +340,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\EntSystems\HealthSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1070,7 +1073,7 @@
     <ClInclude Include="Source\System\Files\JSONParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneParsing\LevelReader.h">
+    <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Biome.h">
@@ -1089,6 +1092,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\HealthSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

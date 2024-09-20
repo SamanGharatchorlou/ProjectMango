@@ -138,7 +138,7 @@ void JumpState::Init()
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
 	
-	const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("PlayerDataConfig");
 	physics.speed.y = config->values.at("jump_impulse");
 }
 
@@ -328,7 +328,7 @@ void FloorSlamState::Update(float dt)
 
 			if(animation.frameIndex == 2 && attackCollider == EntityInvalid)
 			{
-				const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+				const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("PlayerDataConfig");
 				attackCollider = CreateNewAttackCollider("player slam attack collider", config->values.at("slam_attack_damage"), config->values.at("slam_attack_force"));
 			}
 
@@ -367,7 +367,7 @@ void RollState::Init()
 	Physics& physics = ecs->GetComponentRef(Physics,entity);
 	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		
-	const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("PlayerDataConfig");
 	physics.speed = state.movementInput.toFloat() * config->values.at("roll_impulse");
 
 	if(Collider* collider = ecs->GetComponent(Collider, entity))
@@ -452,7 +452,7 @@ void BasicAttackState::Update(float dt)
 	{
 		if(attackCollider == EntityInvalid)
 		{
-			const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+			const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("PlayerDataConfig");
 			attackCollider = CreateNewAttackCollider("player attack collider", config->values.at("basic_attack_damage"), config->values.at("basic_attack_force"));
 		}
 
@@ -527,7 +527,7 @@ void LungeAttackState::Update(float dt)
 	Animator& animator = ecs->GetComponentRef(Animator, entity);
 	if(attackCollider == EntityInvalid && animation.frameIndex >= 9)
 	{
-		const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("PlayerDataConfig");
 		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->values.at("jump_attack_damage"), config->values.at("jump_attack_force"));
 	}
 

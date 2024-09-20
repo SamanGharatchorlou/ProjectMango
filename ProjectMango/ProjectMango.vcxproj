@@ -230,7 +230,8 @@
     <ClCompile Include="Source\Input\InputManager.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\pch.cpp" />
-    <ClCompile Include="Source\Scene\SceneParsing\LevelReader.cpp" />
+    <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp" />
+    <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
@@ -353,7 +354,8 @@
     <ClInclude Include="Source\Input\Cursor.h" />
     <ClInclude Include="Source\Input\InputManager.h" />
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\Scene\SceneParsing\LevelReader.h" />
+    <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h" />
+    <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h" />
     <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />

@@ -3,5 +3,5 @@
 namespace Player
 {
 	ECS::Entity Get();
-	ECS::Entity Spawn();
+	ECS::Entity Spawn(const char* id, const char* config);
 };

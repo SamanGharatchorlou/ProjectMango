@@ -134,6 +134,11 @@ namespace ECS
 		return VectorI(direction, 0);
 	}
 
+	bool Spawner::Spawn()
+	{
+		return true;
+	}
+
 	// helpers
 	Entity GetParent(Entity child)
 	{

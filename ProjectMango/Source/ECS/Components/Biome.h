@@ -35,7 +35,9 @@ namespace ECS
 
 		std::vector<Layer> layers;
 		std::vector<ECS::Entity> colliders;
-		std::unordered_map<StringBuffer64, VectorF> spawnPositions;
+
+		// can i assime the entity a value? do i care? a string is probably fine
+		std::unordered_map<BasicString, VectorF> entities;
 	};
 
 	struct Biome
@@ -44,11 +46,16 @@ namespace ECS
 
 		std::vector<Level> levels;
 
+		VectorF aabb[2];
+
 		const Level& GetLevel(ECS::Entity entity) const;
 		const Level& GetLevel(VectorF position) const;
 		const Level& GetVisibleLevel() const;
 
 		static const Entity GetActive();
-		static bool GetSpawnPos(const char* spawn_id, VectorF& out_pos);
+		static const Biome* GetActiveBiome();
+
+		static bool GetBiomeSpawnPos(const char* spawn_id, VectorF& out_pos);
+		static bool GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos);
 	};
 }

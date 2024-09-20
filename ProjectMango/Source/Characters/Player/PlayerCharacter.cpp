@@ -8,6 +8,7 @@
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/PlayerController.h"
+#include "Game/Camera/Camera.h"
 
 #include "System/Files/ConfigManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
@@ -19,20 +20,19 @@ ECS::Entity Player::Get()
 	return s_playerEntity;
 }
 
-ECS::Entity Player::Spawn()
+ECS::Entity Player::Spawn(const char* id, const char* player_config)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	
 	ecs->entities.KillEntity(s_playerEntity);
 
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(player_config);
+
 	VectorF spawn_pos;
-	bool can_spawn = ECS::Biome::GetSpawnPos("PlayerSpawn", spawn_pos);
+	bool can_spawn = ECS::Biome::GetBiomeSpawnPos(config->spawnId.c_str(), spawn_pos);
 	if(!can_spawn)
 		return ECS::EntityInvalid;
 
-	s_playerEntity = ecs->CreateEntity("Player");
-
-	const PlayerConfig* config = ConfigManager::Get()->GetConfig<PlayerConfig>("PlayerDataConfig");
+	s_playerEntity = ecs->CreateEntity(id);
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
@@ -68,6 +68,9 @@ ECS::Entity Player::Spawn()
 	health.Init(config->values);
 
 	DebugMenu::SelectEntity(s_playerEntity);
+
+	Camera* camera = Camera::Get();
+	camera->targetEntity = s_playerEntity;
 
 	return s_playerEntity;
 } 

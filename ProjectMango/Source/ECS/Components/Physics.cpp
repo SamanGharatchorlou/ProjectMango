@@ -11,6 +11,8 @@ void Physics::Init(const SettingValues& values)
 	acceleration = VectorF(values.at("acceleration_x"), values.at("acceleration_y"));
 	maxSpeed.x = values.at("max_run_speed");
 	maxSpeed.y = values.at("max_fall_speed");
+
+	speed = VectorF::zero();
 }
 
 void Physics::ApplyDrag(float drag_coefficient)

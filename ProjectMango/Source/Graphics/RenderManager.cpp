@@ -80,6 +80,7 @@ void RenderManager::render()
 		}
 
 		render_packs.clear();
+
 	}
 
 	// always debug draw last

@@ -5,7 +5,7 @@ namespace ECS
 	struct Biome;
 }
 
-namespace Level
+namespace Scene
 {
 	void BuildBiome(const char* biome_id, ECS::Biome& biome);
 }

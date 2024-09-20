@@ -21,22 +21,13 @@ struct GameSettingsConfig : public Config
 	StringMap32 settings;
 };
 
-struct PlayerConfig : public Config
+struct ObjectConfig : public Config
 {
-	PlayerConfig(const char* config_name) : Config(config_name) { }
-	
-	void Read(const char* path) override;
-	
-	BasicString animation;
-	SettingValues values;
-};
+	ObjectConfig(const char* config_name) : Config(config_name) { }
 
-struct EnemyConfig : public Config
-{
-	EnemyConfig(const char* config_name) : Config(config_name) { }
-	
 	void Read(const char* path) override;
-	
+
 	BasicString animation;
+	BasicString spawnId;
 	SettingValues values;
 };

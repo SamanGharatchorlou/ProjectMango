@@ -66,7 +66,7 @@ namespace ECS
 					if(physics.speed.y > 0.0f)
 						multiplyer *= 2.2f;
 				
-					physics.speed += VectorF(0.0f, 9.8) * multiplyer * dt;
+					physics.speed += VectorF(0.0f, 9.8f) * multiplyer * dt;
 				}
 				else
 				{

@@ -32,6 +32,7 @@ namespace ECS
 			Damage,
 			Health,
 			Level,
+			Spawner,
 
 			Count
 		};
@@ -51,7 +52,8 @@ namespace ECS
 		"Pathing",
 		"Damage",
 		"Health",
-		"Level"
+		"Level",
+		"Spawner"
 	};
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \

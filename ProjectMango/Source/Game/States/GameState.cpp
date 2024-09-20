@@ -11,7 +11,7 @@
 #include "Game/States/AnimationEditorState.h"
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
-#include "Scene/SceneParsing/LevelReader.h"
+#include "Scene/SceneParsing/SceneReader.h"
 #include "System/Window.h"
 
 void GameState::Init()
@@ -22,11 +22,11 @@ void GameState::Init()
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Map_1");
 	ECS::Biome& biome_1 = ecs->AddComponent(Biome, entity);
-	Level::BuildBiome( "Biome1", biome_1 );
+	Scene::BuildBiome( "Biome1", biome_1 );
 
 	activeLevel = entity;
 
-	ECS::Entity player = Player::Spawn();
+	ECS::Entity player = Player::Spawn("Player", "PlayerDataConfig");
 	ECS::Entity enemy = Enemy::Create();
 
 	Camera* camera = Camera::Get();
@@ -61,6 +61,8 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
+
+
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->UpdateSystems(dt);
 

@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "TransformSystem.h"
 
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Physics.h"
 #include "Core/Helpers.h"
+#include "ECS/Components/Biome.h"
 
 namespace ECS
 {
@@ -47,8 +49,14 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
+		std::vector<Entity> out_of_bounds_entities;
+
 		for (Entity entity : entities)
 		{
+			// debug break point
+			if (DebugMenu::GetSelectedEntity() == entity)
+				int a = 4;
+
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
 
 			// only move to the allowed position, otherwise roll back
@@ -78,6 +86,22 @@ namespace ECS
 				collider->forward = transform.targetWorldPosition;
 				collider->RollForwardPosition();
 			}
+
+			// check out of bounds
+			if (const Biome* biome = Biome::GetActiveBiome())
+			{
+				const VectorF position = transform.GetObjectCenter();
+				if (position.x < biome->aabb[0].x || position.y < biome->aabb[0].y || 
+					position.x > biome->aabb[1].x || position.y > biome->aabb[1].y)
+				{
+					out_of_bounds_entities.push_back(entity);
+				}
+			}
+		}
+
+		for (u32 i = 0; i < out_of_bounds_entities.size(); i++)
+		{
+			ecs->entities.KillEntity(out_of_bounds_entities[i]);
 		}
 	}
 }

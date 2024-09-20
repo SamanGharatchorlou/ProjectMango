@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "LevelReader.h"
+#include "SceneReader.h"
 
 #include "System/Files/JSONParser.h"
 #include "ECS/Components/Biome.h"
@@ -10,7 +10,7 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"
 
-namespace Level
+namespace Scene
 {
 	static std::unordered_map<int, ECS::TileSet> s_tileSets;
 	
@@ -74,6 +74,11 @@ namespace Level
 			level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat() * level_to_window;
 			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
+			biome.aabb[0].x = std::min(biome.aabb[0].x, level.worldPos.x);
+			biome.aabb[0].y = std::min(biome.aabb[0].y, level.worldPos.y);
+			biome.aabb[1].x = std::max(biome.aabb[1].x, level.worldPos.x + level.size.x);
+			biome.aabb[1].y = std::max(biome.aabb[1].y, level.worldPos.y + level.size.y);
+
 			Value& layers = levels[i]["layerInstances"];
 			for (SizeType i = 0; i < layers.Size(); i++)
 			{
@@ -93,11 +98,9 @@ namespace Level
 						float px_x = px[0].GetFloat() + (width * 0.5f);
 						float px_y = px[1].GetFloat() - (height);
 
-						VectorF spawn_pos = VectorF(px_x, px_y) + level.worldPos;
-						spawn_pos *= level_to_window;
-
 						const char* id = entry["__identifier"].GetString();
-						level.spawnPositions[id] = spawn_pos;
+						VectorF entity_pos = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
+						level.entities[id] = entity_pos;
 					}
 				}
 				else if( StringCompare(layer_type, "IntGrid" ) )

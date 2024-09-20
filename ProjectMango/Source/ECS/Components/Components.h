@@ -125,6 +125,20 @@ namespace ECS
 		void ApplyDamage(const Damage& damage);
 	};
 
+	struct Spawner
+	{
+		COMPONENT_TYPE(Spawner)
+
+		// add a callback here?
+		const char* location = nullptr;
+		const char* entityName = nullptr;
+		const char* entityconfig = nullptr;
+
+		bool isPlayer = false;
+
+		bool Spawn();
+	};
+
 	// ----------------------------------------------------------------------
 	// helpers
 	static u64 archetypeBit(ECS::Component::Type type)

@@ -34,32 +34,24 @@ static void ReadValues(const rapidjson::Value& doc_values, SettingValues& out_va
 	}
 }
 
-void PlayerConfig::Read(const char* path)
+void ObjectConfig::Read(const char* path)
 {
 	JSONParser parser(path);
-	
-	if(!parser.document.IsObject())
+
+	if (!parser.document.IsObject())
 		return;
 
-	animation = parser.document["animation"].GetString();
+	// animation
+	if(parser.document.HasMember("animation"))
+		animation = parser.document["animation"].GetString();
+
+	// spawn ID
+	if (parser.document.HasMember("spawn_id"))
+		spawnId = parser.document["spawn_id"].GetString();
 
 	// fill all the values
-	const rapidjson::Value& doc_values = parser.document["values"];
-	ReadValues(doc_values, values);	
-	parsed = true;
-}
+	if (parser.document.HasMember("values"))
+		ReadValues(parser.document["values"], values);
 
-void EnemyConfig::Read(const char* path)
-{
-	JSONParser parser(path);
-	
-	if(!parser.document.IsObject())
-		return;
-
-	animation = parser.document["animation"].GetString();
-
-	// fill all the values
-	const rapidjson::Value& doc_values = parser.document["values"];
-	ReadValues(doc_values, values);	
 	parsed = true;
 }

@@ -19,8 +19,6 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		InputManager* input = InputManager::Get();
 
-		std::vector<ECS::Entity> to_respawn;
-
 		for (Entity entity : entities)
 		{
 			PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
@@ -36,8 +34,7 @@ namespace ECS
 					Player::DeathState* death_state = static_cast<Player::DeathState*>(character_state);
 					if(death_state->can_respawn)
 					{
-						to_respawn.push_back(entity);
-						Player::Spawn();
+						Player::Spawn("Player", "PlayerDataConfig");
 						return;
 					}
 				}
@@ -54,11 +51,8 @@ namespace ECS
 				}
 
 				const Physics& physics = ecs->GetComponentRef(Physics, entity);
-				
 				const Collider& collider = ecs->GetComponentRef(Collider, entity);
-
 				bool not_moving_upwards = physics.speed.y > 0.0f|| collider.collisionSide[Collider::Top];
-
 				if(!physics.onFloor && not_moving_upwards)
 				{
 					if( character_state->action != ActionState::Fall && character_state->action != ActionState::FloorSlam )
@@ -91,7 +85,6 @@ namespace ECS
 
 			state.movementInput = VectorI(horizontal_direction, 0);
 
-
 			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 			if (sprite.canFlip)
 			{
@@ -100,6 +93,11 @@ namespace ECS
 				else if (state.movementInput.x < 0)
 					sprite.flip = SDL_FLIP_HORIZONTAL;
 			}
+		}
+
+		if (entities.size() == 0)
+		{
+			Player::Spawn("Player", "PlayerDataConfig");
 		}
 	} 
 }

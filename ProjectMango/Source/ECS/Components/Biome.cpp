@@ -22,6 +22,13 @@ namespace ECS
 		return EntityInvalid;
 	}
 
+
+	const Biome* Biome::GetActiveBiome()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		return ecs->GetComponent(Biome, GetActive());
+	}
+
 	
 	const Level& Biome::GetLevel(ECS::Entity entity) const
 	{
@@ -54,7 +61,7 @@ namespace ECS
 		return GetLevel(camera->GetRect().Center());
 	}
 
-	bool Biome::GetSpawnPos(const char* spawn_id, VectorF& out_pos)
+	bool Biome::GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
@@ -62,10 +69,31 @@ namespace ECS
 		if (ECS::Biome* biome = ecs->GetComponent(Biome, level_entity))
 		{
 			const ECS::Level& level = biome->GetVisibleLevel();
-			if (level.spawnPositions.contains(spawn_id))
+			if (level.entities.contains(spawn_id))
 			{
-				out_pos = level.spawnPositions.at(spawn_id);
+				out_pos = level.entities.at(spawn_id);
 				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool Biome::GetBiomeSpawnPos(const char* spawn_id, VectorF& out_pos)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		ECS::Entity level_entity = ECS::Biome::GetActive();
+		if (ECS::Biome* biome = ecs->GetComponent(Biome, level_entity))
+		{
+			for (u32 i = 0; i < biome->levels.size(); i++)
+			{
+				const ECS::Level& level = biome->levels[i];
+				if (level.entities.contains(spawn_id))
+				{
+					out_pos = level.entities.at(spawn_id);
+					return true;
+				}
 			}
 		}
 

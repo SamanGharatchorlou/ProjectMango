@@ -13,15 +13,15 @@
 
 ECS::Entity Enemy::Create()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("ShockEnemyConfig");
 
 	VectorF spawn_pos;
-	bool can_spawn = ECS::Biome::GetSpawnPos("TrainingDummy", spawn_pos);
+	bool can_spawn = ECS::Biome::GetLevelSpawnPos(config->spawnId.c_str(), spawn_pos);
 	if(!can_spawn)
 		return ECS::EntityInvalid;
 
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity("Enemy");
-	const EnemyConfig* config = ConfigManager::Get()->GetConfig<EnemyConfig>("ShockEnemyConfig");
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
