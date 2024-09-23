@@ -57,7 +57,7 @@ namespace ECS
 			{
 				const Animation& animation = animator.GetActiveAnimation();
 
-				if(animation.entityColliderEndPos.isPositive())
+				if(animation.entityColliderEndPos != c_invalidVector)
 				{
 					const VectorF relative_movement = animation.entityColliderEndPos - animation.entityColliderPos;
 					VectorF movement = relative_movement * transform.size;

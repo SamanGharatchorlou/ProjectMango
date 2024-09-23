@@ -2,7 +2,6 @@
 #include "GameState.h"
 
 #include "Audio/AudioManager.h"
-#include "Characters/Enemies/Enemies.h"
 #include "Characters/Player/PlayerCharacter.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/Components/Biome.h"
@@ -22,15 +21,13 @@ void GameState::Init()
 	ECS::RegisterAllSystems();
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity("Map_1");
+	ECS::Entity biome_entity = ecs->CreateEntity("Map_1");
 
-	ECS::Biome& biome_1 = ecs->AddComponent(Biome, entity);
-	Scene::BuildBiome( "Biome1", biome_1 );
-	activeLevel = entity;
+	ecs->AddComponent(Biome, biome_entity);
+	Scene::BuildBiome( "Biome1", biome_entity );
+	activeLevel = biome_entity;
 
-	CreateEntities(biome_1);
-
-	//ECS::Entity enemy = Enemy::Create();
+	CreateEntities(biome_entity);
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
@@ -51,6 +48,15 @@ void GameState::HandleInput()
 	if(input->isPressed(Button::F11))
 	{
 		GameData::Get().systemStateManager->mStates.addState(new AnimationEditorState);
+	}
+	if(input->isPressed(Button::Esc))
+	{
+		GameData::Get().systemStateManager->mQuit = true;
+	}
+	if(input->isPressed(Button::R))
+	{
+        GameData::Get().systemStateManager->mStates.replaceState(new GameState);
+		return;
 	}
 #endif
 }

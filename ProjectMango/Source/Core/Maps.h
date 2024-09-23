@@ -24,3 +24,33 @@ public:
 
 	std::unordered_map<StringBuffer32, StringBuffer32> mData;
 };
+
+
+struct SettingValues
+{
+	inline float GetFloat(const char* label, float default_value = 0) const
+	{
+		if(data.contains(label))
+			return data.at(label);
+
+		return default_value;
+	}
+
+	inline float GetBool(const char* label, bool default_value = false) const
+	{
+		if(data.contains(label))
+			return (bool)data.at(label);
+
+		return default_value;
+	}
+
+	
+	VectorF GetVectorF(const char* x, const char* y) const;
+
+	inline bool Contains(const char* key) const { return data.contains(key); }
+	
+	inline float operator [] (const char* label) const { return data.at(label); }
+	inline float& operator [] (const char* label) { return data[label]; }
+
+	std::unordered_map<StringBuffer32, float> data;
+};

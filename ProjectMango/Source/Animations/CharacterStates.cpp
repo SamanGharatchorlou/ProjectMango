@@ -11,6 +11,10 @@ static void initActionMap()
 	s_actionMap["None"] = ActionState::None;
 
 	s_actionMap["Active"] = ActionState::Active;
+	s_actionMap["Inactive"] = ActionState::Inactive;
+	
+	s_actionMap["Open"] = ActionState::Open;
+	s_actionMap["Close"] = ActionState::Close;
 
 	s_actionMap["Idle"] = ActionState::Idle;
 	s_actionMap["Walk"] = ActionState::Walk;
@@ -21,7 +25,8 @@ static void initActionMap()
 	s_actionMap["Hover"] = ActionState::Hover;
 
 	s_actionMap["Roll"] = ActionState::Roll;
-
+	
+	s_actionMap["AttackWindUp"] = ActionState::AttackWindUp;
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;
 	s_actionMap["BasicAttackHold"] = ActionState::BasicAttackHold;
 	s_actionMap["LungeAttack"] = ActionState::LungeAttack;

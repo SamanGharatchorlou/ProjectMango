@@ -10,9 +10,10 @@ namespace ECS
 
 		bool moveToTarget = true;
 
-		float attackCooldownTime = 1.0f;
 		TimerF cooldownTimer;
+		float attackCooldownTime = 1.0f;
 
-		float DistanceToTarget() const;
+		float DistanceToTargetSquared() const;
+		bool CanMoveForward(int ease_factor, float dt) const;
 	};
 }

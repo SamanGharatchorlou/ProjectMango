@@ -76,6 +76,7 @@ public:
 typedef Vector2D<float>  VectorF;
 typedef Vector2D<int>  VectorI;
 
+static const VectorF c_invalidVector(FLT_MAX, FLT_MAX);
 
 template<class T>
 float Vector2D<T>::distanceSquared(Vector2D<T> pointA, Vector2D<T> pointB)

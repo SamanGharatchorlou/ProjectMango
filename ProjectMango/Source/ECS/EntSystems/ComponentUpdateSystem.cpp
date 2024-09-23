@@ -16,6 +16,10 @@ namespace ECS
 			{
 				spawner->Update();
 			}
+			if(Door* door = ecs->GetComponent(Door, entity))
+			{
+				door->Update();
+			}
 		}
 	}
 }

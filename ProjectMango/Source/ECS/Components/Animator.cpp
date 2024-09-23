@@ -12,7 +12,7 @@ namespace ECS
 	
 	void Animator::Init(const char* animation)
 	{
-		AnimationReader::BuildAnimatior( animation, animations );
+		AnimationReader::BuildAnimatior( entity, animation );
 		activeAnimation = 0;
 		state = TimeState::Running;
 	}
@@ -24,14 +24,19 @@ namespace ECS
 
 		const Animation& animation = animations[activeAnimation];
 
-		sprite.texture = animation.spriteSheet->texture;
+		sprite.texture = animation.spriteSheet.texture;
 
 		int active_frame_index = animation.startIndex + frameIndex;
 
-		int x_frames = animation.spriteSheet->sheetSize.x;
+		if(animation.reversing)
+		{
+			active_frame_index = animation.startIndex + animation.frameCount - (frameIndex + 1);
+		}
+
+		int x_frames = animation.spriteSheet.sheetSize.x;
 		VectorI index = IndexToGrid(active_frame_index, x_frames);
 
-		const VectorF frame_size = animation.spriteSheet->frameSize;
+		const VectorF frame_size = animation.spriteSheet.frameSize;
 		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
 

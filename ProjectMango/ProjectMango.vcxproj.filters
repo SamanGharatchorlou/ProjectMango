@@ -30,16 +30,13 @@
     <ClCompile Include="Source\Audio\SoundController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\Enemies\Enemies.cpp">
+    <ClCompile Include="Source\Characters\Enemies\ShockSweeperEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Characters\Player\PlayerCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Characters\States\CharacterAction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Characters\States\EnemyStates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Characters\States\PlayerStates.cpp">
@@ -51,7 +48,7 @@
     <ClCompile Include="Source\Core\Maps\PropertyMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Maps\StringMap.cpp">
+    <ClCompile Include="Source\Core\Maps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\Physics\QuadCollider.cpp">
@@ -345,6 +342,9 @@
     <ClCompile Include="Source\ECS\EntSystems\ComponentUpdateSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Characters\Enemies\BlindingSpiderEnemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animations\AnimationReader.h">
@@ -365,16 +365,13 @@
     <ClInclude Include="Source\Audio\SoundController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Characters\Enemies\Enemies.h">
+    <ClInclude Include="Source\Characters\Enemies\ShockSweeperEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Characters\Player\PlayerCharacter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Characters\States\CharacterAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Characters\States\EnemyStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Characters\States\PlayerStates.h">
@@ -395,7 +392,7 @@
     <ClInclude Include="Source\Core\Maps\PropertyMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Maps\StringMap.h">
+    <ClInclude Include="Source\Core\Maps.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Physics\QuadCollider.h">
@@ -1095,6 +1092,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\ComponentUpdateSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Characters\Enemies\BlindingSpiderEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

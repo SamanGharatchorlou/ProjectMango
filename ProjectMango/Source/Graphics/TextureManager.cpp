@@ -38,7 +38,7 @@ void TextureManager::unload()
 
 void TextureManager::preLoad()
 {
-	loadAllTexturesIn(FileManager::PreLoadFiles, FileManager::Image_UI);
+	//loadAllTexturesIn(FileManager::PreLoadFiles, FileManager::Image_UI);
 }
 
 // load all textures here

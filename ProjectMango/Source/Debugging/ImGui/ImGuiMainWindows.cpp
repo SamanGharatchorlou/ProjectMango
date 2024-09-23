@@ -27,6 +27,8 @@
 #include "System/Files/ConfigManager.h"
 #include "Characters/Player/PlayerCharacter.h"
 
+#include "ECS/Components/Biome.h"
+#include "ECS/Components/ComponentCommon.h"
 #include "System/Window.h"
 
 ECS::Entity s_selectedEntity = 0;
@@ -71,12 +73,16 @@ void DebugMenu::DoEntitySystemWindow()
         {
             const bool is_selected = iter->first == s_selectedEntity;
 
+            ImGui::PushID(iter->first);
+
             if (ImGui::Selectable(iter->second.c_str(), is_selected))
                 s_selectedEntity = iter->first;
 
             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
+
+            ImGui::PopID();
         }
 
         ImGui::EndCombo();
@@ -368,6 +374,36 @@ void DebugMenu::DoGameStateWindow()
         }
 
 
+        ImGui::TreePop();
+    }
+    
+    
+    if (ImGui::TreeNode("Cursore Info"))
+    {
+	    InputManager* input = InputManager::Get();
+        VectorF cursor_pos = input->cursorWorldPosition();
+
+        ImGui::Text( "Cursor sceen pos: %f, %f", input->cursorScreenPosition().x, input->cursorScreenPosition().y );
+        ImGui::Text( "Cursor world pos: %f, %f", input->cursorWorldPosition().x, input->cursorWorldPosition().y );
+
+        std::vector<ECS::Entity> colliders;
+	    ecs->GetEntitiesWithComponent(Collider, colliders);
+
+        std::vector<ECS::Entity> level_colliders;
+	    const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
+	    FilterEntitiesInLevel(active_level, colliders, level_colliders);
+
+        for( u32 i = 0; i < colliders.size(); i++ )
+        {
+            if(const ECS::Collider* collider = ecs->GetComponent(Collider, colliders[i]))
+            {
+                if(collider->contains(cursor_pos))
+                {
+                    ImGui::Text("Cursor hit: %d", collider->entity);
+                }
+            }
+        }
+    
         ImGui::TreePop();
     }
 }

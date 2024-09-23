@@ -7,10 +7,9 @@ using namespace ECS;
 
 void Physics::Init(const SettingValues& values)
 {	
-	applyGravity = values.at("gravity") != 0;	
-	acceleration = VectorF(values.at("acceleration_x"), values.at("acceleration_y"));
-	maxSpeed.x = values.at("max_run_speed");
-	maxSpeed.y = values.at("max_fall_speed");
+	applyGravity = values.GetBool("gravity");	
+	acceleration = values.GetVectorF("acceleration_x", "acceleration_y");
+	maxSpeed = values.GetVectorF("max_run_speed", "max_fall_speed");
 
 	speed = VectorF::zero();
 }
@@ -66,8 +65,9 @@ void Physics::ApplyMovement(VectorF movement_direction, float dt)
 }
 
 
-void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor)
+VectorF Physics::GetMovementEase(VectorF movement_direction, float dt, int easing_factor) const
 {
+	VectorF movement;
 	if(movement_direction.x != 0)
 	{
 		float max_speed_x = movement_direction.x >= 0 ? maxSpeed.x : -maxSpeed.x;
@@ -76,7 +76,7 @@ void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing
 		tx += dt; // * speed;
 		tx = Maths::clamp(tx, 0.0f, 1.0f);
 
-		speed.x = EaseOut(tx, easing_factor) * max_speed_x;
+		movement.x = EaseOut(tx, easing_factor) * max_speed_x;
 	}
 
 	if(movement_direction.y != 0)
@@ -87,6 +87,13 @@ void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing
 		ty += dt; // * speed;
 		ty = Maths::clamp(ty, 0.0f, 1.0f);
 
-		speed.y = EaseOut(ty, easing_factor) * max_speed_y;
+		movement.y = EaseOut(ty, easing_factor) * max_speed_y;
 	}
+
+	return movement;
+}
+
+void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor)
+{
+	speed = GetMovementEase(movement_direction, dt, easing_factor);
 }

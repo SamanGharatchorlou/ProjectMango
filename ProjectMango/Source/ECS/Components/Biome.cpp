@@ -62,21 +62,20 @@ namespace ECS
 		return GetLevel(camera->GetRect().Center());
 	}
 
-	//bool Biome::GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos)
-	//{
-	//	EntityCoordinator* ecs = GameData::Get().ecs;
+	
+	VectorI Level::GetTileIndex(VectorF position) const
+	{
+		VectorF local_pos = position - worldPos;
+		if(local_pos.isPositive())
+		{
+			if(local_pos.x <= size.x && local_pos.y <= size.y)
+			{
+				VectorF tile_size = layers.front().tileSize;
 
-	//	ECS::Entity level_entity = ECS::Biome::GetActive();
-	//	if (ECS::Biome* biome = ecs->GetComponent(Biome, level_entity))
-	//	{
-	//		const ECS::Level& level = biome->GetVisibleLevel();
-	//		if (level.entities.contains(spawn_id))
-	//		{
-	//			out_pos = level.entities.at(spawn_id);
-	//			return true;
-	//		}
-	//	}
+				return (local_pos / tile_size).toInt();
+			}
+		}
 
-	//	return false;
-	//}
+		return VectorI(-1,-1);
+	}
 }

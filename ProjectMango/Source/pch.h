@@ -70,10 +70,7 @@ namespace fs = std::filesystem;
 #include "Core/Grid.h"
 #include "Core/Colour.h"
 #include "Core/Timer.h"
-
-// todo: remove these
-#include "Core/Maps/StringMap.h"
-
+#include "Core/Maps.h"
 
 // File accessors
 #include "System/Files/XMLParser.h"

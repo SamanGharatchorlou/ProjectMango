@@ -30,7 +30,6 @@ public:
 		Audio,
 		Audio_Music,
 		Audio_Sound,
-		Audio_SoundGroups,
 
 		Count
 	};

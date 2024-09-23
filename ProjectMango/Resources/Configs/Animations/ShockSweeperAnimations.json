@@ -30,6 +30,7 @@
 					"frameTime": 0.16,
 					"flip_point_x": 0.307,
 					"looping": false,
+					"attack_collider_frame" : 6,
 					"attack_collider_pos": [ 0.43, 0.33 ],
 					"attack_collider_size": [ 0.28, 0.57 ]
 				},

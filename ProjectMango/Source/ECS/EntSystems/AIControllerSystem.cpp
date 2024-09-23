@@ -8,10 +8,9 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 
+#include "Animations/CharacterStates.h"
+#include "Characters/States/CharacterAction.h"
 #include "Characters/Player/PlayerCharacter.h"
-#include "Characters/States/EnemyStates.h" // can try to forward decalare state
-
-bool EnemyCanMove();
 
 namespace ECS
 {
@@ -32,6 +31,7 @@ namespace ECS
 				CharacterAction* character_state = &state.actions.Top();
 				character_state->Update(dt);
 
+				// so we dont add another death state when we already have one
 				bool is_dying = false;
 				for( u32 i = 0; i < state.actions.stack.size(); i++ )
 				{
@@ -43,8 +43,7 @@ namespace ECS
 				{
 					if(character_state->action == ActionState::Death)
 					{
-						Enemy::DeathState* death_state = static_cast<Enemy::DeathState*>(character_state);
-						if(death_state->can_kill)
+						if(state.character->FinishedDying(entity))
 						{
 							dead_entities.push_back(entity);
 							continue;
@@ -57,24 +56,22 @@ namespace ECS
 					{
 						if(health->currentHealth <= 0.0f)
 						{
-							state.actions.Pop();
-							state.actions.Push( new Enemy::DeathState(entity) );
-							state.actions.Push( new Enemy::TakeHitState(entity) );
+							state.character->StartDying(entity);
 						}
 					}
 				}
 			}
 			else
 			{
-				state.actions.Push( new Enemy::IdleState(entity) );
+				state.character->Begin(entity);
 			}
 
 			aic.target = Player::Get();
 		}
 
-		//for( u32 i = 0; i < dead_entities.size(); i++ )
-		//{
-		//	ecs->entities.KillEntity(dead_entities[i]);
-		//}
+		for( u32 i = 0; i < dead_entities.size(); i++ )
+		{
+			ecs->entities.KillEntity(dead_entities[i]);
+		}
 	}
 }

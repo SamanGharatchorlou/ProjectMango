@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "StringMap.h"
+#include "Maps.h"
 #include "Core/Helpers.h"
 
 void StringMap32::fillValues(const XMLNode& node)
@@ -44,14 +44,23 @@ int StringMap32::getInt(const char* key) const
 
 VectorF StringMap32::getVectorF(const char* x, const char* y) const
 {
-	if( mData.contains(x) && mData.contains(x))
+	if( mData.contains(x) && mData.contains(y))
 		return toVectorF(mData.at(x).c_str(), mData.at(y).c_str());
 	return VectorF();
 }
 
 VectorI StringMap32::getVectorI(const char* x, const char* y) const
 {
-	if (mData.contains(x) && mData.contains(x))
+	if (mData.contains(x) && mData.contains(y))
 		return toVectorI(mData.at(x).c_str(), mData.at(y).c_str());
 	return VectorI();
+}
+
+// SetttingsValues
+VectorF SettingValues::GetVectorF(const char* x, const char* y) const
+{
+	if( Contains(x) && Contains(y))
+		return VectorF(GetFloat(x), GetFloat(y));
+
+	return VectorF();
 }

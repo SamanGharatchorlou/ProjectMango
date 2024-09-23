@@ -7,7 +7,10 @@
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Animator.h"
 #include "Core/Helpers.h"
-
+#include "ECS/Components/Collider.h"
+#include "Graphics/Raycast.h"
+#include "Characters/Enemies/ShockSweeperEnemy.h"
+#include "Characters/Enemies/BlindingSpiderEnemy.h"
 
 typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
 
@@ -16,42 +19,30 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 	// find the floor
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity(id);
+	ecs->AddComponent(Transform, entity);
+	ecs->AddComponent(Animator, entity);
+	ecs->AddComponent(Sprite, entity);
 
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 
 	// Transform
-	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	transform.Init(config->values);
-	transform.SetWorldPosition(spawn_pos - (transform.size / 2.0f));
-
-	if(config->values.contains("snap_to_floor"))
-	{
-		if((bool)config->values.at("snap_to_floor"))
-		{
-			float distance = 0.0f;
-			if( RaycastToFloor(entity, distance) )
-			{
-				transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
-			}
-		}
-	}
+	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	VectorF pos = spawn_pos - (transform.size / 2.0f);
+	transform.Init(config->values, pos);
 
 	// Animation
-	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
+	ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
 	animator.Init(config->animation.c_str());
 		
-	if(config->values.contains("randomise_frame_start"))
+	if(config->values.GetBool("randomise_frame_start"))
 	{
-		if((bool)config->values.at("randomise_frame_start"))
-		{
-			int frame_start = (rand() % animator.GetActiveAnimation().frameCount) + 1;
-			animator.frameIndex = frame_start;
-		}
+		int frame_start = (rand() % animator.GetActiveAnimation().frameCount) + 1;
+		animator.frameIndex = frame_start;
 	}
 
-	if(config->values.contains("randomise_frame_speed"))
+	if(config->values.Contains("randomise_frame_speed"))
 	{
-		float variation = config->values.at("randomise_frame_speed");
+		float variation = config->values.GetFloat("randomise_frame_speed");
 
 		int var_range = (int)(variation * 100.0f);
 
@@ -62,9 +53,8 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 		animation.frameTime = animation.frameTime + (diff * animation.frameTime);
 	}
 
-
 	// Sprite
-	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 	sprite.renderLayer = 6;
 
 	return entity;
@@ -76,7 +66,7 @@ static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, Ve
 
 	// Spawner
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Spawner& spawner = ecs->AddComponent(Spawner, entity);
+	ecs->AddComponent(Spawner, entity);
 
 	return entity;
 }
@@ -91,16 +81,69 @@ static ECS::Entity CreateTorch(const char* id, const char* config_id, VectorF sp
 	return CreateBasicObject(id, config_id, spawn_pos);
 }
 
-
-void CreateEntities(ECS::Biome& biome)
+static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	srand (time(NULL));
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+
+	ecs->AddComponent(Door, entity);
+
+	const ECS::Level& level = ECS::Biome::GetLevel(entity);	
+	std::vector<u32> collider_flags;
+	collider_flags.push_back(ECS::Collider::IsTerrain);
+
+	RaycastResult down_result;
+	Raycast(spawn_pos, VectorF(0.0, 1.0f), level.size.y, down_result, nullptr, &collider_flags);
+
+	RaycastResult up_result;
+	Raycast(spawn_pos, VectorF(0.0, -1.0f), level.size.y, up_result, nullptr, &collider_flags);
+
+	// no valid door position
+	if(!down_result.hasHit || !up_result.hasHit)
+	{
+		ecs->entities.KillEntity(entity);
+		return ECS::EntityInvalid;
+	}
+
+	// Door
+	ECS::Door& door = ecs->GetComponentRef(Door, entity);
+	door.Init();
+
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+	door.triggerRange = config->values.GetFloat("trigger_range");
+
+	// Transform - sandwhich the door between the top and bottom raycast points
+	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+
+	const VectorF top = up_result.hitPosition;
+	const VectorF bot = down_result.hitPosition;
+	const float height = bot.y - top.y;
+	const float size_ratio = height /  transform.size.y;
+
+	// update the transform positions
+	transform.size = transform.size * size_ratio;
+	transform.SetWorldPosition(top);
+
+	door.GenerateColliders(config->values.GetFloat("collider_width"));
+	
+	return entity;
+}
+
+
+void CreateEntities(ECS::Entity& biome_entity)
+{
+	srand ((u32)time(NULL));
 
 	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
 	CreateEntitiyFunctions["PlayerSpawner"] = CreatePlayerSpawner;
 	CreateEntitiyFunctions["Flower"] = CreateFlower;
 	CreateEntitiyFunctions["Torch"] = CreateTorch;
-
+	CreateEntitiyFunctions["Door"] = CreateDoor;
+	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
+	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
+	
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
 	for (u32 i = 0; i < biome.levels.size(); i++)
 	{
 		const ECS::Level& level = biome.levels[i];

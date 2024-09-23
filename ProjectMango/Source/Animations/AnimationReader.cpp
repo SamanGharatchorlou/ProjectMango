@@ -2,8 +2,9 @@
 #include "AnimationReader.h"
 
 #include "Animations/CharacterStates.h"
-#include "Core/Helpers.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/Animator.h"
+#include "ECS/EntityCoordinator.h"
 #include "Graphics/Texture.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/JSONParser.h"
@@ -38,7 +39,7 @@ namespace AnimationReader
 		}
 	}
 
-	void BuildAnimatior(const char* file, std::vector<ECS::Animation>& animations)
+	void BuildAnimatior(ECS::Entity entity, const char* file)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
 		JSONParser parser(full_path.c_str());
@@ -47,9 +48,10 @@ namespace AnimationReader
 		{
 			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
 			return;
-		}
+		} 
 
-		//const char* id = parser.document["id"].GetString();
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
 		float frame_size_x = parser.document["frameSize_x"].GetFloat();
 		float frame_size_y = parser.document["frameSize_y"].GetFloat();
 
@@ -80,16 +82,18 @@ namespace AnimationReader
 			const Value& anims = sprite_sheet["animations"];
 			for( u32 i = 0; i < anims.Size(); i++ )
 			{
-				animations.push_back(ECS::Animation());
-				ECS::Animation& anim =animations.back();
+				ECS::Animation anim;
 
 				const Value& animation = anims[i];
-				anim.spriteSheet = &s_spriteSheets[spriteSheet_id];
+				anim.spriteSheet = s_spriteSheets[spriteSheet_id];
 				anim.action = StringToAction(animation["action"].GetString());
 				anim.startIndex = animation["startIndex"].GetInt();
 				anim.frameCount = animation["frameCount"].GetInt();
 				anim.frameTime = animation["frameTime"].GetFloat();
 				anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
+				anim.reversing = animation.HasMember("reverse") ? animation["reverse"].GetBool() : false;
+				anim.attackColliderFrameStart = animation.HasMember("attack_collider_frame_start") ? animation["attack_collider_frame_start"].GetInt() : -1;
+				anim.attackColliderFrameEnd = animation.HasMember("attack_collider_frame_end") ? animation["attack_collider_frame_end"].GetInt() : -1;
 
 				anim.flipPointX = 0.5f;
 				if (animation.HasMember("flip_point_x"))
@@ -102,8 +106,10 @@ namespace AnimationReader
 				PopulateColliderData("entity_collider", animation, &anim.entityColliderPos, &anim.entityColliderSize);
 				PopulateColliderData("attack_collider", animation, &anim.attackColliderPos, &anim.attackColliderSize);
 				PopulateColliderData("entity_collider_end", animation, &anim.entityColliderEndPos, nullptr);
+				
+				ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+				animator.animations.push_back(anim);
 			}
-		
 		}
 	}
 }

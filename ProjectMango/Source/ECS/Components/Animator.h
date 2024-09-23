@@ -2,7 +2,6 @@
 
 enum class ActionState;
 class Texture;
-typedef std::unordered_map<StringBuffer32, float> SettingValues;
 
 namespace ECS
 {
@@ -20,13 +19,13 @@ namespace ECS
 	{
 		ActionState action = (ActionState)0;
 	
-		SpriteSheet* spriteSheet;
+		SpriteSheet spriteSheet;
 
 		// relative to the sprite
 		VectorF entityColliderPos = VectorF(-1,-1);
 		VectorF entityColliderSize = VectorF(-1,-1);
 
-		VectorF entityColliderEndPos = VectorF(-1,-1);
+		VectorF entityColliderEndPos = c_invalidVector;
 
 		// relative to the sprite
 		VectorF attackColliderPos = VectorF(-1, -1);
@@ -38,9 +37,13 @@ namespace ECS
 		int startIndex = 0;
 		int frameCount = 0;
 
+		int attackColliderFrameStart = 0;
+		int attackColliderFrameEnd = 0;
+
 		float frameTime = 0.0f;
 
 		bool looping = true;
+		bool reversing = false;
 	};
 
 	struct Animator

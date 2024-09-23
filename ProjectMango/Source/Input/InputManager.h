@@ -36,7 +36,8 @@ public:
 	Cursor* getCursor() { return &mCursor; }
 	const Cursor* getCursor() const { return &mCursor; }
 
-	VectorF cursorPosition() const { return mCursor.position(); }
+	VectorF cursorScreenPosition() const { return mCursor.position(); }
+	VectorF cursorWorldPosition() const;
 
 	void setCursorSize(VectorF size);
 	bool isCursorHeld(Cursor::ButtonType type) const;

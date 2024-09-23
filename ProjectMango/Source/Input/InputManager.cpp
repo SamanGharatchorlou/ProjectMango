@@ -153,6 +153,12 @@ bool InputManager::isCursorReleased(Cursor::ButtonType cursor_button, int frame_
 	return HandleReleaseButton(button, frame_buffer);
 }
 
+VectorF InputManager::cursorWorldPosition() const
+{
+	VectorF camera_offset = Camera::Get()->GetRect().TopLeft();
+	return cursorScreenPosition() + camera_offset;
+}
+
 // --- Private Functions --- //
 void InputManager::processMouseMovementEvent()
 {
@@ -269,6 +275,7 @@ void InputManager::bindDefaultButtons()
 
 	// Keys
 	mButtons.push_back(Button(Button::Key::E));
+	mButtons.push_back(Button(Button::Key::R));
 
 	// Numbers
 	mButtons.push_back(Button(Button::Key::Zero));

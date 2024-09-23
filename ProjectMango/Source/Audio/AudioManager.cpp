@@ -62,8 +62,8 @@ void AudioManager::load()
 	DebugPrint(Log, "\nAudio Effects");
 	fails += loadAllSound(FileManager::Audio_Sound);
 
-	DebugPrint(Log, "\nSound Groups");
-	fails += loadAllSoundGroups(FileManager::Audio_SoundGroups);
+	//DebugPrint(Log, "\nSound Groups");
+	//fails += loadAllSoundGroups(FileManager::Audio_SoundGroups);
 
 	DebugPrint(Log, "\n--- Audio Loading Complete: %d Failures ---", fails);
 }

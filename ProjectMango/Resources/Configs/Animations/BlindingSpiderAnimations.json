@@ -1,0 +1,81 @@
+{
+	"id": "BlindingSpider",
+	"frameSize_x": 16,
+	"frameSize_y": 16,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "prep blind attack 16x16",
+			"animations": [
+				{
+					"action": "AttackWindUp",
+					"startIndex": 0,
+					"frameCount": 3,
+					"frameTime": 0.1,
+					"looping" : false,
+					"flip_point_x": 0.22,
+					"entity_collider_pos": [ 0.05, 0.75 ],
+					"entity_collider_size": [ 0.33, 0.25 ]
+				}
+			]
+		},
+		{
+			"spriteSheet": "blind attack 16x16",
+			"animations": [
+				{
+					"action": "BasicAttack",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.1,
+					"looping" : false,
+					"flip_point_x": 0.22,
+					"entity_collider_pos": [ 0.05, 0.75 ],
+					"entity_collider_size": [ 0.33, 0.25 ],
+					"attack_collider_frame" : 2,
+					"attack_collider_pos": [ 0.05, 0.0 ],
+					"attack_collider_size": [ 0.95, 0.75 ]
+				}
+			]
+		},
+		{
+			"spriteSheet": "static idle",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.15,
+					"flip_point_x": 0.22,
+					"entity_collider_pos": [ 0.05, 0.75 ],
+					"entity_collider_size": [ 0.33, 0.25 ]
+				}
+			]
+		},
+		{
+			"spriteSheet": "walk 16x16",
+			"animations": [
+				{
+					"action": "Run",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.15,
+					"flip_point_x": 0.22,
+					"entity_collider_pos": [ 0.05, 0.75 ],
+					"entity_collider_size": [ 0.33, 0.25 ]
+				}
+			]
+		},
+		{
+			"spriteSheet": "deah 16x16",
+			"animations": [
+				{
+					"action": "Death",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.15,
+					"flip_point_x": 0.22
+				}
+			]
+		}
+	]
+}

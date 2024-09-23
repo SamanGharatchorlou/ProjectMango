@@ -5,6 +5,10 @@ enum class ActionState
 	None,
 
 	Active,
+	Inactive,
+
+	Open,
+	Close,
 
 	Idle,
 	Walk,
@@ -16,6 +20,7 @@ enum class ActionState
 
 	Roll,
 
+	AttackWindUp,
 	BasicAttack,
 	BasicAttackHold,
 	LungeAttack,

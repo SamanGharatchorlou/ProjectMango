@@ -34,7 +34,6 @@ void FileManager::init()
 	folderPaths[Audio] = folderPaths[Root] + "Audio\\";
 	folderPaths[Audio_Music] = folderPaths[Audio] + "Music\\";
 	folderPaths[Audio_Sound] = folderPaths[Audio] + "Sound\\";
-	folderPaths[Audio_SoundGroups] = folderPaths[Audio] + "SoundGroups\\";
 
 	// Font
 	folderPaths[Font] = folderPaths[Root] + "Font\\";

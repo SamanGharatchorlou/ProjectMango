@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "PlayerControllerSystem.h"
 
-//#include "Characters/Spawner.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
@@ -70,7 +69,7 @@ namespace ECS
 				if( character_state->action == ActionState::Death )
 				{
 					Player::DeathState* death_state = static_cast<Player::DeathState*>(character_state);
-					if(death_state->can_respawn)
+					if(death_state->canRespawn)
 					{
 						SpawnPlayer();
 						return;
@@ -133,9 +132,24 @@ namespace ECS
 			}
 		}
 
-		if (entities.size() == 0)
+		if (entities.size() == 0 && !deathTimer.IsRunning())
 		{
-			SpawnPlayer();
+			deathTimer.Start();
+		}
+
+		if(deathTimer.GetSeconds() > 2.0f)
+		{
+			if(!spawningPlayer)
+			{
+				SpawnPlayer();
+				spawningPlayer = true;
+			}
+		}
+
+		if(entities.size() > 0)
+		{
+			spawningPlayer = false;
+			deathTimer.Stop();
 		}
 	} 
 }

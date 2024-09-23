@@ -14,7 +14,6 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
 		ImGui::PushID(entity + (int)type);
 
-		
         if (collider.HasFlag(ECS::Collider::Static))
 			ImGui::Text("Static");
         if (collider.HasFlag(ECS::Collider::IsPlayer))
@@ -24,9 +23,9 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		if (collider.HasFlag(ECS::Collider::IsTerrain))
 			ImGui::Text("IsTerrain");
 		if (collider.HasFlag(ECS::Collider::IsFloor))
-			ImGui::Text("IsTerrain");
+			ImGui::Text("IsFloor");
 		if (collider.HasFlag(ECS::Collider::IsWall))
-			ImGui::Text("IsTerrain");
+			ImGui::Text("IsWall");
 		if (collider.HasFlag(ECS::Collider::IsDamage))
 			ImGui::Text("IsDamage");
 		if (collider.HasFlag(ECS::Collider::IgnoreAll))
@@ -39,7 +38,18 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 			ImGui::Text("GhostCollider");
 		if (collider.HasFlag(ECS::Collider::CanBump))
 			ImGui::Text("CanBump");
+
+		// left/right collisions
+		bool collide_top = collider.collisionSide[ECS::Collider::Top];
+		bool collide_right = collider.collisionSide[ECS::Collider::Right];
+		bool collide_bot = collider.collisionSide[ECS::Collider::Bottom];
+		bool collide_left = collider.collisionSide[ECS::Collider::Left];
 			
+		ImGui::Text("Collision Sides: %d, %d, %d, %d", collide_top, collide_right, collide_bot, collide_left);
+
+		ImGui::Text("Allowed Movement: %f, %f", collider.allowedMovement.x, collider.allowedMovement.y);
+		ImGui::Text("Desired Movement: %f, %f", collider.desiredMovement.x, collider.desiredMovement.y);
+
 		ImGui::PopID();
 	}
 

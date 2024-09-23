@@ -16,6 +16,9 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
+		ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+		ImGui::Text("Movement Input: %f, %f", character_state.movementInput.x, character_state.movementInput.y );
+
 		if (ImGui::TreeNode("State Editor"))
 		{
 			if(ECS::AIController* aic = ecs->GetComponent(AIController, entity))

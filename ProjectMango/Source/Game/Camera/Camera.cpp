@@ -33,12 +33,15 @@ void Camera::setViewport(VectorF viewport)
 void Camera::Update(float dt)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
+	if(!ecs->IsAlive(targetEntity))
+		return;
+
 	const ECS::Transform* transform = ecs->GetComponent(Transform, targetEntity);
 	if(!transform)
 		return;
 
-	ECS::Entity player = Player::Get();
-	const ECS::Level& level = ECS::Biome::GetLevel(player);
+	const ECS::Level& level = ECS::Biome::GetLevel(targetEntity);
 	
 	const VectorF translation = (transform->GetObjectCenter() - rect.Center()) * dt * 5.0f;
 	rect.Translate( translation );

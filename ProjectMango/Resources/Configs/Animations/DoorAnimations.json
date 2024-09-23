@@ -1,0 +1,28 @@
+{
+	"id": "Warp",
+	"frameSize_x": 41,
+	"frameSize_y": 48,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "door open 41x48",
+			"animations": [
+				{
+					"action": "Open",
+					"startIndex": 0,
+					"frameCount": 14,
+					"frameTime": 0.04,
+					"looping" : false
+				},
+				{
+					"action": "Close",
+					"startIndex": 0,
+					"frameCount": 14,
+					"frameTime": 0.025,
+					"looping" : false,
+					"reverse" : true
+				}
+			]
+		}
+	]
+}

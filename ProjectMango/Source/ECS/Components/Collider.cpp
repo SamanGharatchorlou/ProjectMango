@@ -91,7 +91,14 @@ namespace ECS
 		rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
 
-	void Collider::SetPosFromTransform()
+	
+	void Collider::InitFromTransform(const Transform& transform)
+	{
+		SetBaseRect(RectF(transform.worldPosition, transform.size));
+		UpdateFromTransform();
+	}
+
+	void Collider::UpdateFromTransform()
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		const Transform& transform = ecs->GetComponentRef(Transform, entity);

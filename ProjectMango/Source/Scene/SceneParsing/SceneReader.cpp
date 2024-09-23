@@ -44,8 +44,10 @@ namespace Scene
 		}
 	}
 	
-	void BuildBiome(const char* biome_id, ECS::Biome& biome)
+	void BuildBiome(const char* biome_id, ECS::Entity& biome_entity)
 	{
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
 		BasicString string = FileManager::Get()->findFile(FileManager::Maps, biome_id);
 		JSONParser parser(string.c_str());
 
@@ -91,6 +93,7 @@ namespace Scene
 			level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat() * level_to_window;
 			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
+			ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
 			biome.aabb[0].x = std::min(biome.aabb[0].x, level.worldPos.x);
 			biome.aabb[0].y = std::min(biome.aabb[0].y, level.worldPos.y);
 			biome.aabb[1].x = std::max(biome.aabb[1].x, level.worldPos.x + level.size.x);
@@ -100,8 +103,8 @@ namespace Scene
 			for (SizeType i = 0; i < layers.Size(); i++)
 			{
 				Value& layer = layers[i];
-				const char* layer_type = layer["__type"].GetString();
-				if( StringCompare(layer_type, "Entities" ) )
+				const char* layer_id = layer["__identifier"].GetString();
+				if( StringCompare(layer_id, "Entities" ) )
 				{
 					const Value::Array& entities = layer["entityInstances"].GetArray();
 					for( u32 e = 0; e < entities.Size(); e++ )
@@ -112,8 +115,8 @@ namespace Scene
 						float height = entry["height"].GetFloat();
 
 						Value& px = entry["px"];
-						float px_x = px[0].GetFloat() + (width * 0.5f);
-						float px_y = px[1].GetFloat() - (height);
+						float px_x = px[0].GetFloat();// + (width * 0.5f);
+						float px_y = px[1].GetFloat();// - (height);
 
 						const char* id = entry["__identifier"].GetString();
 						VectorF entity_pos = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
@@ -122,7 +125,7 @@ namespace Scene
 						entity_positions.push_back( entity_pos );
 					}
 				}
-				else if( StringCompare(layer_type, "IntGrid" ) )
+				else if( StringCompare(layer_id, "TerrainColliders" ) )
 				{
 					const Value::Array& entities = layer["intGridCsv"].GetArray();
 
@@ -225,7 +228,8 @@ namespace Scene
 						snprintf(buffer, 32, "Map Collider %d", (int)b);
 						ECS::Entity ent = ecs->CreateEntity(buffer);
 
-						ECS::Collider& collider = ecs->AddComponent(Collider, ent);
+						ecs->AddComponent(Collider, ent);
+						ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
 						collider.SetBaseRect( collider_rect );
 						collider.SetFlag(ECS::Collider::Static);
 						collider.SetFlag(ECS::Collider::IsTerrain);
@@ -244,11 +248,29 @@ namespace Scene
 							}
 						}
 
-						ECS::Transform& transform = ecs->AddComponent(Transform, ent);
+						ecs->AddComponent(Transform, ent);
+						ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
+						transform.size = size;
 						transform.SetWorldPosition(top_left);
 					}
 				}
-				else
+				else if( StringCompare(layer_id, "WalkableTiles" ) )
+				{
+					const Value::Array& entities = layer["intGridCsv"].GetArray();
+
+					level.walkableTiles = Grid<int>(level_width, level_height, 0);
+
+					for( u32 ent_x = 0; ent_x < level_width; ent_x++ )
+					{
+						for( u32 ent_y = 0; ent_y < level_height; ent_y++ )
+						{
+							int index = ent_y * level_width + ent_x;
+							int value = entities[index].GetInt();
+							level.walkableTiles.get(ent_x, ent_y) = value;
+						}
+					}
+				}
+				else if( StringCompare(layer_id, "Boundaries" ) )
 				{
 					ECS::Layer new_layer;
 					level.layers.push_back(new_layer);

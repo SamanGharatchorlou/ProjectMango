@@ -1,12 +1,20 @@
 #pragma once
 
-#include "Core/ObjectPool.h"
 #include "Game/States/State.h"
 #include "Animations/CharacterStates.h"
-#include "CharacterAction.h"
+#include "Characters/States/CharacterAction.h"
 
-namespace Enemy
+namespace BlindingSpider
 {
+	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+
+	struct Enemy : public Character
+	{
+		void Begin(ECS::Entity entity);
+		bool FinishedDying(ECS::Entity entity) override;
+		void StartDying(ECS::Entity entity) override;
+	};
+
 	struct IdleState : public CharacterAction
 	{
 		IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }

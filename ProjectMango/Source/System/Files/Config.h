@@ -10,8 +10,6 @@ struct Config
 	bool parsed = false;
 };
 
-typedef std::unordered_map<StringBuffer32, float> SettingValues;
-
 struct GameSettingsConfig : public Config
 {
 	GameSettingsConfig(const char* config_name) : Config(config_name) { }

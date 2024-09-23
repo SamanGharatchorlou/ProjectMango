@@ -28,44 +28,49 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(player_config);
 
 	s_playerEntity = ecs->CreateEntity(id);
+	ecs->AddComponent(Transform, s_playerEntity);
+	ecs->AddComponent(Physics, s_playerEntity);
+	ecs->AddComponent(Animator, s_playerEntity);
+	ecs->AddComponent(Sprite, s_playerEntity);
+	ecs->AddComponent(Collider, s_playerEntity);
+	ecs->AddComponent(PlayerController, s_playerEntity);
+	ecs->AddComponent(CharacterState, s_playerEntity);
+	ecs->AddComponent(Health, s_playerEntity);
 
 	// Transform
-	ECS::Transform& transform = ecs->AddComponent(Transform, s_playerEntity);
-	transform.Init(config->values);
+	ECS::Transform& transform = ecs->GetComponentRef(Transform, s_playerEntity);
+	transform.Init(config->values, VectorF::zero());
 	
 	// MovementPhysics
-	ECS::Physics& physics = ecs->AddComponent(Physics, s_playerEntity);
+	ECS::Physics& physics = ecs->GetComponentRef(Physics, s_playerEntity);
 	physics.Init(config->values);
 
 	// Animation
-	ECS::Animator& animator = ecs->AddComponent(Animator, s_playerEntity);
+	ECS::Animator& animator = ecs->GetComponentRef(Animator, s_playerEntity);
 	animator.Init(config->animation.c_str());
 
 	// Sprite
-	ECS::Sprite& sprite = ecs->AddComponent(Sprite, s_playerEntity);
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);
 	sprite.renderLayer = 5;
 	
 	// Collider
-	ECS::Collider& collider = ecs->AddComponent(Collider, s_playerEntity);
+	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
 	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
 	collider.SetFlag(ECS::Collider::IsPlayer);
 	collider.SetFlag(ECS::Collider::CanBump);
-	
+	collider.UpdateFromTransform();
+
 	const ECS::Animation& animation = animator.GetActiveAnimation();
 	collider.SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
-
-	// PlayerController
-	ECS::PlayerController& player_controller = ecs->AddComponent(PlayerController, s_playerEntity);
 	
 	// CharacterState
-	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
+	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, s_playerEntity);
+
+	character_state.config = player_config;
 	
 	// Health
-	ECS::Health& health = ecs->AddComponent(Health, s_playerEntity);
+	ECS::Health& health = ecs->GetComponentRef(Health, s_playerEntity);
 	health.Init(config->values);
-
-	// set the position after all the bits have been setup
-	transform.SetWorldPosition(VectorF::zero());
 
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

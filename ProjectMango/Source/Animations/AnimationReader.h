@@ -7,5 +7,5 @@ namespace ECS
 
 namespace AnimationReader
 {
-	void BuildAnimatior(const char* file, std::vector<ECS::Animation>& animator);
+	void BuildAnimatior(ECS::Entity entity, const char* file);
 };

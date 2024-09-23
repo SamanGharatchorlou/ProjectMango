@@ -9,25 +9,34 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 
+#include "ECS/Components/Biome.h"
+#include "ECS/Components/ComponentCommon.h"
+
+
 namespace ECS
 {
 	static const float c_colliderGap = 1.0f;
 
-	static bool TestAgainstStaticColliders(Entity entity, std::vector<Collider>& colliders)
+	static VectorF BumpCollider( const ECS::Collider& colliderA, const ECS::Collider& colliderB )
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Collider& A_collider = ecs->GetComponentRef(Collider, entity);
+		VectorF direction = colliderA.rect.Center() - colliderB.rect.Center();
+		if(direction.isZero())
+			return VectorF::zero();
 
-		for (const Collider& collider : colliders)
+		VectorF bump = direction.normalise();
+
+		RectF bump_rect = colliderA.rect.MoveCopy(bump);
+		bool bump_still_collides = colliderB.intersects(bump_rect);
+
+		while(bump_still_collides)
 		{
-			if(collider.entity == entity)
-				continue;
+			bump += bump;
 
-			if(!collider.HasFlag(Collider::Static))
-				continue;
-
-
+			bump_rect = colliderA.rect.MoveCopy(bump);
+			bump_still_collides = colliderB.intersects(bump_rect);
 		}
+
+		return bump;
 	}
 
 	void CollisionSystem::Update(float dt)
@@ -61,6 +70,10 @@ namespace ECS
 
 			A_collider.allowedMovement = A_collider.forward - A_collider.back;
 			A_collider.desiredMovement = A_collider.allowedMovement;
+			
+			// debug break point
+			if(DebugMenu::GetSelectedEntity() == entity && !A_collider.allowedMovement.isZero())
+				int a = 4;
 
 			memset(A_collider.collisionSide, false, sizeof(bool) * 4);
 
@@ -88,6 +101,9 @@ namespace ECS
 				if( A_collider.HasFlag(Collider::TerrainOnly) && !B_collider.HasFlag(Collider::IsTerrain) )
 					continue;
 
+				if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
+					continue;
+
 				if(A_collider.intersects(B_collider)) 
 				{
 					ECS::Entity B_entity = B_collider.entity;
@@ -104,7 +120,7 @@ namespace ECS
 					}
 
 					// damage and ghost colliders just check for collisions and have no effect so dont compute anything below
-					if(is_damage || A_collider.HasFlag(Collider::Flags::GhostCollider))
+					if(is_damage || A_collider.HasFlag(Collider::Flags::GhostCollider) || A_collider.HasFlag(Collider::Flags::Kinematic))
 						continue;
 
 					// Physical, can we slide 
@@ -184,20 +200,24 @@ namespace ECS
 						// gross we're stiil not able to move
 						if(A_collider.HasFlag(Collider::CanBump) && velocity.isZero())
 						{
-							VectorF direction = rect.Center() - B_collider.rect.Center();
+							//VectorF direction = rect.Center() - B_collider.rect.Center();
 
-							VectorF bump = direction.normalise() * c_colliderGap;
+							//VectorF bump = direction.normalise() * c_colliderGap;
 
+							//RectF bump_rect = rect.MoveCopy(bump);
+							//bool bump_still_collides = B_collider.intersects(bump_rect);
+
+							//while(bump_still_collides)
+							//{
+							//	bump += bump;
+
+							//	bump_rect = rect.MoveCopy(bump);
+							//	bump_still_collides = B_collider.intersects(bump_rect);
+							//}
+
+							
+							VectorF bump = BumpCollider(A_collider, B_collider);
 							RectF bump_rect = rect.MoveCopy(bump);
-							bool bump_still_collides = B_collider.intersects(bump_rect);
-
-							while(bump_still_collides)
-							{
-								bump += bump;
-
-								bump_rect = rect.MoveCopy(bump);
-								bump_still_collides = B_collider.intersects(bump_rect);
-							}
 
 							// we cant bump into another collider, just check static colliders
 							for (const Collider& static_collider : collider_list)
@@ -227,4 +247,37 @@ namespace ECS
             }
 		}
 	}
+
+	void CollisionSystem::FindValidPosition(ECS::Entity entity)
+	{
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
+
+		std::vector<ECS::Entity> colliders;
+		ecs->GetEntitiesWithComponent(Collider, colliders);
+
+		std::vector<ECS::Entity> level_colliders;
+		const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
+		FilterEntitiesInLevel(active_level, colliders, level_colliders);
+
+		for( u32 i = 0; i < colliders.size(); i++ )
+		{
+			if(colliders[i] == entity)
+				continue;
+
+			if(const ECS::Collider* collider_b = ecs->GetComponent(Collider, colliders[i]))
+			{
+				if(collider_b->intersects(collider))
+				{
+					VectorF bump = BumpCollider(collider, *collider_b);
+					if(!bump.isZero())
+					{
+						ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+						transform.SetWorldPosition(transform.worldPosition + bump);
+					}
+				}
+			}
+		}
+	}
 }
+

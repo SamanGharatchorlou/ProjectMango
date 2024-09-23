@@ -16,6 +16,24 @@ struct CharacterAction : public State
 
 	float GetAttackRange(ActionState action);
 
+	// helpers
+	bool CanEnterHitState();
+	bool CanMoveToTarget();
+	bool CoolingFromAttack();
+	void InitDeathState();
+	void ApplyMovementEase(int movement_factor, float dt);
+	bool CanCreateAttackCollider(ECS::Entity attack_collider);
+	bool CanDestroyAttackCollider(ECS::Entity attack_collider);
+
 	ECS::Entity entity;
 	ActionState action;
+};
+
+struct Character
+{
+	virtual void Begin(ECS::Entity entity) { }
+	virtual bool FinishedDying(ECS::Entity entity) { return false; }
+	virtual void StartDying(ECS::Entity entity) { }
+
+	static ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
 };

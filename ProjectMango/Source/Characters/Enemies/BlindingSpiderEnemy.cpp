@@ -1,22 +1,62 @@
 #include "pch.h"
-#include "EnemyStates.h"
+#include "BlindingSpiderEnemy.h"
 
 #include "Core/Helpers.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
-#include "ECS/Components/ComponentCommon.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/EntSystems/AnimationSystem.h"
-#include "Game/States/State.h"
 #include "Game/FrameRateController.h"
 
-namespace Enemy
+namespace BlindingSpider
 {
 	using namespace ECS;
+	
+	// Enemy
+	// ---------------------------------------------------------
+	Entity Create(const char* id, const char* config_id, VectorF spawn_pos)
+	{
+		Entity entity = Character::Create(id, config_id, spawn_pos);
+
+		// CharacterState
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+		character_state.character = new Enemy();
+		
+		return entity;
+	}
+	
+	void Enemy::Begin(ECS::Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		if(!state.actions.HasAction())
+			PushState(Idle);
+	}
+
+	bool Enemy::FinishedDying(ECS::Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		if(DeathState* death_state = static_cast<DeathState*>(&(state.actions.Top())))
+			return death_state->can_kill;
+
+		return false;
+	}
+
+	void Enemy::StartDying(ECS::Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		state.actions.Pop();
+		state.actions.Push( new DeathState(entity) );
+		state.actions.Push( new TakeHitState(entity) );
+	}
 
 	// Idle
 	// ---------------------------------------------------------
@@ -35,30 +75,20 @@ namespace Enemy
 	void IdleState::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 
-		if(const Collider* collider = ecs->GetComponent(Collider, entity))
-		{
-			const FrameRateController& frc = FrameRateController::Get();
-			if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
-			{
-				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-				PushState(TakeHit);
-			}
-		}
-		
 		Physics& physics = ecs->GetComponentRef(Physics, entity);
 		physics.ApplyDrag(0.05f);
-		
-		if( ai_controller.cooldownTimer.IsRunning() )
+
+		if( CanEnterHitState() )
 		{
-			if(ai_controller.cooldownTimer.GetSeconds() < ai_controller.attackCooldownTime)
-				return;
-			
-			ai_controller.cooldownTimer.Stop();
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			PushState(TakeHit);
 		}
 		
-		if( ai_controller.moveToTarget ) // can move  to target
+		if( CoolingFromAttack() )
+			return;
+
+		if( CanMoveToTarget() )
 		{
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			PushState(Run);
@@ -85,25 +115,19 @@ namespace Enemy
 	void RunState::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		Physics& physics = ecs->GetComponentRef(Physics, entity);
 		Transform& transform = ecs->GetComponentRef(Transform, entity);
 		const AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
-
-		if( ai_controller.cooldownTimer.IsRunning() )
-		{		
-			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-			sprite.canFlip = false;
-			
-			PopState();
-			return;
-		}
+		
 		
 		const int run_acceleration_factor = 1;
-		const VectorI facing_direction = state.GetFacingDirection();
-		physics.ApplyMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
+		if(ai_controller.CanMoveForward(run_acceleration_factor, dt))
+		{
+			int a = 4;
+		}
 
-		if(ai_controller.target != EntityInvalid)
+		ApplyMovementEase(run_acceleration_factor, dt);
+
+		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
 		{
 			const Transform& target_transform = ecs->GetComponentRef(Transform, ai_controller.target);
 			const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
@@ -111,6 +135,7 @@ namespace Enemy
 
 			if(attack_range > 0.0f && attack_range > distance_to_target)
 			{
+				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 				ReplaceState(BasicAttack);
 			}
 		}
@@ -153,17 +178,7 @@ namespace Enemy
 
 		can_kill = false;
 
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
-		if(Collider* collider = ecs->GetComponent(Collider, entity))
-		{
-			SetFlag(collider->flags, (u32)Collider::IgnoreAll);
-		}
-
-		if(Physics* physics = ecs->GetComponent(Physics, entity))
-		{
-			physics->speed.set(0.0f, 0.0f);
-		}
+		InitDeathState();
 	}
 
 	void DeathState::Resume()
@@ -186,7 +201,16 @@ namespace Enemy
 
 	void BasicAttackState::Init()
 	{
-		StartAnimation(true);
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		if(animator.GetAnimation(ActionState::AttackWindUp))
+		{
+			StartAnimation(ActionState::AttackWindUp);
+		}
+		else
+		{	
+			StartAnimation();
+		}
 	}
 
 	void BasicAttackState::Update(float dt)
@@ -195,16 +219,24 @@ namespace Enemy
 		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		Animator& animator = ecs->GetComponentRef(Animator, entity);
 		
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		sprite.canFlip = animator.frameIndex < 2;
+		const Animation& animation = animator.GetActiveAnimation();
 
-		if(animator.frameIndex >= 6 && attackCollider == EntityInvalid)
+		if(animation.attackColliderFrameStart != -1)
 		{
-			attackCollider = CreateNewAttackCollider("enemy attack collider", 10.0f, 30.0f);
+			if(animator.frameIndex >= animation.attackColliderFrameStart && attackCollider == EntityInvalid)
+			{
+				attackCollider = CreateNewAttackCollider("enemy attack collider", 10.0f, 30.0f);
+			}
 		}
 
 		if(animator.loopCount > 0)
 		{
+			if(animation.action == ActionState::AttackWindUp)
+			{
+				StartAnimation();
+				return;
+			}
+
 			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 			ai_controller.cooldownTimer.Start();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CharacterAction.h"
+#include "Core/Timer.h"
 
 namespace Player
 {
@@ -98,6 +99,7 @@ namespace Player
 		void Init() override;
 		void Update(float dt) override;
 
-		bool can_respawn = false;
+		TimerF deathTimer;
+		bool canRespawn = false;
 	};
 }

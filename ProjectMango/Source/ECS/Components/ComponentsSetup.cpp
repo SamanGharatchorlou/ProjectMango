@@ -39,6 +39,7 @@ void ECS::RegisterAllComponents()
 	ecs->RegisterComponent(Health, 32);
 	ecs->RegisterComponent(Biome, 4);
 	ecs->RegisterComponent(Spawner, 4);
+	ecs->RegisterComponent(Door, 32);
 }
 
 void ECS::RegisterAllSystems()
@@ -82,8 +83,8 @@ void ECS::RegisterAllSystems()
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
 
-	// Compoenent Updates - add any components into here that have an update function you want to run instead
-	Signature ComponentsSignature = ArcheBit(Spawner);
+	// Compoenent Updates - runs all basic object component update function
+	Signature ComponentsSignature = ArcheBit(Transform) | ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 }

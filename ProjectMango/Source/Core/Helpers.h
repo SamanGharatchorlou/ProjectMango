@@ -177,7 +177,10 @@ static VectorI IndexToGrid(int index, int grid_width)
 	return VectorI(index_x, index_y);
 }
 
-
+struct RaycastResult;
 
 //--------------------------------------------------------
 bool RaycastToFloor(ECS::Entity entity, float& out_distance);
+bool RaycastToFloor(const RectF& rect, float& out_distance);
+bool RaycastToFloor(const VectorF& start, RaycastResult& result);
+bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance);

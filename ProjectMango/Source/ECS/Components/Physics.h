@@ -1,7 +1,5 @@
 #pragma once
 
-typedef std::unordered_map<StringBuffer32, float> SettingValues;
-
 namespace ECS
 {
 	struct Physics
@@ -23,5 +21,6 @@ namespace ECS
 		void ApplyDrag(float drag_coefficient);
 
 		void ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor);
+		VectorF GetMovementEase(VectorF movement_direction, float dt, int easing_factor) const ;
 	};
 }

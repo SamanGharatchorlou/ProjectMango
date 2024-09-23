@@ -11,6 +11,8 @@
 		"max_fall_speed": 1000,
 		"basic_attack_damage": 10,
 		"basic_attack_force": 150,
-		"max_health": 100
+		"basic_attack_cooldown" : 1,
+		"max_health": 20,
+		"alert_range" : 200
 	}
 }

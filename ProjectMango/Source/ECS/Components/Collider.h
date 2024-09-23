@@ -4,6 +4,8 @@
 
 namespace ECS
 {
+	struct Transform; 
+
 	struct Collider
 	{
 		COMPONENT_TYPE(Collider)
@@ -13,6 +15,7 @@ namespace ECS
 			// base type
 			None = 0,
 			Static,
+			Kinematic,
 
 			// collider type
 			IsPlayer,
@@ -28,6 +31,7 @@ namespace ECS
 
 			// only collider with terrain
 			TerrainOnly,
+			PlayerOnly,
 
 			// to check for collisions without any affect, i.e. not physical
 			GhostCollider,
@@ -52,7 +56,8 @@ namespace ECS
 		void SetRelativeRect(VectorF position, VectorF size);
 
 		// assumes the rect size has been set
-		void SetPosFromTransform();
+		void InitFromTransform(const Transform& transform);
+		void UpdateFromTransform();
 
 		void RollBackPosition();
 		void RollForwardPosition();

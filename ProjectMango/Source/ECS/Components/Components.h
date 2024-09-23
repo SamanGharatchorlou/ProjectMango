@@ -1,15 +1,9 @@
 #pragma once
 
-#include "Core/TypeDefs.h"
-#include "Core/Vector2D.h"
-#include "Core/Rect.h"
 #include "Core/stack.h"
-
 #include "Characters/States/CharacterAction.h"
 
 class Texture;
-enum class ActionState;
-typedef std::unordered_map<StringBuffer32, float> SettingValues;
 
 namespace ECS
 {
@@ -44,10 +38,11 @@ namespace ECS
 
 		bool ignoreOutOfBounds = false;
 		
-		void Init(const SettingValues& values);
+		void Init(const SettingValues& values, VectorF pos);
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
+		void SetWorldRect(const VectorF& pos, const VectorF& size);
 
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
@@ -68,15 +63,23 @@ namespace ECS
 		
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
 	};
-
+	
 	struct CharacterState
 	{
 		COMPONENT_TYPE(CharacterState)
 
 		ActionStack<CharacterAction> actions;
 
+		BasicString config;
+
+		// overload common functions
+		Character* character;
+
 		VectorI movementInput;
 		VectorI GetFacingDirection() const;
+
+		template<class T>
+		const T* GetConfig() const { return ConfigManager::Get()->GetConfig<T>(config.c_str()); }
 	};
 
 	struct Pathing
@@ -139,6 +142,21 @@ namespace ECS
 		void Update();
 	};
 
+	struct Door
+	{
+		COMPONENT_TYPE(Door)
+
+		float triggerRange = 0.0f;
+
+		// top and bottom
+		Entity colliders[2];
+
+		void Init();
+		void Update();
+
+		void GenerateColliders(float width);
+	};
+
 	// ----------------------------------------------------------------------
 	// helpers
 	static u64 archetypeBit(ECS::Component::Type type)
@@ -148,4 +166,5 @@ namespace ECS
 
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);
+	RectF GetRect(Entity entity);
 }

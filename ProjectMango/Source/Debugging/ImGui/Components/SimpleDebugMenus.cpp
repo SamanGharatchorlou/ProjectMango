@@ -15,13 +15,10 @@ ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 	{
 		ECS::Health& health = ecs->GetComponentRef(Health, entity);
 		ImGui::PushID(entity + (int)type);
-		if (ImGui::TreeNode("Component Data"))
-		{
-			ImGui::Text("Current Health: %.f", health.currentHealth);
-			ImGui::Text("Max Health: %.f", health.maxHealth);
 
-			ImGui::TreePop();
-		}
+		ImGui::Text("Current Health: %.f", health.currentHealth);
+		ImGui::Text("Max Health: %.f", health.maxHealth);
+
 		ImGui::PopID();
 	}
 

@@ -147,10 +147,10 @@
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
     <ClCompile Include="Source\Audio\SoundController.cpp" />
-    <ClCompile Include="Source\Characters\Enemies\Enemies.cpp" />
+    <ClCompile Include="Source\Characters\Enemies\BlindingSpiderEnemy.cpp" />
+    <ClCompile Include="Source\Characters\Enemies\ShockSweeperEnemy.cpp" />
     <ClCompile Include="Source\Characters\Player\PlayerCharacter.cpp" />
     <ClCompile Include="Source\Characters\States\CharacterAction.cpp" />
-    <ClCompile Include="Source\Characters\States\EnemyStates.cpp" />
     <ClCompile Include="Source\Characters\States\PlayerStates.cpp" />
     <ClCompile Include="Source\Core\BasicString.cpp" />
     <ClCompile Include="Source\Core\Buffer.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="Source\Core\Events\Dispatcher.cpp" />
     <ClCompile Include="Source\Core\Helpers.cpp" />
     <ClCompile Include="Source\Core\Maps\PropertyMap.cpp" />
-    <ClCompile Include="Source\Core\Maps\StringMap.cpp" />
+    <ClCompile Include="Source\Core\Maps.cpp" />
     <ClCompile Include="Source\Core\Maths.cpp" />
     <ClCompile Include="Source\Core\NSISFileOutput.cpp" />
     <ClCompile Include="Source\Core\Physics\QuadCollider.cpp" />
@@ -259,10 +259,10 @@
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\Channel.h" />
     <ClInclude Include="Source\Audio\SoundController.h" />
-    <ClInclude Include="Source\Characters\Enemies\Enemies.h" />
+    <ClInclude Include="Source\Characters\Enemies\BlindingSpiderEnemy.h" />
+    <ClInclude Include="Source\Characters\Enemies\ShockSweeperEnemy.h" />
     <ClInclude Include="Source\Characters\Player\PlayerCharacter.h" />
     <ClInclude Include="Source\Characters\States\CharacterAction.h" />
-    <ClInclude Include="Source\Characters\States\EnemyStates.h" />
     <ClInclude Include="Source\Characters\States\PlayerStates.h" />
     <ClInclude Include="Source\Core\BasicString.h" />
     <ClInclude Include="Source\Core\Buffer.h" />
@@ -275,7 +275,7 @@
     <ClInclude Include="Source\Core\Helpers.h" />
     <ClInclude Include="Source\Core\LinkedList.h" />
     <ClInclude Include="Source\Core\Maps\PropertyMap.h" />
-    <ClInclude Include="Source\Core\Maps\StringMap.h" />
+    <ClInclude Include="Source\Core\Maps.h" />
     <ClInclude Include="Source\Core\Maths.h" />
     <ClInclude Include="Source\Core\NSISFileOutput.h" />
     <ClInclude Include="Source\Core\ObjectPool.h" />

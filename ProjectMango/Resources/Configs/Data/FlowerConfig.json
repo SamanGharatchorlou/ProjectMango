@@ -3,6 +3,8 @@
 	"values": {
 		"size_x": 64,
 		"size_y": 64,
-		"snap_to_floor" : true
+		"snap_to_floor" : true,
+		"randomise_frame_start" : true,
+		"randomise_frame_speed" : 0.6
 	}
 }

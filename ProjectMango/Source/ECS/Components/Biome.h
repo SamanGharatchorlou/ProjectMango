@@ -36,8 +36,12 @@ namespace ECS
 		std::vector<Layer> layers;
 		std::vector<ECS::Entity> colliders;
 
+		Grid<int> walkableTiles;
+
 		// can i assime the entity a value? do i care? a string is probably fine
 		std::unordered_map<BasicString, std::vector<VectorF>> entities;
+
+		VectorI GetTileIndex(VectorF position) const;
 	};
 
 	struct Biome

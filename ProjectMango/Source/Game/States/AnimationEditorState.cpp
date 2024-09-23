@@ -26,9 +26,6 @@ void AnimationEditorState::Init()
 
 void AnimationEditorState::HandleInput()
 {
-	InputManager* im = GameData::Get().inputManager;
-
-	VectorF pos = im->cursorPosition();
 
 }
 

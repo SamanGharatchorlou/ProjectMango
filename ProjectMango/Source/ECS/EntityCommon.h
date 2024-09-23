@@ -33,6 +33,7 @@ namespace ECS
 			Health,
 			Biome,
 			Spawner,
+			Door,
 
 			Count
 		};
@@ -53,7 +54,8 @@ namespace ECS
 		"Damage",
 		"Health",
 		"Biome",
-		"Spawner"
+		"Spawner",
+		"Door"
 	};
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \
