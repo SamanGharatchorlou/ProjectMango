@@ -64,3 +64,18 @@ VectorF SettingValues::GetVectorF(const char* x, const char* y) const
 
 	return VectorF();
 }
+
+VectorF SettingValues::GetVectorF(const char* label) const
+{
+	const u32 size = 64;
+	char x[size];
+	char y[size];
+
+	snprintf( x, size, "%s_x", label );
+	snprintf( y, size, "%s_y", label );
+
+	if( Contains(x) && Contains(y))
+		return VectorF(GetFloat(x), GetFloat(y));
+
+	return VectorF();
+}

@@ -9,6 +9,7 @@
 #include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
 #include "Characters/Player/PlayerCharacter.h"
+#include "System/Files/ConfigManager.h"
 
 namespace ECS
 {
@@ -360,5 +361,15 @@ namespace ECS
 		}
 
 		return RectF();
+	}
+
+	const ObjectConfig* GetObjectConfig(Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		ASSERT(!state.config.empty(), "Entity %s has no object config string", ecs->entities.GetEntityName(entity));
+		ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(state.config.c_str());
+		ASSERT(config != nullptr, "Entity has no object config");
+		return config;
 	}
 }

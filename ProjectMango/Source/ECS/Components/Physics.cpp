@@ -76,7 +76,7 @@ VectorF Physics::GetMovementEase(VectorF movement_direction, float dt, int easin
 		tx += dt; // * speed;
 		tx = Maths::clamp(tx, 0.0f, 1.0f);
 
-		movement.x = EaseOut(tx, easing_factor) * max_speed_x;
+		movement.x = EaseOut(tx, easing_factor) * max_speed_x - speed.x;
 	}
 
 	if(movement_direction.y != 0)
@@ -87,7 +87,7 @@ VectorF Physics::GetMovementEase(VectorF movement_direction, float dt, int easin
 		ty += dt; // * speed;
 		ty = Maths::clamp(ty, 0.0f, 1.0f);
 
-		movement.y = EaseOut(ty, easing_factor) * max_speed_y;
+		movement.y = EaseOut(ty, easing_factor) * max_speed_y - speed.y;
 	}
 
 	return movement;
@@ -95,5 +95,5 @@ VectorF Physics::GetMovementEase(VectorF movement_direction, float dt, int easin
 
 void Physics::ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor)
 {
-	speed = GetMovementEase(movement_direction, dt, easing_factor);
+	speed = speed + GetMovementEase(movement_direction, dt, easing_factor);
 }

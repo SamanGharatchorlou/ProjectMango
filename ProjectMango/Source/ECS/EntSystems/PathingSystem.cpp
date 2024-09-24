@@ -21,7 +21,8 @@ namespace ECS
 			{
 				VectorF target = GetPosition(aic.target);
 
-				// this indirectly sets the facing direction sicnce its derived from the sprite flip
+				// this indirectly sets the facing direction since its derived from the sprite flip
+				// I should reverse this order.... and set things like can change facing direction etc
 				Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 				if (sprite.canFlip)
 				{

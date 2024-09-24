@@ -4,6 +4,7 @@
 #include "Characters/States/CharacterAction.h"
 
 class Texture;
+struct ObjectConfig;
 
 namespace ECS
 {
@@ -167,4 +168,6 @@ namespace ECS
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
+
+	const ObjectConfig* GetObjectConfig(Entity entity);
 }

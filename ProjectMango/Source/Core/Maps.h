@@ -46,6 +46,7 @@ struct SettingValues
 
 	
 	VectorF GetVectorF(const char* x, const char* y) const;
+	VectorF GetVectorF(const char* label) const; // adds _x and _y to the label
 
 	inline bool Contains(const char* key) const { return data.contains(key); }
 	

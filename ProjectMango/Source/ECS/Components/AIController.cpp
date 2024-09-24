@@ -18,8 +18,7 @@ namespace ECS
 
 		if(target != ECS::EntityInvalid)
 		{
-			const ECS::Transform& target_transform = ecs->GetComponentRef(Transform, target);
-			VectorF distance = transform.GetObjectCenter() - target_transform.GetObjectCenter();
+			VectorF distance = transform.GetObjectCenter() - GetPosition(target);
 			return distance.lengthSquared();
 		}
 
@@ -39,27 +38,31 @@ namespace ECS
 		VectorF translation = speed * dt;
 		RectF rect = GetRect(entity);
 		rect.Translate(translation);
-
-		VectorF left = rect.LeftCenter();
-		VectorF right = rect.RightCenter();
-
-		RaycastResult left_result;
-		RaycastResult right_result;
-		RaycastToFloor(left, left_result);
-		RaycastToFloor(right, right_result);
-
-		if(left_result.hasHit)
+		
+		RaycastResult result;
+		if(facing_direction.x < 0)
 		{
-			VectorF position = left_result.hitPosition;
-
-			const ECS::Level& level = ECS::Biome::GetLevel(entity);	
-			VectorI index = level.GetTileIndex(position);
-
-			int is_walkable = level.walkableTiles.get(index);
-
-			int a = 4;
+			VectorF start = rect.LeftCenter();
+			RaycastToFloor(start, result);
+		}
+		else if(facing_direction.x > 0)
+		{
+			VectorF start = rect.RightCenter();
+			RaycastToFloor(start, result);
 		}
 
-		return true;
+		if(result.hasHit)
+		{
+			VectorF position = result.hitPosition;
+
+			const ECS::Level& level = ECS::Biome::GetLevel(position);	
+			VectorI index = level.GetTileIndex(position);
+
+			int traversal_value = level.walkableTiles.get(index);
+			if(traversal_value == 1)
+				return true;
+		}
+
+		return false;
 	}
 }

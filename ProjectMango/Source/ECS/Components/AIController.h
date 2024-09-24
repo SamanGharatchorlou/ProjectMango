@@ -10,6 +10,8 @@ namespace ECS
 
 		bool moveToTarget = true;
 
+		bool isAlert = false;
+
 		TimerF cooldownTimer;
 		float attackCooldownTime = 1.0f;
 

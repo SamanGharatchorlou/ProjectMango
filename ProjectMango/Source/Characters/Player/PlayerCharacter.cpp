@@ -65,7 +65,6 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, s_playerEntity);
-
 	character_state.config = player_config;
 	
 	// Health

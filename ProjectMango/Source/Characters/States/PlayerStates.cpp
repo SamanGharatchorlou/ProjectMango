@@ -16,6 +16,7 @@
 #include "ECS/EntSystems/AnimationSystem.h"
 #include "System/Files/ConfigManager.h"
 
+
 using namespace Player;
 using namespace ECS;
 
@@ -126,7 +127,6 @@ void RunState::Update(float dt)
 	}
 }
 
-
 // JumpState
 // ---------------------------------------------------------
 JumpState::JumpState(Entity _entity) : CharacterAction(ActionState::Jump, _entity) { }
@@ -137,10 +137,7 @@ void JumpState::Init()
 	
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
-	
-	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	const ObjectConfig* config = state.GetConfig<ObjectConfig>();
-	physics.speed.y = config->values.GetFloat("jump_impulse");
+	physics.speed.y = GetObjectConfig(entity)->values.GetFloat("jump_impulse");
 }
 
 void JumpState::Update(float dt)
@@ -324,8 +321,7 @@ void FloorSlamState::Update(float dt)
 
 			if( CanCreateAttackCollider(attackCollider))
 			{
-				const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-				const ObjectConfig* config = state.GetConfig<ObjectConfig>();
+				const ObjectConfig* config = GetObjectConfig(entity);
 				attackCollider = CreateNewAttackCollider("player slam attack collider", config->values["slam_attack_damage"], config->values["slam_attack_force"]);
 			}
 			
@@ -362,10 +358,9 @@ void RollState::Init()
 
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	Physics& physics = ecs->GetComponentRef(Physics,entity);
-							
+
 	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	const ObjectConfig* config = state.GetConfig<ObjectConfig>();
-	physics.speed = state.movementInput.toFloat() * config->values.GetFloat("roll_impulse");
+	physics.speed = state.movementInput.toFloat() * GetObjectConfig(entity)->values.GetFloat("roll_impulse");
 
 	if(Collider* collider = ecs->GetComponent(Collider, entity))
 	{
@@ -450,7 +445,7 @@ void BasicAttackState::Update(float dt)
 		if(attackCollider == EntityInvalid)
 		{					
 			const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			const ObjectConfig* config = state.GetConfig<ObjectConfig>();
+			const ObjectConfig* config = GetObjectConfig(entity);
 			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
 		}
 
@@ -529,14 +524,15 @@ void LungeAttackState::Update(float dt)
 	}
 
 	Animator& animator = ecs->GetComponentRef(Animator, entity);
-	if(attackCollider == EntityInvalid && animation.frameIndex >= 9)
+
+	if(CanCreateAttackCollider(attackCollider))
 	{					
 		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		const ObjectConfig* config = state.GetConfig<ObjectConfig>();
+		const ObjectConfig* config = GetObjectConfig(entity);
 		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->values.GetFloat("jump_attack_damage"), config->values.GetFloat("jump_attack_force"));
 	}
 
-	if(attackCollider != EntityInvalid && animation.frameIndex >= 11)
+	if(CanDestroyAttackCollider(attackCollider))
 	{
 		ecs->entities.KillEntity(attackCollider);
 	}

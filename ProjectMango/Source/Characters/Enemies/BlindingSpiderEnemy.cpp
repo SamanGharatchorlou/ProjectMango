@@ -9,6 +9,7 @@
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
+#include "System/Files/Config.h"
 
 namespace BlindingSpider
 {
@@ -24,6 +25,7 @@ namespace BlindingSpider
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
 		character_state.character = new Enemy();
+		character_state.config = config_id;
 		
 		return entity;
 	}
@@ -118,14 +120,25 @@ namespace BlindingSpider
 		Transform& transform = ecs->GetComponentRef(Transform, entity);
 		const AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 		
-		
 		const int run_acceleration_factor = 1;
+
 		if(ai_controller.CanMoveForward(run_acceleration_factor, dt))
 		{
-			int a = 4;
+			ApplyMovementEase(run_acceleration_factor, dt);
+		}
+		else
+		{		
+			if(!ai_controller.isAlert)
+			{
+				// turn around
+			}
 		}
 
-		ApplyMovementEase(run_acceleration_factor, dt);
+		
+		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
+		{
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		}
 
 		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
 		{
@@ -216,17 +229,15 @@ namespace BlindingSpider
 	void BasicAttackState::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		Animator& animator = ecs->GetComponentRef(Animator, entity);
 		
 		const Animation& animation = animator.GetActiveAnimation();
 
-		if(animation.attackColliderFrameStart != -1)
-		{
-			if(animator.frameIndex >= animation.attackColliderFrameStart && attackCollider == EntityInvalid)
-			{
-				attackCollider = CreateNewAttackCollider("enemy attack collider", 10.0f, 30.0f);
-			}
+		if(attackCollider == EntityInvalid)
+		{					
+			const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			const ObjectConfig* config = GetObjectConfig(entity);
+			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
 		}
 
 		if(animator.loopCount > 0)
@@ -239,7 +250,8 @@ namespace BlindingSpider
 
 			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 			ai_controller.cooldownTimer.Start();
-
+			
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			PopState();
 			return;
 		}

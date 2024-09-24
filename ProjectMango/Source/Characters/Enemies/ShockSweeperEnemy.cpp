@@ -24,6 +24,7 @@ namespace ShockSweeper
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
 		character_state.character = new Enemy();
+		character_state.config = config_id;
 
 		return entity;
 	}
