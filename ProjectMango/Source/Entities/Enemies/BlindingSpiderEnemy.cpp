@@ -90,14 +90,14 @@ namespace BlindingSpider
 		if( CoolingFromAttack() )
 			return;
 
-		if( CanMoveToTarget() )
+		//if( CanMoveToTarget() )
 		{
 			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 			PushState(Run);
 		}
 	}
 
-	// Run
+	// Run -- This should be RunToTarget and then add a Partol state
 	// ---------------------------------------------------------
 	RunState::RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
 
@@ -131,13 +131,11 @@ namespace BlindingSpider
 			if(!ai_controller.isAlert)
 			{
 				// turn around
+				//ai_controller.
+				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+				state.FlipFacingDirection();
+				return;
 			}
-		}
-
-		
-		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
-		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 		}
 
 		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))

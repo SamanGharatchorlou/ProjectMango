@@ -36,7 +36,7 @@ namespace AnimationEditor
         {
             StringBuffer64 selected;
 
-            ECS::Entity entity;
+            ECS::Entity entity = ECS::EntityInvalid;
             ECS::Animator animator;
             ECS::Sprite sprite;
 
@@ -63,6 +63,7 @@ namespace AnimationEditor
 		float frameTime = 0.1f;
 		float frameTimer = 0.0f;
 		bool isPlayingFrames = true;
+        bool displayCollider = false;
 	};
 
     static AnimationState s_state;
@@ -74,12 +75,6 @@ namespace AnimationEditor
 
 		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
                 
-        //if(s_state.configAnim.entity == ECS::EntityInvalid)
-        //{
-	       // ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-        //    s_state.configAnim.entity = ecs->CreateEntity(id);
-        //}
-
         FrameRateController& fc = FrameRateController::Get();
 	    RenderManager* rm = GameData::Get().renderManager;
         InputManager* im = GameData::Get().inputManager;
@@ -138,8 +133,8 @@ namespace AnimationEditor
                     VectorF real_frame_size = dim / s_state.frameCounts.toFloat();
                     ImGui::VectorText("Frame Size", real_frame_size);
 
-                    int frame_split_x = std::max(1, s_state.frameCounts.x);
-                    int frame_split_y = std::max(1, s_state.frameCounts.y);
+                    int frame_split_x = Maths::Max(1, s_state.frameCounts.x);
+                    int frame_split_y = Maths::Max(1, s_state.frameCounts.y);
                     const VectorF frame_size = animation.Size() / VectorI(frame_split_x,frame_split_y).toFloat();
                     
                     for( u32 ix = 0; ix < frame_split_x; ix++ )
@@ -348,7 +343,7 @@ namespace AnimationEditor
                     {
                         c.selected = file_names[i].c_str();
                         c.animator = ECS::Animator();
-                        //AnimationReader::BuildAnimatior(c.selected.c_str(), c.animator.animations);
+                        AnimationReader::BuildAnimatior(c.animator, c.selected.c_str());
                     }
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -428,6 +423,7 @@ namespace AnimationEditor
 
                 c.animator.SetActiveSpriteFrame(c.sprite);
 
+                // FLIP
                 if(ImGui::Button("Flip Sprite"))
                 {
                     SDL_RendererFlip flip = c.sprite.flip;
@@ -442,6 +438,7 @@ namespace AnimationEditor
 			    VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat();
             
+                // the visible size of the frame you're looking at, probably the yellow box
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
                 RectF renderFrameRect(draw_point_TL, frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
@@ -456,11 +453,28 @@ namespace AnimationEditor
                     float flip_x = selection_rect.Center().x - draw_point_TL.x;
                     frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
                 }
+                else
+                {
+                    float flip_x = selected_animation.flipPointX * frame_texture_size.x - draw_point_TL.x;
+                    frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
+                }
 
 			    rm->AddRenderPacket(frame_pack);
 
                 DebugDraw::RectOutline(renderFrameRect, Colour::Yellow);
                 relative_selection_top_left = renderFrameRect.TopLeft();
+
+                // COLLIDERS
+                ImGui::Checkbox("Display Collider", &s_state.displayCollider);
+               
+                if(s_state.displayCollider)
+                {
+                    RectF collider;
+                    collider.SetSize(selected_animation.entityColliderSize * renderFrameRect.Size());
+                    collider.SetTopLeft(renderFrameRect.TopLeft() + selected_animation.entityColliderPos * renderFrameRect.Size());
+
+                    DebugDraw::RectOutline(collider, Colour::Blue);
+                }
             
                 ImGui::PopID();
             }
@@ -486,8 +500,8 @@ namespace AnimationEditor
             if(size.isPositive())
             {
                 VectorF top_left;
-                top_left.x = std::min(cs.topLeft.x, cs.botRight.x);
-                top_left.y = std::min(cs.topLeft.y, cs.botRight.y);
+                top_left.x = Maths::Min(cs.topLeft.x, cs.botRight.x);
+                top_left.y = Maths::Min(cs.topLeft.y, cs.botRight.y);
 
                 cs.selectionRect = RectF(top_left, size);
             }

@@ -3,7 +3,7 @@
 #include "CharacterAction.h"
 #include "Core/Timer.h"
 
-namespace Player
+namespace PlayerRanged
 {
 	struct IdleState : public CharacterAction
 	{
@@ -38,27 +38,6 @@ namespace Player
 		void Resume() override;
 	};
 
-	struct FloorSlamState : public CharacterAction
-	{
-		FloorSlamState(ECS::Entity _entity);
-
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-		
-		ECS::Entity attackCollider = ECS::EntityInvalid;
-		bool slammingFloor = false;
-	};
-
-	struct HoverState : public CharacterAction
-	{
-		HoverState(ECS::Entity _entity);
-
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-	};
-
 	struct RollState : public CharacterAction
 	{
 		RollState(ECS::Entity _entity);
@@ -66,30 +45,6 @@ namespace Player
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
-	};
-
-	struct BasicAttackState : public CharacterAction
-	{
-		BasicAttackState(ECS::Entity _entity);
-
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-		
-		ECS::Entity attackCollider = ECS::EntityInvalid;
-
-		int damageOnLoopCount = -1;
-	};
-
-	struct LungeAttackState : public CharacterAction
-	{
-		LungeAttackState(ECS::Entity _entity);
-
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-		
-		ECS::Entity attackCollider = ECS::EntityInvalid;
 	};
 
 	struct DeathState : public CharacterAction
@@ -101,5 +56,17 @@ namespace Player
 
 		TimerF deathTimer;
 		bool canRespawn = false;
+	};
+
+	struct BasicAttackState : CharacterAction
+	{
+		BasicAttackState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+		void Exit() override;
+		
+		//bool
+		//ECS::Entity attackCollider = ECS::EntityInvalid;
 	};
 }

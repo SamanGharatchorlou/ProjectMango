@@ -4,7 +4,7 @@
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Biome.h"
-#include "Characters/Player/PlayerCharacter.h"
+#include "Entities/Player/PlayerCharacter.h"
 
 Camera* Camera::Get()
 {

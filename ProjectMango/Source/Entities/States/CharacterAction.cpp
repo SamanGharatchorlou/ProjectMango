@@ -98,7 +98,7 @@ float CharacterAction::GetAttackRange(ActionState action)
 
 			const VectorF position = transform.GetObjectCenter();
 
-			const float distance = std::max( std::abs(position.x - collider_rect.RightCenter().x), std::abs(position.x - collider_rect.LeftCenter().x) );
+			const float distance = Maths::Max( std::abs(position.x - collider_rect.RightCenter().x), std::abs(position.x - collider_rect.LeftCenter().x) );
 
 			return distance;
 		}
@@ -218,7 +218,6 @@ void CharacterAction::ApplyMovementEase(int movement_factor, float dt)
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
 
 	const int run_acceleration_factor = 1;
 	const VectorI facing_direction = state.GetFacingDirection();

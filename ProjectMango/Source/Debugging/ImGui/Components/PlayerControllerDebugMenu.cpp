@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ComponentDebugMenu.h"
 
-#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
 
@@ -17,7 +16,7 @@ ECS::Component::Type DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
 			ImGui::PushID(entity + (int)type);
 			if (ImGui::TreeNode("Component Data"))
 			{
-				ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
+				//ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
 				ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
 
 				//ImGui::VectorText("Movement Direction", state.movementDirection);

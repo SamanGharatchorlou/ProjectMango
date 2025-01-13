@@ -9,8 +9,8 @@
 #include "Core/Helpers.h"
 #include "ECS/Components/Collider.h"
 #include "Graphics/Raycast.h"
-#include "Characters/Enemies/ShockSweeperEnemy.h"
-#include "Characters/Enemies/BlindingSpiderEnemy.h"
+#include "Entities/Enemies/ShockSweeperEnemy.h"
+#include "Entities/Enemies/BlindingSpiderEnemy.h"
 
 typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
 

@@ -9,4 +9,6 @@ namespace ECS
 	struct Level;
 
 	void FilterEntitiesInLevel(const ECS::Level& level, const std::vector<ECS::Entity>& in_entities, std::vector<ECS::Entity>& out_entities);
+
+
 }

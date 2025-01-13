@@ -2,7 +2,7 @@
 #include "GameState.h"
 
 #include "Audio/AudioManager.h"
-#include "Characters/Player/PlayerCharacter.h"
+#include "Entities/Player/PlayerCharacter.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/EntityCoordinator.h"

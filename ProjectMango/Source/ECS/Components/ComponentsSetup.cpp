@@ -1,13 +1,15 @@
 #include "pch.h"
 #include "ComponentsSetup.h"
 
+#include "Game/Initialiser.h"
+
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
-#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/AIControllerSystem.h"
 #include "ECS/EntSystems/AnimationSystem.h"
@@ -19,27 +21,35 @@
 #include "ECS/EntSystems/TileMapSystem.h"
 #include "ECS/EntSystems/TransformSystem.h"
 #include "ECS/EntSystems/HealthSystem.h"
+#include "ECS/EntSystems/UISystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 void ECS::RegisterAllComponents()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	
-	ecs->RegisterComponent(EntityData, 32);
-	ecs->RegisterComponent(Transform, 32);
-	ecs->RegisterComponent(Sprite, 32);
-	ecs->RegisterComponent(CharacterState, 32);
-	ecs->RegisterComponent(PlayerController, 32);
-	ecs->RegisterComponent(Physics, 32);
-	ecs->RegisterComponent(Animator, 32);
-	ecs->RegisterComponent(Collider, 32);
-	ecs->RegisterComponent(AIController, 32);
-	ecs->RegisterComponent(Pathing, 32);
-	ecs->RegisterComponent(Damage, 32);
-	ecs->RegisterComponent(Health, 32);
-	ecs->RegisterComponent(Biome, 4);
-	ecs->RegisterComponent(Spawner, 4);
-	ecs->RegisterComponent(Door, 32);
+	// should i define these outside somewhere more accessible for some reason?
+	DEFINE_COMPONENT(EntityData, 32)
+	DEFINE_COMPONENT(Transform, 32);
+	DEFINE_COMPONENT(Sprite, 32);
+	DEFINE_COMPONENT(CharacterState, 32);
+	DEFINE_COMPONENT(PlayerController, 32);
+	DEFINE_COMPONENT(Physics, 32);
+	DEFINE_COMPONENT(Animator, 32);
+	DEFINE_COMPONENT(Collider, 32);
+	DEFINE_COMPONENT(AIController, 32);
+	DEFINE_COMPONENT(Pathing, 32);
+	DEFINE_COMPONENT(Damage, 32);
+	DEFINE_COMPONENT(Health, 32);
+	DEFINE_COMPONENT(Biome, 4);
+	DEFINE_COMPONENT(Spawner, 4);
+	DEFINE_COMPONENT(Door, 32);
+	DEFINE_COMPONENT(Cursor, 1);
+
+	ComponentInitialiser::InitAll();
+}
+
+void ECS::RemoveAllComponents(Entity entity)
+{
+	ComponentInitialiser::RemoveAll(entity);
 }
 
 void ECS::RegisterAllSystems()
@@ -83,27 +93,14 @@ void ECS::RegisterAllSystems()
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
 
-	// Compoenent Updates - runs all basic object component update function
+	// UI
+	Signature UISignature = ArcheBit(Cursor);
+	ecs->RegisterSystem<PathingSystem>(PathingSignature);
+
+
+	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
 	Signature ComponentsSignature = ArcheBit(Transform) | ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 }
 
-
-void ECS::RemoveAllComponents(Entity entity)
-{
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ecs->RemoveComponent(EntityData, entity);
-	ecs->RemoveComponent(Transform, entity);
-	ecs->RemoveComponent(Sprite, entity);
-	ecs->RemoveComponent(CharacterState, entity);
-	ecs->RemoveComponent(PlayerController, entity);
-	ecs->RemoveComponent(Physics, entity);
-	ecs->RemoveComponent(Animator, entity);
-	ecs->RemoveComponent(Biome, entity);
-	ecs->RemoveComponent(Collider, entity);
-	ecs->RemoveComponent(AIController, entity);
-	ecs->RemoveComponent(Pathing, entity);
-	ecs->RemoveComponent(Damage, entity);
-	ecs->RemoveComponent(Health, entity);
-}

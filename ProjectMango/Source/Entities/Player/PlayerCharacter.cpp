@@ -7,7 +7,6 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
-#include "ECS/Components/PlayerController.h"
 #include "Game/Camera/Camera.h"
 
 #include "System/Files/ConfigManager.h"
@@ -66,6 +65,7 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, s_playerEntity);
 	character_state.config = player_config;
+	character_state.Init(config->values);
 	
 	// Health
 	ECS::Health& health = ecs->GetComponentRef(Health, s_playerEntity);

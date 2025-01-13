@@ -143,6 +143,8 @@ void GameData::setupObservers()
 
 void GameData::free()
 {
+	//SDL_JoystickClose()
+
 	delete inputManager;
 	delete systemStateManager;
 

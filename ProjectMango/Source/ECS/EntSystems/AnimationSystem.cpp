@@ -4,7 +4,6 @@
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
-#include "ECS/Components/PlayerController.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/Components/Animator.h"
 

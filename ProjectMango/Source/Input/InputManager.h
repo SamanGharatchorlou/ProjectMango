@@ -10,8 +10,8 @@ static constexpr int c_inputBuffer = 8;
 class InputManager
 {
 public:
-	InputManager() { }
-	~InputManager() { }
+	InputManager();
+	~InputManager();
 
 	static InputManager* Get();
 
@@ -55,6 +55,8 @@ private:
 	bool HandleReleaseButton(const Button& button, int frame_buffer);
 
 public:
+	SDL_Joystick* mJoyStick;
+
 	// turn me into an array
 	std::vector<Button> mButtons;
 	Cursor mCursor;

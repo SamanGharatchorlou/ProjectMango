@@ -39,7 +39,7 @@ namespace AnimationReader
 		}
 	}
 
-	void BuildAnimatior(ECS::Entity entity, const char* file)
+	void BuildAnimatior(ECS::Animator& animator, const char* file)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
 		JSONParser parser(full_path.c_str());
@@ -107,7 +107,6 @@ namespace AnimationReader
 				PopulateColliderData("attack_collider", animation, &anim.attackColliderPos, &anim.attackColliderSize);
 				PopulateColliderData("entity_collider_end", animation, &anim.entityColliderEndPos, nullptr);
 				
-				ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
 				animator.animations.push_back(anim);
 			}
 		}

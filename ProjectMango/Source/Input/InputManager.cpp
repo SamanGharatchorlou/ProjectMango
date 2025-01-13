@@ -12,8 +12,26 @@ static void InitButton(Button& button)
 	button.mHeldFrames = 0;
 }
 
+InputManager::InputManager()
+{
+	//SDL_Jotstick
+	//SDL_Joystick* joystick;// = new SDL_
+
+}
+
+InputManager::~InputManager()
+{
+	SDL_JoystickClose(mJoyStick);
+}
+
 void InputManager::init()
 {
+	if( SDL_NumJoysticks() > 0 )
+	{
+		mJoyStick = SDL_JoystickOpen( 0 );
+		DebugPrint(Warning, "Unable to open game controller. SDL Error: %s\n", SDL_GetError());
+	}
+
 	bindDefaultButtons();
 
 	for (Button& button : mButtons)
@@ -55,6 +73,8 @@ void InputManager::processInputEvent(SDL_Event& event)
 	if (has_input)
 		return;
 #endif
+
+	//if(event.type == SDL_JOY)
 
 	if (event.type == SDL_MOUSEMOTION)
 		processMouseMovementEvent();
@@ -204,10 +224,16 @@ void InputManager::processMouseButtonEvent(SDL_Event& event)
 	}
 }
 
+#define JOYSTICK_DEAD_ZONE 8000
+
 void InputManager::processButtonEvent(SDL_Event& event)
 { 
 	const FrameRateController& frc = FrameRateController::Get();
 	const int frame_count = frc.FrameCount();
+
+	//Normalized direction
+    int xDir = 0;
+    int yDir = 0;
 
 	for (Button& button : mButtons)
 	{
@@ -225,7 +251,88 @@ void InputManager::processButtonEvent(SDL_Event& event)
 					button.setPressed(frame_count);
 				}
 			}
+
+			if(event.type = SDL_JOYBUTTONDOWN)
+			{
+				event.jbutton.button;
+				int a = 4;
+			}
+
+
+			//if(button.)
+			if( event.type == SDL_JOYAXISMOTION )
+			{
+				//Motion on controller 0
+				if( event.jaxis.which == 0 )
+				{                        
+					//X axis motion
+					if( event.jaxis.axis == 0 )
+					{
+						//Left of dead zone
+						if( event.jaxis.value < -JOYSTICK_DEAD_ZONE )
+						{
+							xDir = -1;
+
+						}
+						//Right of dead zone
+						else if( event.jaxis.value > JOYSTICK_DEAD_ZONE )
+						{
+							xDir =  1;
+						}
+						else
+						{
+							xDir = 0;
+						}
+					}
+				}
+			}
+
+			int js0 = SDL_JoystickGetButton(mJoyStick, 0);
+			int js1 = SDL_JoystickGetButton(mJoyStick, 1);	
+			int js2 = SDL_JoystickGetButton(mJoyStick, 2);	
+			int js3 = SDL_JoystickGetButton(mJoyStick, 3);		
+			int js4 = SDL_JoystickGetButton(mJoyStick, 4);	
+			int js5 = SDL_JoystickGetButton(mJoyStick, 5);
+
+			int totla = js0 + js1 + js2 + js3 + js4 + js5;
+			if(totla != 0)
+			{
+				int a = 4;
+			}
 		}
+		//else if(event.jbutton.button == 0)
+	}
+
+	if( event.type == SDL_JOYAXISMOTION )
+    {
+        //Motion on controller 0
+        if( event.jaxis.which == 0 )
+        {                        
+            //X axis motion
+            if( event.jaxis.axis == 0 )
+            {
+                //Left of dead zone
+                if( event.jaxis.value < -JOYSTICK_DEAD_ZONE )
+                {
+                    xDir = -1;
+
+                }
+                //Right of dead zone
+                else if( event.jaxis.value > JOYSTICK_DEAD_ZONE )
+                {
+                    xDir =  1;
+                }
+                else
+                {
+                    xDir = 0;
+                }
+            }
+		}
+	}
+
+	if(xDir != 0)
+	{
+		int a = 4;
 	}
 }
 

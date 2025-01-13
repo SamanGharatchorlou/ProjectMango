@@ -35,6 +35,32 @@ ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 			ImGui::TreePop();
 		}
 
+		if(ImGui::TreeNode("Display Walkable Tiles"))
+		{
+			for( u32 l = 0; l < biome.levels.size(); l++ )
+			{
+				const ECS::Level& level = biome.levels[l];
+
+				for( u32 y = 0; y < level.walkableTiles.yCount(); y++ )
+				{
+					for( u32 x = 0; x < level.walkableTiles.xCount(); x++ )
+					{
+						VectorI index = VectorI(x,y);
+						int traversal_value = level.walkableTiles.get( index );
+						if(traversal_value == 1)
+						{
+							
+							RectF rect = level.GetWalkableTileRect(index);
+
+							DebugDraw::RectOutline(rect, Colour::Green);
+						}
+					}
+				}
+			}
+
+			ImGui::TreePop();
+		}
+
 		ImGui::PopID();
 	}
 

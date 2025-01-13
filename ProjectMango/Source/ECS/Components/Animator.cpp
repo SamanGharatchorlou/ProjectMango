@@ -12,7 +12,7 @@ namespace ECS
 	
 	void Animator::Init(const char* animation)
 	{
-		AnimationReader::BuildAnimatior( entity, animation );
+		AnimationReader::BuildAnimatior( *this, animation );
 		activeAnimation = 0;
 		state = TimeState::Running;
 	}

@@ -30,16 +30,13 @@
     <ClCompile Include="Source\Audio\SoundController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\Enemies\ShockSweeperEnemy.cpp">
+    <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\Player\PlayerCharacter.cpp">
+    <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\States\CharacterAction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Characters\States\PlayerStates.cpp">
+    <ClCompile Include="Source\Entities\States\CharacterAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\Events\Dispatcher.cpp">
@@ -145,9 +142,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Components\Physics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ECS\Components\PlayerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Components\TileMap.cpp">
@@ -342,7 +336,25 @@
     <ClCompile Include="Source\ECS\EntSystems\ComponentUpdateSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Characters\Enemies\BlindingSpiderEnemy.cpp">
+    <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\States\PlayerMeleeStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\States\PlayerRangedStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Spells\SpellEntityBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Components\UIComponents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Initialiser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -365,16 +377,13 @@
     <ClInclude Include="Source\Audio\SoundController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Characters\Enemies\ShockSweeperEnemy.h">
+    <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Characters\Player\PlayerCharacter.h">
+    <ClInclude Include="Source\Entities\Player\PlayerCharacter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Characters\States\CharacterAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Characters\States\PlayerStates.h">
+    <ClInclude Include="Source\Entities\States\CharacterAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Events\Dispatcher.h">
@@ -501,9 +510,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Components\PlayerController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\TileMap.h">
@@ -1094,7 +1100,25 @@
     <ClInclude Include="Source\ECS\EntSystems\ComponentUpdateSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Characters\Enemies\BlindingSpiderEnemy.h">
+    <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\States\PlayerMeleeStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\States\PlayerRangedStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Spells\SpellEntityBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\UISystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\UIComponents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Initialiser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

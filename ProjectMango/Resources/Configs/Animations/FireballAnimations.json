@@ -1,0 +1,19 @@
+{
+	"id": "Fireball",
+	"frameSize_x": 72,
+	"frameSize_y": 72,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Fire-ball",
+			"animations": [
+				{
+					"action": "Active",
+					"startIndex": 0,
+					"frameCount": 8,
+					"frameTime": 0.2
+				}
+			]
+		}
+	]
+}

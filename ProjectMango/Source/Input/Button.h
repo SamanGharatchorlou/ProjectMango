@@ -69,6 +69,9 @@ public:
 		F11 = SDLK_F11,
 		F12 = SDLK_F12,
 
+		// Controller
+		//FaceLeft =SDL_JOYBUTTUN
+
 		COUNT
 	};
 

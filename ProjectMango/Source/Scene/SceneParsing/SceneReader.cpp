@@ -94,10 +94,10 @@ namespace Scene
 			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
 			ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
-			biome.aabb[0].x = std::min(biome.aabb[0].x, level.worldPos.x);
-			biome.aabb[0].y = std::min(biome.aabb[0].y, level.worldPos.y);
-			biome.aabb[1].x = std::max(biome.aabb[1].x, level.worldPos.x + level.size.x);
-			biome.aabb[1].y = std::max(biome.aabb[1].y, level.worldPos.y + level.size.y);
+			biome.aabb[0].x = Maths::Min(biome.aabb[0].x, level.worldPos.x);
+			biome.aabb[0].y = Maths::Min(biome.aabb[0].y, level.worldPos.y);
+			biome.aabb[1].x = Maths::Max(biome.aabb[1].x, level.worldPos.x + level.size.x);
+			biome.aabb[1].y = Maths::Max(biome.aabb[1].y, level.worldPos.y + level.size.y);
 
 			Value& layers = levels[i]["layerInstances"];
 			for (SizeType i = 0; i < layers.Size(); i++)

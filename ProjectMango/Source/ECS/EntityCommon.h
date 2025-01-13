@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/TypeDefs.h"
+#include "Game/Initialiser.h"
 
 #define ENTITY_LOGGING 1
 
@@ -15,52 +16,50 @@ namespace ECS
 	constexpr Entity EntityInvalid = -1;
 	constexpr Archetype ArchetypeInvalid = -1;
 
+#define ENUM_ENTRY( e ) e,
+#define STRING_ENTRY( t ) #t,
+
+#define COMPONENTS( _entry ) \
+			_entry( EntityData ) \
+			_entry( Transform ) \
+			_entry( Sprite ) \
+			_entry( CharacterState ) \
+			_entry( PlayerController ) \
+			_entry( Physics ) \
+			_entry( Animator ) \
+			_entry( Collider ) \
+			_entry( AIController ) \
+			_entry( Pathing ) \
+			_entry( Damage ) \
+			_entry( Health ) \
+			_entry( Biome ) \
+			_entry( Spawner ) \
+			_entry( Door ) \
+			_entry( Cursor ) \
+
 	struct Component
 	{
 		enum Type : u64
 		{
-			EntityData,
-			Transform,
-			Sprite,
-			CharacterState,
-			PlayerController,
-			Physics,
-			Animator,
-			Collider,
-			AIController,
-			Pathing,
-			Damage,
-			Health,
-			Biome,
-			Spawner,
-			Door,
-
+			COMPONENTS( ENUM_ENTRY )
 			Count
 		};
 	};
-
-	static constexpr const char* ComponentNames[Component::Count]
+	
+	static const char* ComponentNames[Component::Count]
 	{
-		"EntityData",
-		"Transform", 
-		"Sprite",
-		"CharacterState", 
-		"PlayerController", 
-		"Physics", 
-		"Animator",
-		"Collider",
-		"AIController",
-		"Pathing",
-		"Damage",
-		"Health",
-		"Biome",
-		"Spawner",
-		"Door"
+		COMPONENTS( STRING_ENTRY )
 	};
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \
 							 Entity entity = EntityInvalid; \
-	
+
+#define DEFINE_COMPONENT( component, size ) \
+	struct component##initialiser : public ComponentInitialiser \
+	{ void OnInit() override { GameData::Get().ecs->RegisterComponent(component, size); } \
+	  void Remove(ECS::Entity entity) { GameData::Get().ecs->RemoveComponent(component, entity);  } }; \
+	static component##initialiser s_component##initialiser;
+
 	// lock - system signature
 	// key - entity archetype
 	static bool LockAndKey(Signature lock, Archetype key) 

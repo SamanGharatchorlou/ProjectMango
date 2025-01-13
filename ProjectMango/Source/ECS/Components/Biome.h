@@ -42,6 +42,7 @@ namespace ECS
 		std::unordered_map<BasicString, std::vector<VectorF>> entities;
 
 		VectorI GetTileIndex(VectorF position) const;
+		RectF GetWalkableTileRect(VectorI index) const;
 	};
 
 	struct Biome

@@ -2,10 +2,10 @@
 
 namespace ECS
 {
-	struct Animation;
+	struct Animator;
 }
 
 namespace AnimationReader
 {
-	void BuildAnimatior(ECS::Entity entity, const char* file);
+	void BuildAnimatior(ECS::Animator& animator, const char* file);
 };

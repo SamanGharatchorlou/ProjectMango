@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Core/stack.h"
-#include "Characters/States/CharacterAction.h"
+#include "Entities/States/CharacterAction.h"
+#include "IdentityCommon.h"
+//#include "ComponentsSetup.h"
 
 class Texture;
 struct ObjectConfig;
@@ -12,7 +14,7 @@ namespace ECS
 
 	static const VectorI s_directions[Direction::Count] 
 	{ 
-		VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0) 
+		VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0)
 	};
 
 	struct EntityData
@@ -77,10 +79,24 @@ namespace ECS
 		Character* character;
 
 		VectorI movementInput;
+
+		bool isRanged = true;
+		bool isMelee = false;
+
+		// melee only (split this into differnt state parts?)
+		bool canEnterHover = false;
+		
+		void Init(const SettingValues& values);
 		VectorI GetFacingDirection() const;
+		void FlipFacingDirection();
 
 		template<class T>
 		const T* GetConfig() const { return ConfigManager::Get()->GetConfig<T>(config.c_str()); }
+	};
+
+	struct PlayerController // more like a tag "I am a player"
+	{
+		COMPONENT_TYPE(PlayerController)
 	};
 
 	struct Pathing
@@ -151,6 +167,16 @@ namespace ECS
 
 		// top and bottom
 		Entity colliders[2];
+
+		void Init();
+		void Update();
+
+		void GenerateColliders(float width);
+	};
+
+	struct SpellBook
+	{
+		COMPONENT_TYPE(Door)
 
 		void Init();
 		void Update();

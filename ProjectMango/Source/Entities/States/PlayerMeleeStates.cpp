@@ -1,23 +1,18 @@
 #include "pch.h"
-#include "PlayerStates.h"
+#include "PlayerMeleeStates.h"
 
 #include "Animations/CharacterStates.h"
-#include "Game/FrameRateController.h"
 #include "Input/InputManager.h"
 
-#include "Core/Helpers.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
-#include "ECS/Components/ComponentCommon.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Physics.h"
-#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/EntSystems/AnimationSystem.h"
 #include "System/Files/ConfigManager.h"
 
 
-using namespace Player;
+using namespace PlayerMelee;
 using namespace ECS;
 
 static const int c_defaultEasingSpeed = 3;
@@ -162,8 +157,7 @@ void JumpState::Update(float dt)
 
 	if(input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
 	{
-		PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-		if(pc.canEnterHover)
+		if(state.canEnterHover)
 		{
 			ReplaceState(Hover);
 			return;
@@ -178,7 +172,7 @@ void JumpState::Update(float dt)
 	}
 }
 
-// JumpState
+// FallState
 // ---------------------------------------------------------
 FallState::FallState(ECS::Entity _entity) : CharacterAction(ActionState::Fall, _entity) { }
 
@@ -209,8 +203,7 @@ void FallState::Update(float dt)
 	InputManager* input = InputManager::Get();
 	if(input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
 	{
-		PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-		if(pc.canEnterHover)
+		if(state.canEnterHover)
 		{
 			PushState(Hover);
 			return;
@@ -223,6 +216,208 @@ void FallState::Update(float dt)
 		PopState();
 		return;
 	}
+}
+
+// RollState
+// ---------------------------------------------------------
+RollState::RollState(Entity _entity) : CharacterAction(ActionState::Roll, _entity) { }
+
+void RollState::Init()
+{
+	StartAnimation(ActionState::Roll, false);
+
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Physics& physics = ecs->GetComponentRef(Physics,entity);
+
+	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	physics.speed = state.movementInput.toFloat() * GetObjectConfig(entity)->values.GetFloat("roll_impulse");
+
+	if(Collider* collider = ecs->GetComponent(Collider, entity))
+	{
+		collider->SetFlag(Collider::TerrainOnly);
+	}
+}
+
+void RollState::Update(float dt)
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	
+	const Animator& animation = ecs->GetComponentRef(Animator, entity);
+	if (animation.loopCount > 0)
+	{
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		PopState();
+		return;
+	}
+}
+
+void RollState::Exit()
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	if(Collider* collider = ecs->GetComponent(Collider, entity))
+	{
+		collider->RemoveFlag(Collider::TerrainOnly);
+	}
+}
+
+
+
+// DeathState
+// ---------------------------------------------------------
+DeathState::DeathState(Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
+
+void DeathState::Init()
+{
+	canRespawn = false;
+
+	StartAnimation(false);
+	
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	if(Physics* physics = ecs->GetComponent(Physics, entity))
+	{
+		physics->speed.set(0.0f, 0.0f);
+	}
+}
+
+void DeathState::Update(float dt)
+{	
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Animator& animator = ecs->GetComponentRef(Animator, entity);
+
+	if(animator.loopCount > 0)
+	{
+		if(!deathTimer.IsRunning())
+			deathTimer.Start();
+
+		if(deathTimer.GetSeconds() > 2.0f)
+			canRespawn = true;
+	}
+}
+
+
+// -------------------------------------------------
+// OLD PANDA STATES
+// -------------------------------------------------
+
+// BasicAttack
+// ---------------------------------------------------------
+BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+
+void BasicAttackState::Init()
+{
+	StartAnimation(false);
+}
+
+void BasicAttackState::Update(float dt)
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	Animator& animator = ecs->GetComponentRef(Animator, entity);
+
+	if (animator.loopCount > 0)
+	{
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.canFlip = true;
+
+		if (animator.GetActiveAnimation().action == ActionState::BasicAttack)
+		{
+			InputManager* input = InputManager::Get();
+			if (input->isCursorHeld(Cursor::ButtonType::Left))
+			{
+				StartAnimation(ActionState::BasicAttackHold);
+				damageOnLoopCount = -1;
+			}
+			else
+			{
+				PopState();
+				return;
+			}
+		}
+		else if (animator.GetActiveAnimation().action == ActionState::BasicAttackHold)
+		{
+			InputManager* input = InputManager::Get();
+			if (!input->isCursorHeld(Cursor::ButtonType::Left))
+			{
+				PopState();
+				return;
+			}
+		}
+		else
+		{
+			PopState();
+			return;
+		}
+	}
+	
+	if(animator.loopCount > damageOnLoopCount)
+	{
+		if(attackCollider == EntityInvalid)
+		{					
+			const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			const ObjectConfig* config = GetObjectConfig(entity);
+			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
+		}
+
+		Damage& damage = ecs->GetComponentRef(Damage, attackCollider);
+		damage.appliedTo.clear();
+		damage.appliedTo.push_back(entity);
+
+		damageOnLoopCount = animator.loopCount;
+	}
+
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	physics.ApplyDrag(0.5f);
+}
+
+void BasicAttackState::Exit()
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	ecs->entities.KillEntity(attackCollider);
+}
+
+// LungeAttack
+// ---------------------------------------------------------
+LungeAttackState::LungeAttackState(ECS::Entity _entity) : CharacterAction(ActionState::LungeAttack, _entity) { }
+
+void LungeAttackState::Init()
+{
+	StartAnimation(false);	
+}
+
+void LungeAttackState::Update(float dt)
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
+	physics.ApplyDrag(0.02f);
+
+	const Animator& animation = ecs->GetComponentRef(Animator, entity);
+	if (animation.loopCount > 0)
+	{
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		PopState();
+		return;
+	}
+
+	Animator& animator = ecs->GetComponentRef(Animator, entity);
+
+	if(CanCreateAttackCollider(attackCollider))
+	{					
+		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		const ObjectConfig* config = GetObjectConfig(entity);
+		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->values.GetFloat("jump_attack_damage"), config->values.GetFloat("jump_attack_force"));
+	}
+
+	if(CanDestroyAttackCollider(attackCollider))
+	{
+		ecs->entities.KillEntity(attackCollider);
+	}
+}
+
+void LungeAttackState::Exit()
+{
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	ecs->entities.KillEntity(attackCollider);
 }
 
 // HoverState
@@ -345,201 +540,5 @@ void FloorSlamState::Exit()
 		collider->RemoveFlag(Collider::TerrainOnly);
 	}
 
-	ecs->entities.KillEntity(attackCollider);
-}
-
-// RollState
-// ---------------------------------------------------------
-RollState::RollState(Entity _entity) : CharacterAction(ActionState::Roll, _entity) { }
-
-void RollState::Init()
-{
-	StartAnimation(ActionState::Roll, false);
-
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	Physics& physics = ecs->GetComponentRef(Physics,entity);
-
-	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetObjectConfig(entity)->values.GetFloat("roll_impulse");
-
-	if(Collider* collider = ecs->GetComponent(Collider, entity))
-	{
-		collider->SetFlag(Collider::TerrainOnly);
-	}
-}
-
-void RollState::Update(float dt)
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	
-	const Animator& animation = ecs->GetComponentRef(Animator, entity);
-	if (animation.loopCount > 0)
-	{
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		PopState();
-		return;
-	}
-}
-
-void RollState::Exit()
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	if(Collider* collider = ecs->GetComponent(Collider, entity))
-	{
-		collider->RemoveFlag(Collider::TerrainOnly);
-	}
-}
-
-// BasicAttack
-// ---------------------------------------------------------
-BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
-
-void BasicAttackState::Init()
-{
-	StartAnimation(false);
-}
-
-void BasicAttackState::Update(float dt)
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	Animator& animator = ecs->GetComponentRef(Animator, entity);
-
-	if (animator.loopCount > 0)
-	{
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		sprite.canFlip = true;
-
-		if (animator.GetActiveAnimation().action == ActionState::BasicAttack)
-		{
-			InputManager* input = InputManager::Get();
-			if (input->isCursorHeld(Cursor::ButtonType::Left))
-			{
-				StartAnimation(ActionState::BasicAttackHold);
-				damageOnLoopCount = -1;
-			}
-			else
-			{
-				PopState();
-				return;
-			}
-		}
-		else if (animator.GetActiveAnimation().action == ActionState::BasicAttackHold)
-		{
-			InputManager* input = InputManager::Get();
-			if (!input->isCursorHeld(Cursor::ButtonType::Left))
-			{
-				PopState();
-				return;
-			}
-		}
-		else
-		{
-			PopState();
-			return;
-		}
-	}
-	
-	if(animator.loopCount > damageOnLoopCount)
-	{
-		if(attackCollider == EntityInvalid)
-		{					
-			const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			const ObjectConfig* config = GetObjectConfig(entity);
-			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
-		}
-
-		Damage& damage = ecs->GetComponentRef(Damage, attackCollider);
-		damage.appliedTo.clear();
-		damage.appliedTo.push_back(entity);
-
-		damageOnLoopCount = animator.loopCount;
-	}
-
-	Physics& physics = ecs->GetComponentRef(Physics, entity);
-	physics.ApplyDrag(0.5f);
-}
-
-void BasicAttackState::Exit()
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	ecs->entities.KillEntity(attackCollider);
-}
-
-// DeathState
-// ---------------------------------------------------------
-DeathState::DeathState(Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
-
-void DeathState::Init()
-{
-	canRespawn = false;
-
-	StartAnimation(false);
-	
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	if(Physics* physics = ecs->GetComponent(Physics, entity))
-	{
-		physics->speed.set(0.0f, 0.0f);
-	}
-}
-
-void DeathState::Update(float dt)
-{	
-	EntityCoordinator* ecs = GameData::Get().ecs;
-	Animator& animator = ecs->GetComponentRef(Animator, entity);
-
-	if(animator.loopCount > 0)
-	{
-		if(!deathTimer.IsRunning())
-			deathTimer.Start();
-
-		if(deathTimer.GetSeconds() > 2.0f)
-			canRespawn = true;
-	}
-}
-
-
-// LungeAttack
-// ---------------------------------------------------------
-LungeAttackState::LungeAttackState(ECS::Entity _entity) : CharacterAction(ActionState::LungeAttack, _entity) { }
-
-void LungeAttackState::Init()
-{
-	StartAnimation(false);	
-}
-
-void LungeAttackState::Update(float dt)
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
-
-	Physics& physics = ecs->GetComponentRef(Physics, entity);
-	physics.ApplyDrag(0.02f);
-
-	const Animator& animation = ecs->GetComponentRef(Animator, entity);
-	if (animation.loopCount > 0)
-	{
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		PopState();
-		return;
-	}
-
-	Animator& animator = ecs->GetComponentRef(Animator, entity);
-
-	if(CanCreateAttackCollider(attackCollider))
-	{					
-		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		const ObjectConfig* config = GetObjectConfig(entity);
-		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->values.GetFloat("jump_attack_damage"), config->values.GetFloat("jump_attack_force"));
-	}
-
-	if(CanDestroyAttackCollider(attackCollider))
-	{
-		ecs->entities.KillEntity(attackCollider);
-	}
-}
-
-void LungeAttackState::Exit()
-{
-	EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->entities.KillEntity(attackCollider);
 }

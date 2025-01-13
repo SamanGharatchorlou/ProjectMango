@@ -2,9 +2,9 @@
 
 #include "Game/States/State.h"
 #include "Animations/CharacterStates.h"
-#include "Characters/States/CharacterAction.h"
+#include "Entities/States/CharacterAction.h"
 
-namespace BlindingSpider
+namespace ShockSweeper
 {
 	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
 

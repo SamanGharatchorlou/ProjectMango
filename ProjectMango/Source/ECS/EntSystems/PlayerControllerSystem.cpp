@@ -2,16 +2,17 @@
 #include "PlayerControllerSystem.h"
 
 #include "ECS/Components/Components.h"
-#include "ECS/Components/PlayerController.h"
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
-#include "Characters/Player/PlayerCharacter.h"
-#include "Characters/States/PlayerStates.h"
+#include "Entities/Player/PlayerCharacter.h"
+#include "Entities/States/PlayerMeleeStates.h"
+#include "Entities/States/PlayerRangedStates.h"
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Biome.h"
 #include "Game/Camera/Camera.h"
+#include "Entities/Spells/SpellEntityBuilder.h"
 
 #include "ECS/Components/ComponentCommon.h"
 #include "Core/Helpers.h"
@@ -56,6 +57,9 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		InputManager* input = InputManager::Get();
 
+		// setup spell - where to put this?
+		Spell::CreateEntityMap();
+
 		for (Entity entity : entities)
 		{
 			PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
@@ -68,11 +72,23 @@ namespace ECS
 
 				if( character_state->action == ActionState::Death )
 				{
-					Player::DeathState* death_state = static_cast<Player::DeathState*>(character_state);
-					if(death_state->canRespawn)
+					if(state.isMelee)
 					{
-						SpawnPlayer();
-						return;
+  						PlayerMelee::DeathState* death_state = static_cast<PlayerMelee::DeathState*>(character_state);
+						if(death_state->canRespawn)
+						{
+							SpawnPlayer();
+							return;
+						}
+					}
+					else
+					{
+  						PlayerRanged::DeathState* death_state = static_cast<PlayerRanged::DeathState*>(character_state);
+						if(death_state->canRespawn)
+						{
+							SpawnPlayer();
+							return;
+						}
 					}
 				}
 				else
@@ -82,7 +98,11 @@ namespace ECS
 						if(health->currentHealth <= 0.0f)
 						{
 							state.actions.Pop();
-							state.actions.Push( new Player::DeathState(entity) );
+
+							if(state.isMelee)
+  								state.actions.Push( new PlayerMelee::DeathState(entity) );
+							else
+  								state.actions.Push( new PlayerRanged::DeathState(entity) );
 						}
 					}
 				}
@@ -94,16 +114,22 @@ namespace ECS
 				{
 					if( character_state->action != ActionState::Fall && character_state->action != ActionState::FloorSlam )
 					{
-  						state.actions.Push( new Player::FallState(entity) );
+						if(state.isMelee)
+  							state.actions.Push( new PlayerMelee::FallState(entity) );
+						else
+  							state.actions.Push( new PlayerRanged::FallState(entity) );
 					}
 				}
 
 				if(physics.onFloor)
-					pc.canEnterHover = true;
+					state.canEnterHover = true;
 			}
 			else
 			{
-				state.actions.Push( new Player::IdleState(entity) );
+				if(state.isMelee)
+  					state.actions.Push( new PlayerMelee::IdleState(entity) );
+				else
+  					state.actions.Push( new PlayerRanged::IdleState(entity) );
 			}
 
 			// Movement Direction

@@ -1,9 +1,10 @@
 {
-	"animation": "PandaHeroAnimations",
+	"animation": "SageHeroAnimations",
 	"values": {
-		"size_x": 412,
-		"size_y": 122,
+		"size_x": 208,
+		"size_y": 84,
 		"gravity": true,
+		"max_health": 100,
 		"acceleration_x": 100,
 		"acceleration_y": 100,
 		"max_run_speed": 500,
@@ -15,7 +16,6 @@
 		"jump_attack_damage": 15,
 		"jump_attack_force": 200,
 		"slam_attack_damage": 25,
-		"slam_attack_force": 400,
-		"max_health": 100
+		"slam_attack_force": 400
 	}
 }

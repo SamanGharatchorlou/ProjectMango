@@ -12,7 +12,7 @@
 		"basic_attack_damage": 10,
 		"basic_attack_force": 150,
 		"max_health": 100,
-		"target_detect_range_x"  : 300,
+		"target_detect_range_x"  : 50,
 		"target_detect_range_y"  : 50
 	}
 }

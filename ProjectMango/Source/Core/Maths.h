@@ -27,4 +27,10 @@ namespace Maths
 	{
 		return radians * static_cast<T>(180.0f / pi);
 	}
+	
+	template<typename T>
+	static T Max(T a, T b) { return a > b ? a : b; }
+
+	template<typename T>
+	static T Min(T a, T b) { return a < b ? a : b; }
 }

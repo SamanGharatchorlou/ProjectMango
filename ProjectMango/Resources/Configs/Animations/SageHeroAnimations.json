@@ -1,0 +1,77 @@
+{
+	"id": "SageHero",
+	"frameSize_x": 52,
+	"frameSize_y": 21,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "sage 52x21",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 9,
+					"frameTime": 0.10,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Run",
+					"startIndex": 32,
+					"frameCount": 8,
+					"frameTime": 0.12,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Death",
+					"startIndex": 192,
+					"frameCount": 8,
+					"frameTime": 0.14,
+					"looping": false,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Jump",
+					"startIndex": 48,
+					"frameCount": 4,
+					"frameTime": 0.1,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Fall",
+					"startIndex": 64,
+					"frameCount": 4,
+					"frameTime": 0.1,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Hover",
+					"startIndex": 102,
+					"frameCount": 4,
+					"frameTime": 0.1,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				},
+				{
+					"action": "Roll",
+					"startIndex": 80,
+					"frameCount": 4,
+					"frameTime": 0.05,
+					"flip_point_x": 0.308,
+					"entity_collider_pos": [ 0.23, 0.23 ],
+					"entity_collider_size": [ 0.155, 0.675 ]
+				}
+			]
+		}
+	]
+}

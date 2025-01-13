@@ -9,8 +9,8 @@
 #include "Game/FrameRateController.h"
 
 #include "Animations/CharacterStates.h"
-#include "Characters/States/CharacterAction.h"
-#include "Characters/Player/PlayerCharacter.h"
+#include "Entities/States/CharacterAction.h"
+#include "Entities/Player/PlayerCharacter.h"
 #include "System/Files/ConfigManager.h"
 
 namespace ECS
@@ -72,9 +72,9 @@ namespace ECS
 			const ObjectConfig* config = GetObjectConfig(entity);
 			const VectorF detect_range = config->values.GetVectorF( "target_detect_range" );
 			const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
-			aic.isAlert = detect_range.x < distance.x && detect_range.y < distance.y;
+			aic.isAlert = detect_range.x > distance.x && detect_range.y > distance.y;
 
-
+			int a = 4;
 		}
 
 		for( u32 i = 0; i < dead_entities.size(); i++ )

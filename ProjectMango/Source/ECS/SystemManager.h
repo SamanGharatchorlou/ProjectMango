@@ -13,6 +13,10 @@ namespace ECS
 
 		std::vector<Entity> entities;
 		Signature signature;
+
+		// need to implement this below
+		// the signature can be an AND or OR match, defaults to OR
+		bool signature_OR = false;
 	};
 
 	struct SystemManager
@@ -60,6 +64,8 @@ namespace ECS
 		{
 			for (u32 i = 0; i < entSystems.size(); i++)
 			{
+				// todo: figure out what the correct this is here, what i've actually done must be correct
+				// but why is it different to the add?
 				//if (LockAndKey(entSystems[i]->signature, type)) // this is wrong!
 				if ( (entSystems[i]->signature & (u64)1 << type ))
 				{

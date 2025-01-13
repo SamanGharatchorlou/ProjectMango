@@ -8,8 +8,10 @@
 #include "ECS/EntSystems/TransformSystem.h"
 #include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
-#include "Characters/Player/PlayerCharacter.h"
+#include "Entities/Player/PlayerCharacter.h"
 #include "System/Files/ConfigManager.h"
+
+#include "ECS/EntityCommon.h"
 
 namespace ECS
 {
@@ -172,6 +174,12 @@ namespace ECS
 	}
 
 	// CharacterState
+	void CharacterState::Init(const SettingValues& values)
+	{
+		isRanged = values.GetBool("ranged", true);
+		isMelee = values.GetBool("melee", false);
+	}
+
 	VectorI CharacterState::GetFacingDirection() const
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -180,6 +188,20 @@ namespace ECS
 		int direction = sprite.IsFlipped() ? -1 : 1;
 
 		return VectorI(direction, 0);
+	}
+
+	void CharacterState::FlipFacingDirection()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+		if( sprite.canFlip )
+		{
+			if( sprite.flip == SDL_FLIP_HORIZONTAL)
+				sprite.flip = SDL_FLIP_NONE;
+			else
+				sprite.flip = SDL_FLIP_HORIZONTAL;
+		}
 	}
 
 	bool Spawner::Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn)

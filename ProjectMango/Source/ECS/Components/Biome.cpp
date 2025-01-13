@@ -78,4 +78,13 @@ namespace ECS
 
 		return VectorI(-1,-1);
 	}
+
+	
+	RectF Level::GetWalkableTileRect(VectorI index) const 
+	{
+		VectorF tile_size = layers.front().tileSize;
+		VectorF tile_pos = index.toFloat() * tile_size + worldPos;
+
+		return RectF(tile_pos, tile_size);
+	}
 }
