@@ -55,10 +55,10 @@ namespace ECS
 							 Entity entity = EntityInvalid; \
 
 #define DEFINE_COMPONENT( component, size ) \
-	struct component##initialiser : public ComponentInitialiser \
-	{ void OnInit() override { GameData::Get().ecs->RegisterComponent(component, size); } \
-	  void Remove(ECS::Entity entity) { GameData::Get().ecs->RemoveComponent(component, entity);  } }; \
-	static component##initialiser s_component##initialiser;
+	struct component##initialiser : public ComponentInitialiser { \
+		void OnInit() override { GameData::Get().ecs->RegisterComponent(component, size); } \
+		void Remove(ECS::Entity entity) { GameData::Get().ecs->RemoveComponent(component, entity);  } }; \
+	static component##initialiser s_##component##initialiser;
 
 	// lock - system signature
 	// key - entity archetype
