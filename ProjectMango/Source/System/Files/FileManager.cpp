@@ -12,40 +12,44 @@ FileManager* FileManager::Get()
 	return &sInstance;
 }
 
+#define AddFolder(self, parent, relative_path) \
+	folderPaths[self]=FolderPath(self, parent, folderPaths[parent].path + relative_path); \
+	if(parent != None) folderPaths[parent].children.push_back(self)
+
 
 void FileManager::init()
 {
-	folderPaths[None] = ".";
-	folderPaths[Root] = pathToString(fs::current_path()) + "\\Resources\\";
+	folderPaths[None] = FolderPath(None, None, ".");
+	folderPaths[Root] = FolderPath(Root, None, pathToString(fs::current_path()) + "\\Resources\\");
 
-	folderPaths[PreLoadFiles] = folderPaths[Root] + "PreLoadFiles\\";
+	AddFolder(PreLoadFiles, Root, "PreLoadFiles\\");
 
 	// Maps
-	folderPaths[Maps] = folderPaths[Root] + "Maps\\";
+	AddFolder(Maps, Root, "Maps\\");
 
 	// Images
-	folderPaths[Images] = folderPaths[Root] + "Images\\";
-	folderPaths[Image_UI] = folderPaths[Images] + "UI\\";
-	folderPaths[Image_Maps] = folderPaths[Images] + "Maps\\";
-	folderPaths[Image_Weapons] = folderPaths[Images] + "Weapons\\";
-	folderPaths[Image_Animations] = folderPaths[Images] + "Animations\\";
+	AddFolder(Images, Root, "Images\\");
+	AddFolder(Image_UI, Images, "UI\\");
+	AddFolder(Image_Maps, Images, "Maps\\");
+	AddFolder(Image_Weapons, Images, "Weapons\\");
+	AddFolder(Image_Animations, Images, "Animations\\");
 
 	// Audio
-	folderPaths[Audio] = folderPaths[Root] + "Audio\\";
-	folderPaths[Audio_Music] = folderPaths[Audio] + "Music\\";
-	folderPaths[Audio_Sound] = folderPaths[Audio] + "Sound\\";
+	AddFolder(Audio, Root, "Audio\\");
+	AddFolder(Audio_Music, Audio, "Music\\");
+	AddFolder(Audio_Sound, Audio, "Sound\\");
 
 	// Font
-	folderPaths[Font] = folderPaths[Root] + "Font\\";
+	AddFolder(Font, Root, "Font\\");
 
 	// Configs
-	folderPaths[Configs] = folderPaths[Root] + "Configs\\";
-	folderPaths[Config_Animations] = folderPaths[Configs] + "Animations\\";
-	folderPaths[Config_Data] = folderPaths[Configs] + "Data\\";
+	AddFolder(Configs, Root, "Configs\\");
+	AddFolder(Config_Animations, Configs, "Animations\\");
+	AddFolder(Config_Data, Configs, "Data\\");
 
 	for (int i = 0; i < Folder::Count; i++)
 	{
-		ASSERT(!folderPaths[(Folder)i].empty(), "The enum %d in the folderPath map has not been defined", i);
+		ASSERT(!folderPaths[(Folder)i].path.empty(), "The enum %d in the folderPath map has not been defined", i);
 	}
 }
 
@@ -55,12 +59,12 @@ void FileManager::free()
 }
 
 
-FileManager::Folder FileManager::getFolderIndex(const char* directory)
+FileManager::Folder FileManager::GetFolderFromPath(const char* directory)
 {
 	for (int i = 0; i < Folder::Count; i++)
 	{
 		BasicString directory_path = directory;
-		if (directory_path + "\\" == folderPaths[(Folder)i])
+		if (directory_path + "\\" == folderPaths[(Folder)i].path)
 			return static_cast<Folder>(i);
 	}
 
@@ -75,7 +79,7 @@ BasicString FileManager::folderPath(const Folder folder) const
 
 	if (folder < Folder::Count)
 	{
-		buffer = folderPaths.at(folder).c_str();
+		buffer = folderPaths.at(folder).path.c_str();
 	}
 	else
 	{
@@ -92,7 +96,7 @@ fs::path FileManager::fsPath(const Folder folder) const
 
 	if (folder < Folder::Count)
 	{
-		buffer = folderPaths.at(folder).c_str();
+		buffer = folderPaths.at(folder).path.c_str();
 
 		if (!fs::is_directory(fs::path(buffer.c_str())))
 		{
@@ -390,6 +394,19 @@ std::vector<BasicString> FileManager::foldersInFolder(const Folder folder) const
 	}
 
 	return folderPathsList;
+}
+
+void FileManager::FindAllFoldersInFolder(Folder folder, std::vector<Folder>& out_folder_list) const
+{
+	out_folder_list.push_back(folder);
+
+	const FolderPath& folder_path = folderPaths.at(folder);
+	for (u32 i = 0; i < folder_path.children.size(); i++)
+	{
+		Folder child_folder = folder_path.children[i];
+		//out_folder_list.push_back(child_folder);
+		FindAllFoldersInFolder(child_folder, out_folder_list);
+	}
 }
 
 

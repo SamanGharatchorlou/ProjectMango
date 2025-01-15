@@ -10,5 +10,7 @@ namespace ECS
 		UISystem(Archetype type) : EntitySystem(type) { }
 
 		void Update(float dt) override;
+
+		//static ECS::Entity cursor;
 	};
 }

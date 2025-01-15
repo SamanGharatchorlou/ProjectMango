@@ -5,7 +5,8 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
-
+//#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 
 namespace ECS
 {
@@ -24,6 +25,10 @@ namespace ECS
 		
  		for (Entity entity : entities)
 		{
+			// debug break point
+			if (DebugMenu::GetSelectedEntity() == entity)
+				int a = 4;
+
 			const Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 			if(!sprite.texture)
 				continue;

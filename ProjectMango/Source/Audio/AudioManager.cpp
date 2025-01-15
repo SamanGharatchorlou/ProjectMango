@@ -18,7 +18,7 @@ AudioManager* AudioManager::Get()
 
 AudioManager::AudioManager()
 {
-	DebugPrint(Log, "Audio manager created");
+	DebugPrint(Log, "Audio manager *created");
 }
 
 

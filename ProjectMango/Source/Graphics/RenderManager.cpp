@@ -57,6 +57,8 @@ void RenderManager::render()
 	// render all the packs we received in the layer order
 	for (u32 i = 0; i < c_RenderLayers; i++)
 	{
+		//if(i == 10)
+
 		std::vector<RenderPack>& render_packs = mRenderPackets[i];
 		for (u32 i = 0; i < render_packs.size(); i++)
 		{

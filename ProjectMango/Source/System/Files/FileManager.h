@@ -3,6 +3,7 @@
 #include "Core/StringBuffers.h"
 #include "Core/BasicString.h"
 
+
 class FileManager
 {
 public:
@@ -42,6 +43,7 @@ public:
 	void free();
 
 	BasicString folderPath(const Folder folder) const;
+	Folder GetFolderFromPath(const char* path) const;
 
 	bool exists(const Folder folder, const char* name) const;
 	BasicString findFile(const Folder folder, const char* name) const;
@@ -62,9 +64,11 @@ public:
 
 	void AllFolders(const fs::path& directoryPath, std::unordered_set<BasicString>& folderList) const;
 	void AllFoldersContainingFiles(const fs::path& directoryPath, std::unordered_set<BasicString>& folderList) const;
-	std::vector<BasicString> foldersInFolder(const Folder folder) const;
 
-	Folder getFolderIndex(const char* directory);
+	std::vector<BasicString> foldersInFolder(const Folder folder) const;
+	void FindAllFoldersInFolder(const Folder folder, std::vector<Folder>& out_folder_list) const;
+
+	Folder GetFolderFromPath(const char* path);
 
 	static bool HasExt(const char* filePath, const char* extension);
 
@@ -87,7 +91,19 @@ private:
 
 
 private:
-	std::unordered_map<Folder, BasicString> folderPaths;
+	struct FolderPath
+	{
+		Folder self;
+		Folder parent;
+		std::vector<Folder> children;
+
+		BasicString path;
+
+		FolderPath() { }
+		FolderPath(Folder _self, Folder _parent, const BasicString& _path) : self(_self), parent(_parent), path(_path) { }
+	};
+
+	std::unordered_map<Folder, FolderPath> folderPaths;
 };
 
 BasicString pathToString(const fs::path& path);

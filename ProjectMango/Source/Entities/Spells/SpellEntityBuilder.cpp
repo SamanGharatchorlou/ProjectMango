@@ -7,10 +7,11 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Physics.h"
 
 namespace Spell
 {
-	typedef ECS::Entity (*CreateEntityFn)();
+	typedef ECS::Entity (*CreateEntityFn)(ECS::Entity caster, VectorF target);
 
 	static ECS::Entity CreateBasicObject(const char* id, const char* config_id)
 	{
@@ -57,9 +58,24 @@ namespace Spell
 		return entity;
 	}
 
-	ECS::Entity CreateFireball()
+	ECS::Entity CreateFireball(ECS::Entity caster, VectorF target)
 	{
-		return CreateBasicObject("Fireball", "FireballConfig");
+		ECS::Entity entity = CreateBasicObject("Fireball", "FireballConfig");
+
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		ecs->AddComponent(Physics, entity);
+
+		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+
+		ECS::Transform& source_transform = ecs->GetComponentRef(Transform, entity);
+		VectorF center = source_transform.GetObjectCenter();
+
+		VectorF direction = target - center;
+
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");
+		//physics.speed = direction * config->values.GetFloat("speed");
+
+		return entity;
 	}
 
 	static std::unordered_map<BasicString, CreateEntityFn> s_spellEntitiyMap;
@@ -71,13 +87,12 @@ namespace Spell
 			s_spellEntitiyMap["Fireball"] = CreateFireball;
 		}
 	}
-
 	
-	ECS::Entity GetNewEntity(const char* id)
+	ECS::Entity GetNewEntity(const char* id, ECS::Entity caster, VectorF target)
 	{
 		if(s_spellEntitiyMap.contains(id))
 		{
-			return s_spellEntitiyMap.at(id)();
+			return s_spellEntitiyMap.at(id)(caster, target);
 		}
 
 		return ECS::EntityInvalid;

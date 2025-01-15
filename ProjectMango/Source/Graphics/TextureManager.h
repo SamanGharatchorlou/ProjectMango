@@ -26,7 +26,7 @@ private:
 	bool loadTexture(TextureMap& textureMap, const char* filePath);
 	int loadAllTexturesIn(FileManager::Folder resource_folder, FileManager::Folder placement_folder = FileManager::None);
 
-	const TextureMap* findTextureMap(const FileManager::Folder folder) const;
+	std::vector<const TextureMap* > FindTextureMaps(const FileManager::Folder folder) const;
 
 	Texture* searchAllFiles(const char* label) const;
 

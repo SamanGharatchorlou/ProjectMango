@@ -11,7 +11,8 @@
 #include "ECS/EntityCoordinator.h"
 #include "System/Files/ConfigManager.h"
 #include "Entities/Spells/SpellEntityBuilder.h"
-
+#include "ECS/Components/UIComponents.h"
+//#include ""
 
 using namespace PlayerRanged;
 using namespace ECS;
@@ -277,9 +278,18 @@ void BasicAttackState::Init()
 		StartAnimation();
 	}
 
-	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	const ObjectConfig* config = GetObjectConfig(entity);
-	Spell::GetNewEntity("Fireball");
+	std::vector<ECS::Entity> cursors;
+	ecs->GetEntitiesWithComponent(Collider, cursors);
+	
+	if (ecs->HasComponent(UICursor, entity))
+	{
+		Transform& transform = ecs->GetComponentRef(Transform, entity);
+		VectorF target = transform.GetRect().TopLeft();// SetWorldPosition(map_position);
+
+		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		const ObjectConfig* config = GetObjectConfig(entity);
+		Spell::GetNewEntity("Fireball", entity, target);
+	}
 }
 
 void BasicAttackState::Update(float dt)

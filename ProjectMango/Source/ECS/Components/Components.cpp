@@ -10,6 +10,7 @@
 #include "Animations/CharacterStates.h"
 #include "Entities/Player/PlayerCharacter.h"
 #include "System/Files/ConfigManager.h"
+#include "Graphics/TextureManager.h"
 
 #include "ECS/EntityCommon.h"
 
@@ -121,6 +122,12 @@ namespace ECS
 	RectF Transform::GetRect() const
 	{
 		return RectF(worldPosition, size);
+	}
+
+	// Sprite
+	void Sprite::SetTexture(const char* label)
+	{
+		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
 	}
 	
 	// Health

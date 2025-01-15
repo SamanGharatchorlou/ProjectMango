@@ -12,6 +12,8 @@
 #include "Graphics/RenderManager.h"
 #include "Game/FrameRateController.h"
 #include "Game/States/StartupState.h"
+#include "System/Window.h"
+
 
 
 GameController::GameController()
@@ -105,10 +107,12 @@ void GameController::handleInput(SDL_Event& event)
 
 	sm->mStates.getActiveState().HandleInput();
 
-#if DEBUG_CURSOR // show mouse position in screen title
-	VectorF pos = mGameData.inputManager->cursorPosition();
-	const BasicString cursor = "X: " + BasicString(pos.x) + " Y: " + BasicString(pos.y);
-	mGameData.window->setTitle(cursor.c_str());
+#if 1 // show mouse position in screen title
+	VectorF pos = mGameData.inputManager->cursorScreenPosition();
+
+	char buffer[64];
+	snprintf(buffer, 64, "X: %.f, Y: %.f", pos.x, pos.y);
+	mGameData.window->setTitle(buffer);
 #endif
 }
 

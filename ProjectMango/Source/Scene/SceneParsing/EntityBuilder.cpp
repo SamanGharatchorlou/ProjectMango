@@ -11,12 +11,13 @@
 #include "Graphics/Raycast.h"
 #include "Entities/Enemies/ShockSweeperEnemy.h"
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
+#include "ECS/Components/UIComponents.h"
+#include "Input/InputManager.h"
 
 typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
 
 static ECS::Entity CreateBasicObject(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	// find the floor
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity(id);
 	ecs->AddComponent(Transform, entity);
@@ -129,6 +130,30 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 	return entity;
 }
 
+ECS::Entity CreateCursor()
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Entity entity = ecs->CreateEntity("Cursor");
+	ecs->AddComponent(Transform, entity);
+	ecs->AddComponent(Sprite, entity);
+	ecs->AddComponent(UICursor, entity);
+
+
+	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	transform.size = VectorF(50, 50);
+
+	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.renderLayer = 9;
+	sprite.canFlip = false;
+	sprite.SetTexture("cursor");
+	
+
+	ECS::UICursor& cursor = ecs->GetComponentRef(UICursor, entity);
+	InputManager* input = InputManager::Get();
+	cursor.cursor = &input->mCursor;
+
+	return entity;
+}
 
 void CreateEntities(ECS::Entity& biome_entity)
 {

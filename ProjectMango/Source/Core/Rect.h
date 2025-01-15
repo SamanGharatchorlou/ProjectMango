@@ -112,7 +112,7 @@ public:
 
 
 	// Validity 
-	inline bool isValid() const { return (x2 > x1 && y2 > y1 ); }
+	inline bool isValid() const { return (x1 < x2 && y1 < y2 ); }
 
 
 	// return true if rectangles overlap

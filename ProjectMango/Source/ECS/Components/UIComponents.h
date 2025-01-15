@@ -1,12 +1,15 @@
 #pragma once
 
+//#include "Input/Button.h"
+
+class Cursor;
+
 namespace ECS
 {
-	struct Cursor
+	struct UICursor
 	{
-		COMPONENT_TYPE(Cursor)
+		COMPONENT_TYPE(UICursor)
 
-		Entity target = EntityInvalid;
-
+		Cursor* cursor;
 	};
 }

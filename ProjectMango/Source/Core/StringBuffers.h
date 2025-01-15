@@ -75,6 +75,7 @@ public:
 	StringBuffer64(const char* string) { set(string); }
 
 	static constexpr uint32_t bufferLength() { return 64; }
+
 	char* buffer() { return mBuffer; }
 	const char* c_str() const { return mBuffer; }
 
@@ -88,6 +89,17 @@ public:
 	}
 	uint32_t length() const { return (uint32_t)strlen(mBuffer); }
 	bool empty() const { return strlen(mBuffer) == 0; }
+
+	StringBuffer64 to_lower() const
+	{
+		StringBuffer64 out_string;
+		for (uint32_t i = 0; i < length(); i++)
+		{
+			out_string.buffer()[i] = tolower(mBuffer[i]);
+		}
+
+		return out_string;
+	}
 
 	StringBuffer64 operator + (const StringBuffer64& string)
 	{

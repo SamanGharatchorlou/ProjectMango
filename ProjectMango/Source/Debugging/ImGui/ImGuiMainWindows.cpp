@@ -30,12 +30,13 @@
 #include "ECS/Components/ComponentCommon.h"
 #include "System/Window.h"
 
-ECS::Entity s_selectedEntity = 0;
+static ECS::Entity s_selectedEntity = 0;
+static StringBuffer64 filterBuffer;
 
 u32 DebugMenu::GetSelectedEntity() { return s_selectedEntity; }
 void DebugMenu::SelectEntity(ECS::Entity entity) { s_selectedEntity = entity; }
 
-int id_numb = 0;
+static int id_numb = 0;
 
 #define DoRemoveButton(type) \
     ImGui::PushID(id_numb++); do_dropdown = true; \
@@ -66,14 +67,28 @@ void DebugMenu::DoEntitySystemWindow()
 
     ImGui::Text("Selected Entity: %d", (int)s_selectedEntity);
 
+    ImGui::InputText("Entity Filter", filterBuffer.buffer(), filterBuffer.bufferLength());
+
     if (ImGui::BeginCombo("Entities", selected, 0))
     {
         for (auto iter = entityNames.begin(); iter != entityNames.end(); iter++)
         {
-            const bool is_selected = iter->first == s_selectedEntity;
+            if (filterBuffer.length() > 0)
+            {
+                StringBuffer64 filter = filterBuffer.to_lower();
+                StringBuffer64 entity_name = iter->second.lo_lower .c_str();
+
+                const char* value = strstr( filter.c_str(), entity_name.c_str());
+
+                if ( !value )
+                {
+                    continue;
+                }
+            }
 
             ImGui::PushID(iter->first);
 
+            const bool is_selected = iter->first == s_selectedEntity;
             if (ImGui::Selectable(iter->second.c_str(), is_selected))
                 s_selectedEntity = iter->first;
 

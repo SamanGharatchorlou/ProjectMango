@@ -112,6 +112,8 @@ static Vector2D<int> toVectorI(const char* x, const char* y)
 	return Vector2D<int>(xVec, yVec);
 }
 
+
+
 //--------------------------------------------------------
 // Parser helpers
 static VectorF attributesToVectorF(XMLNode node)

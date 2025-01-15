@@ -51,7 +51,7 @@ void TextureManager::load()
 	std::vector<BasicString> folderPaths = fm->foldersInFolder(FileManager::Images);
 	for (int i = 0; i < folderPaths.size(); i++)
 	{
-		FileManager::Folder folder = fm->getFolderIndex(folderPaths[i].c_str());
+		FileManager::Folder folder = fm->GetFolderFromPath(folderPaths[i].c_str());
 		folders.push_back(folder);
 	}
 
@@ -156,8 +156,7 @@ StringBuffer64 TextureManager::getTextureName(const Texture* texture) const
 
 Texture* TextureManager::getTexture(const char* label, const FileManager::Folder folder) const
 {
-	Texture* texture = nullptr;
-	const TextureMap* textureMap = findTextureMap(folder);
+	std::vector<const TextureMap*> texture_maps = FindTextureMaps(folder);
 
 	StringBuffer64 buffer = label;
 	for (int i = (u32)strlen(label) - 1; i >= 0; i--)
@@ -169,35 +168,44 @@ Texture* TextureManager::getTexture(const char* label, const FileManager::Folder
 		}
 	}
 
-	if(textureMap)
-		texture = textureMap->find(buffer.c_str());
-
-	if (!texture)
+	for (u32 i = 0; i < texture_maps.size(); i++)
 	{
-		DebugPrint(Log, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
-
-		texture = searchAllFiles(buffer.c_str());
-		if (!texture)
-		{
-			DebugPrint(Warning, "No image file with label: '%s' exists in any loaded folder", buffer.c_str());
-		}
+		const TextureMap* tm = texture_maps[i];
+		if (Texture* texture = tm->find(buffer.c_str()))
+			return texture;
 	}
 
-	return texture;
+	DebugPrint(Warning, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
+	return nullptr;
 }
 
 // --- Priavte Functions --- //
-const TextureMap* TextureManager::findTextureMap(const FileManager::Folder folder) const
+std::vector<const TextureMap* > TextureManager::FindTextureMaps(const FileManager::Folder folder) const
 {
-	std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
-	for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
+	std::vector<const TextureMap*> maps;
+
+	std::vector<FileManager::Folder> folders;
+	FileManager::Get()->FindAllFoldersInFolder(folder, folders);
+
+	for (u32 i = 0; i < folders.size(); i++)
 	{
-		if (folder == iter->first)
-			return &iter->second;
+		if (mTextures.contains(folders[i]))
+		{
+			maps.push_back(&mTextures.at(folders[i]));
+		}
 	}
 
-	DebugPrint(Warning, "There is no texture Map in the folder '%s'", FileManager::Get()->folderPath(folder).c_str());
-	return nullptr;
+	//std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
+	//for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
+	//{
+	//	if (folder == iter->first)
+	//		return &iter->second;
+	//}
+
+	if(maps.size() == 0)
+		DebugPrint(Warning, "There is no texture Map in the folder '%s'", FileManager::Get()->folderPath(folder).c_str());
+
+	return maps;
 }
 
 Texture* TextureManager::searchAllFiles(const char* label) const
@@ -205,14 +213,14 @@ Texture* TextureManager::searchAllFiles(const char* label) const
 	Texture* texture = nullptr;
 
 	std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
-	for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
-	{
-		const TextureMap* textureMap = findTextureMap(iter->first);
-		texture = textureMap->find(label);
+	//for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
+	//{
+	//	const TextureMap* textureMap = findTextureMap(iter->first);
+	//	texture = textureMap->find(label);
 
-		if (texture != nullptr)
-			break;
-	}
+	//	if (texture != nullptr)
+	//		break;
+	//}
 
 	return texture;
 }

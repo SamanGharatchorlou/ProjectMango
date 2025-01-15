@@ -51,6 +51,12 @@ namespace ECS
 		RectF GetRect() const;
 	};
 
+	struct Movement
+	{
+		VectorF direction;
+		VectorF velocity;
+	};
+
 	struct Sprite
 	{
 		COMPONENT_TYPE(Sprite)
@@ -65,6 +71,7 @@ namespace ECS
 		u32 renderLayer = 0;
 		
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
+		void SetTexture(const char* label);
 	};
 	
 	struct CharacterState

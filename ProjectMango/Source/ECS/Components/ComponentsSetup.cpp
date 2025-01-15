@@ -42,7 +42,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Biome, 4);
 	DEFINE_COMPONENT(Spawner, 4);
 	DEFINE_COMPONENT(Door, 32);
-	DEFINE_COMPONENT(Cursor, 1);
+	DEFINE_COMPONENT(UICursor, 1);
 
 	ComponentInitialiser::InitAll();
 }
@@ -94,9 +94,8 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<PathingSystem>(PathingSignature);
 
 	// UI
-	Signature UISignature = ArcheBit(Cursor);
-	ecs->RegisterSystem<PathingSystem>(PathingSignature);
-
+	Signature UISignature = ArcheBit(UICursor);
+	ecs->RegisterSystem<UISystem>(UISignature);
 
 	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
 	Signature ComponentsSignature = ArcheBit(Transform) | ArcheBit(Sprite) | ArcheBit(Animator);

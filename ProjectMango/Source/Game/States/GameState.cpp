@@ -11,9 +11,8 @@
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
 #include "Scene/SceneParsing/SceneReader.h"
-#include "System/Window.h"
-
 #include "Scene/SceneParsing/EntityBuilder.h"
+#include "System/Window.h"
 
 void GameState::Init()
 {
@@ -38,6 +37,10 @@ void GameState::Init()
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
 	audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
+
+	// create cursor
+	//ecs->CreateEntity("Cursor");
+	CreateCursor();
 }
 
 
