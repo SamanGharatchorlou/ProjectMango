@@ -2,7 +2,6 @@
 
 #include "Core/Events/Observer.h"
 
-
 class CameraShake : public Observer
 {
 public:

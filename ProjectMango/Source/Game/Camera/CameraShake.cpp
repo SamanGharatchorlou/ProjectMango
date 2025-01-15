@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "CameraShake.h"
 
+// Camera
+#define TWEAK_CAMERA_IGNORE_BOUNDARIES 0
+
 CameraShake::CameraShake() :
 	mTrauma(0), 
 	mMaxTrauma(0), 
@@ -8,7 +11,6 @@ CameraShake::CameraShake() :
 {
 
 }
-
 
 void CameraShake::clear()
 {
@@ -34,7 +36,7 @@ void CameraShake::fastUpdate(float dt)
 {
 	VectorF translation = offset();
 
-#if !CAMERA_IGNORE_BOUNDARIES
+#if !TWEAK_CAMERA_IGNORE_BOUNDARIES
 	if (mCameraRect.LeftPoint() + translation.x >= mBoundaries.x1 &&
 		mCameraRect.RightPoint() + translation.x <= mBoundaries.x2)
 #endif
@@ -43,7 +45,7 @@ void CameraShake::fastUpdate(float dt)
 	}
 
 
-#if !CAMERA_IGNORE_BOUNDARIES
+#if !TWEAK_CAMERA_IGNORE_BOUNDARIES
 	if (mCameraRect.TopPoint() + translation.y >= mBoundaries.y1 &&
 		mCameraRect.BotPoint() + translation.y <= mBoundaries.y2)
 #endif

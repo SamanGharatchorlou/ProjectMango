@@ -6,6 +6,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#define DEBUG_MODE _DEBUG
+
 // --- Standard Library --- 
 
 // Strings
@@ -52,10 +54,6 @@ namespace fs = std::filesystem;
 
 // --- Custom ---
 
-// I should change the name, this also includes some Release settings needed
-#include "Debugging/DebugSettings.h"
-#include "Core/Maths.h"
-
 // Basic Containers - no dependencies
 #include "Core/StringBuffers.h"
 #include "Core/BasicString.h"
@@ -93,7 +91,10 @@ namespace fs = std::filesystem;
 #endif
 
 // NEW operator override
-#if MEMORY_TRACKING
+// where should this go?
+#define TWEAK_MEMORY_TRACKING 0 // 1 = default, 2 = (very)verbose
+#define TWEAK_IGNORE_UNKNOWNS 0
+#if TWEAK_MEMORY_TRACKING
 #include "Debugging/MemTrack.h"
 #else
 #define PRINT_MEMORY 0

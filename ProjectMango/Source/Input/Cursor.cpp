@@ -3,11 +3,6 @@
 #include "Graphics/Texture.h"
 #include "Game/FrameRateController.h"
 
-#if DEBUG_CURSOR
-#include "Debugging/DebugDraw.h"
-#endif
-
-
 Cursor::Cursor() : mTexture(nullptr), mMoving(false), mVisibility(false), mMode(Cursor::None) { }
 
 void Cursor::render()

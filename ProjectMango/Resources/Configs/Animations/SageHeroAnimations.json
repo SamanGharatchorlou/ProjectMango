@@ -18,9 +18,9 @@
 				},				
 				{
 					"action": "BasicAttack",
-					"startIndex": 12,
-					"frameCount": 9,
-					"frameTime": 0.10,
+					"startIndex": 96,
+					"frameCount": 8,
+					"frameTime": 0.08,
 					"flip_point_x": 0.308,
 					"looping": false,
 					"entity_collider_pos": [ 0.23, 0.23 ],

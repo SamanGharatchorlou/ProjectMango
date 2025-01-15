@@ -7,6 +7,8 @@ static constexpr PriorityLevel LogLevel = PriorityLevel::Debug;
 static constexpr PriorityLevel LogLevel = PriorityLevel::Log;
 #endif
 
+#define TWEAK_ENABLE_LOGGING 1
+
 static void PriorityLevelToText(PriorityLevel level, BasicString& out_text)
 {
 	switch (level)
@@ -32,7 +34,7 @@ static void PriorityLevelToText(PriorityLevel level, BasicString& out_text)
 
 void DebugPrint(PriorityLevel priority, const char* format, ...)
 {
-#if ENABLE_LOGGING
+#if TWEAK_ENABLE_LOGGING
 	if (priority <= LogLevel)
 	{
 		va_list arg;

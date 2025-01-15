@@ -295,21 +295,18 @@ void BasicAttackState::Init()
 void BasicAttackState::Update(float dt)
 {
 	EntityCoordinator* ecs = GameData::Get().ecs;
-	//Animator& animator = ecs->GetComponentRef(Animator, entity);
-	//if(animator.loopCount > 0)
-	//{		
-	//	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	//	PopState();
-	//	return;
-	//}
+	Animator& animator = ecs->GetComponentRef(Animator, entity);
+	if(animator.loopCount > 0)
+	{		
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		PopState();
+		return;
+	}
 
 	if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
 	{
 		physics->ApplyDrag(0.5f);
 	}
-
-	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	PopState();
 }
 
 void BasicAttackState::Exit()

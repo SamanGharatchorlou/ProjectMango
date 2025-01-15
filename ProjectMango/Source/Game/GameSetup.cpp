@@ -11,7 +11,11 @@
 #include "System/Files/ConfigManager.h"
 
 
-#if OUTPUT_NSIS_FOLDER_INFO
+// NSIS Installer
+#define TWEAK_OUTPUT_NSIS_FOLDER_INFO 0
+#define TWEAK_HIDE_CONSOLE 1
+
+#if TWEAK_OUTPUT_NSIS_FOLDER_INFO
 #include "Utilities/NSISFileOutput.h"
 #endif
 

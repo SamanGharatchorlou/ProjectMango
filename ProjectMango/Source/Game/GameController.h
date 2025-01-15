@@ -23,9 +23,4 @@ private:
 
 private:
 	GameData mGameData;
-
-#if FRAMERATE_CAP || PRINT_FRAMERATE_EVERY
-	Timer<float> fpsTimer;
-	Timer<float> capTimer;
-#endif
 };

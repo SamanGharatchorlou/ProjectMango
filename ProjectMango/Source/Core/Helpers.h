@@ -2,6 +2,9 @@
 
 #include "Vector2D.h"
 
+
+//--------------------------------------------------------
+// Bitwise helpers
 static bool HasFlag(uint32_t flag, uint32_t marker)
 {
 	return flag & marker;
@@ -19,6 +22,9 @@ static void RemoveFlag(T& flag, T marker)
 	flag &= ~marker;
 }
 
+
+//--------------------------------------------------------
+// Vector helpers
 template<typename T>
 void merge(std::vector<T>& vectorA, const std::vector<T>& vectorB)
 {
@@ -65,6 +71,21 @@ bool EraseSwap(std::vector<T>& vector, const T& item)
 	return false;
 }
 
+static float DotProduct(VectorF a, VectorF b)
+{
+	return a.x * b.x + a.y * b.y;
+}
+
+static float GetAngle(VectorF a, VectorF b)
+{
+	float dot = DotProduct(a, b);
+	float mag = a.length() * b.length();
+	return (float)acos(dot / mag);
+}
+
+
+//--------------------------------------------------------
+// Maths helpers
 template<typename T>
 T Power(T value, int count )
 {
@@ -76,7 +97,6 @@ T Power(T value, int count )
 
 	return out_value;
 }
-
 
 float EaseOut(float value, int easing_factor);
 
@@ -179,9 +199,11 @@ static VectorI IndexToGrid(int index, int grid_width)
 	return VectorI(index_x, index_y);
 }
 
-struct RaycastResult;
 
 //--------------------------------------------------------
+// Raycast helpers
+struct RaycastResult;
+
 bool RaycastToFloor(ECS::Entity entity, float& out_distance);
 bool RaycastToFloor(const RectF& rect, float& out_distance);
 bool RaycastToFloor(const VectorF& start, RaycastResult& result);

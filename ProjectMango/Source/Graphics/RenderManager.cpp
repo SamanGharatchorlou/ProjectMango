@@ -76,7 +76,7 @@ void RenderManager::render()
 			}
 			else
 			{
-				render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip);
+				render_packs[i].texture->render(render_packs[i].rect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
 			}
 		}
 

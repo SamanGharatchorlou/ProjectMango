@@ -301,7 +301,6 @@
     <ClInclude Include="Source\Core\Vector2D.h" />
     <ClInclude Include="Source\Debugging\AnimationEditor.h" />
     <ClInclude Include="Source\Debugging\DebugDraw.h" />
-    <ClInclude Include="Source\Debugging\DebugSettings.h" />
     <ClInclude Include="Source\Debugging\ImGui\Components\ComponentDebugMenu.h" />
     <ClInclude Include="Source\Debugging\ImGui\ImGuiHelpers.h" />
     <ClInclude Include="Source\Debugging\ImGui\ImGuiMainWindows.h" />

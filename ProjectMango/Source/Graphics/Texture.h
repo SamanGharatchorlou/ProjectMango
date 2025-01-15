@@ -10,6 +10,7 @@ public:
 
 	void render(const RectF& rect) const;
 	void render(const RectF& rect, SDL_RendererFlip flip) const;
+	// NOTE: angle in degress, NOT radians (why?? so annoying)
 	void render(const RectF& rect, double rotation, VectorF aboutPoint) const;
 	void render(const RectF& rect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip) const;
 

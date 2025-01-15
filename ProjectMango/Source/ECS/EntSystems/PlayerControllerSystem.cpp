@@ -19,6 +19,8 @@
 
 namespace ECS
 {
+	static bool s_instantFirstSpawn = true;
+
 	static void SpawnPlayer()
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -163,8 +165,9 @@ namespace ECS
 			deathTimer.Start();
 		}
 
-		if(deathTimer.GetSeconds() > 2.0f)
+		if(deathTimer.GetSeconds() > 2.0f || s_instantFirstSpawn)
 		{
+			s_instantFirstSpawn = false;
 			if(!spawningPlayer)
 			{
 				SpawnPlayer();

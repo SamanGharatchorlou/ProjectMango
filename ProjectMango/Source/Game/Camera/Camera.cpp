@@ -6,6 +6,8 @@
 #include "ECS/Components/Biome.h"
 #include "Entities/Player/PlayerCharacter.h"
 
+#define PRINT_SHAKEYCAM_VALUES 0
+
 Camera* Camera::Get()
 {
 	static Camera sInstance;

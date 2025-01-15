@@ -72,6 +72,9 @@ namespace ECS
 		VectorF flipPoint = VectorF(0.5f, 0.5f);
 		SDL_RendererFlip flip;
 		bool canFlip = true;
+		
+		// in degress (because of the render function input)
+		float rotation; 
 
 		u32 renderLayer = 0;
 		

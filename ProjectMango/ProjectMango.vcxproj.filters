@@ -482,9 +482,6 @@
     <ClInclude Include="Source\Debugging\DebugDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Debugging\DebugSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Debugging\Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>

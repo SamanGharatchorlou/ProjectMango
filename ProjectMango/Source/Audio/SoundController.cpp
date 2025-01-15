@@ -2,7 +2,13 @@
 #include "SoundController.h"
 
 #include "Audio.h"
-//#include "Actors/Actor.h"
+
+// Audio
+#define MUTE_AUDIO 1
+#define DISABLE_UI_AUDIO 0
+#define PRINT_PLAYING_AUDIO 0
+#define PRINT_FULL_AUDIO_CHANNELS 0
+#define AUDIO_LOGGING (PRINT_PLAYING_AUDIO || PRINT_FULL_AUDIO_CHANNELS)
 
 
 SoundController::SoundController() : soundVolume(-1), musicVolume(-1)

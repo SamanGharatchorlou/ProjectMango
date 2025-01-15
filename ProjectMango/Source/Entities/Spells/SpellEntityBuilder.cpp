@@ -8,6 +8,7 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Physics.h"
+#include "Core/Helpers.h"
 
 namespace Spell
 {
@@ -73,7 +74,10 @@ namespace Spell
 		// direction
 		VectorF direction = target - caster_position;
 		direction = direction.normalise();
-		
+
+		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.rotation = direction.getRotation();
+
 		// apply speed (from config) and direction
 		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");

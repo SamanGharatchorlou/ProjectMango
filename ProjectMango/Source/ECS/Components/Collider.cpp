@@ -4,10 +4,6 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 
-#if TRACK_COLLISIONS
-#include "Debugging/DebugDraw.h"
-#endif
-
 namespace ECS 
 {
 	bool Collider::Contains(const RectF& rect, VectorF point)

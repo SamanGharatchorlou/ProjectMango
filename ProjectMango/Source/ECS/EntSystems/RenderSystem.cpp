@@ -43,6 +43,7 @@ namespace ECS
 			pack.subRect = sprite.subRect;
 			pack.flip = sprite.flip;
 			pack.flipPoint = sprite.flipPoint * render_rect.Size();
+			pack.rotation = sprite.rotation;
 
 			renderer->AddRenderPacket(pack);
 		}

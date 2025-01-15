@@ -1,6 +1,6 @@
 #pragma once
 
-#if MEMORY_TRACKING
+#if TWEAK_MEMORY_TRACKING
 // LINK: http://www.almostinfinite.com/memtrack.html
 
 /*
@@ -88,6 +88,6 @@ namespace MemTrack
 
 // Samam Gharatchorlou
 // Add define so I dont need to keep adding #if MEMORY_TRACKING
-#define PRINT_MEMORY printMemoryInfo()
+#define TWEAK_PRINT_MEMORY printMemoryInfo()
 void printMemoryInfo();
 #endif
