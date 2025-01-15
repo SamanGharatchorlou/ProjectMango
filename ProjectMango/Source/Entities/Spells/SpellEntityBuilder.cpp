@@ -65,15 +65,21 @@ namespace Spell
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		ecs->AddComponent(Physics, entity);
 
+		// set position to the caster position
+		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
+		transform.SetWorldPositionCenter( caster_position );
+
+		// direction
+		VectorF direction = target - caster_position;
+		direction = direction.normalise();
+		
+		// apply speed (from config) and direction
 		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
-
-		ECS::Transform& source_transform = ecs->GetComponentRef(Transform, entity);
-		VectorF center = source_transform.GetObjectCenter();
-
-		VectorF direction = target - center;
-
 		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");
-		//physics.speed = direction * config->values.GetFloat("speed");
+		float speed = config->values.GetFloat("speed");
+		physics.speed = direction * speed;
+		physics.maxSpeed = physics.speed;
 
 		return entity;
 	}

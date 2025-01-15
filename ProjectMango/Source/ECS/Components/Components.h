@@ -31,6 +31,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Transform)
 
+		// top left
 		VectorF targetWorldPosition;
 		VectorF worldPosition;
 		VectorF localPosition;
@@ -47,8 +48,12 @@ namespace ECS
 		void SetWorldPosition(VectorF pos);
 		void SetWorldRect(const VectorF& pos, const VectorF& size);
 
+		void SetWorldPositionCenter(VectorF pos);
+
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
+
+		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
 
 	struct Movement

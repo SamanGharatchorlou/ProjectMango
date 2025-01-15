@@ -76,9 +76,9 @@ void DebugMenu::DoEntitySystemWindow()
             if (filterBuffer.length() > 0)
             {
                 StringBuffer64 filter = filterBuffer.to_lower();
-                StringBuffer64 entity_name = iter->second.lo_lower .c_str();
+                StringBuffer64 entity_name = StringBuffer64(iter->second.c_str()).to_lower();
 
-                const char* value = strstr( filter.c_str(), entity_name.c_str());
+                const char* value = strstr( entity_name.c_str(), filter.c_str() );
 
                 if ( !value )
                 {

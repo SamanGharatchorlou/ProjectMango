@@ -279,11 +279,11 @@ void BasicAttackState::Init()
 	}
 
 	std::vector<ECS::Entity> cursors;
-	ecs->GetEntitiesWithComponent(Collider, cursors);
+	ecs->GetEntitiesWithComponent(UICursor, cursors);
 	
-	if (ecs->HasComponent(UICursor, entity))
+	if (cursors.size() > 0)
 	{
-		Transform& transform = ecs->GetComponentRef(Transform, entity);
+		Transform& transform = ecs->GetComponentRef(Transform, cursors.front());
 		VectorF target = transform.GetRect().TopLeft();// SetWorldPosition(map_position);
 
 		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);

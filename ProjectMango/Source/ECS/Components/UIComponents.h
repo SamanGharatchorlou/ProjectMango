@@ -10,6 +10,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(UICursor)
 
+		~UICursor();
+
 		Cursor* cursor;
 	};
 }

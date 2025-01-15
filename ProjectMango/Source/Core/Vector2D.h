@@ -21,7 +21,7 @@ public:
 	inline bool isNegative() const { return (x < 0.0f && y < 0.0f) ? true : false; } 
 	inline bool hasNegative() const { return (x < 0.0f || y < 0.0f) ? true : false; }
 
-	inline Vector2D<T> normalise();
+	inline Vector2D<T> normalise() const;
 	inline T lengthSquared() const { return (x * x) + (y * y); }
 	inline T length() const { return std::sqrt((x * x) + (y * y)); }
 	inline T area() const { return x * y; }
@@ -93,7 +93,7 @@ float Vector2D<T>::distance(Vector2D<T> pointA, Vector2D<T> pointB)
 }
 
 template<class T>
-inline Vector2D<T> Vector2D<T>::normalise()
+inline Vector2D<T> Vector2D<T>::normalise() const
 {
 	Vector2D<T> normalised(x, y);
 

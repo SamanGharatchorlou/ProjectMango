@@ -59,6 +59,7 @@ namespace ECS
 
 			Transform& transform = ecs->GetComponentRef(Transform, entity);
 
+			// -- UPDATE POSITION
 			// only move to the allowed position, otherwise roll back
 			Collider* collider = ecs->GetComponent(Collider, entity);
 			if (collider)
@@ -68,9 +69,14 @@ namespace ECS
 					continue;
 
 				transform.worldPosition = transform.worldPosition + collider->allowedMovement;
-
-				UpdateChildrenTransforms(entity);
 			}
+			// no collider so move it to its target position
+			else
+			{
+				transform.worldPosition = transform.targetWorldPosition;
+			}
+			
+			UpdateChildrenTransforms(entity);
 
 			// update the target position based on physics
 			Physics* physics = ecs->GetComponent(Physics, entity);
@@ -89,9 +95,12 @@ namespace ECS
 
 			// check out of bounds
 			const Biome& biome = Biome::GetActiveBiome();
-			const VectorF position = transform.GetObjectCenter();
-			if (position.x < biome.aabb[0].x || position.y < biome.aabb[0].y || 
-				position.x > biome.aabb[1].x || position.y > biome.aabb[1].y)
+			const RectF rect = transform.GetRect();
+
+
+
+			if (rect.RightPoint() < biome.aabb[0].x || rect.BotPoint() < biome.aabb[0].y || 
+				rect.LeftPoint() > biome.aabb[1].x || rect.TopPoint() > biome.aabb[1].y)
 			{
 				out_of_bounds_entities.push_back(entity);
 			}

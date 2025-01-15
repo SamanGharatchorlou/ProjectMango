@@ -88,7 +88,6 @@ namespace ECS
 		TransformSystem::UpdateChildrenTransforms(entity_data.parent);
 	}
 
-	
 	void Transform::SetWorldPosition(VectorF pos)
 	{
 		targetWorldPosition = pos;
@@ -104,6 +103,20 @@ namespace ECS
 		}
 	}
 
+	void Transform::SetWorldPositionCenter(VectorF pos)
+	{
+		VectorF object_size = size;
+
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		if(const Collider* collider = ecs->GetComponent(Collider, entity))
+		{
+			object_size = collider->rect.Size();
+		}
+
+		VectorF center_position = pos - (object_size * 0.5f);
+		SetWorldPosition(center_position);
+	}
+
 	VectorF Transform::GetObjectCenter() const
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -117,6 +130,13 @@ namespace ECS
 		}
 
 		return VectorF::zero();
+	}
+
+	VectorF Transform::GetObjectCenter(ECS::Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+		return transform.GetObjectCenter();
 	}
 	
 	RectF Transform::GetRect() const

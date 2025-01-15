@@ -4,5 +4,8 @@
 
 namespace ECS
 {
-
+	UICursor::~UICursor()
+	{
+		int a = 4;
+	}
 }
