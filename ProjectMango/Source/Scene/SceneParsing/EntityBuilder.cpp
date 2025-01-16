@@ -33,7 +33,7 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 
 	// Animation
 	ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	animator.Init(config->animation.c_str());
+	animator.Init(config->strings.getString("animation"));
 		
 	if(config->values.GetBool("randomise_frame_start"))
 	{
@@ -183,10 +183,16 @@ void CreateEntities(ECS::Entity& biome_entity)
 				char buffer[64];
 				snprintf(buffer, 64, "%sConfig", entity_id);
 
-				const std::vector<VectorF>& entity_positions = iter->second;
+				//const std::vector<VectorF>& entity_positions = iter->second;
+				ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
+
+				const std::vector<ECS::Level::EntityMetaData>& entity_positions = iter->second;
 				for( u32 e = 0; e < entity_positions.size(); e++ )
 				{
-					VectorF pos = entity_positions[e];
+					VectorF pos = entity_positions[e].position;
+					if(!entity_positions[e].tag.empty())
+						config->strings.mData["tags"] = entity_positions[e].tag.c_str();
+
 					create_fn(entity_id, buffer, pos);
 				}
 			}

@@ -119,10 +119,35 @@ namespace Scene
 						float px_y = px[1].GetFloat();// - (height);
 
 						const char* id = entry["__identifier"].GetString();
-						VectorF entity_pos = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
+						//if (StringCompare(id, "ShockSweeper"))
+						//{
+						//	bool has = entry.HasMember("__tags");
+						//	const Value::Array& tags = entry["tags"].GetArray();
+						//	int a = 4;
+						//}
+						//VectorF entity_pos = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
 
-						std::vector<VectorF>& entity_positions = level.entities[id];
-						entity_positions.push_back( entity_pos );
+						std::vector<ECS::Level::EntityMetaData>& entity_positions = level.entities[id];
+
+						entity_positions.resize(entity_positions.size() + 1);
+
+						ECS::Level::EntityMetaData& emd = entity_positions.back();
+						emd.position = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
+						//if(entry.HasMember()) 
+						//	emd.tag = entry["tags"].GetString();
+
+						if (entry.HasMember("__tags"))
+						{
+							const Value::Array& tags = entry["__tags"].GetArray();
+							if (tags.Size() > 0)
+							{
+								emd.tag = tags[0].GetString();
+							}
+
+							//Value::ConstMemberIterator itr = entry.FindMember("__tags");
+							//if (itr != entry.MemberEnd() && itr->value.size() > 0)
+							//	emd.tag = (*itr).value[0].GetString();
+						}
 					}
 				}
 				else if( StringCompare(layer_id, "TerrainColliders" ) )

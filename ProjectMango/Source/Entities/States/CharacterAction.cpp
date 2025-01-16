@@ -135,7 +135,7 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 
 	// Animator
 	Animator& animation = ecs->GetComponentRef(Animator, entity);
-	animation.Init(config->animation.c_str());
+	animation.Init(config->strings.getString("animation"));
 
 	// Sprite
 	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
@@ -153,6 +153,17 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 	Health& health = ecs->GetComponentRef(Health, entity);
 	health.Init(config->values);
 	health.invulnerable = false;
+
+	// AI Controller
+	if (config->strings.contains("tags"))
+	{
+		const char* tag = config->strings.getString("tags");
+		if (StringCompare(tag, "dummy"))
+		{
+			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+			ai_controller.moveToTarget = false;
+		}
+	}
 
 	return entity;
 }

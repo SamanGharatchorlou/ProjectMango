@@ -42,12 +42,14 @@ void ObjectConfig::Read(const char* path)
 		return;
 
 	// animation
-	if(parser.document.HasMember("animation"))
-		animation = parser.document["animation"].GetString();
+	const char* animation = "animation";
+	if(parser.document.HasMember(animation))
+		strings.mData[animation] = parser.document[animation].GetString();
 
 	// spawn ID
-	if (parser.document.HasMember("spawn_id"))
-		spawnId = parser.document["spawn_id"].GetString();
+	const char* spawn_id = "spawn_id";
+	if (parser.document.HasMember(spawn_id))
+		strings.mData[spawn_id] = parser.document[spawn_id].GetString();
 
 	// fill all the values
 	if (parser.document.HasMember("values"))

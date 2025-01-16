@@ -363,7 +363,7 @@
 		{
 			"identifier": "ShockSweeper",
 			"uid": 17,
-			"tags": [],
+			"tags": ["dummy"],
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
@@ -1086,6 +1086,22 @@
 							"px": [96,208],
 							"fieldInstances": [],
 							"__worldX": 96,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "ShockSweeper",
+							"__grid": [12,13],
+							"__pivot": [0,0],
+							"__tags": ["dummy"],
+							"__tile": { "tilesetUid": 9, "x": 224, "y": 880, "w": 16, "h": 16 },
+							"__smartColor": "#3E2731",
+							"iid": "339d5bc0-c210-11ef-8835-933f3b28ccbe",
+							"width": 16,
+							"height": 16,
+							"defUid": 17,
+							"px": [192,208],
+							"fieldInstances": [],
+							"__worldX": 192,
 							"__worldY": 208
 						}
 					]

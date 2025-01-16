@@ -23,10 +23,10 @@ ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 				const ECS::Level& level = biome.levels[l];
 				for( auto iter = level.entities.begin(); iter != level.entities.end(); iter++ )
 				{
-					const std::vector<VectorF>& entity_positions = iter->second;
+					const std::vector<ECS::Level::EntityMetaData>& entity_positions = iter->second;
 					for( u32 e = 0; e < entity_positions.size(); e++ )
 					{
-						VectorF pos = entity_positions[e];
+						VectorF pos = entity_positions[e].position;
 						DebugDraw::Point(pos, Colour::Green);
 					}
 				}

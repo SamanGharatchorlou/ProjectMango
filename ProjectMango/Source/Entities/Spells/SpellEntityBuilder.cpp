@@ -31,7 +31,7 @@ namespace Spell
 
 		// Animation
 		ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-		animator.Init(config->animation.c_str());
+		animator.Init(config->strings.getString("animation"));
 		
 		if(config->values.GetBool("randomise_frame_start"))
 		{
@@ -63,8 +63,12 @@ namespace Spell
 	{
 		ECS::Entity entity = CreateBasicObject("Fireball", "FireballConfig");
 
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");
+
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		ecs->AddComponent(Physics, entity);
+		ecs->AddComponent(Collider, entity);
+		ecs->AddComponent(Damage, entity);
 
 		// set position to the caster position
 		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
@@ -80,10 +84,18 @@ namespace Spell
 
 		// apply speed (from config) and direction
 		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");
 		float speed = config->values.GetFloat("speed");
 		physics.speed = direction * speed;
 		physics.maxSpeed = physics.speed;
+
+		// Collider
+		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
+		collider.InitFromTransform(transform);
+		collider.SetFlag(ECS::Collider::IsDamage);
+
+		// Damage
+		ECS::Damage& damage = ecs->GetComponentRef(Damage, entity);
+		damage.value = config->values.GetFloat("damage");
 
 		return entity;
 	}

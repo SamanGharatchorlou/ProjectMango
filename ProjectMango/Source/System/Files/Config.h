@@ -25,7 +25,8 @@ struct ObjectConfig : public Config
 
 	void Read(const char* path) override;
 
-	BasicString animation;
-	BasicString spawnId;
+	//BasicString animation;
+	//BasicString spawnId;
 	SettingValues values;
+	StringMap32 strings;
 };
