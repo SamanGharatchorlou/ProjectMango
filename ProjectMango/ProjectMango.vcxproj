@@ -147,7 +147,9 @@
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
     <ClCompile Include="Source\Audio\SoundController.cpp" />
+    <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\SpellSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp" />
     <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
     <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp" />
@@ -263,7 +265,9 @@
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\Channel.h" />
     <ClInclude Include="Source\Audio\SoundController.h" />
+    <ClInclude Include="Source\ECS\Components\SpellComponents.h" />
     <ClInclude Include="Source\ECS\Components\UIComponents.h" />
+    <ClInclude Include="Source\ECS\EntSystems\SpellSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h" />
     <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
     <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h" />

@@ -66,10 +66,7 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 	// Collider
 	ECS::Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
 	attack_transform.InitCollider(collider);
-
-	//collider.SetBaseRect(RectF(pos, size));
 	collider.SetFlag(ECS::Collider::IsDamage);
-	//collider.UpdateFromTransform();
 
 	// Damage
 	ECS::Damage& damage = ecs->GetComponentRef(Damage, attack_collider);

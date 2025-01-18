@@ -7,6 +7,7 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
 #include "System/Files/ConfigManager.h"
@@ -18,6 +19,7 @@ using namespace PlayerRanged;
 using namespace ECS;
 
 static const int c_defaultEasingSpeed = 3;
+
 
 // Idle
 // ---------------------------------------------------------
@@ -269,6 +271,7 @@ void BasicAttackState::Init()
 {
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	Animator& animator = ecs->GetComponentRef(Animator, entity);
+
 	if(animator.GetAnimation(ActionState::AttackWindUp))
 	{
 		StartAnimation(ActionState::AttackWindUp);
@@ -278,18 +281,8 @@ void BasicAttackState::Init()
 		StartAnimation();
 	}
 
-	std::vector<ECS::Entity> cursors;
-	ecs->GetEntitiesWithComponent(UICursor, cursors);
-	
-	if (cursors.size() > 0)
-	{
-		Transform& transform = ecs->GetComponentRef(Transform, cursors.front());
-		VectorF target = transform.GetRect().TopLeft();// SetWorldPosition(map_position);
-
-		const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		const ObjectConfig* config = GetObjectConfig(entity);
-		Spell::GetNewEntity("Fireball", entity, target);
-	}
+	SpellBook& spell_book = ecs->GetComponentRef(SpellBook, entity);
+	spell_book.ActivateSpell(0);
 }
 
 void BasicAttackState::Update(float dt)

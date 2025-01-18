@@ -72,7 +72,23 @@ namespace ECS
 				}
 				else if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
 				{
-					collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
+					//if (sprite.rotation != 0)
+					//{
+					//	VectorF actual_center = VectorF(0.5f, 0.5f);
+					//	VectorF real_to_visual_center = animation.entityColliderPos;// -actual_center;
+
+					//	real_to_visual_center.rotateVector(sprite.rotation, actual_center);
+
+					//	// looks like its doing the right thing but the rotation about point doesnt seem correct
+					//	// or something to do with the positioning doesn look right
+					//	collider->SetRelativeRect(real_to_visual_center, animation.entityColliderSize);
+					//}
+					//else
+					{
+						collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
+					}
+
+					//collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
 					transform.renderOffset = VectorF::zero();
 				}
 			}

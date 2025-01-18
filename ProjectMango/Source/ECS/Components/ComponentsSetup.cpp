@@ -7,6 +7,7 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
@@ -22,30 +23,29 @@
 #include "ECS/EntSystems/TransformSystem.h"
 #include "ECS/EntSystems/HealthSystem.h"
 #include "ECS/EntSystems/UISystem.h"
+#include "ECS/EntSystems/SpellSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 void ECS::RegisterAllComponents()
 {
-	// should i define these outside somewhere more accessible for some reason?
-	
-	DEFINE_COMPONENT(Animator, 320);
-
-	DEFINE_COMPONENT(EntityData, 320)
-	DEFINE_COMPONENT(Transform, 320);
-	DEFINE_COMPONENT(Sprite, 320);
-	DEFINE_COMPONENT(CharacterState, 320);
-	DEFINE_COMPONENT(PlayerController, 320);
-	DEFINE_COMPONENT(Physics, 320);
-	//DEFINE_COMPONENT(Animator, 320);
-	DEFINE_COMPONENT(Collider, 320);
-	DEFINE_COMPONENT(AIController, 320);
-	DEFINE_COMPONENT(Pathing, 320);
-	DEFINE_COMPONENT(Damage, 320);
-	DEFINE_COMPONENT(Health, 320);
-	DEFINE_COMPONENT(Biome, 40);
-	DEFINE_COMPONENT(Spawner, 40);
-	DEFINE_COMPONENT(Door, 320);
-	DEFINE_COMPONENT(UICursor, 10);
+	DEFINE_COMPONENT(EntityData, 32)
+	DEFINE_COMPONENT(Transform, 128);
+	DEFINE_COMPONENT(Sprite, 128);
+	DEFINE_COMPONENT(CharacterState, 32);
+	DEFINE_COMPONENT(PlayerController, 4);
+	DEFINE_COMPONENT(Physics, 64);
+	DEFINE_COMPONENT(Animator, 64);
+	DEFINE_COMPONENT(Collider, 128);
+	DEFINE_COMPONENT(AIController, 32);
+	DEFINE_COMPONENT(Pathing, 32);
+	DEFINE_COMPONENT(Damage, 32);
+	DEFINE_COMPONENT(Health, 64);
+	DEFINE_COMPONENT(Biome, 4);
+	DEFINE_COMPONENT(Spawner, 16);
+	DEFINE_COMPONENT(Door, 32);
+	DEFINE_COMPONENT(UICursor, 4);
+	DEFINE_COMPONENT(SpellBook, 4);
+	DEFINE_COMPONENT(Spell, 32);
 
 	ComponentInitialiser::InitAll();
 }
@@ -80,7 +80,6 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterSystem<AnimationSystem>(animationSignature);
 
 	// todo: change name to BiomeSystem or something
-	// Map
 	Signature biomeSignature = ArcheBit(Biome);
 	ecs->RegisterSystem<TileMapSystem>(biomeSignature);
 
@@ -100,9 +99,12 @@ void ECS::RegisterAllSystems()
 	Signature UISignature = ArcheBit(UICursor);
 	ecs->RegisterSystem<UISystem>(UISignature);
 
+	// Spell
+	Signature SpellSignature = ArcheBit(Spell);
+	ecs->RegisterSystem<SpellSystem>(SpellSignature);
+
 	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
 	Signature ComponentsSignature = ArcheBit(Transform) | ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterSystem<ComponentUpdateSystem>(ComponentsSignature);
-
 }
 

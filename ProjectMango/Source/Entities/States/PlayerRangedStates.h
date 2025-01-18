@@ -5,6 +5,8 @@
 
 namespace PlayerRanged
 {
+	bool CanAttack(ECS::Entity entity);
+
 	struct IdleState : public CharacterAction
 	{
 		IdleState(ECS::Entity _entity);

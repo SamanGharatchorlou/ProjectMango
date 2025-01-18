@@ -48,7 +48,7 @@ void GameState::HandleInput()
 {
 #if DEBUG_MODE
 	InputManager* input = InputManager::Get();
-	if(input->isPressed(Button::F11))
+	if(input->isPressed(Button::Zero))
 	{
 		GameData::Get().systemStateManager->mStates.addState(new AnimationEditorState);
 	}

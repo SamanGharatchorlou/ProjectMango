@@ -5,6 +5,7 @@
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/ComponentArray.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Physics.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
@@ -47,6 +48,8 @@ namespace ECS
 
 		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
 
+		std::vector<Entity> entities_to_destroy;
+
 		for (Entity entity : entities)
 		{
 			// debug break point
@@ -79,10 +82,10 @@ namespace ECS
 			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
 				continue;
 
-			//const u32 index = colliders.GetComponentIndex(entity);
-			
 			Damage* A_damage = ecs->GetComponent(Damage, entity);
-			bool is_damage = A_collider.HasFlag(Collider::IsDamage);
+
+			bool flip_x = false;
+			bool flip_y = false;
 
 			for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 			{
@@ -114,7 +117,7 @@ namespace ECS
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
 
-					if( is_damage && !B_collider.HasFlag(Collider::IgnoreDamage) )
+					if( !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
 						if(A_damage && A_damage->CanApplyTo(B_entity))
 						{
@@ -123,8 +126,24 @@ namespace ECS
 						}
 					}
 
+					// destroy on contact
+					if (A_collider.destroyOnContact)
+					{
+						entities_to_destroy.push_back(A_damage->entity);
+					}
+
+					// apply damage
+					if (!B_collider.HasFlag(Collider::IgnoreDamage))
+					{
+						if (A_damage && A_damage->CanApplyTo(B_entity))
+						{
+							B_collider.lastHitFrame = frame_count;
+							A_damage->ApplyTo(B_entity);
+						}
+					}
+
 					// damage and ghost colliders just check for collisions and have no effect so dont compute anything below
-					if(is_damage || A_collider.HasFlag(Collider::Flags::GhostCollider) || A_collider.HasFlag(Collider::Flags::Kinematic))
+					if(A_collider.HasFlag(Collider::Flags::GhostCollider) || A_collider.HasFlag(Collider::Flags::Kinematic))
 						continue;
 
 					// Physical, can we slide 
@@ -156,7 +175,7 @@ namespace ECS
 								A_collider.collisionSide[Collider::Left] = true;
 						}
 
-						const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
+						//const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
 						const bool cannot_move_vertically = B_collider.intersects(vertical_rect);
 						if(cannot_move_vertically)
 						{
@@ -179,6 +198,12 @@ namespace ECS
 								else if(A_collider.desiredMovement.y > 0.0f)
 									A_collider.collisionSide[Collider::Bottom] = true;
 							}
+						}
+
+						if (A_collider.reboundCount > 0)
+						{
+							flip_y = A_collider.collisionSide[Collider::Top]  || A_collider.collisionSide[Collider::Bottom];
+							flip_x = A_collider.collisionSide[Collider::Left] || A_collider.collisionSide[Collider::Right];
 						}
 					}
 					else // we're still stuck
@@ -203,43 +228,8 @@ namespace ECS
 
 						// gross we're stiil not able to move
 						if(A_collider.HasFlag(Collider::CanBump) && velocity.isZero())
-						{
-							//VectorF direction = rect.Center() - B_collider.rect.Center();
-
-							//VectorF bump = direction.normalise() * c_colliderGap;
-
-							//RectF bump_rect = rect.MoveCopy(bump);
-							//bool bump_still_collides = B_collider.intersects(bump_rect);
-
-							//while(bump_still_collides)
-							//{
-							//	bump += bump;
-
-							//	bump_rect = rect.MoveCopy(bump);
-							//	bump_still_collides = B_collider.intersects(bump_rect);
-							//}
-
-							
+						{	
 							VectorF bump = BumpCollider(A_collider, B_collider);
-							RectF bump_rect = rect.MoveCopy(bump);
-
-							//// we cant bump into another collider, just check static colliders
-							//for (const Collider& static_collider : collider_list)
-							//{
-							//	if(static_collider.entity == entity || static_collider.entity == B_entity )
-							//		continue;
-
-							//	if(!static_collider.HasFlag(Collider::Static))
-							//		continue;
-
-							//	const bool collides_against_static = static_collider.intersects(bump_rect);
-							//	if( collides_against_static )
-							//	{
-							//		bump = VectorF::zero();
-							//		break;
-							//	}
-							//}
-
 							velocity = bump;
 
 							DebugPrint(PriorityLevel::Debug, "Bumping %f, %f", bump.x, bump.y);
@@ -249,6 +239,29 @@ namespace ECS
 					A_collider.RollForwardPosition();
 				}
             }
+
+			// only want to flip the direction once per loop, otherwise a double contact can double flip
+			if (flip_x || flip_y)
+			{
+				Physics& A_physics = ecs->GetComponentRef(Physics, entity);
+
+				if(flip_x)
+					A_physics.speed.x = A_physics.speed.x * -1;
+
+				if(flip_y)
+					A_physics.speed.y = A_physics.speed.y * -1;
+
+				A_collider.reboundCount--;
+				if (A_collider.reboundCount == 0)
+				{
+					A_collider.destroyOnContact = true;
+				}
+			}
+		}
+
+		for (u32 i = 0; i < entities_to_destroy.size(); i++)
+		{
+			ecs->entities.KillEntity(entities_to_destroy[i]);
 		}
 	}
 
@@ -257,18 +270,7 @@ namespace ECS
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
 
-		//std::vector<ECS::Entity> colliders;
-		//ecs->GetEntitiesWithComponent(Collider, colliders);
-
-		
 		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
-
-		//std::vector<ECS::Entity> level_colliders;
-		//const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
-		////FilterEntitiesInLevel(active_level, colliders, level_colliders);
-
-		//GetEntitiesInLevel(active_level, colliders.entityToComponent, level_colliders);
-
 		
 		for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 		{

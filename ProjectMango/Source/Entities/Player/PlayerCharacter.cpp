@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Physics.h"
@@ -35,6 +36,7 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	ecs->AddComponent(PlayerController, s_playerEntity);
 	ecs->AddComponent(CharacterState, s_playerEntity);
 	ecs->AddComponent(Health, s_playerEntity);
+	ecs->AddComponent(SpellBook, s_playerEntity);
 
 	// Transform
 	ECS::Transform& transform = ecs->GetComponentRef(Transform, s_playerEntity);
@@ -42,10 +44,8 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	transform.Init(config->values, VectorF::zero(), collider);
 
 	// Collider
-	//collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
 	collider.SetFlag(ECS::Collider::IsPlayer);
 	collider.SetFlag(ECS::Collider::CanBump);
-	//collider.UpdateFromTransform();
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->GetComponentRef(Physics, s_playerEntity);
@@ -58,8 +58,6 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	// Sprite
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);
 	sprite.renderLayer = 5;
-	
-
 
 	const ECS::Animation& animation = animator.GetActiveAnimation();
 	collider.SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
@@ -73,9 +71,18 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	ECS::Health& health = ecs->GetComponentRef(Health, s_playerEntity);
 	health.Init(config->values);
 
+	// Spellbook
+	ECS::SpellBook& spell_book = ecs->GetComponentRef(SpellBook, s_playerEntity);
+	spell_book.SetSpellSlot(0, "Fireball");
+	
+	ECS::SpellGem_Rebound* spell_gem = new ECS::SpellGem_Rebound;
+	spell_book.SetSpellSlotGem(0, spell_gem);
+
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;
 	
-	DebugMenu::SelectEntity(s_playerEntity);
+	if(DebugMenu::GetSelectedEntity() == ECS::EntityInvalid)
+		DebugMenu::SelectEntity(s_playerEntity);
+
 	return s_playerEntity;
 } 

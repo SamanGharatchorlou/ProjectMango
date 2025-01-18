@@ -19,9 +19,6 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 	
 	for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 	{
-	//for( u32 i = 0; i < collider_list.size(); i++ )
-	//{
-		//const ECS::Collider& collider = collider_list[i];
 		u32 component_index = iter->second;
 		const ECS::Collider& collider = colliders.GetComponentByIndex(component_index);
 

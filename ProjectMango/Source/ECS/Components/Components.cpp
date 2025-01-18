@@ -11,7 +11,6 @@
 #include "Entities/Player/PlayerCharacter.h"
 #include "System/Files/ConfigManager.h"
 #include "Graphics/TextureManager.h"
-
 #include "ECS/EntityCommon.h"
 
 namespace ECS
@@ -240,7 +239,8 @@ namespace ECS
 	
 	// Damage
 	// ------------------------------------------------------------------
-	Damage::Damage() : value(0), force(0) { }
+	Damage::Damage() : value(0), force(0) 
+	{ }
 
 	bool Damage::CanApplyTo(Entity _entity) const
 	{
@@ -469,6 +469,7 @@ namespace ECS
 	}
 
 	// helpers
+	// ------------------------------------------------------------------
 	Entity GetParent(Entity child)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;

@@ -68,15 +68,18 @@ namespace ECS
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
 
-		bool initialised = false;
+		bool initialised;
 		VectorF alignmentOffset;
 
 		// does collide: top, left, bot, right
 		enum Side { Top, Right, Bottom, Left, Sides };
 		bool collisionSide[Sides];
 
-		u32 flags = 0;
-		int lastHitFrame = -1;
+		bool destroyOnContact;
+		int reboundCount;
+
+		u32 flags;
+		int lastHitFrame;
 
 		VectorF allowedMovement;
 		VectorF desiredMovement; // same as allowed but not edited based on collisions, more for tracking
@@ -87,7 +90,6 @@ namespace ECS
 		RectF rect; 
 
 		std::vector<ECS::Entity> collisions;
-
 
 	private:
 		// dont use this, use the rect

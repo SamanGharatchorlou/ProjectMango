@@ -3,7 +3,6 @@
 #include "Core/stack.h"
 #include "Entities/States/CharacterAction.h"
 #include "IdentityCommon.h"
-//#include "ComponentsSetup.h"
 
 class Texture;
 struct ObjectConfig;
@@ -130,15 +129,15 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Damage)
 
-		// the damage
-		float value;
-
-		// may apply a force
-		float force;
-		VectorF source;
-
 		// which entity we've already applied to, dont apply again
 		std::vector<Entity> appliedTo;
+
+		// may apply a force
+		VectorF source;
+		float force;
+
+		// the damage
+		float value;
 
 		bool CanApplyTo(Entity entity) const;
 		void ApplyTo(Entity entity);
@@ -188,16 +187,6 @@ namespace ECS
 
 		void GenerateColliders(float width);
 	};
-
-	//struct SpellBook
-	//{
-	//	COMPONENT_TYPE(SpellBook)
-
-	//	void Init();
-	//	void Update();
-
-	//	void GenerateColliders(float width);
-	//};
 
 	// ----------------------------------------------------------------------
 	// helpers

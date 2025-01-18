@@ -12,7 +12,6 @@
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Biome.h"
 #include "Game/Camera/Camera.h"
-#include "Entities/Spells/SpellEntityBuilder.h"
 
 #include "ECS/Components/ComponentCommon.h"
 #include "Core/Helpers.h"
@@ -25,22 +24,19 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
-		std::vector<Entity> spawners;
-		ecs->GetEntitiesWithComponent(Spawner, spawners);
+		ComponentArray<Spawner>& spawners = ecs->GetAllComponents(Spawner);
 
 		std::vector<Entity> out_spawners;
-
-		const Level& active_level = Biome::GetVisibleLevel();
-		FilterEntitiesInLevel(active_level, spawners, out_spawners);
+		GetEntitiesInLevel(Biome::GetVisibleLevel(), spawners.entityToComponent, out_spawners);
 
 		Spawner* spawner = nullptr;
 		if(out_spawners.size() > 0)
 		{
 			spawner = ecs->GetComponent(Spawner, out_spawners.front());
 		}
-		if(!spawner && spawners.size() > 0)
+		if(!spawner && out_spawners.size() > 0)
 		{
-			spawner = ecs->GetComponent(Spawner, spawners.front());
+			spawner = ecs->GetComponent(Spawner, out_spawners.front());
 		}
 
 		if(spawner && !spawner->IsSpawning())
@@ -58,9 +54,6 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		InputManager* input = InputManager::Get();
-
-		// setup spell - where to put this?
-		Spell::CreateEntityMap();
 
 		for (Entity entity : entities)
 		{

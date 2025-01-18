@@ -36,6 +36,9 @@ namespace ECS
 			_entry( Spawner ) \
 			_entry( Door ) \
 			_entry( UICursor ) \
+			_entry( SpellBook ) \
+			_entry( Spell ) \
+
 
 	struct Component
 	{

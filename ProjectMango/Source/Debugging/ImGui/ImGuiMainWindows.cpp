@@ -412,21 +412,14 @@ void DebugMenu::DoGameStateWindow()
         ImGui::Text( "Cursor sceen pos: %f, %f", input->cursorScreenPosition().x, input->cursorScreenPosition().y );
         ImGui::Text( "Cursor world pos: %f, %f", input->cursorWorldPosition().x, input->cursorWorldPosition().y );
 
-        std::vector<ECS::Entity> colliders;
-	    ecs->GetEntitiesWithComponent(Collider, colliders);
+        ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetAllComponents(Collider);
 
-        std::vector<ECS::Entity> level_colliders;
-	    const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
-	    FilterEntitiesInLevel(active_level, colliders, level_colliders);
-
-        for( u32 i = 0; i < colliders.size(); i++ )
+        for (auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++)
         {
-            if(const ECS::Collider* collider = ecs->GetComponent(Collider, colliders[i]))
+            ECS::Collider& collider = colliders.GetComponentByIndex(iter->second);
+            if(collider.contains(cursor_pos))
             {
-                if(collider->contains(cursor_pos))
-                {
-                    ImGui::Text("Cursor hit: %d", collider->entity);
-                }
+                ImGui::Text("Cursor hit: %s(%d)", ecs->GetEntityName(collider.entity), collider.entity);
             }
         }
     

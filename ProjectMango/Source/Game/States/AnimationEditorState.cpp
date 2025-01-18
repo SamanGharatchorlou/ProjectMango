@@ -34,7 +34,9 @@ void AnimationEditorState::Update(float dt)
 	//s_state.HandleInput();
 	if (InputManager* im = GameData::Get().inputManager)
 	{
-		if (im->isPressed(Button::F11) && s_timer.GetSeconds() > 1.0f)
+		bool f11 = im->isPressed(Button::F11);
+		bool zero = im->isPressed(Button::Zero);
+		if ( (f11 || zero) && s_timer.GetSeconds() > 1.0f )
 		{
 			GameData::Get().systemStateManager->mStates.popState();
 			return;

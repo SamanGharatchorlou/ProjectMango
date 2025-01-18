@@ -159,8 +159,11 @@ void BasicString::setNewBuffer(int size)
 	delete[] mBuffer;
 	eliminate();
 
-	mCap = size + 1;
-	mBuffer = new char[mCap];
+	if (size > 0)
+	{
+		mCap = size + 1;
+		mBuffer = new char[mCap];
+	}
 }
 
 
@@ -169,7 +172,9 @@ void BasicString::resizeBuffer(int size)
 	mCap = size;
 
 	char* tempBuffer = new char[mCap];
-	memcpy(tempBuffer, mBuffer, mLength + 1);
+
+	if(mLength > 0)
+		memcpy(tempBuffer, mBuffer, mLength + 1);
 
 	delete[] mBuffer;
 	mBuffer = tempBuffer;
@@ -180,20 +185,26 @@ void BasicString::resizeBuffer(int size)
 BasicString& BasicString::operator = (const char* string)
 {
 	uint32_t length = (uint32_t)strlen(string);
-	if (length >= mCap)
-		setNewBuffer(length);
+	if (length > 0)
+	{
+		if (length >= mCap)
+			setNewBuffer(length);
 
-	assignTerminated(string);
+		assignTerminated(string);
+	}
 	return *this;
 }
 
 BasicString& BasicString::operator = (const BasicString& basicString)
 {
 	unsigned int length = basicString.length();
-	if (length >= mCap)
-		setNewBuffer(length);
+	if (length > 0)
+	{
+		if (length >= mCap)
+			setNewBuffer(length);
 
-	assignTerminated(basicString.c_str());
+		assignTerminated(basicString.c_str());
+	}
 	return *this;
 }
 

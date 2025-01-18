@@ -6,10 +6,15 @@
 
 namespace ECS 
 {
-	Collider::Collider()
+	Collider::Collider() : 
+		initialised(false),
+		flags(0),
+		lastHitFrame(-1),
+		destroyOnContact(false),
+		reboundCount(0)
 	{
+		memset(collisionSide, 0, sizeof(bool) * Side::Sides);
 	}
-
 
 	bool Collider::Contains(const RectF& rect, VectorF point)
 	{

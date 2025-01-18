@@ -257,29 +257,14 @@ namespace Scene
 						ecs->AddComponent(Collider, ent);
 
 						ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
+						ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
 						transform.size = size;
 						transform.SetWorldPosition(top_left);
-						
-						ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
 						transform.InitCollider(collider);
-						//ecs->AddComponent(Collider, ent);
 
-						//collider.SetBaseRect( collider_rect );
 						collider.SetFlag(ECS::Collider::Static);
 						collider.SetFlag(ECS::Collider::IsTerrain);
 						collider.SetFlag(ECS::Collider::IgnoreDamage);
-
-						//ecs->AddComponent(Transform, ent);
-						//ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
-						//transform.size = size;
-						//transform.SetWorldPosition(top_left);
-
-						//ecs->AddComponent(Collider, ent);
-						//ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
-						//collider.SetBaseRect( collider_rect );
-						//collider.SetFlag(ECS::Collider::Static);
-						//collider.SetFlag(ECS::Collider::IsTerrain);
-						//collider.SetFlag(ECS::Collider::IgnoreDamage);
 
 						if(value_defines.contains(block.value))
 						{
