@@ -38,7 +38,14 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 
 	// Transform
 	ECS::Transform& transform = ecs->GetComponentRef(Transform, s_playerEntity);
-	transform.Init(config->values, VectorF::zero());
+	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
+	transform.Init(config->values, VectorF::zero(), collider);
+
+	// Collider
+	//collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
+	collider.SetFlag(ECS::Collider::IsPlayer);
+	collider.SetFlag(ECS::Collider::CanBump);
+	//collider.UpdateFromTransform();
 	
 	// MovementPhysics
 	ECS::Physics& physics = ecs->GetComponentRef(Physics, s_playerEntity);
@@ -52,12 +59,7 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);
 	sprite.renderLayer = 5;
 	
-	// Collider
-	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
-	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
-	collider.SetFlag(ECS::Collider::IsPlayer);
-	collider.SetFlag(ECS::Collider::CanBump);
-	collider.UpdateFromTransform();
+
 
 	const ECS::Animation& animation = animator.GetActiveAnimation();
 	collider.SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);

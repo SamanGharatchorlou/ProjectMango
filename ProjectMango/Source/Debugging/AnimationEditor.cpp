@@ -71,7 +71,7 @@ namespace AnimationEditor
 
 	void DoEditor()
 	{
-        s_targetWindowSize = GameData::Get().window->size() * 0.99f;
+        s_targetWindowSize = GameData::Get().window->size() * 0.8f;
 
 		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
                 
@@ -455,7 +455,7 @@ namespace AnimationEditor
                 }
                 else
                 {
-                    float flip_x = selected_animation.flipPointX * frame_texture_size.x - draw_point_TL.x;
+                    float flip_x = selected_animation.objectCenter.x * frame_texture_size.x - draw_point_TL.x;
                     frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
                 }
 
@@ -561,8 +561,11 @@ namespace AnimationEditor
                 ImGui::VectorText("Relative Position", relative_pos);
                 ImGui::VectorText("Relative Size", relative_size);
                             
-                float flip_x = selection_rect.Center().x - draw_point_TL.x;
-                ImGui::VectorText("Relative Center", VectorF(flip_x / frame_texture_size.x, 0.5f) );
+                float x_center = selection_rect.Center().x - draw_point_TL.x;
+                float y_center = selection_rect.Center().y - draw_point_TL.y;
+                VectorF relaive_center = relative_pos + relative_size * 0.5;// (selection_rect.Center() - draw_point_TL) / frame_texture_size;
+
+                ImGui::VectorText("Relative Center", relaive_center );
             }
         }
 

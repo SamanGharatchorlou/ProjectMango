@@ -75,8 +75,15 @@ namespace AnimationReader
 				spriteSheet.frameSize.x = frame_size_x;
 				spriteSheet.frameSize.y = frame_size_y;
 				spriteSheet.sheetSize = (texture->originalDimentions / spriteSheet.frameSize).toInt();
-
+				
 				s_spriteSheets[spriteSheet_id] = spriteSheet;
+			}
+
+			VectorF object_center;
+			if(sprite_sheet.HasMember("object_center"))
+			{
+				const Value& center = sprite_sheet["object_center"];
+				object_center = VectorF(center[0].GetFloat(), center[1].GetFloat());
 			}
 
 			const Value& anims = sprite_sheet["animations"];
@@ -95,10 +102,17 @@ namespace AnimationReader
 				anim.attackColliderFrameStart = animation.HasMember("attack_collider_frame_start") ? animation["attack_collider_frame_start"].GetInt() : -1;
 				anim.attackColliderFrameEnd = animation.HasMember("attack_collider_frame_end") ? animation["attack_collider_frame_end"].GetInt() : -1;
 
-				anim.flipPointX = 0.5f;
+				// set object center
+				if(sprite_sheet.HasMember("object_center"))
+				{
+					const Value& center = sprite_sheet["object_center"];
+					anim.objectCenter = VectorF(center[0].GetFloat(), center[1].GetFloat());
+				}
+
+				// override center with the x flip point
 				if (animation.HasMember("flip_point_x"))
 				{
-					anim.flipPointX = animation["flip_point_x"].GetFloat();
+					anim.objectCenter.x = animation["flip_point_x"].GetFloat();
 				}
 
 				anim.entityColliderPos = VectorF::zero();

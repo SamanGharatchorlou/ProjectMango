@@ -10,6 +10,8 @@ struct ObjectConfig;
 
 namespace ECS
 {
+	struct Collider;
+
 	enum Direction { Up, Right, Down, Left, Count };
 
 	static const VectorI s_directions[Direction::Count] 
@@ -21,7 +23,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(EntityData)
 
-		ECS::Entity parent = EntityInvalid;
+		ECS::Entity parent;
 		std::vector<Entity> children;
 
 		static void SetParent(Entity entity, Entity parent);
@@ -37,12 +39,17 @@ namespace ECS
 		VectorF localPosition;
 
 		VectorF renderOffset;
-
 		VectorF size;
 
-		bool ignoreOutOfBounds = false;
+		// set through the anim config, might not be the technical center, 
+		// but it should be the visual one
+		VectorF center;
+
+		bool ignoreOutOfBounds;
 		
+		void Init(const SettingValues& values, VectorF pos, Collider& collider);
 		void Init(const SettingValues& values, VectorF pos);
+		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
@@ -56,27 +63,20 @@ namespace ECS
 		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
 
-	struct Movement
-	{
-		VectorF direction;
-		VectorF velocity;
-	};
-
 	struct Sprite
 	{
 		COMPONENT_TYPE(Sprite)
 
 		RectF subRect;
-		Texture* texture = nullptr;
+		Texture* texture;
 		
-		VectorF flipPoint = VectorF(0.5f, 0.5f);
+		VectorF flipPoint;
 		SDL_RendererFlip flip;
-		bool canFlip = true;
+		bool canFlip;
 		
 		// in degress (because of the render function input)
 		float rotation; 
-
-		u32 renderLayer = 0;
+		u32 renderLayer;
 		
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
 		void SetTexture(const char* label);
@@ -95,11 +95,11 @@ namespace ECS
 
 		VectorI movementInput;
 
-		bool isRanged = true;
-		bool isMelee = false;
+		bool isRanged;
+		bool isMelee;
 
 		// melee only (split this into differnt state parts?)
-		bool canEnterHover = false;
+		bool canEnterHover;
 		
 		void Init(const SettingValues& values);
 		VectorI GetFacingDirection() const;
@@ -118,7 +118,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Pathing)
 
-		Entity target = ECS::EntityInvalid;
+		Entity target;
 
 		VectorI currentStart;
 		VectorI currentTarget;
@@ -131,7 +131,7 @@ namespace ECS
 		COMPONENT_TYPE(Damage)
 
 		// the damage
-		float value = 0;
+		float value;
 
 		// may apply a force
 		float force;
@@ -148,10 +148,10 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Health)
 
-		float maxHealth = 0.0f;
-		float currentHealth = 0.0f;
+		float maxHealth;
+		float currentHealth;
 
-		bool invulnerable = false;
+		bool invulnerable;
 		
 		void Init(const SettingValues& values);
 		void ApplyDamage(const Damage& damage);
@@ -164,9 +164,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Spawner)
 
-		EntitySpawnFn entitySpawnFn = nullptr;
-		const char* spawnId = nullptr;
-		const char* spawnConfig = nullptr;
+		EntitySpawnFn entitySpawnFn;
+		const char* spawnId;
+		const char* spawnConfig;
 
 		bool IsSpawning() { return entitySpawnFn != nullptr; }
 
@@ -177,27 +177,27 @@ namespace ECS
 	struct Door
 	{
 		COMPONENT_TYPE(Door)
-
-		float triggerRange = 0.0f;
-
+			
 		// top and bottom
 		Entity colliders[2];
 
-		void Init();
-		void Update();
-
-		void GenerateColliders(float width);
-	};
-
-	struct SpellBook
-	{
-		COMPONENT_TYPE(Door)
+		float triggerRange;
 
 		void Init();
 		void Update();
 
 		void GenerateColliders(float width);
 	};
+
+	//struct SpellBook
+	//{
+	//	COMPONENT_TYPE(SpellBook)
+
+	//	void Init();
+	//	void Update();
+
+	//	void GenerateColliders(float width);
+	//};
 
 	// ----------------------------------------------------------------------
 	// helpers

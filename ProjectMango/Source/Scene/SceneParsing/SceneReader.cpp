@@ -252,13 +252,34 @@ namespace Scene
 						char buffer[32];
 						snprintf(buffer, 32, "Map Collider %d", (int)b);
 						ECS::Entity ent = ecs->CreateEntity(buffer);
-
+												
+						ecs->AddComponent(Transform, ent);
 						ecs->AddComponent(Collider, ent);
+
+						ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
+						transform.size = size;
+						transform.SetWorldPosition(top_left);
+						
 						ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
-						collider.SetBaseRect( collider_rect );
+						transform.InitCollider(collider);
+						//ecs->AddComponent(Collider, ent);
+
+						//collider.SetBaseRect( collider_rect );
 						collider.SetFlag(ECS::Collider::Static);
 						collider.SetFlag(ECS::Collider::IsTerrain);
 						collider.SetFlag(ECS::Collider::IgnoreDamage);
+
+						//ecs->AddComponent(Transform, ent);
+						//ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
+						//transform.size = size;
+						//transform.SetWorldPosition(top_left);
+
+						//ecs->AddComponent(Collider, ent);
+						//ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
+						//collider.SetBaseRect( collider_rect );
+						//collider.SetFlag(ECS::Collider::Static);
+						//collider.SetFlag(ECS::Collider::IsTerrain);
+						//collider.SetFlag(ECS::Collider::IgnoreDamage);
 
 						if(value_defines.contains(block.value))
 						{
@@ -272,11 +293,6 @@ namespace Scene
 								collider.SetFlag(ECS::Collider::IsWall);
 							}
 						}
-
-						ecs->AddComponent(Transform, ent);
-						ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
-						transform.size = size;
-						transform.SetWorldPosition(top_left);
 					}
 				}
 				else if( StringCompare(layer_id, "WalkableTiles" ) )

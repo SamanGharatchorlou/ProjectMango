@@ -3,6 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "Graphics/RenderManager.h"
 
 ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 {
@@ -49,6 +50,37 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 
 		ImGui::Text("Allowed Movement: %f, %f", collider.allowedMovement.x, collider.allowedMovement.y);
 		ImGui::Text("Desired Movement: %f, %f", collider.desiredMovement.x, collider.desiredMovement.y);
+
+		Colour colour = Colour::Blue;
+        bool is_static = collider.HasFlag(ECS::Collider::Static);
+        if(is_static)
+        {
+            colour = Colour::Purple;
+        }
+
+        bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
+        if(ignore_all)
+        {
+            colour = Colour::LightGrey;
+            colour.a = 100;
+        }
+
+        if (collider.HasFlag(ECS::Collider::IsEnemy))
+        {
+            colour = Colour::Red;
+            colour.a = 100;
+        }
+        if (collider.HasFlag(ECS::Collider::IsPlayer))
+        {
+            colour = Colour::Green;
+            colour.a = 100;
+        }
+        if (collider.HasFlag(ECS::Collider::TerrainOnly))
+        {
+            colour = Colour::LightGrey;
+            colour.a = 200;
+        }
+        DebugDraw::Shape(DebugDrawType::RectOutline, collider.rect, colour);
 
 		ImGui::PopID();
 	}

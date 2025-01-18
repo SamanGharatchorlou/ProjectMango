@@ -3,7 +3,7 @@
 	"values": {
 		"size_x": 82,
 		"size_y": 96,
-		"trigger_range" : 300,
+		"trigger_range" : 100,
 		"collider_width" : 0.1
 	}
 }

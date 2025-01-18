@@ -64,6 +64,11 @@ namespace ECS
 			Collider* collider = ecs->GetComponent(Collider, entity);
 			if (collider)
 			{ 
+				if(!collider->initialised)
+				{
+					DebugPrint(Warning, "Collder on entity %s has not been initialised", ecs->entities.GetEntityName(entity));
+				}
+
 				u32 flags = Collider::Flags::Static;
 				if (HasFlag(collider->flags, flags))
 					continue;
@@ -88,17 +93,15 @@ namespace ECS
 			// set collider paramters
 			if (collider)
 			{
-				collider->back = transform.worldPosition;
-				collider->forward = transform.targetWorldPosition;
-				collider->RollForwardPosition();
+				//collider->back = transform.worldPosition;
+				//collider->forward = transform.targetWorldPosition;
+				//collider->RollForwardPosition();
+				collider->UpdateFromTransform(&transform);
 			}
 
 			// check out of bounds
 			const Biome& biome = Biome::GetActiveBiome();
 			const RectF rect = transform.GetRect();
-
-
-
 			if (rect.RightPoint() < biome.aabb[0].x || rect.BotPoint() < biome.aabb[0].y || 
 				rect.LeftPoint() > biome.aabb[1].x || rect.TopPoint() > biome.aabb[1].y)
 			{

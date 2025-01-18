@@ -14,6 +14,7 @@ namespace ECS
 		{
 			// base type
 			None = 0,
+
 			Static,
 			Kinematic,
 
@@ -28,6 +29,7 @@ namespace ECS
 			// use to enable/disable collisions
 			IgnoreAll,
 			IgnoreDamage,
+			IgnorePlayer,
 
 			// only collider with terrain
 			TerrainOnly,
@@ -40,7 +42,7 @@ namespace ECS
 			// or only for more complex moving colliders maybe
 			CanBump
 		};
-		
+
 		virtual bool intersects(const Collider& collider) const;
 		virtual bool intersects(const RectF& rect) const;
 		
@@ -57,7 +59,7 @@ namespace ECS
 
 		// assumes the rect size has been set
 		void InitFromTransform(const Transform& transform);
-		void UpdateFromTransform();
+		void UpdateFromTransform(const Transform* transform = nullptr);
 
 		void RollBackPosition();
 		void RollForwardPosition();
@@ -65,6 +67,9 @@ namespace ECS
 		inline bool HasFlag(Flags flag) const { return flags & (1 << flag); }
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
+
+		bool initialised = false;
+		VectorF alignmentOffset;
 
 		// does collide: top, left, bot, right
 		enum Side { Top, Right, Bottom, Left, Sides };

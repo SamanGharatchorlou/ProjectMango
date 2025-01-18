@@ -53,6 +53,7 @@ namespace ECS
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \
 							 Entity entity = EntityInvalid; \
+							 comp();
 
 #define DEFINE_COMPONENT( component, size ) \
 	struct component##initialiser : public ComponentInitialiser { \

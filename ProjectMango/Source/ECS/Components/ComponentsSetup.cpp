@@ -27,22 +27,25 @@
 void ECS::RegisterAllComponents()
 {
 	// should i define these outside somewhere more accessible for some reason?
-	DEFINE_COMPONENT(EntityData, 32)
-	DEFINE_COMPONENT(Transform, 32);
-	DEFINE_COMPONENT(Sprite, 32);
-	DEFINE_COMPONENT(CharacterState, 32);
-	DEFINE_COMPONENT(PlayerController, 32);
-	DEFINE_COMPONENT(Physics, 32);
-	DEFINE_COMPONENT(Animator, 32);
-	DEFINE_COMPONENT(Collider, 32);
-	DEFINE_COMPONENT(AIController, 32);
-	DEFINE_COMPONENT(Pathing, 32);
-	DEFINE_COMPONENT(Damage, 32);
-	DEFINE_COMPONENT(Health, 32);
-	DEFINE_COMPONENT(Biome, 4);
-	DEFINE_COMPONENT(Spawner, 4);
-	DEFINE_COMPONENT(Door, 32);
-	DEFINE_COMPONENT(UICursor, 1);
+	
+	DEFINE_COMPONENT(Animator, 320);
+
+	DEFINE_COMPONENT(EntityData, 320)
+	DEFINE_COMPONENT(Transform, 320);
+	DEFINE_COMPONENT(Sprite, 320);
+	DEFINE_COMPONENT(CharacterState, 320);
+	DEFINE_COMPONENT(PlayerController, 320);
+	DEFINE_COMPONENT(Physics, 320);
+	//DEFINE_COMPONENT(Animator, 320);
+	DEFINE_COMPONENT(Collider, 320);
+	DEFINE_COMPONENT(AIController, 320);
+	DEFINE_COMPONENT(Pathing, 320);
+	DEFINE_COMPONENT(Damage, 320);
+	DEFINE_COMPONENT(Health, 320);
+	DEFINE_COMPONENT(Biome, 40);
+	DEFINE_COMPONENT(Spawner, 40);
+	DEFINE_COMPONENT(Door, 320);
+	DEFINE_COMPONENT(UICursor, 10);
 
 	ComponentInitialiser::InitAll();
 }

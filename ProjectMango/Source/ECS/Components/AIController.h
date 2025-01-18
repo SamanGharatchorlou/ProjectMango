@@ -6,14 +6,13 @@ namespace ECS
 	{
 		COMPONENT_TYPE(AIController)
 
-		Entity target = EntityInvalid;
+		Entity target;
 
-		bool moveToTarget = true;
-
-		bool isAlert = false;
+		bool moveToTarget;
+		bool isAlert;
 
 		TimerF cooldownTimer;
-		float attackCooldownTime = 1.0f;
+		float attackCooldownTime;
 
 		float DistanceToTargetSquared() const;
 		bool CanMoveForward(int ease_factor, float dt) const;

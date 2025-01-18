@@ -244,18 +244,29 @@ void DebugMenu::DoColliderWindow()
 {
     ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
-	ECS::ComponentArray<ECS::Collider>& colliders =  ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
-	std::vector<ECS::Collider>& collider_list = colliders.components;
+	//ECS::ComponentArray<ECS::Collider>& colliders =  ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
+	//std::vector<ECS::Collider>& collider_list = colliders.components;
+
+    const ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
+	//const std::vector<ECS::Collider>& collider_list = colliders.components;
+	const u32 count = (u32)colliders.entityToComponent.size();
 
     ImGui::Checkbox("Display Statics", &s_displayStatics);
     ImGui::Checkbox("Display Dynamics", &s_displayDynamics);
 
     ImGui::DoDebugRenderTypeDropDown(s_drawType);
 
-    // first we need to update the collider position with where the entity wants to be
-    for(u32 i = 0; i < collider_list.size(); i++)
+    for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 	{
-        const ECS::Collider& collider = collider_list[i];
+	//for( u32 i = 0; i < collider_list.size(); i++ )
+	//{
+		//const ECS::Collider& collider = collider_list[i];
+		u32 component_index = iter->second;
+		const ECS::Collider& collider = colliders.GetComponentByIndex(component_index);
+ //   // first we need to update the collider position with where the entity wants to be
+ //   for(u32 i = 0; i < collider_list.size(); i++)
+	//{
+ //       const ECS::Collider& collider = collider_list[i];
 
 		// ignore static colliders, they dont move
         bool is_static = collider.HasFlag(ECS::Collider::Static);
@@ -295,6 +306,7 @@ void DebugMenu::DoColliderWindow()
 
         DebugDraw::Shape(s_drawType, collider.rect, colour);
 	}
+    
 }
 
 DebugMenu::GamePlayerState s_gamePlayerState;

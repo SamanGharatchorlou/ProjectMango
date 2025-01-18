@@ -65,9 +65,11 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 
 	// Collider
 	ECS::Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
-	collider.SetBaseRect(RectF(pos, size));
+	attack_transform.InitCollider(collider);
+
+	//collider.SetBaseRect(RectF(pos, size));
 	collider.SetFlag(ECS::Collider::IsDamage);
-	collider.UpdateFromTransform();
+	//collider.UpdateFromTransform();
 
 	// Damage
 	ECS::Damage& damage = ecs->GetComponentRef(Damage, attack_collider);
@@ -127,7 +129,11 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 
 	// Transform
 	Transform& transform = ecs->GetComponentRef(Transform, entity);
-	transform.Init(config->values, spawn_pos);
+	Collider& collider = ecs->GetComponentRef(Collider, entity);
+	transform.Init(config->values, spawn_pos, collider);
+
+	// Collider
+	collider.SetFlag(Collider::IsEnemy);
 
 	// MovementPhysics
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
@@ -142,10 +148,10 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 	sprite.renderLayer = 4;
 	
 	// Collider
-	Collider& collider = ecs->GetComponentRef(Collider, entity);
-	collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
-	collider.SetFlag(Collider::IsEnemy);
-	collider.UpdateFromTransform();
+	//Collider& collider = ecs->GetComponentRef(Collider, entity);
+	//collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
+	//collider.SetFlag(Collider::IsEnemy);
+	//collider.UpdateFromTransform();
 
 	CollisionSystem::FindValidPosition(entity);
 

@@ -10,7 +10,7 @@ namespace ECS
 		VectorF maxSpeed;	
 		VectorF acceleration;
 
-		float mass = 1.0f;
+		float mass;
 
 		bool applyGravity;
 		bool onFloor;

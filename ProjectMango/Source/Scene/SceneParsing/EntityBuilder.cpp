@@ -113,7 +113,7 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 	door.triggerRange = config->values.GetFloat("trigger_range");
 
-	// Transform - sandwhich the door between the top and bottom raycast points
+	// Transform - sandwich the door between the top and bottom raycast points
 	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
 
 	const VectorF top = up_result.hitPosition;

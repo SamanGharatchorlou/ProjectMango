@@ -52,6 +52,8 @@ namespace Spell
 			animation.frameTime = animation.frameTime + (diff * animation.frameTime);
 		}
 
+		transform.center = animator.GetActiveAnimation().objectCenter;
+
 		// Sprite
 		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 		sprite.renderLayer = 6;
@@ -72,8 +74,15 @@ namespace Spell
 
 		// set position to the caster position
 		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
+		transform.InitCollider(collider);
+
 		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
 		transform.SetWorldPositionCenter( caster_position );
+		
+		// Collider
+		collider.SetFlag(ECS::Collider::IsDamage);
+		collider.SetFlag(ECS::Collider::IgnorePlayer);
 
 		// direction
 		VectorF direction = target - caster_position;
@@ -82,16 +91,11 @@ namespace Spell
 		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 		sprite.rotation = direction.getRotation();
 
-		// apply speed (from config) and direction
+		// Physics
 		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
 		float speed = config->values.GetFloat("speed");
 		physics.speed = direction * speed;
 		physics.maxSpeed = physics.speed;
-
-		// Collider
-		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
-		collider.InitFromTransform(transform);
-		collider.SetFlag(ECS::Collider::IsDamage);
 
 		// Damage
 		ECS::Damage& damage = ecs->GetComponentRef(Damage, entity);

@@ -2,13 +2,9 @@
 
 namespace ECS
 {
-	//VectorF GetPosition(Entity entity);
-
-	//Entity GetParent(Entity child);
-
 	struct Level;
 
-	void FilterEntitiesInLevel(const ECS::Level& level, const std::vector<ECS::Entity>& in_entities, std::vector<ECS::Entity>& out_entities);
-
+	bool IsInLevel(const ECS::Level& level, const Transform& transform);
+	void GetEntitiesInLevel(const Level& level, std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities);
 
 }

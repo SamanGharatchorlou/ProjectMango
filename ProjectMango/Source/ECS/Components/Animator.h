@@ -32,7 +32,7 @@ namespace ECS
 		VectorF attackColliderSize = VectorF(-1, -1);
 
 		// relative to size x
-		float flipPointX;
+		VectorF objectCenter;
 
 		int startIndex = 0;
 		int frameCount = 0;
@@ -64,8 +64,6 @@ namespace ECS
 
 		void SetActiveSpriteFrame(Sprite& sprite);
 		void StartAnimation(ActionState action);
-
-		void AdjustPositionOnAnimationEnd();
 
 		const Animation& GetActiveAnimation() const;
 		const Animation* GetAnimation(ActionState action) const;

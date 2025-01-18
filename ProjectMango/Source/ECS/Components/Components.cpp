@@ -17,6 +17,11 @@
 namespace ECS
 {
 	// EntityData
+	// ------------------------------------------------------------------
+	EntityData::EntityData() : 
+		parent(EntityInvalid) 
+	{ }
+
 	void EntityData::SetParent(Entity entity, Entity parent)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -49,7 +54,13 @@ namespace ECS
 		PushBackUnique(parent_entity_data->children, entity);
 	}
 
+
 	// Transform
+	// ------------------------------------------------------------------
+	Transform::Transform() : 
+		ignoreOutOfBounds(false) 
+	{ }
+
 	void Transform::Init(const SettingValues& values, VectorF pos)
 	{
 		size = values.GetVectorF("size_x", "size_y");
@@ -64,6 +75,20 @@ namespace ECS
 				SetWorldPosition( pos + VectorF(0.0f, distance));
 			}
 		}
+	}
+
+	void Transform::InitCollider(Collider& collider)
+	{
+		if(!size.isPositive())
+			DebugPrint(Warning, "Transform size has to be set before init'ing collider");
+
+		collider.InitFromTransform(*this);
+	}
+	
+	void Transform::Init(const SettingValues& values, VectorF pos, Collider& collider)
+	{
+		Init(values,pos);
+		InitCollider(collider);
 	}
 
 	void Transform::SetWorldRect(const VectorF& _pos, const VectorF& _size)
@@ -97,9 +122,7 @@ namespace ECS
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		if (Collider* collider = ecs->GetComponent(Collider, entity))
 		{
-			collider->back = worldPosition;
-			collider->forward = targetWorldPosition;
-			collider->RollForwardPosition();
+			collider->UpdateFromTransform(this);
 		}
 	}
 
@@ -108,12 +131,15 @@ namespace ECS
 		VectorF object_size = size;
 
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(const Collider* collider = ecs->GetComponent(Collider, entity))
+		if(Collider* collider = ecs->GetComponent(Collider, entity))
 		{
+			if(!collider->initialised)
+				DebugPrint(Warning, "Collider has not been init'd, has no size");
+
 			object_size = collider->rect.Size();
 		}
 
-		VectorF center_position = pos - (object_size * 0.5f);
+		VectorF center_position = pos - (object_size * center);
 		SetWorldPosition(center_position);
 	}
 
@@ -144,29 +170,78 @@ namespace ECS
 		return RectF(worldPosition, size);
 	}
 
+
 	// Sprite
+	// ------------------------------------------------------------------
+	Sprite::Sprite() :
+		texture(nullptr),
+		flipPoint(VectorF(0.5f, 0.5f)),
+		flip(SDL_FLIP_NONE),
+		canFlip(true),
+		rotation(0),
+		renderLayer(0)
+	{ }
+
 	void Sprite::SetTexture(const char* label)
 	{
 		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
 	}
+
+
+	// CharacterState
+	// ------------------------------------------------------------------
+	CharacterState::CharacterState() :
+		character(nullptr),
+		isRanged(true),
+		isMelee(false),
+		canEnterHover(false)
+	{ }
+
+	void CharacterState::Init(const SettingValues& values)
+	{
+		isRanged = values.GetBool("ranged", true);
+		isMelee = values.GetBool("melee", false);
+	}
+
+	VectorI CharacterState::GetFacingDirection() const
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+		int direction = sprite.IsFlipped() ? -1 : 1;
+
+		return VectorI(direction, 0);
+	}
+
+	void CharacterState::FlipFacingDirection()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+
+		if( sprite.canFlip )
+		{
+			if( sprite.flip == SDL_FLIP_HORIZONTAL)
+				sprite.flip = SDL_FLIP_NONE;
+			else
+				sprite.flip = SDL_FLIP_HORIZONTAL;
+		}
+	}
 	
-	// Health
-	void Health::Init(const SettingValues& values)
-	{
-		maxHealth = values.GetFloat("max_health");
-		currentHealth = maxHealth;
-	}
 
-	void Health::ApplyDamage(const Damage& damage)
-	{
-		if(invulnerable)
-			return;
+	// PlayerController
+	// ------------------------------------------------------------------
+	PlayerController::PlayerController() { }
+	
 
-		currentHealth -= damage.value;
-		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
-	}
+	// Pathing
+	// ------------------------------------------------------------------
+	Pathing::Pathing() : target(EntityInvalid) { }
 
+	
 	// Damage
+	// ------------------------------------------------------------------
+	Damage::Damage() : value(0), force(0) { }
+
 	bool Damage::CanApplyTo(Entity _entity) const
 	{
 		for( u32 i = 0; i < appliedTo.size(); i++ )
@@ -200,36 +275,30 @@ namespace ECS
 		}
 	}
 
-	// CharacterState
-	void CharacterState::Init(const SettingValues& values)
+
+	// Health
+	// ------------------------------------------------------------------
+	Health::Health() : maxHealth(0), currentHealth(0), invulnerable(false) { }
+
+	void Health::Init(const SettingValues& values)
 	{
-		isRanged = values.GetBool("ranged", true);
-		isMelee = values.GetBool("melee", false);
+		maxHealth = values.GetFloat("max_health");
+		currentHealth = maxHealth;
 	}
 
-	VectorI CharacterState::GetFacingDirection() const
+	void Health::ApplyDamage(const Damage& damage)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		if(invulnerable)
+			return;
 
-		int direction = sprite.IsFlipped() ? -1 : 1;
-
-		return VectorI(direction, 0);
+		currentHealth -= damage.value;
+		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
 	}
+	
 
-	void CharacterState::FlipFacingDirection()
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-
-		if( sprite.canFlip )
-		{
-			if( sprite.flip == SDL_FLIP_HORIZONTAL)
-				sprite.flip = SDL_FLIP_NONE;
-			else
-				sprite.flip = SDL_FLIP_HORIZONTAL;
-		}
-	}
+	// Spawner
+	// ------------------------------------------------------------------
+	Spawner::Spawner() : entitySpawnFn(nullptr), spawnId(nullptr), spawnConfig(nullptr) { }
 
 	bool Spawner::Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn)
 	{
@@ -279,6 +348,15 @@ namespace ECS
 			}
 		}
 	}
+	
+
+	// Door
+	// ------------------------------------------------------------------
+	Door::Door() : triggerRange(0)
+	{
+		colliders[0] = EntityInvalid;
+		colliders[1] = EntityInvalid;
+	}
 
 	void Door::Init()
 	{
@@ -299,6 +377,10 @@ namespace ECS
 		colliders[0] = top;
 		colliders[1] = bot;
 
+		
+		ECS::EntityData::SetParent(top, entity);
+		ECS::EntityData::SetParent(bot, entity);
+
 		const Transform& door_transform = ecs->GetComponentRef(Transform, entity);
 		const VectorF size(door_transform.size.x * width, door_transform.size.y * 0.5f);
 		const float x_pos = door_transform.worldPosition.x + door_transform.size.x * 0.5f - size.x * 0.5f;
@@ -306,20 +388,30 @@ namespace ECS
 		
 		Transform& top_transform = ecs->GetComponentRef(Transform, top);
 		Transform& bot_transform = ecs->GetComponentRef(Transform, bot);
-		top_transform.SetWorldRect(pos, size);
-		bot_transform.SetWorldRect(pos + VectorF(0.0f,top_transform.size.y), size);
-
 		Collider& top_collider = ecs->GetComponentRef(Collider, top);
 		Collider& bot_collider = ecs->GetComponentRef(Collider, bot);
-		top_collider.SetFlag(ECS::Collider::PlayerOnly);
-		top_collider.SetFlag(ECS::Collider::IsTerrain);
-		bot_collider.SetFlag(ECS::Collider::PlayerOnly);
-		bot_collider.SetFlag(ECS::Collider::IsTerrain);
-		top_collider.InitFromTransform(top_transform);
-		bot_collider.InitFromTransform(bot_transform);
 
-		ECS::EntityData::SetParent(top, entity);
-		ECS::EntityData::SetParent(bot, entity);
+		VectorF door_part_size = VectorF(door_transform.size.x, door_transform.size.y * 0.5f);
+
+		top_transform.size = door_part_size;
+		top_transform.SetLocalPosition(VectorF(0,0));
+		top_transform.InitCollider(top_collider);
+		
+		VectorF relative_size = VectorF(width, 1.0f);
+		VectorF top_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
+		top_collider.SetRelativeRect(top_relative_pos, relative_size);
+
+		bot_transform.size = door_part_size;
+		bot_transform.SetLocalPosition(VectorF(0, door_transform.size.y * 0.5f));
+		bot_transform.InitCollider(bot_collider);
+
+		VectorF bot_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
+		bot_collider.SetRelativeRect(bot_relative_pos, relative_size);
+
+		//top_collider.SetFlag(ECS::Collider::PlayerOnly);
+		top_collider.SetFlag(ECS::Collider::IsTerrain);
+		//bot_collider.SetFlag(ECS::Collider::PlayerOnly);
+		bot_collider.SetFlag(ECS::Collider::IsTerrain);
 	}
 
 	void Door::Update()
@@ -363,14 +455,17 @@ namespace ECS
 		}
 
 		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+		float travel_distance = transform.size.y * 0.5f;
 
 		Transform& top_transform = ecs->GetComponentRef(Transform, colliders[0]);
-		float top_pos_y = transform.worldPosition.y - top_transform.size.y * (animation_progress);
-		top_transform.SetWorldPosition(VectorF(top_transform.worldPosition.x, top_pos_y));
-
+		VectorF top_local_start_position = VectorF(top_transform.localPosition.x, 0.0f);
+		VectorF top_local_current_position = top_local_start_position - VectorF(0, travel_distance * animation_progress);
+		top_transform.SetLocalPosition(top_local_current_position);
+		
 		Transform& bot_transform = ecs->GetComponentRef(Transform, colliders[1]);
-		float bot_pos_x = transform.worldPosition.y + top_transform.size.y * (1 + animation_progress);
-		bot_transform.SetWorldPosition(VectorF(top_transform.worldPosition.x, bot_pos_x));
+		VectorF bot_local_start_position = VectorF(bot_transform.localPosition.x, transform.size.y * 0.5f);
+		VectorF bot_local_current_position = bot_local_start_position + VectorF(0, travel_distance * animation_progress);
+		bot_transform.SetLocalPosition(bot_local_current_position);
 	}
 
 	// helpers

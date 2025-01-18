@@ -6,6 +6,11 @@
 
 namespace ECS 
 {
+	Collider::Collider()
+	{
+	}
+
+
 	bool Collider::Contains(const RectF& rect, VectorF point)
 	{
 		return !(	point.x > rect.RightPoint() || 
@@ -16,6 +21,11 @@ namespace ECS
 
 	bool Collider::Intersects(const RectF& rect_a, const RectF& rect_b)
 	{
+		bool a = rect_a.LeftPoint()  > rect_b.RightPoint();
+		bool b = rect_a.RightPoint() < rect_b.LeftPoint();
+		bool c = rect_a.TopPoint()   > rect_b.BotPoint();
+		bool d = rect_a.BotPoint()   < rect_b.TopPoint();
+
 		return !(	rect_a.LeftPoint()  > rect_b.RightPoint() || 
 					rect_a.RightPoint() < rect_b.LeftPoint()  || 
 					rect_a.TopPoint()   > rect_b.BotPoint()   || 
@@ -86,21 +96,26 @@ namespace ECS
 		baseRect.SetTopLeft(forward);
 		rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
-
 	
 	void Collider::InitFromTransform(const Transform& transform)
 	{
 		SetBaseRect(RectF(transform.worldPosition, transform.size));
-		UpdateFromTransform();
+		UpdateFromTransform(&transform);
+
+		initialised = true;
 	}
 
-	void Collider::UpdateFromTransform()
+	void Collider::UpdateFromTransform(const Transform* transform)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+		if(!transform)
+		{
+			EntityCoordinator* ecs = GameData::Get().ecs;
+			transform = ecs->GetComponent(Transform, entity);
+		}
 
-		back = transform.worldPosition;
-		forward = transform.targetWorldPosition;
+		back = transform->worldPosition;
+		forward = transform->targetWorldPosition;
+
 		RollForwardPosition();
 	}
 }

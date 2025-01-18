@@ -6,6 +6,7 @@
 	[
 		{
 			"spriteSheet": "Fire-ball",
+			"object_center" : [ 0.632, 0.71 ],
 			"animations": [
 				{
 					"action": "Active",

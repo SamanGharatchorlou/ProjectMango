@@ -10,6 +10,12 @@
 
 namespace ECS
 {
+	Biome::Biome()
+	{
+		aabb[0] = VectorF();
+		aabb[1] = VectorF();
+	}
+
 	const Entity Biome::GetActive()
 	{
 		State& state = GameData::Get().systemStateManager->mStates.Top();

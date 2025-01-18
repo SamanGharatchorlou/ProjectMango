@@ -45,9 +45,7 @@ namespace ECS
 		const FrameRateController& frc = FrameRateController::Get();
 		const int frame_count = frc.FrameCount();
 
-		ComponentArray<Collider>& colliders =  ecs->GetComponents<Collider>(Component::Type::Collider);
-		std::vector<Collider>& collider_list = colliders.components;
-		const u32 count = (u32)collider_list.size();
+		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
 
 		for (Entity entity : entities)
 		{
@@ -81,27 +79,33 @@ namespace ECS
 			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
 				continue;
 
-			const u32 index = colliders.GetComponentIndex(entity);
+			//const u32 index = colliders.GetComponentIndex(entity);
 			
 			Damage* A_damage = ecs->GetComponent(Damage, entity);
 			bool is_damage = A_collider.HasFlag(Collider::IsDamage);
 
-			for (u32 i = 0; i < count; i++) 
+			for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 			{
-				// ignore ourself
-				if(i == index)
+				Collider& B_collider = colliders.GetComponentByIndex(iter->second);
+				if(B_collider.entity == entity)
 					continue;
-				
-				Collider& B_collider = collider_list[i];
+
+				if(B_collider.HasFlag(Collider::IsPlayer))
+					int a = 4;
 
 				// if IgnorePhysical then its damage we only check from these (i.e. when its collider A, not B)
 				if(B_collider.HasFlag(Collider::IgnoreAll) || B_collider.HasFlag(Collider::IsDamage) )
 					continue; 
 
+				// ignore terrain
 				if( A_collider.HasFlag(Collider::TerrainOnly) && !B_collider.HasFlag(Collider::IsTerrain) )
 					continue;
 
+				// player only
 				if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
+					continue;
+
+				if( A_collider.HasFlag(Collider::IgnorePlayer) && B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
 
 				if(A_collider.intersects(B_collider)) 
@@ -219,22 +223,22 @@ namespace ECS
 							VectorF bump = BumpCollider(A_collider, B_collider);
 							RectF bump_rect = rect.MoveCopy(bump);
 
-							// we cant bump into another collider, just check static colliders
-							for (const Collider& static_collider : collider_list)
-							{
-								if(static_collider.entity == entity || static_collider.entity == B_entity )
-									continue;
+							//// we cant bump into another collider, just check static colliders
+							//for (const Collider& static_collider : collider_list)
+							//{
+							//	if(static_collider.entity == entity || static_collider.entity == B_entity )
+							//		continue;
 
-								if(!static_collider.HasFlag(Collider::Static))
-									continue;
+							//	if(!static_collider.HasFlag(Collider::Static))
+							//		continue;
 
-								const bool collides_against_static = static_collider.intersects(bump_rect);
-								if( collides_against_static )
-								{
-									bump = VectorF::zero();
-									break;
-								}
-							}
+							//	const bool collides_against_static = static_collider.intersects(bump_rect);
+							//	if( collides_against_static )
+							//	{
+							//		bump = VectorF::zero();
+							//		break;
+							//	}
+							//}
 
 							velocity = bump;
 
@@ -253,28 +257,33 @@ namespace ECS
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
 
-		std::vector<ECS::Entity> colliders;
-		ecs->GetEntitiesWithComponent(Collider, colliders);
+		//std::vector<ECS::Entity> colliders;
+		//ecs->GetEntitiesWithComponent(Collider, colliders);
 
-		std::vector<ECS::Entity> level_colliders;
-		const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
-		FilterEntitiesInLevel(active_level, colliders, level_colliders);
+		
+		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
 
-		for( u32 i = 0; i < colliders.size(); i++ )
+		//std::vector<ECS::Entity> level_colliders;
+		//const ECS::Level& active_level = ECS::Biome::GetVisibleLevel();
+		////FilterEntitiesInLevel(active_level, colliders, level_colliders);
+
+		//GetEntitiesInLevel(active_level, colliders.entityToComponent, level_colliders);
+
+		
+		for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 		{
-			if(colliders[i] == entity)
+			Collider& collider_b = colliders.GetComponentByIndex(iter->second);
+
+			if(collider_b.entity == entity)
 				continue;
 
-			if(const ECS::Collider* collider_b = ecs->GetComponent(Collider, colliders[i]))
+			if(collider_b.intersects(collider))
 			{
-				if(collider_b->intersects(collider))
+				VectorF bump = BumpCollider(collider, collider_b);
+				if(!bump.isZero())
 				{
-					VectorF bump = BumpCollider(collider, *collider_b);
-					if(!bump.isZero())
-					{
-						ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-						transform.SetWorldPosition(transform.worldPosition + bump);
-					}
+					ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+					transform.SetWorldPosition(transform.worldPosition + bump);
 				}
 			}
 		}

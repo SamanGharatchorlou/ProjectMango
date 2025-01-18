@@ -224,6 +224,7 @@ namespace BlindingSpider
 		}
 	}
 
+	// THIS WHOLE THING IS FUCKED
 	void BasicAttackState::Update(float dt)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -231,18 +232,26 @@ namespace BlindingSpider
 		
 		const Animation& animation = animator.GetActiveAnimation();
 
-		if(attackCollider == EntityInvalid)
-		{					
-			const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-			const ObjectConfig* config = GetObjectConfig(entity);
-			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
-		}
+		//if(attackCollider == EntityInvalid)
+		//{					
+		//	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		//	const ObjectConfig* config = GetObjectConfig(entity);
+		//	attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
+		//}
 
 		if(animator.loopCount > 0)
 		{
 			if(animation.action == ActionState::AttackWindUp)
 			{
 				StartAnimation();
+
+				if(attackCollider == EntityInvalid)
+				{
+					const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+					const ObjectConfig* config = GetObjectConfig(entity);
+					attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
+				}
+
 				return;
 			}
 

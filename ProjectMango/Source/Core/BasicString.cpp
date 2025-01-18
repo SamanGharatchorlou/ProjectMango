@@ -146,7 +146,7 @@ void BasicString::getInput(const BasicString& message)
 void BasicString::assignTerminated(const char* string)
 {
 	// i think i need this, copying an empty string breaks the code
-	//if(string)
+	if(string)
 	{
 		mLength = (uint32_t)strlen(string);
 		memcpy(mBuffer, string, mLength + 1);

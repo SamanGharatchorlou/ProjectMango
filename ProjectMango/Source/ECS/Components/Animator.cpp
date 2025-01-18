@@ -9,6 +9,13 @@
 
 namespace ECS
 {
+	Animator::Animator() : 
+		activeAnimation(0), 
+		frameIndex(0), 
+		state(TimeState::Stopped), 
+		loopCount(0), 
+		timer(0) 
+	{ }
 	
 	void Animator::Init(const char* animation)
 	{
@@ -40,12 +47,7 @@ namespace ECS
 		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
 
-		sprite.flipPoint = VectorF(animation.flipPointX, 0.5f);
-	}
-
-	void Animator::AdjustPositionOnAnimationEnd()
-	{
-
+		sprite.flipPoint = VectorF(animation.objectCenter.x, 0.5f);
 	}
 
 	void Animator::StartAnimation(ActionState action)

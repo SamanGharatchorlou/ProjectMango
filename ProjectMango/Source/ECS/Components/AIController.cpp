@@ -10,6 +10,13 @@
 
 namespace ECS
 {
+	AIController::AIController() : 
+		target(EntityInvalid), 
+		moveToTarget(false), 
+		isAlert(false), 
+		attackCooldownTime(1.0f) 
+	{ }
+
 	float AIController::DistanceToTargetSquared() const
 	{
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
