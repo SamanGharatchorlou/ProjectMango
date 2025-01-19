@@ -53,7 +53,7 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 
 	// Animation
 	ECS::Animator& animator = ecs->GetComponentRef(Animator, s_playerEntity);
-	animator.Init(config->strings.getString("animation"));
+	animator.Init(config);
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);

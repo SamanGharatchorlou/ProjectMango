@@ -38,6 +38,7 @@ namespace ECS
 			_entry( UICursor ) \
 			_entry( SpellBook ) \
 			_entry( Spell ) \
+			_entry( Pickup ) \
 
 
 	struct Component

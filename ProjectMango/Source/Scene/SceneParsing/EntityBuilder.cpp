@@ -20,50 +20,49 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ecs->CreateEntity(id);
-	ecs->AddComponent(Transform, entity);
-	ecs->AddComponent(Animator, entity);
-	ecs->AddComponent(Sprite, entity);
+	if (const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id))
+	{
+		// Transform
+		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
+		VectorF pos = spawn_pos - (transform.size / 2.0f);
+		transform.Init(config->values, pos);
 
+		// Sprite
+		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
+		sprite.renderLayer = 6;
+	}
+
+	return entity;
+}
+
+static ECS::Entity CreateAnimatedObject(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 
-	// Transform
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	VectorF pos = spawn_pos - (transform.size / 2.0f);
-	transform.Init(config->values, pos);
-
 	// Animation
-	ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	animator.Init(config->strings.getString("animation"));
-		
-	if(config->values.GetBool("randomise_frame_start"))
-	{
-		int frame_start = (rand() % animator.GetActiveAnimation().frameCount) + 1;
-		animator.frameIndex = frame_start;
-	}
+	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
+	animator.Init(config);
 
-	if(config->values.Contains("randomise_frame_speed"))
-	{
-		float variation = config->values.GetFloat("randomise_frame_speed");
+	return entity;
+}
 
-		int var_range = (int)(variation * 100.0f);
+static ECS::Entity CreatePickup(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
 
-		int value = rand() % (int)(var_range * 2);
-		float diff = (float)(value - var_range) / 100.0f;
-
-		ECS::Animation& animation = animator.animations[animator.activeAnimation];
-		animation.frameTime = animation.frameTime + (diff * animation.frameTime);
-	}
-
-	// Sprite
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	sprite.renderLayer = 6;
+	// Pickup
+	ECS::Pickup& pickup = ecs->AddComponent(Pickup, entity);
 
 	return entity;
 }
 
 static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateAnimatedObject(id, config_id, spawn_pos);
 
 	// Spawner
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -74,18 +73,18 @@ static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, Ve
 
 static ECS::Entity CreateFlower(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	return CreateBasicObject(id, config_id, spawn_pos);
+	return CreateAnimatedObject(id, config_id, spawn_pos);
 }
 
 static ECS::Entity CreateTorch(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	return CreateBasicObject(id, config_id, spawn_pos);
+	return CreateAnimatedObject(id, config_id, spawn_pos);
 }
 
 static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spawn_pos)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateAnimatedObject(id, config_id, spawn_pos);
 
 	ecs->AddComponent(Door, entity);
 
@@ -164,6 +163,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["Flower"] = CreateFlower;
 	CreateEntitiyFunctions["Torch"] = CreateTorch;
 	CreateEntitiyFunctions["Door"] = CreateDoor;
+	CreateEntitiyFunctions["Pickup"] = CreatePickup;
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	
@@ -183,7 +183,6 @@ void CreateEntities(ECS::Entity& biome_entity)
 				char buffer[64];
 				snprintf(buffer, 64, "%sConfig", entity_id);
 
-				//const std::vector<VectorF>& entity_positions = iter->second;
 				ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
 
 				const std::vector<ECS::Level::EntityMetaData>& entity_positions = iter->second;
@@ -195,6 +194,10 @@ void CreateEntities(ECS::Entity& biome_entity)
 
 					create_fn(entity_id, buffer, pos);
 				}
+			}
+			else
+			{
+				DebugPrint(Warning, "No CreateEntity function defined for %s", entity_id);
 			}
 		}
 	}

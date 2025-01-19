@@ -188,6 +188,14 @@ namespace ECS
 		void GenerateColliders(float width);
 	};
 
+	struct Pickup
+	{
+		COMPONENT_TYPE(Pickup)
+
+
+
+	};
+
 	// ----------------------------------------------------------------------
 	// helpers
 	static u64 archetypeBit(ECS::Component::Type type)

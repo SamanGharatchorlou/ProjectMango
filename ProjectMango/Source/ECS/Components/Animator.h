@@ -2,6 +2,7 @@
 
 enum class ActionState;
 class Texture;
+struct ObjectConfig;
 
 namespace ECS
 {
@@ -60,7 +61,7 @@ namespace ECS
 		int loopCount;
 		float timer;
 
-		void Init(const char* animation);
+		void Init(const ObjectConfig* config);
 
 		void SetActiveSpriteFrame(Sprite& sprite);
 		void StartAnimation(ActionState action);

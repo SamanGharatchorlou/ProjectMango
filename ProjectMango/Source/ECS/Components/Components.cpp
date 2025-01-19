@@ -468,6 +468,12 @@ namespace ECS
 		bot_transform.SetLocalPosition(bot_local_current_position);
 	}
 
+
+	// Pickup
+	// ------------------------------------------------------------------
+	Pickup::Pickup() { }
+
+
 	// helpers
 	// ------------------------------------------------------------------
 	Entity GetParent(Entity child)

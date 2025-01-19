@@ -33,26 +33,7 @@ namespace Magic
 
 		// Animation
 		ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-		animator.Init(config->strings.getString("animation"));
-		
-		if(config->values.GetBool("randomise_frame_start"))
-		{
-			int frame_start = (rand() % animator.GetActiveAnimation().frameCount) + 1;
-			animator.frameIndex = frame_start;
-		}
-
-		if(config->values.Contains("randomise_frame_speed"))
-		{
-			float variation = config->values.GetFloat("randomise_frame_speed");
-
-			int var_range = (int)(variation * 100.0f);
-
-			int value = rand() % (int)(var_range * 2);
-			float diff = (float)(value - var_range) / 100.0f;
-
-			ECS::Animation& animation = animator.animations[animator.activeAnimation];
-			animation.frameTime = animation.frameTime + (diff * animation.frameTime);
-		}
+		animator.Init(config);
 
 		transform.center = animator.GetActiveAnimation().objectCenter;
 

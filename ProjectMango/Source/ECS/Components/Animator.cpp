@@ -6,6 +6,7 @@
 #include "Core/Helpers.h"
 #include "Animations/CharacterStates.h"
 #include "Animations/AnimationReader.h"
+#include "System/Files/Config.h"
 
 namespace ECS
 {
@@ -17,11 +18,31 @@ namespace ECS
 		timer(0) 
 	{ }
 	
-	void Animator::Init(const char* animation)
+	void Animator::Init(const ObjectConfig* config)
 	{
-		AnimationReader::BuildAnimatior( *this, animation );
+		const char* animation = config->strings.getString("animation");
+		AnimationReader::BuildAnimatior( *this, animation);
 		activeAnimation = 0;
 		state = TimeState::Running;
+
+		if (config->values.GetBool("randomise_frame_start"))
+		{
+			int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
+			frameIndex = frame_start;
+		}
+
+		if (config->values.Contains("randomise_frame_speed"))
+		{
+			float variation = config->values.GetFloat("randomise_frame_speed");
+
+			int var_range = (int)(variation * 100.0f);
+
+			int value = rand() % (int)(var_range * 2);
+			float diff = (float)(value - var_range) / 100.0f;
+
+			ECS::Animation& animation = animations[activeAnimation];
+			animation.frameTime = animation.frameTime + (diff * animation.frameTime);
+		}
 	}
 
 	void Animator::SetActiveSpriteFrame(Sprite& sprite)

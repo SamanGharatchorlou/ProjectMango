@@ -31,18 +31,18 @@ namespace ECS
 		bool IsAlive(Entity entity) const { return entity != EntityInvalid && entities.GetAchetype(entity) != ArchetypeInvalid; }
 
 		template<class T>
-		void AddComponent(Entity entity, Component::Type type)
+		T& AddComponent(Entity entity, Component::Type type)
 		{
 			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
-			/*T& comp = */components.AddComponent<T>(entity, type);
-			//comp.entity = entity;
-
+			T& comp = components.AddComponent<T>(entity, type);
 			entities.AddComponent(entity, type);
 
 			Archetype archetype = entities.GetAchetype(entity);
 			systems.EntityAddType(entity, archetype);
-		}
 
+			return comp;
+		}
+		 
 		template<class T>
 		void RemoveComponent(Entity entity, Component::Type type)
 		{

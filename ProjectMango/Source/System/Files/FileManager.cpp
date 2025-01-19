@@ -130,9 +130,7 @@ bool FileManager::exists(const Folder folder, const char* name) const
 			// if directory, search all sub folders
 			else if (fs::is_directory(directoryPath))
 			{
-				BasicString outPath("");
 				outFilePath(outPath, directoryPath.path(), name);
-
 			}
 
 			if (!outPath.empty())

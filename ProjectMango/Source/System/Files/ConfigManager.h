@@ -31,8 +31,11 @@ public:
 		return static_cast<T*>(mConfigs[path]);
 	}
 	
+	bool ValidPath(const char* path);
+
 	void Load();
 	void Reload();
+
 
 	static void GetFullPath(const char* name, BasicString& out_path);
 
@@ -67,7 +70,7 @@ public:
 			ASSERT(mConfigs[config]->parsed, "config %s has not been parsed yet, no data");
 			return static_cast<T*>(mConfigs[config]);
 		}
-		else
+		else if(ValidPath(config))
 		{
 			return AddAndLoad<T>(config);
 		}

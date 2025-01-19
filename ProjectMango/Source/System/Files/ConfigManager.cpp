@@ -18,6 +18,12 @@ void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
 	}
 }
 
+
+bool ConfigManager::ValidPath(const char* path)
+{
+	return FileManager::Get()->exists(FileManager::Configs, path);
+}
+
 void ConfigManager::Load()
 {
 	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)

@@ -138,7 +138,7 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 
 	// Animator
 	Animator& animation = ecs->GetComponentRef(Animator, entity);
-	animation.Init(config->strings.getString("animation"));
+	animation.Init(config);
 
 	// Sprite
 	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);

@@ -2,7 +2,6 @@
 #include "ComponentsSetup.h"
 
 #include "Game/Initialiser.h"
-
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
@@ -26,26 +25,37 @@
 #include "ECS/EntSystems/SpellSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
+static constexpr u32 c_allEntities = 128;
+static constexpr u32 c_veryCommon = 64 ;
+static constexpr u32 c_common = 32;
+static constexpr u32 c_uncommon = 16;
+static constexpr u32 c_rare = 4;
+
 void ECS::RegisterAllComponents()
 {
-	DEFINE_COMPONENT(EntityData, 32)
-	DEFINE_COMPONENT(Transform, 128);
-	DEFINE_COMPONENT(Sprite, 128);
-	DEFINE_COMPONENT(CharacterState, 32);
-	DEFINE_COMPONENT(PlayerController, 4);
-	DEFINE_COMPONENT(Physics, 64);
-	DEFINE_COMPONENT(Animator, 64);
-	DEFINE_COMPONENT(Collider, 128);
-	DEFINE_COMPONENT(AIController, 32);
-	DEFINE_COMPONENT(Pathing, 32);
-	DEFINE_COMPONENT(Damage, 32);
-	DEFINE_COMPONENT(Health, 64);
-	DEFINE_COMPONENT(Biome, 4);
-	DEFINE_COMPONENT(Spawner, 16);
-	DEFINE_COMPONENT(Door, 32);
-	DEFINE_COMPONENT(UICursor, 4);
-	DEFINE_COMPONENT(SpellBook, 4);
-	DEFINE_COMPONENT(Spell, 32);
+	DEFINE_COMPONENT(Transform, c_allEntities);
+	DEFINE_COMPONENT(Sprite, c_allEntities);
+	DEFINE_COMPONENT(Collider, c_allEntities);
+
+	DEFINE_COMPONENT(Physics, c_veryCommon);
+	DEFINE_COMPONENT(Animator, c_veryCommon);
+	DEFINE_COMPONENT(Health, c_veryCommon);
+
+	DEFINE_COMPONENT(EntityData, c_common)
+	DEFINE_COMPONENT(CharacterState, c_common);
+	DEFINE_COMPONENT(AIController, c_common);
+	DEFINE_COMPONENT(Pathing, c_common);
+	DEFINE_COMPONENT(Damage, c_common);
+	DEFINE_COMPONENT(Spell, c_common);
+
+	DEFINE_COMPONENT(Door, c_uncommon);
+	DEFINE_COMPONENT(Pickup, c_uncommon);
+	DEFINE_COMPONENT(Spawner, c_uncommon);
+
+	DEFINE_COMPONENT(PlayerController, c_rare);
+	DEFINE_COMPONENT(Biome, c_rare);
+	DEFINE_COMPONENT(UICursor, c_rare);
+	DEFINE_COMPONENT(SpellBook, c_rare);
 
 	ComponentInitialiser::InitAll();
 }
