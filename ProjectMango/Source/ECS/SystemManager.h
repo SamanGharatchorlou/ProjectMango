@@ -21,6 +21,17 @@ namespace ECS
 
 	struct SystemManager
 	{
+		void Close()
+		{
+			// shut down all systems
+			for (u32 i = 0; i < entSystems.size(); i++)
+			{
+				delete entSystems[i];
+			}
+
+			entSystems.clear();
+		}
+
 		template<class T>
 		void Register(Signature type)
 		{

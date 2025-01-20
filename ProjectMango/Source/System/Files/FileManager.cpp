@@ -31,7 +31,7 @@ void FileManager::init()
 	AddFolder(Images, Root, "Images\\");
 	AddFolder(Image_UI, Images, "UI\\");
 	AddFolder(Image_Maps, Images, "Maps\\");
-	AddFolder(Image_Weapons, Images, "Weapons\\");
+	AddFolder(Image_Sprites, Images, "Sprites\\");
 	AddFolder(Image_Animations, Images, "Animations\\");
 
 	// Audio

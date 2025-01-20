@@ -30,6 +30,12 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 		// Sprite
 		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
 		sprite.renderLayer = 6;
+		sprite.canFlip = false;
+
+		if(config->strings.contains("sprite"))
+		{	
+			sprite.SetTexture(config->strings.at("sprite").c_str());
+		}
 	}
 
 	return entity;
@@ -132,24 +138,43 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 ECS::Entity CreateCursor()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity("Cursor");
-	ecs->AddComponent(Transform, entity);
-	ecs->AddComponent(Sprite, entity);
-	ecs->AddComponent(UICursor, entity);
+	//ECS::Entity entity = ecs->CreateEntity("Cursor");
+
+	
+	ECS::Entity entity = CreateBasicObject( "cursor", "CursorConfig", VectorF() );
+
+	//if( const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>( "cursor" ) )
+	//{
 
 
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	transform.size = VectorF(50, 50);
+	//	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
+	//	transform.size = VectorF(50, 50);
+
+	//	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
+	//	sprite.renderLayer = 9;
+	//	sprite.canFlip = false;
+	//	sprite.SetTexture("cursor");
+	//
+
+	//}
 
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 	sprite.renderLayer = 9;
-	sprite.canFlip = false;
-	sprite.SetTexture("cursor");
-	
-
-	ECS::UICursor& cursor = ecs->GetComponentRef(UICursor, entity);
+		
+	ECS::UICursor& cursor = ecs->AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();
 	cursor.cursor = &input->mCursor;
+
+	return entity;
+}
+
+ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
+{	
+	ECS::Entity entity = CreateBasicObject( id, config_id, spawn_pos );
+
+	
+	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
 
 	return entity;
 }
@@ -166,6 +191,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["Pickup"] = CreatePickup;
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
+	CreateEntitiyFunctions["ReboundRune"] = CreateRune;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);

@@ -11,11 +11,23 @@ namespace ECS
 			memset(componentArrays, 0, sizeof(ComponentArrayBase*) * Component::Count);
 		}
 
+		void Close()
+		{
+			for( u32 i = 0; i < Component::Count; i++ )
+			{
+				if(componentArrays[i])
+				{
+					delete componentArrays[i];
+					componentArrays[i] = nullptr;
+				}
+			}
+		}
+
 		template<class T>
 		void Register(Component::Type type, u32 reserve_size)
 		{
 			ASSERT(componentArrays[type] == nullptr, "Component (%d) hasnt been registered but has a component array already", (u32)type);
-			componentArrays[type] = new ComponentArray<T>(reserve_size);;
+			componentArrays[type] = new ComponentArray<T>(reserve_size);
 		}
 
 		template<class T>

@@ -28,6 +28,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(SpellBook)
 
+		~SpellBook();
+
 		struct SpellSlot
 		{
 			BasicString name;

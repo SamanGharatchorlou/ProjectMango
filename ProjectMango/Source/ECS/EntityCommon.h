@@ -7,7 +7,7 @@
 
 namespace ECS
 {
-	constexpr u32 MaxEntityCount = 5000;
+	constexpr u32 MaxEntityCount = 1000;
 
 	using Entity = u32;		// simple id for each entity
 	using Archetype = u64;	// bitwise encoding for every component type (max 64), a collection of types (key)

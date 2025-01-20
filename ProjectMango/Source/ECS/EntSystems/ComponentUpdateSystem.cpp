@@ -12,11 +12,12 @@ namespace ECS
 
 		for (Entity entity : entities)
 		{
-			if(Spawner* spawner = ecs->GetComponent(Spawner, entity))
+			Entity the_entity = entity;
+			if(Spawner* spawner = ecs->GetComponent(Spawner, the_entity))
 			{
 				spawner->Update();
 			}
-			if(Door* door = ecs->GetComponent(Door, entity))
+			if(Door* door = ecs->GetComponent(Door, the_entity))
 			{
 				door->Update();
 			}

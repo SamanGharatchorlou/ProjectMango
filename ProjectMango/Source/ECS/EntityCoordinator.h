@@ -15,6 +15,15 @@ namespace ECS
 {
 	struct EntityCoordinator
 	{
+		EntityCoordinator() { }
+
+		void Close()
+		{
+			entities.Close();
+			components.Close();
+			systems.Close();
+		}
+
 		template<class T>
 		void RegisterComponent(Component::Type type, u32 reserve_size) { components.Register<T>(type, reserve_size); }
 

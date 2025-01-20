@@ -19,6 +19,11 @@ namespace ECS
 	struct Page
 	{
 		Page() : components(nullptr), pageSize(0), size(0), pageIndex(0) { }
+		
+		~Page() 
+		{ 
+			delete[] components; 
+		}
 
 		Page(u32 page_size, u32 page_index) : pageSize(page_size), size(0),	pageIndex(page_index)
 		{
@@ -51,7 +56,13 @@ namespace ECS
 	template<class T>
 	struct ComponentArray : public ComponentArrayBase
 	{
-		ComponentArray(u32 reserve_size) : pageSize(reserve_size) { }
+		ComponentArray(u32 reserve_size) : componentPageSize(reserve_size) { }
+
+		~ComponentArray()
+		{
+			entityToComponent.clear();
+			componentToEntity.clear();
+		}
 		
 		template<class T>
 		T& InsertComponent(u32 entity)
@@ -75,7 +86,7 @@ namespace ECS
 				{
 					if (componentPages[i].Unused())
 					{
-						componentPages[i].Init(pageSize, i);
+						componentPages[i].Init(componentPageSize, i);
 						target_page = &componentPages[i];
 						break;
 					}
@@ -84,7 +95,7 @@ namespace ECS
 
 			ASSERT(target_page, "Run out of page space, either increase page size or allow more than %d pages", c_pageLimit);
 
-			u32 component_index = target_page->pageIndex * pageSize + target_page->size;
+			u32 component_index = target_page->pageIndex * componentPageSize + target_page->size;
 
 			T* component = target_page->components + target_page->size;
 			*component = T();
@@ -105,16 +116,16 @@ namespace ECS
 
 			u32 component_index = entityToComponent[entity];
 
-			int page_index = component_index / pageSize;
-			int page_entry_index = component_index % pageSize;
+			int page_index = component_index / componentPageSize;
+			int page_entry_index = component_index % componentPageSize;
 
 			return componentPages[page_index].components[page_entry_index];
 		}
 
 		T& GetComponentByIndex(u32 component_index) const
 		{
-			int page_index = component_index / pageSize;
-			int page_entry_index = component_index % pageSize;
+			int page_index = component_index / componentPageSize;
+			int page_entry_index = component_index % componentPageSize;
 
 			return componentPages[page_index].components[page_entry_index];
 		}
@@ -124,19 +135,19 @@ namespace ECS
 		{
 			//Page& page = GetPage(entity);
 			u32 component_index = entityToComponent[entity];
-			u32 page_index = component_index / pageSize;
+			u32 page_index = component_index / componentPageSize;
 			Page<T>& page = componentPages[page_index];
 
 			// the back most component can replace the one we want to remove
 			// replace the item we're removing with the last item in the page
-			u32 page_entry_index = component_index % pageSize;
+			u32 page_entry_index = component_index % componentPageSize;
 			page.components[page_entry_index] = page.components[page.size - 1];
 
 			// mark it as dead just in case
 			page.components[page.size - 1].entity = EntityInvalid;
 
 			// update the entity and component indexes
-			u32 last_component_index = page_index * pageSize + page.size - 1;
+			u32 last_component_index = page_index * componentPageSize + page.size - 1;
 			Entity moving_entity = componentToEntity[last_component_index];
 			componentToEntity[component_index] = moving_entity;
 			entityToComponent[moving_entity] = component_index;
@@ -164,6 +175,6 @@ namespace ECS
 
 		Page<T> componentPages[c_pageLimit];
 
-		u32 pageSize;
+		u32 componentPageSize;
 	};
 }

@@ -60,6 +60,8 @@ void GameController::run()
 
 void GameController::free()
 {
+
+
 	mGameData.free();
 
 	// delete globals

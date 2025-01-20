@@ -19,7 +19,7 @@ public:
 		Images,
 		Image_UI,
 		Image_Maps,
-		Image_Weapons,
+		Image_Sprites,
 		Image_Animations,
 
 		Font,

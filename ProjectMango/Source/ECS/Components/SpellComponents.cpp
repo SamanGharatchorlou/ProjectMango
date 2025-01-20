@@ -18,6 +18,21 @@ namespace ECS
 		}
 	}
 
+	SpellBook::~SpellBook()
+	{
+		for (u32 i = 0; i < c_spellCount; i++)
+		{
+			if(spells[i].gem)
+				delete spells[i].gem;
+
+			if(!spells[i].name.empty())
+			{
+				delete[] spells[i].name.buffer();
+				spells[i].name.eliminate();
+			}
+		}
+	}
+
 	bool SpellBook::CanActivateSpell(int spell_index) const
 	{
 		if (spell_index < c_spellCount)

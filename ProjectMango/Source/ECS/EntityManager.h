@@ -11,6 +11,12 @@ namespace ECS
 			memset(archetypes, (int)ArchetypeInvalid, sizeof(Archetype) * MaxEntityCount);
 		}
 
+		void Close()
+		{
+			memset(archetypes, (int)-1, sizeof(Archetype) * MaxEntityCount);
+			entityIdIndex = 0;
+		}
+
 		Entity CreateEntityId()
 		{
 			Entity entityId = entityIdIndex;
@@ -23,6 +29,9 @@ namespace ECS
 
 		bool HasComponent(Entity entity, Component::Type component) const
 		{
+			if(entity > entityIdIndex)
+				return false;
+
 			return archetypes[entity] != ArchetypeInvalid && archetypes[entity] & ((u64)1 << component);
 		}
 

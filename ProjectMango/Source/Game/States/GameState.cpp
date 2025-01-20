@@ -104,25 +104,7 @@ void GameState::Exit()
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 	
     ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
-	// shut down all systems
-	for( u32 i = 0; i < ecs->systems.entSystems.size(); i++ )
-	{
-		delete ecs->systems.entSystems[i];
-	}
-	ecs->systems.entSystems.clear();
-
-	for( u32 i = 0; i < ECS::Component::Type::Count; i++ )
-	{
-		delete ecs->components.componentArrays[i];
-		ecs->components.componentArrays[i] = nullptr;
-	}
-
-	for( u32 i = 0; i < ecs->entities.entityIdIndex; i++ )
-	{
-		ecs->entities.archetypes[i] = -1;
-	}
-	ecs->entities.entityIdIndex = 0;
+	ecs->Close();
 }
 
 

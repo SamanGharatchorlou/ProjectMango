@@ -396,7 +396,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Pickup",
+			"identifier": "Rune",
 			"uid": 19,
 			"tags": [],
 			"exportToToc": false,
@@ -420,7 +420,7 @@
 			"showName": true,
 			"tilesetId": 9,
 			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 9, "x": 48, "y": 16, "w": 16, "h": 16 },
+			"tileRect": { "tilesetUid": 9, "x": 16, "y": 848, "w": 16, "h": 16 },
 			"uiTileRect": null,
 			"nineSliceBorders": [],
 			"maxCount": 0,
@@ -612,13 +612,13 @@
 							"__worldY": 208
 						},
 						{
-							"__identifier": "Pickup",
+							"__identifier": "Rune",
 							"__grid": [11,13],
 							"__pivot": [0,0],
 							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 48, "y": 16, "w": 16, "h": 16 },
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 848, "w": 16, "h": 16 },
 							"__smartColor": "#FEAE34",
-							"iid": "6923e5b0-c210-11ef-ba9e-d902b952811d",
+							"iid": "cbe53480-c210-11ef-994e-83b7dcaaa0d2",
 							"width": 16,
 							"height": 16,
 							"defUid": 19,
