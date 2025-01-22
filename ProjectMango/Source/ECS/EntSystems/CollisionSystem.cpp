@@ -48,7 +48,10 @@ namespace ECS
 
 		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
 
-		std::vector<Entity> entities_to_destroy;
+		for (u32 i = 0; i < entitiesToDestroy.size(); i++)
+		{
+			ecs->entities.KillEntity(entitiesToDestroy[i]);
+		}
 
 		for (Entity entity : entities)
 		{
@@ -129,7 +132,7 @@ namespace ECS
 					// destroy on contact
 					if (A_collider.destroyOnContact)
 					{
-						entities_to_destroy.push_back(A_damage->entity);
+						entitiesToDestroy.push_back(A_collider.entity);
 					}
 
 					// apply damage
@@ -257,11 +260,6 @@ namespace ECS
 					A_collider.destroyOnContact = true;
 				}
 			}
-		}
-
-		for (u32 i = 0; i < entities_to_destroy.size(); i++)
-		{
-			ecs->entities.KillEntity(entities_to_destroy[i]);
 		}
 	}
 

@@ -11,7 +11,10 @@ static inline bool StringCompare(const char* string_a, const char* string_b, uin
 
 static inline bool StringCompare(const char* string_a, const char* string_b)
 {
-	return strcmp(string_a, string_b) == 0;
+	if (!string_a || !string_b)
+		return string_a == string_b;
+
+	return string_a && string_b && strcmp(string_a, string_b) == 0;
 }
 
 class StringBuffer32

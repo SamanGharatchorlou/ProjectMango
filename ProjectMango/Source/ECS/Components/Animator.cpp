@@ -20,7 +20,7 @@ namespace ECS
 	
 	void Animator::Init(const ObjectConfig* config)
 	{
-		const char* animation = config->strings.getString("animation");
+		const char* animation = config->strings["animation"];
 		AnimationReader::BuildAnimatior( *this, animation);
 		activeAnimation = 0;
 		state = TimeState::Running;

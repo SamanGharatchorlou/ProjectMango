@@ -17,9 +17,9 @@ namespace ECS
 		for (Entity entity : entities)
 		{
 			Spell& spell = ecs->GetComponentRef(Spell, entity);
-			if (spell.gem)
+			if (spell.rune)
 			{
-				spell.gem->Update(entity);
+				spell.rune->Update(entity);
 			}
 		}
 	}

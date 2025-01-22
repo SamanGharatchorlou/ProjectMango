@@ -473,6 +473,19 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Pickup::Pickup() { }
 
+	void Pickup::Update()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		if (Collider* collider = ecs->GetComponent(Collider, entity))
+		{
+			if (collider->HasCollided())
+			{
+				// do a thing
+				int a = 4;
+			}
+		}
+	}
+
 
 	// helpers
 	// ------------------------------------------------------------------

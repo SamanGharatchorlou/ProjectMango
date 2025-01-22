@@ -83,6 +83,8 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 		if (ImGui::TreeNode("Component Data"))
 		{
 			StringBuffer64 spriteName = TextureManager::Get()->getTextureName(sprite.texture);
+			if (spriteName.empty())
+				spriteName = "No sprite";
 			ImGui::Text("SpriteSheet: %s", spriteName.c_str());
 
 			ImGui::Text(sprite.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");

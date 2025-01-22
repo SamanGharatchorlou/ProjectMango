@@ -158,9 +158,9 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 	health.invulnerable = false;
 
 	// AI Controller
-	if (config->strings.contains("tags"))
+	if (config->strings.Contains("tags"))
 	{
-		const char* tag = config->strings.getString("tags");
+		const char* tag = config->strings["tags"];
 		if (StringCompare(tag, "dummy"))
 		{
 			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);

@@ -3,7 +3,6 @@
 
 #include <cstring>
 
-
 BasicString::BasicString(const char* string)
 {
 	if (string)

@@ -2,13 +2,13 @@
 
 namespace ECS
 {
-	struct SpellGem
+	struct Rune
 	{
 		virtual void OnActiate(Entity entity) { };
 		virtual void Update(Entity entity) { }
 	};
 
-	struct SpellGem_Rebound : SpellGem
+	struct RuneRebound : Rune
 	{
 		void OnActiate(Entity entity) override;
 		void Update(Entity entity) override;
@@ -21,27 +21,27 @@ namespace ECS
 		COMPONENT_TYPE(Spell)
 
 		BasicString name;
-		SpellGem* gem;
+		Rune* rune;
 	};
 
 	struct SpellBook
 	{
 		COMPONENT_TYPE(SpellBook)
 
-		~SpellBook();
+		static constexpr u32 c_spellCount = 3;
 
 		struct SpellSlot
 		{
-			BasicString name;
-			SpellGem* gem;
+			StringBuffer64 name;
+			Rune* rune;
 		};
-
-		static constexpr u32 c_spellCount = 3;
 
 		SpellSlot spells[c_spellCount];
 
+		~SpellBook();
+
 		void SetSpellSlot(int spell_index, const char* spell_name);
-		void SetSpellSlotGem(int spell_index, SpellGem* spell_gem);
+		void SetSpellSlotRune(int spell_index, Rune* rune);
 
 		bool CanActivateSpell(int spell_index) const;
 		void ActivateSpell(int spell_index);

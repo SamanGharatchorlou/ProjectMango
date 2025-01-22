@@ -32,9 +32,9 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 		sprite.renderLayer = 6;
 		sprite.canFlip = false;
 
-		if(config->strings.contains("sprite"))
+		if(config->strings.Contains("sprite"))
 		{	
-			sprite.SetTexture(config->strings.at("sprite").c_str());
+			sprite.SetTexture(config->strings["sprite"]);
 		}
 	}
 
@@ -138,25 +138,7 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 ECS::Entity CreateCursor()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	//ECS::Entity entity = ecs->CreateEntity("Cursor");
-
-	
 	ECS::Entity entity = CreateBasicObject( "cursor", "CursorConfig", VectorF() );
-
-	//if( const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>( "cursor" ) )
-	//{
-
-
-	//	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-	//	transform.size = VectorF(50, 50);
-
-	//	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
-	//	sprite.renderLayer = 9;
-	//	sprite.canFlip = false;
-	//	sprite.SetTexture("cursor");
-	//
-
-	//}
 
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 	sprite.renderLayer = 9;
@@ -172,9 +154,16 @@ ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
 {	
 	ECS::Entity entity = CreateBasicObject( id, config_id, spawn_pos );
 
-	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
+
+	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
+	collider.SetFlag(ECS::Collider::PlayerOnly);
+	collider.SetFlag(ECS::Collider::GhostCollider);
+	collider.destroyOnContact = true;
+
+	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	transform.InitCollider(collider);
 
 	return entity;
 }
@@ -216,7 +205,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 				{
 					VectorF pos = entity_positions[e].position;
 					if(!entity_positions[e].tag.empty())
-						config->strings.mData["tags"] = entity_positions[e].tag.c_str();
+						config->strings["tags"] = entity_positions[e].tag.c_str();
 
 					create_fn(entity_id, buffer, pos);
 				}

@@ -192,8 +192,10 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Pickup)
 
+		// default getting this from the transform size
+		float pickUpRadius;
 
-
+		void Update();
 	};
 
 	// ----------------------------------------------------------------------

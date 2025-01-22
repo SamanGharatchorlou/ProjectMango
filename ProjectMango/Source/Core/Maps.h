@@ -25,7 +25,6 @@ public:
 	std::unordered_map<StringBuffer32, StringBuffer32> mData;
 };
 
-
 struct SettingValues
 {
 	inline float GetFloat(const char* label, float default_value = 0) const
@@ -44,7 +43,6 @@ struct SettingValues
 		return default_value;
 	}
 
-	
 	VectorF GetVectorF(const char* x, const char* y) const;
 	VectorF GetVectorF(const char* label) const; // adds _x and _y to the label
 
@@ -54,4 +52,22 @@ struct SettingValues
 	inline float& operator [] (const char* label) { return data[label]; }
 
 	std::unordered_map<StringBuffer32, float> data;
+};
+
+struct SettingStrings
+{
+	inline const char* GetString(const char* label, const char* default_value = nullptr) const
+	{
+		if (data.contains(label))
+			return data.at(label).c_str();
+
+		return default_value;
+	}
+
+	inline bool Contains(const char* key) const { return data.contains(key); }
+
+	inline const char* operator [] (const char* label) const { return data.at(label).c_str(); }
+	inline BasicString& operator [] (const char* label) { return data[label]; }
+
+	std::unordered_map<StringBuffer32, BasicString> data;
 };

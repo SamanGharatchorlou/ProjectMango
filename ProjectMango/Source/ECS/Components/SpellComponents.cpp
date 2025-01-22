@@ -5,6 +5,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Entities/Spells/SpellEntityBuilder.h"
 #include "UIComponents.h"
+#include "Collider.h"
 
 namespace ECS
 {
@@ -14,7 +15,7 @@ namespace ECS
 	{
 		for (u32 i = 0; i < c_spellCount; i++)
 		{
-			spells[i] = SpellSlot(BasicString(), nullptr);
+			spells[i] = SpellSlot("", nullptr);
 		}
 	}
 
@@ -22,14 +23,8 @@ namespace ECS
 	{
 		for (u32 i = 0; i < c_spellCount; i++)
 		{
-			if(spells[i].gem)
-				delete spells[i].gem;
-
-			if(!spells[i].name.empty())
-			{
-				delete[] spells[i].name.buffer();
-				spells[i].name.eliminate();
-			}
+			if(spells[i].rune)
+				delete spells[i].rune;
 		}
 	}
 
@@ -60,11 +55,11 @@ namespace ECS
 				Entity spell_entity = Magic::GetNewEntity("Fireball", entity, target);
 
 				Spell& spell = ecs->GetComponentRef(Spell, spell_entity);
-				spell.gem = spells[spell_index].gem;
+				spell.rune = spells[spell_index].rune;
 
-				if (spell.gem)
+				if (spell.rune)
 				{
-					spell.gem->OnActiate(spell_entity);
+					spell.rune->OnActiate(spell_entity);
 				}
 			}
 		}
@@ -78,35 +73,36 @@ namespace ECS
 		}
 	}
 
-	void SpellBook::SetSpellSlotGem(int spell_index, SpellGem* spell_gem)
+	void SpellBook::SetSpellSlotRune(int spell_index, Rune* rune)
 	{
 		if ( spell_index < c_spellCount )
 		{
-			if (spells[spell_index].gem)
-				delete spells[spell_index].gem;
+			// replace whatever we had before
+			if (spells[spell_index].rune)
+				delete spells[spell_index].rune;
 
-
-			spells[spell_index].gem = spell_gem;
+			spells[spell_index].rune = rune;
 		}
 	}
 
 	// SpellGem
 	// ------------------------------------------------------------------
-	Spell::Spell() : gem(nullptr) { }
+	Spell::Spell() : rune(nullptr) { }
 
-	void SpellGem_Rebound::OnActiate(Entity entity)
+	void RuneRebound::OnActiate(Entity entity)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		//Collider& collider = ecs->GetComponentRef(Collider, entity);
-		//if (rebound_count > 0)
-		//{
-		//	damage.destroyOnContact = false;
-		//}
+		Collider& collider = ecs->GetComponentRef(Collider, entity);
+		if (rebound_count > 0)
+		{
+			collider.destroyOnContact = false;
+			collider.reboundCount = 3;
+		}
 	}
 
-	void SpellGem_Rebound::Update(Entity entity)
+	void RuneRebound::Update(Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		//EntityCoordinator* ecs = GameData::Get().ecs;
 		//Damage& damage = ecs->GetComponentRef(Damage, entity);
 	}
 }

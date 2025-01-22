@@ -29,6 +29,10 @@ namespace ECS
 
 		bool HasComponent(Entity entity, Component::Type component) const
 		{
+			// there can be an issue here sometimes, no idea why... but again maybe because
+			// of the entity vector im using in the system update it might be reallocated mid way 
+			// during the loop meaning the entity references i get are fucked, this here prevents the issue
+			// and it seems to fix itself, so as i type this im starting to think im correct?
 			if(entity > entityIdIndex)
 				return false;
 

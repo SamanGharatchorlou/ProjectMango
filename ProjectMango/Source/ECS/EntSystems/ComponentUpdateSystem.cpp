@@ -20,6 +20,11 @@ namespace ECS
 			if(Door* door = ecs->GetComponent(Door, the_entity))
 			{
 				door->Update();
+			}			
+			// dont think this is running, need to just fix what runs in this function
+			if (Pickup* pick_up = ecs->GetComponent(Pickup, the_entity))
+			{
+				pick_up->Update();
 			}
 		}
 	}

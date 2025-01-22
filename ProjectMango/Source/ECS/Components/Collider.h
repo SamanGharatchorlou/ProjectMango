@@ -68,6 +68,8 @@ namespace ECS
 		inline void SetFlag(Flags flag) { flags |= (1 << flag); }
 		inline void RemoveFlag(Flags flag) { flags &= ~(1 << flag); }
 
+		bool HasCollided() const { return collisions.size() > 0; }
+
 		bool initialised;
 		VectorF alignmentOffset;
 

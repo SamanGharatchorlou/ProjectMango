@@ -396,7 +396,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Rune",
+			"identifier": "ReboundRune",
 			"uid": 19,
 			"tags": [],
 			"exportToToc": false,
@@ -612,7 +612,7 @@
 							"__worldY": 208
 						},
 						{
-							"__identifier": "Rune",
+							"__identifier": "ReboundRune",
 							"__grid": [11,13],
 							"__pivot": [0,0],
 							"__tags": [],
