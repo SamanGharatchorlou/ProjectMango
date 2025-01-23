@@ -89,7 +89,7 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Spell::Spell() : rune(nullptr) { }
 
-	void RuneRebound::OnActiate(Entity entity)
+	void ReboundRune::OnActiate(Entity entity)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		Collider& collider = ecs->GetComponentRef(Collider, entity);
@@ -100,7 +100,7 @@ namespace ECS
 		}
 	}
 
-	void RuneRebound::Update(Entity entity)
+	void ReboundRune::Update(Entity entity)
 	{
 		//EntityCoordinator* ecs = GameData::Get().ecs;
 		//Damage& damage = ecs->GetComponentRef(Damage, entity);

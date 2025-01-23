@@ -28,7 +28,10 @@ namespace ECS
 		void RegisterComponent(Component::Type type, u32 reserve_size) { components.Register<T>(type, reserve_size); }
 
 		template<class T>
-		void RegisterSystem(Archetype type) { systems.Register<T>(type); }
+		void RegisterAndSystem(Archetype type) { systems.RegisterAnd<T>(type); }
+
+		template<class T>
+		void RegisterOrSystem(Archetype type) { systems.RegisterOr<T>(type); }
 
 		Entity CreateNewEntity() { return entities.CreateEntityId(); }
 #if ENTITY_LOGGING

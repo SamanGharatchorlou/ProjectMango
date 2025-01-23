@@ -66,8 +66,8 @@ namespace Magic
 		// Collider
 		collider.SetFlag(ECS::Collider::IsDamage);
 		collider.SetFlag(ECS::Collider::IgnorePlayer);
-		//collider.destroyOnContact = true;
-		collider.reboundCount = 3;
+		collider.destroyOnContact = true;
+		//collider.reboundCount = 3;
 
 		// direction
 		VectorF direction = target - caster_position;

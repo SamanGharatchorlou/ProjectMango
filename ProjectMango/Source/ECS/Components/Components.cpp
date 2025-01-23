@@ -471,17 +471,23 @@ namespace ECS
 
 	// Pickup
 	// ------------------------------------------------------------------
-	Pickup::Pickup() { }
+	Pickup::Pickup() :onPickupFn(nullptr) { }
 
 	void Pickup::Update()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if (Collider* collider = ecs->GetComponent(Collider, entity))
+		if (onPickupFn)
 		{
-			if (collider->HasCollided())
+			EntityCoordinator* ecs = GameData::Get().ecs;
+			if (Collider* collider = ecs->GetComponent(Collider, entity))
 			{
-				// do a thing
-				int a = 4;
+				if (collider->HasCollided())
+				{
+					Entity hit_entity = collider->collisions.front();
+					onPickupFn(entity, hit_entity);
+
+					// only trigger once
+					onPickupFn = nullptr;
+				}
 			}
 		}
 	}

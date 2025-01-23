@@ -188,12 +188,13 @@ namespace ECS
 		void GenerateColliders(float width);
 	};
 
+	typedef void(*OnPickupFn)(Entity pickup_entity, Entity picker_upper);
+
 	struct Pickup
 	{
 		COMPONENT_TYPE(Pickup)
 
-		// default getting this from the transform size
-		float pickUpRadius;
+		OnPickupFn onPickupFn;
 
 		void Update();
 	};

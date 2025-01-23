@@ -71,50 +71,50 @@ void ECS::RegisterAllSystems()
 
 	// Transform
 	Signature transformSignature = ArcheBit(Transform);
-	ecs->RegisterSystem<TransformSystem>(transformSignature);
+	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
 
 	// Rendering
 	Signature renderSignature = ArcheBit(Transform) | ArcheBit(Sprite);
-	ecs->RegisterSystem<RenderSystem>(renderSignature);
+	ecs->RegisterAndSystem<RenderSystem>(renderSignature);
 
 	// Player Controller
 	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(CharacterState) | ArcheBit(Physics);
-	ecs->RegisterSystem<PlayerControllerSystem>(playerInputSignature);
+	ecs->RegisterAndSystem<PlayerControllerSystem>(playerInputSignature);
 
 	// Physics
 	Signature physicsSignature = ArcheBit(Physics);
-	ecs->RegisterSystem<PhysicsSystem>(physicsSignature);
+	ecs->RegisterAndSystem<PhysicsSystem>(physicsSignature);
 
 	// Animation
 	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
-	ecs->RegisterSystem<AnimationSystem>(animationSignature);
+	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
 
 	// todo: change name to BiomeSystem or something
 	Signature biomeSignature = ArcheBit(Biome);
-	ecs->RegisterSystem<TileMapSystem>(biomeSignature);
+	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
 
 	// Collisions
 	Signature collisionSignature = ArcheBit(Collider);
-	ecs->RegisterSystem<CollisionSystem>(collisionSignature);
+	ecs->RegisterAndSystem<CollisionSystem>(collisionSignature);
 
 	// AI Controller
 	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState);
-	ecs->RegisterSystem<AIControllerSystem>(AIControllerSignature);
+	ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
 
 	// Pathing
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
-	ecs->RegisterSystem<PathingSystem>(PathingSignature);
+	ecs->RegisterAndSystem<PathingSystem>(PathingSignature);
 
 	// UI
 	Signature UISignature = ArcheBit(UICursor);
-	ecs->RegisterSystem<UISystem>(UISignature);
+	ecs->RegisterAndSystem<UISystem>(UISignature);
 
 	// Spell
 	Signature SpellSignature = ArcheBit(Spell);
-	ecs->RegisterSystem<SpellSystem>(SpellSignature);
+	ecs->RegisterAndSystem<SpellSystem>(SpellSignature);
 
 	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
-	Signature ComponentsSignature = ArcheBit(Transform) | ArcheBit(Sprite) | ArcheBit(Animator);
-	ecs->RegisterSystem<ComponentUpdateSystem>(ComponentsSignature);
+	Signature ComponentsSignature = ArcheBit(Door) | ArcheBit(Spawner) | ArcheBit(Pickup);
+	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 }
 

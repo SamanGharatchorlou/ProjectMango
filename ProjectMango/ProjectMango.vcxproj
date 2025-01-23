@@ -154,6 +154,7 @@
     <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
     <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp" />
+    <ClCompile Include="Source\Entities\Spells\PickupCallbacks.cpp" />
     <ClCompile Include="Source\Entities\Spells\SpellEntityBuilder.cpp" />
     <ClCompile Include="Source\Entities\States\CharacterAction.cpp" />
     <ClCompile Include="Source\Entities\States\PlayerMeleeStates.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
     <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h" />
     <ClInclude Include="Source\Entities\Player\PlayerCharacter.h" />
+    <ClInclude Include="Source\Entities\Spells\PickupCallbacks.h" />
     <ClInclude Include="Source\Entities\Spells\SpellEntityBuilder.h" />
     <ClInclude Include="Source\Entities\States\CharacterAction.h" />
     <ClInclude Include="Source\Entities\States\PlayerMeleeStates.h" />

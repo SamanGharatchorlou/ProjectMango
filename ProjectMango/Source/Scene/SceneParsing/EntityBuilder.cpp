@@ -13,6 +13,7 @@
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
 #include "ECS/Components/UIComponents.h"
 #include "Input/InputManager.h"
+#include "Entities/Spells/PickupCallbacks.h"
 
 typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
 
@@ -155,7 +156,9 @@ ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
 	ECS::Entity entity = CreateBasicObject( id, config_id, spawn_pos );
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
 	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
+	pick_up.onPickupFn = ApplyReboundRune;
 
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
 	collider.SetFlag(ECS::Collider::PlayerOnly);

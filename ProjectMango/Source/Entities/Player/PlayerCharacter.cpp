@@ -75,8 +75,8 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 	ECS::SpellBook& spell_book = ecs->GetComponentRef(SpellBook, s_playerEntity);
 	spell_book.SetSpellSlot(0, "Fireball");
 	
-	ECS::Rune* rune = new ECS::RuneRebound;
-	spell_book.SetSpellSlotRune(0, rune);
+	//ECS::Rune* rune = new ECS::RuneRebound;
+	//spell_book.SetSpellSlotRune(0, rune);
 
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

@@ -8,7 +8,7 @@ namespace ECS
 		virtual void Update(Entity entity) { }
 	};
 
-	struct RuneRebound : Rune
+	struct ReboundRune : Rune
 	{
 		void OnActiate(Entity entity) override;
 		void Update(Entity entity) override;

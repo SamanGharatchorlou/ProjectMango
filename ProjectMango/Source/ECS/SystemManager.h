@@ -24,20 +24,26 @@ namespace ECS
 		void Close()
 		{
 			// shut down all systems
-			for (u32 i = 0; i < entSystems.size(); i++)
+			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
-				delete entSystems[i];
+				delete entAndSystems[i];
+			}
+			// shut down all systems
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{
+				delete entOrSystems[i];
 			}
 
-			entSystems.clear();
+			entAndSystems.clear();
+			entOrSystems.clear();
 		}
 
 		template<class T>
-		void Register(Signature type)
+		void RegisterAnd(Signature type)
 		{
-			for (u32 i = 0; i < entSystems.size(); i++)
+			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
-				if (type == entSystems[i]->signature)
+				if (type == entAndSystems[i]->signature)
 				{
 					const char* id = typeid(T).name();
 					DebugPrint(Warning, "System %s alread registered with signature %d", id, type);
@@ -45,20 +51,36 @@ namespace ECS
 				}
 			}
 
-			entSystems.emplace_back(new T(type));
+			entAndSystems.emplace_back(new T(type));
+		}
+
+		template<class T>
+		void RegisterOr(Signature type)
+		{
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{
+				if (type == entOrSystems[i]->signature)
+				{
+					const char* id = typeid(T).name();
+					DebugPrint(Warning, "System %s alread registered with signature %d", id, type);
+					return;
+				}
+			}
+
+			entOrSystems.emplace_back(new T(type));
 		}
 
 		void EntityAddType(Entity entity, Signature type)
 		{
-			for (u32 i = 0; i < entSystems.size(); i++)
+			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
-				if (LockAndKey(entSystems[i]->signature, type))
+				if (LockAndKey(entAndSystems[i]->signature, type))
 				{
 					bool already_exists = false;
-					for (u32 ent = 0; ent < entSystems[i]->entities.size(); ent++)
+					for (u32 ent = 0; ent < entAndSystems[i]->entities.size(); ent++)
 					{
 						// this entity is already in this system
-						if (entSystems[i]->entities[ent] == entity) 
+						if (entAndSystems[i]->entities[ent] == entity) 
 						{
 							already_exists = true;
 							break;                    
@@ -66,28 +88,66 @@ namespace ECS
 					}
 
 					if(!already_exists)
-						entSystems[i]->entities.push_back(entity);
+						entAndSystems[i]->entities.push_back(entity);
+				}
+			}
+
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{
+				// check if there's at least 1 matching bit
+				if ((entOrSystems[i]->signature & type) != 0)
+				{
+					bool already_exists = false;
+					for (u32 ent = 0; ent < entOrSystems[i]->entities.size(); ent++)
+					{
+						// this entity is already in this system
+						if (entOrSystems[i]->entities[ent] == entity)
+						{
+							already_exists = true;
+							break;
+						}
+					}
+
+					if (!already_exists)
+						entOrSystems[i]->entities.push_back(entity);
 				}
 			}
 		}
 
 		void EntityRemoveType(Entity entity, Component::Type type)
 		{
-			for (u32 i = 0; i < entSystems.size(); i++)
+			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
-				// todo: figure out what the correct this is here, what i've actually done must be correct
-				// but why is it different to the add?
-				//if (LockAndKey(entSystems[i]->signature, type)) // this is wrong!
-				if ( (entSystems[i]->signature & (u64)1 << type ))
+				// need to check if this entity could be part of this system, it might not even be
+				// possible but we cant know that so we need to check all of them
+				if ( (entAndSystems[i]->signature & (u64)1 << type ))
 				{
-					const u32 ent_count = (u32)entSystems[i]->entities.size();
+					const u32 ent_count = (u32)entAndSystems[i]->entities.size();
 					for (int ent = 0; ent < ent_count; ent++)
 					{
-						if (entSystems[i]->entities[ent] == entity)
+						if (entAndSystems[i]->entities[ent] == entity)
 						{
 							// copy the back element into the to be removed entities place, then pop the back
-							entSystems[i]->entities[ent] = entSystems[i]->entities.back();
-							entSystems[i]->entities.pop_back();
+							entAndSystems[i]->entities[ent] = entAndSystems[i]->entities.back();
+							entAndSystems[i]->entities.pop_back();
+							break;
+						}
+					}
+				}
+			}
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{
+				// need to check if this entity could be part of this system
+				if ((entOrSystems[i]->signature & (u64)1 << type))
+				{
+					const u32 ent_count = (u32)entOrSystems[i]->entities.size();
+					for (int ent = 0; ent < ent_count; ent++)
+					{
+						if (entOrSystems[i]->entities[ent] == entity)
+						{
+							// copy the back element into the to be removed entities place, then pop the back
+							entOrSystems[i]->entities[ent] = entOrSystems[i]->entities.back();
+							entOrSystems[i]->entities.pop_back();
 							break;
 						}
 					}
@@ -95,6 +155,7 @@ namespace ECS
 			}
 		}
 
-		std::vector<EntitySystem*> entSystems;
+		std::vector<EntitySystem*> entAndSystems;
+		std::vector<EntitySystem*> entOrSystems;
 	};
 }
