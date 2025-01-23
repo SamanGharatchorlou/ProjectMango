@@ -51,6 +51,7 @@ namespace DebugMenu
 	static bool s_gameStateWindow = false;
 	static bool s_tweakerWindow = false;
 	static bool s_editorWindow = false;
+	static bool s_demoWindow = false;
 
 	void OpenEditorWindow()
 	{
@@ -75,6 +76,9 @@ namespace DebugMenu
 		ImGui::Checkbox("Tweakers", &s_tweakerWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Animation Editor", &s_editorWindow);
+		ImGui::SameLine();
+		ImGui::Checkbox("Demo Window", &s_demoWindow);
+		ImGui::SameLine();
 		ImGui::End();
 
 		if (s_entitySystemWindow)
@@ -107,7 +111,8 @@ namespace DebugMenu
 			AnimationEditor::DoEditor();
 		}
 
-		//ImGui::ShowDemoWindow();
+		if(s_demoWindow)
+			ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 
