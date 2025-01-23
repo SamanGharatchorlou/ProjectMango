@@ -471,7 +471,7 @@ namespace ECS
 
 	// Pickup
 	// ------------------------------------------------------------------
-	Pickup::Pickup() :onPickupFn(nullptr) { }
+	Pickup::Pickup() : onPickupFn(nullptr), config(nullptr) { }
 
 	void Pickup::Update()
 	{

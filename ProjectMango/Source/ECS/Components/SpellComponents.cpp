@@ -6,6 +6,9 @@
 #include "Entities/Spells/SpellEntityBuilder.h"
 #include "UIComponents.h"
 #include "Collider.h"
+#include "System/Files/Config.h"
+#include "System/Files/ConfigManager.h"
+
 
 namespace ECS
 {
@@ -89,6 +92,17 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Spell::Spell() : rune(nullptr) { }
 
+	ReboundRune::ReboundRune(const char* config_id)
+	{
+		if(const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id))
+		{
+			if(config->values.Contains("rebound_count"))
+			{	
+				rebound_count = (int)config->values["rebound_count"];
+			}
+		}
+	}
+
 	void ReboundRune::OnActiate(Entity entity)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
@@ -96,13 +110,7 @@ namespace ECS
 		if (rebound_count > 0)
 		{
 			collider.destroyOnContact = false;
-			collider.reboundCount = 3;
+			collider.reboundCount = rebound_count;
 		}
-	}
-
-	void ReboundRune::Update(Entity entity)
-	{
-		//EntityCoordinator* ecs = GameData::Get().ecs;
-		//Damage& damage = ecs->GetComponentRef(Damage, entity);
 	}
 }

@@ -194,6 +194,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Pickup)
 
+		BasicString config;
 		OnPickupFn onPickupFn;
 
 		void Update();

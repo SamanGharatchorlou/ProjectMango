@@ -10,8 +10,9 @@ namespace ECS
 
 	struct ReboundRune : Rune
 	{
+		ReboundRune(const char* config_id);
+
 		void OnActiate(Entity entity) override;
-		void Update(Entity entity) override;
 
 		int rebound_count;
 	};

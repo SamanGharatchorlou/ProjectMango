@@ -2,6 +2,7 @@
 	"sprite": "rebound_rune",
 	"values": {
 		"size_x": 64,
-		"size_y": 64
+		"size_y": 64,
+		"rebound_count" : 3
 	}
 }

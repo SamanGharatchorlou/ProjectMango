@@ -158,6 +158,7 @@ ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
 	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
+	pick_up.config = config_id;
 	pick_up.onPickupFn = ApplyReboundRune;
 
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
