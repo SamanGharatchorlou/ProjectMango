@@ -73,7 +73,7 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 
 	// Spellbook
 	ECS::SpellBook& spell_book = ecs->GetComponentRef(SpellBook, s_playerEntity);
-	spell_book.SetSpellSlot(0, "Fireball");
+	spell_book.SetSpellSlot(0, "Lightning");
 	
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

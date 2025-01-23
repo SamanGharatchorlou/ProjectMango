@@ -42,9 +42,17 @@ namespace ECS
 
 		bool IsAlive(Entity entity) const { return entity != EntityInvalid && entities.GetAchetype(entity) != ArchetypeInvalid; }
 
+		bool HasComponent(Entity entity, Component::Type type) 
+		{ 
+			return entity != EntityInvalid && entities.HasComponent(entity, type);
+		}
+
 		template<class T>
 		T& AddComponent(Entity entity, Component::Type type)
 		{
+			if(HasComponent(entity, type))
+				return components.GetComponent<T>(entity, type);
+
 			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
 			T& comp = components.AddComponent<T>(entity, type);
 			entities.AddComponent(entity, type);
@@ -58,7 +66,7 @@ namespace ECS
 		template<class T>
 		void RemoveComponent(Entity entity, Component::Type type)
 		{
-			if (entity == EntityInvalid)
+			if (entity == EntityInvalid || !HasComponent(entity, type))
 				return;
 
 			if(const T* comp_ptr = GetComponent<T>(entity, type))
@@ -88,11 +96,6 @@ namespace ECS
 
 		template<class T>
 		ComponentArray<T>& GetComponents(Component::Type type) { return *static_cast<ComponentArray<T>*>(components.componentArrays[type]); }
-
-		bool HasComponent(Entity entity, Component::Type type) 
-		{ 
-			return entity != EntityInvalid && entities.HasComponent(entity, type);
-		}
 
 		void UpdateSystems(float dt);
 

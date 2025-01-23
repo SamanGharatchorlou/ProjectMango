@@ -132,8 +132,7 @@ namespace ECS
 		
 		template<class T>
 		void RemoveComponent(Entity entity)
-		{
-			//Page& page = GetPage(entity);
+		{			
 			u32 component_index = entityToComponent[entity];
 			u32 page_index = component_index / componentPageSize;
 			Page<T>& page = componentPages[page_index];

@@ -50,12 +50,12 @@ namespace ECS
 			if (cursors.Count() > 0)
 			{
 				auto front_index = cursors.entityToComponent.begin();
-				UICursor& collider = cursors.GetComponentByIndex(front_index->second);
+				UICursor& cursor = cursors.GetComponentByIndex(front_index->second);
 
-				Transform& transform = ecs->GetComponentRef(Transform, collider.entity);
+				Transform& transform = ecs->GetComponentRef(Transform, cursor.entity);
 				VectorF target = transform.GetRect().TopLeft();
 
-				Entity spell_entity = Magic::GetNewEntity("Fireball", entity, target);
+				Entity spell_entity = Magic::GetNewEntity(spells[spell_index].name.c_str(), entity, target);
 
 				Spell& spell = ecs->GetComponentRef(Spell, spell_entity);
 				spell.rune = spells[spell_index].rune;

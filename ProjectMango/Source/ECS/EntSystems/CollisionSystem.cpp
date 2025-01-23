@@ -110,12 +110,25 @@ namespace ECS
 				// player only
 				if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
+				if( !A_collider.HasFlag(Collider::IsPlayer) && B_collider.HasFlag(Collider::PlayerOnly) )
+					continue;
 
 				if( A_collider.HasFlag(Collider::IgnorePlayer) && B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
 
 				if(A_collider.intersects(B_collider)) 
 				{
+					if(ECS::Pickup* pick_up = ecs->GetComponent(Pickup, B_collider.entity))
+					{
+						bool a = A_collider.HasFlag(Collider::PlayerOnly);
+						bool b = B_collider.HasFlag(Collider::IsPlayer);
+
+						// player only
+						if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
+							continue;
+
+					}
+
 					ECS::Entity B_entity = B_collider.entity;
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
@@ -244,7 +257,7 @@ namespace ECS
             }
 
 			// only want to flip the direction once per loop, otherwise a double contact can double flip
-			if (flip_x || flip_y)
+			if(flip_x || flip_y)
 			{
 				Physics& A_physics = ecs->GetComponentRef(Physics, entity);
 
@@ -254,8 +267,14 @@ namespace ECS
 				if(flip_y)
 					A_physics.speed.y = A_physics.speed.y * -1;
 
+				// Rotate sprite
+				if(ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+				{
+					sprite->rotation = A_physics.speed.getRotation();
+				}
+
 				A_collider.reboundCount--;
-				if (A_collider.reboundCount == 0)
+				if(A_collider.reboundCount == 0)
 				{
 					A_collider.destroyOnContact = true;
 				}

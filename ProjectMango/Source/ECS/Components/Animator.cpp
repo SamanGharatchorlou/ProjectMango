@@ -68,7 +68,7 @@ namespace ECS
 		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
 
-		sprite.flipPoint = VectorF(animation.objectCenter.x, 0.5f);
+		sprite.flipPoint = animation.objectCenter;
 	}
 
 	void Animator::StartAnimation(ActionState action)

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "SpellEntityBuilder.h"
 
-
 #include "ECS/EntityCoordinator.h"
 #include "System/Files/ConfigManager.h"
 #include "ECS/Components/Components.h"
@@ -15,76 +14,95 @@ namespace Magic
 {
 	typedef ECS::Entity (*CreateEntityFn)(ECS::Entity caster, VectorF target);
 
-	static ECS::Entity CreateBasicSpell(const char* id, const char* config_id)
+	static ECS::Entity CreateBasicSpell(const char* id, const char* config_id, ECS::Entity caster)
 	{
-		// find the floor
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 		ECS::Entity entity = ecs->CreateEntity(id);
-		ecs->AddComponent(Transform, entity);
-		ecs->AddComponent(Animator, entity);
-		ecs->AddComponent(Sprite, entity);
-		ecs->AddComponent(Spell, entity);
-
 		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 
 		// Transform
-		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
 		transform.Init(config->values, VectorF());
+		
 
 		// Animation
-		ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+		ECS::Animator& animator = ecs->AddComponent(Animator, entity);
 		animator.Init(config);
 
 		transform.center = animator.GetActiveAnimation().objectCenter;
+		
+		// Collider
+		ECS::Collider& collider = ecs->AddComponent(Collider, entity);		
+		collider.SetFlag(ECS::Collider::IsDamage);
+		collider.SetFlag(ECS::Collider::IgnorePlayer);
+		collider.destroyOnContact = true;
+
+		transform.InitCollider(collider);		
+		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
+		transform.SetWorldPositionCenter( caster_position );
 
 		// Sprite
-		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
 		sprite.renderLayer = 6;
+
+		// Damage
+		ECS::Damage& damage = ecs->AddComponent(Damage, entity);
+		damage.value = config->values.GetFloat("damage");
+
+		// Spell
+		ecs->AddComponent(Spell, entity);
 
 		return entity;
 	}
 
 	ECS::Entity CreateFireball(ECS::Entity caster, VectorF target)
 	{
-		ECS::Entity entity = CreateBasicSpell("Fireball", "FireballConfig");
-
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("FireballConfig");
-
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ecs->AddComponent(Physics, entity);
-		ecs->AddComponent(Collider, entity);
-		ecs->AddComponent(Damage, entity);
 
-		// set position to the caster position
-		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
-		transform.InitCollider(collider);
-
-		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
-		transform.SetWorldPositionCenter( caster_position );
+		const char* id = "Fireball";
+		const char* config_id = "FireballConfig";
+		ECS::Entity entity = CreateBasicSpell(id, config_id, caster);
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 		
-		// Collider
-		collider.SetFlag(ECS::Collider::IsDamage);
-		collider.SetFlag(ECS::Collider::IgnorePlayer);
-		collider.destroyOnContact = true;
-		//collider.reboundCount = 3;
-
 		// direction
+		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
 		VectorF direction = target - caster_position;
 		direction = direction.normalise();
 
-		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-		sprite.rotation = direction.getRotation();
-
 		// Physics
-		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+		ECS::Physics& physics = ecs->AddComponent(Physics, entity);
 		float speed = config->values.GetFloat("speed");
 		physics.speed = direction * speed;
 		physics.maxSpeed = physics.speed;
 
-		// Damage
-		ECS::Damage& damage = ecs->GetComponentRef(Damage, entity);
-		damage.value = config->values.GetFloat("damage");
+		// Sprite
+		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.rotation = direction.getRotation();
+
+		return entity;
+	}
+
+	ECS::Entity CreateLightning(ECS::Entity caster, VectorF target)
+	{
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+
+		const char* id = "Lightning";
+		const char* config_id = "LightningConfig";
+		ECS::Entity entity = CreateBasicSpell(id, config_id, caster);
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+
+		// collder
+		ECS::Collider& collider = ecs->AddComponent(Collider, entity);
+		collider.destroyOnContact = false;
+
+		// direction
+		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
+		VectorF direction = target - caster_position;
+		direction = direction.normalise();
+
+		// sprite
+		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		sprite.rotation = direction.getRotation();
 
 		return entity;
 	}
@@ -96,6 +114,7 @@ namespace Magic
 		if(s_spellEntitiyMap.size() == 0)
 		{
 			s_spellEntitiyMap["Fireball"] = CreateFireball;
+			s_spellEntitiyMap["Lightning"] = CreateLightning;
 		}
 	}
 	

@@ -32,8 +32,8 @@ namespace ECS
 		VectorF attackColliderPos = VectorF(-1, -1);
 		VectorF attackColliderSize = VectorF(-1, -1);
 
-		// relative to size x
-		VectorF objectCenter;
+		// the about point of rotation
+		VectorF objectCenter = VectorF(0.5f, 0.5f);
 
 		int startIndex = 0;
 		int frameCount = 0;

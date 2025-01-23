@@ -1,20 +1,21 @@
 {
-	"id": "Fireball",
+	"id": "Lightning",
 	"frameSize_x": 72,
 	"frameSize_y": 72,
 	"spriteSheets" : 
 	[
 		{
-			"spriteSheet": "Fire-ball",
-			"object_center" : [ 0.624, 0.714 ],
+			"spriteSheet": "Lightning",
+			"object_center" : [ -0.15, 0.6 ],
 			"animations": [
 				{
 					"action": "Active",
 					"startIndex": 0,
 					"frameCount": 8,
 					"frameTime": 0.05,
-					"entity_collider_pos": [ 0.45, 0.525 ],
-					"entity_collider_size": [ 0.4, 0.4 ]
+					"looping" : false,
+					"entity_collider_pos": [ 0, 0.385 ],
+					"entity_collider_size": [ 1.0, 0.43 ]
 				}
 			]
 		}
