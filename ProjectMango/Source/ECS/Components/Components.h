@@ -46,8 +46,8 @@ namespace ECS
 
 		bool ignoreOutOfBounds;
 		
-		void Init(const SettingValues& values, VectorF pos, Collider& collider);
-		void Init(const SettingValues& values, VectorF pos);
+		void Init(const ObjectConfig* config, VectorF pos, Collider& collider);
+		void Init(const ObjectConfig* config, VectorF pos);
 		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
@@ -77,6 +77,7 @@ namespace ECS
 		float rotation; 
 		u32 renderLayer;
 		
+		void Init(const ObjectConfig* config);
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
 		void SetTexture(const char* label);
 	};
@@ -100,7 +101,7 @@ namespace ECS
 		// melee only (split this into differnt state parts?)
 		bool canEnterHover;
 		
-		void Init(const SettingValues& values);
+		void Init(const ObjectConfig* config);
 		VectorI GetFacingDirection() const;
 		void FlipFacingDirection();
 
@@ -152,7 +153,7 @@ namespace ECS
 
 		bool invulnerable;
 		
-		void Init(const SettingValues& values);
+		void Init(const ObjectConfig* config);
 		void ApplyDamage(const Damage& damage);
 	};
 

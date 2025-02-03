@@ -22,7 +22,7 @@ namespace Magic
 
 		// Transform
 		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-		transform.Init(config->values, VectorF());
+		transform.Init(config, VectorF());
 		
 
 		// Animation
@@ -43,7 +43,7 @@ namespace Magic
 
 		// Sprite
 		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
-		sprite.renderLayer = 6;
+		sprite.renderLayer = 4;
 
 		// Damage
 		ECS::Damage& damage = ecs->AddComponent(Damage, entity);

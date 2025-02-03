@@ -60,18 +60,21 @@ namespace ECS
 		ignoreOutOfBounds(false) 
 	{ }
 
-	void Transform::Init(const SettingValues& values, VectorF pos)
+	void Transform::Init(const ObjectConfig* config, VectorF pos)
 	{
-		size = values.GetVectorF("size_x", "size_y");
-		SetWorldPosition(pos);
-
-		if(values.GetBool("snap_to_floor"))
+		if(config)
 		{
-			float distance = 0.0f;
-			if( RaycastToFloor(entity, distance) )
+			size = config->values.GetVectorF("size_x", "size_y");
+			SetWorldPosition(pos);
+
+			if(config->values.GetBool("snap_to_floor"))
 			{
-				// shift up 1 just so we're not inside the floor collider
-				SetWorldPosition( pos + VectorF(0.0f, distance));
+				float distance = 0.0f;
+				if( RaycastToFloor(entity, distance) )
+				{
+					// shift up 1 just so we're not inside the floor collider
+					SetWorldPosition( pos + VectorF(0.0f, distance));
+				}
 			}
 		}
 	}
@@ -84,9 +87,9 @@ namespace ECS
 		collider.InitFromTransform(*this);
 	}
 	
-	void Transform::Init(const SettingValues& values, VectorF pos, Collider& collider)
+	void Transform::Init(const ObjectConfig* config, VectorF pos, Collider& collider)
 	{
-		Init(values,pos);
+		Init(config, pos);
 		InitCollider(collider);
 	}
 
@@ -181,6 +184,18 @@ namespace ECS
 		renderLayer(0)
 	{ }
 
+	void Sprite::Init(const ObjectConfig* config)
+	{
+		if(config)
+		{
+			if(config->strings.Contains("sprite"))
+			{	
+				SetTexture(config->strings["sprite"]);
+			}
+		}
+	}
+
+
 	void Sprite::SetTexture(const char* label)
 	{
 		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
@@ -196,10 +211,13 @@ namespace ECS
 		canEnterHover(false)
 	{ }
 
-	void CharacterState::Init(const SettingValues& values)
+	void CharacterState::Init(const ObjectConfig* config)
 	{
-		isRanged = values.GetBool("ranged", true);
-		isMelee = values.GetBool("melee", false);
+		if(config)
+		{
+			isRanged = config->values.GetBool("ranged", true);
+			isMelee = config->values.GetBool("melee", false);
+		}
 	}
 
 	VectorI CharacterState::GetFacingDirection() const
@@ -280,9 +298,9 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Health::Health() : maxHealth(0), currentHealth(0), invulnerable(false) { }
 
-	void Health::Init(const SettingValues& values)
+	void Health::Init(const ObjectConfig* config)
 	{
-		maxHealth = values.GetFloat("max_health");
+		maxHealth = config->values.GetFloat("max_health");
 		currentHealth = maxHealth;
 	}
 

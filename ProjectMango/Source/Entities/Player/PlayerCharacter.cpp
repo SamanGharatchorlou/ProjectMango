@@ -27,52 +27,25 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(player_config);
 
-	s_playerEntity = ecs->CreateEntity(id);
-	ecs->AddComponent(Transform, s_playerEntity);
-	ecs->AddComponent(Physics, s_playerEntity);
-	ecs->AddComponent(Animator, s_playerEntity);
-	ecs->AddComponent(Sprite, s_playerEntity);
-	ecs->AddComponent(Collider, s_playerEntity);
+	s_playerEntity = Character::CreateBasic(id, player_config, VectorF());
 	ecs->AddComponent(PlayerController, s_playerEntity);
-	ecs->AddComponent(CharacterState, s_playerEntity);
-	ecs->AddComponent(Health, s_playerEntity);
-	ecs->AddComponent(SpellBook, s_playerEntity);
-
-	// Transform
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, s_playerEntity);
-	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
-	transform.Init(config->values, VectorF::zero(), collider);
 
 	// Collider
+	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
 	collider.SetFlag(ECS::Collider::IsPlayer);
 	collider.SetFlag(ECS::Collider::CanBump);
-	
-	// MovementPhysics
-	ECS::Physics& physics = ecs->GetComponentRef(Physics, s_playerEntity);
-	physics.Init(config->values);
-
-	// Animation
-	ECS::Animator& animator = ecs->GetComponentRef(Animator, s_playerEntity);
-	animator.Init(config);
 
 	// Sprite
 	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);
 	sprite.renderLayer = 5;
 
-	const ECS::Animation& animation = animator.GetActiveAnimation();
-	collider.SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
-	
 	// CharacterState
-	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, s_playerEntity);
+	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
 	character_state.config = player_config;
-	character_state.Init(config->values);
-	
-	// Health
-	ECS::Health& health = ecs->GetComponentRef(Health, s_playerEntity);
-	health.Init(config->values);
+	character_state.Init(config);
 
 	// Spellbook
-	ECS::SpellBook& spell_book = ecs->GetComponentRef(SpellBook, s_playerEntity);
+	ECS::SpellBook& spell_book = ecs->AddComponent(SpellBook, s_playerEntity);
 	spell_book.SetSpellSlot(0, "Lightning");
 	
 	Camera* camera = Camera::Get();

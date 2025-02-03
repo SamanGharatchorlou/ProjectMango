@@ -17,7 +17,7 @@ struct CharacterAction : public State
 	float GetAttackRange(ActionState action);
 
 	// helpers
-	bool CanEnterHitState();
+	bool CanEnterHitState(float frame_buffer = 20);
 	bool CanMoveToTarget();
 	bool CoolingFromAttack();
 	void InitDeathState();
@@ -35,5 +35,6 @@ struct Character
 	virtual bool FinishedDying(ECS::Entity entity) { return false; }
 	virtual void StartDying(ECS::Entity entity) { }
 
-	static ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+	static ECS::Entity CreateBasic(const char* id, const char* config_id, VectorF spawn_pos);
+	static ECS::Entity CreateBasicEnemy(const char* id, const char* config_id, VectorF spawn_pos);
 };

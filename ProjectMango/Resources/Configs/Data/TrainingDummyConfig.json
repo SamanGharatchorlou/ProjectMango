@@ -1,0 +1,10 @@
+{
+	"animation": "TrainingDummyAnimations",
+	"values": {
+		"size_x": 128,
+		"size_y": 128,
+		"snap_to_floor" : true,
+		"gravity": true,
+		"max_health": 20
+	}
+}

@@ -20,7 +20,7 @@
 					"action": "BasicAttack",
 					"startIndex": 96,
 					"frameCount": 8,
-					"frameTime": 0.08,
+					"frameTime": 0.06,
 					"flip_point_x": 0.308,
 					"looping": false,
 					"entity_collider_pos": [ 0.23, 0.23 ],

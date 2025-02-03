@@ -7,6 +7,8 @@ namespace PlayerRanged
 {
 	bool CanAttack(ECS::Entity entity);
 
+	// todo: implement Character overloads and use that to init and die etc.
+
 	struct IdleState : public CharacterAction
 	{
 		IdleState(ECS::Entity _entity);

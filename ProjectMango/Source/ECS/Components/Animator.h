@@ -70,5 +70,7 @@ namespace ECS
 		const Animation* GetAnimation(ActionState action) const;
 
 		bool OnLastFrame() const;
+
+		bool IsValid() const;
 	};
 }

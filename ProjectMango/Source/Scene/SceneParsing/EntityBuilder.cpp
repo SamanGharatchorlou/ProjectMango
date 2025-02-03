@@ -26,7 +26,7 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 		// Transform
 		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
 		VectorF pos = spawn_pos - (transform.size / 2.0f);
-		transform.Init(config->values, pos);
+		transform.Init(config, pos);
 
 		// Sprite
 		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
@@ -172,6 +172,7 @@ ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
 	return entity;
 }
 
+
 void CreateEntities(ECS::Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
@@ -184,6 +185,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["Pickup"] = CreatePickup;
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
+	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
 	CreateEntitiyFunctions["ReboundRune"] = CreateRune;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;

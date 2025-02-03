@@ -49,6 +49,9 @@ namespace ECS
 			Animator& animator = ecs->GetComponentRef(Animator, entity);
 			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 
+			if(!animator.IsValid())
+				continue;
+
 			UpdateAnimator(animator, dt);
 			animator.SetActiveSpriteFrame(sprite);
 

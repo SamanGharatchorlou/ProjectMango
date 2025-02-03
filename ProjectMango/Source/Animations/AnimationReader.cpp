@@ -42,6 +42,13 @@ namespace AnimationReader
 	void BuildAnimatior(ECS::Animator& animator, const char* file)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
+		if(full_path.length() == 0)
+		{
+			DebugPrint(PriorityLevel::Log, "Animation file does not exist: '%s'", file);
+			return;
+		}
+
+
 		JSONParser parser(full_path.c_str());
 		
 		if(!parser.document.IsObject())

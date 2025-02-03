@@ -60,3 +60,33 @@ namespace ShockSweeper
 		ECS::Entity attackCollider = ECS::EntityInvalid;
 	};
 }
+
+namespace TrainingDummy
+{
+	static constexpr float c_hitFrameBuffer = 20;
+
+	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+
+	struct Enemy : public Character
+	{
+		void Begin(ECS::Entity entity);
+	};
+
+	struct IdleState : public CharacterAction
+	{
+		IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
+		void Init() override;
+		void Update(float dt) override;
+		void Resume() override;
+	};
+
+	struct TakeHitState : public CharacterAction
+	{
+		TakeHitState(ECS::Entity _entity) : CharacterAction(ActionState::TakeHit, _entity) { }
+		void Init() override;
+		void Update(float dt) override;
+		void Exit() override;
+
+		float frameStart = 0;
+	};
+}

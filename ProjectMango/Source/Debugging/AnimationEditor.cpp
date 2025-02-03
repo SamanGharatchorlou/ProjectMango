@@ -395,14 +395,42 @@ namespace AnimationEditor
 			    }
 
                 bool is_playing = c.animator.state == TimeState::Running;
-                const char* text = is_playing ? "Pause" : "Play";
+                bool requires_restart = !c.animator.GetActiveAnimation().looping && c.animator.OnLastFrame();
+
+                StringBuffer32 play_pause_button_text;
+                if(is_playing)
+                {
+                    play_pause_button_text = "Pause";
+                }
+                else
+                {
+                    if(requires_restart)
+                    {
+                        play_pause_button_text = "Restart";
+                    }
+                    else
+                    {
+                        play_pause_button_text = "Play";
+                    }
+                }
+
                 ImGui::SameLine();
-                if( ImGui::Button(text) )
+                if( ImGui::Button(play_pause_button_text.c_str()) )
                 {
                     if(is_playing)
+                    {
                         c.animator.state = TimeState::Paused;
+                    }
                     else
+                    {
                         c.animator.state = TimeState::Running;
+
+                        // restart for looping animations
+                        if(requires_restart)
+                        {
+                            c.animator.StartAnimation(c.animator.GetActiveAnimation().action);
+                        }
+                    }
                 }
 
                 ImGui::SameLine();

@@ -1,5 +1,7 @@
 #pragma once
 
+struct ObjectConfig;
+
 namespace ECS
 {
 	struct Physics
@@ -15,7 +17,7 @@ namespace ECS
 		bool applyGravity;
 		bool onFloor;
 
-		void Init(const SettingValues& values);
+		void Init(const ObjectConfig* config);
 
 		void ApplyMovement(VectorF movement_direction, float dt);
 		void ApplyDrag(float drag_coefficient);

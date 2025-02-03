@@ -15,6 +15,8 @@ ECS::Component::Type DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 	{
 		ECS::AIController& aic = ecs->GetComponentRef(AIController, entity);
 
+		//aic.
+
 		ImGui::Text("Has target: %s", ecs->GetEntityName(aic.target));
 
 		ImGui::Text("Distance to target %f", aic.DistanceToTargetSquared());

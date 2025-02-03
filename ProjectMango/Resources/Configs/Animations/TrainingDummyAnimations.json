@@ -1,0 +1,30 @@
+{
+	"id": "TrainingDummy",
+	"frameSize_x": 48,
+	"frameSize_y": 48,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "training_dummy_sheet",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 4,
+					"frameCount": 1,
+					"frameTime": 1,
+					"entity_collider_pos": [ 0.432, 0.269 ],
+					"entity_collider_size": [ 0.217, 0.729 ]
+				},
+				{
+					"action": "TakeHit",
+					"startIndex": 0,
+					"frameCount": 5,
+					"frameTime": 0.1,
+					"looping": false,
+					"entity_collider_pos": [ 0.432, 0.269 ],
+					"entity_collider_size": [ 0.217, 0.729 ]
+				}
+			]
+		}
+	]
+}

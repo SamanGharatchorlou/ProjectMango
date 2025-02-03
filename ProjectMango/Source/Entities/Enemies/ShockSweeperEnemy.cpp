@@ -18,14 +18,15 @@ namespace ShockSweeper
 	// ---------------------------------------------------------
 	Entity Create(const char* id, const char* config_id, VectorF spawn_pos)
 	{
-		Entity entity = Character::Create(id, config_id, spawn_pos);
+		Entity entity = Character::CreateBasicEnemy(id, config_id, spawn_pos);
 
 		// CharacterState
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
-		character_state.config = config_id;
 
+		ecs->AddComponent(Pathing, entity);
+		
 		return entity;
 	}
 
@@ -243,5 +244,104 @@ namespace ShockSweeper
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		ecs->entities.KillEntity(attackCollider);
+	}
+}
+
+
+namespace TrainingDummy
+{
+	using namespace ECS;
+	
+	// Enemy
+	// ---------------------------------------------------------
+	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos)
+	{
+		ECS::Entity entity = Character::CreateBasicEnemy(id, config_id, spawn_pos);
+				
+		// CharacterState
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+		character_state.character = new Enemy();
+
+		return entity;
+	}
+
+	void Enemy::Begin(ECS::Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		if(!state.actions.HasAction())
+			PushState(Idle);
+	}
+
+	// Idle
+	// ---------------------------------------------------------
+	void IdleState::Init()
+	{
+		StartAnimation();
+	}
+	void IdleState::Resume()
+	{		
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
+		
+		StartAnimation(can_flip_sprite);
+	}
+	void IdleState::Update(float dt)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		if( CanEnterHitState(c_hitFrameBuffer) )
+		{
+			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			PushState(TakeHit);
+		}
+	}
+
+	
+	// TakeHitState
+	// ---------------------------------------------------------
+	void TakeHitState::Init()
+	{
+		StartAnimation();
+		
+		const FrameRateController& frc = FrameRateController::Get();
+		frameStart = frc.FrameCount();
+	}
+
+	void TakeHitState::Update(float dt)
+	{	
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		const Animator& animator = ecs->GetComponentRef(Animator, entity);
+		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+
+		if(animator.loopCount > 0)
+		{
+			PopState();
+			return;
+		}
+		
+		const FrameRateController& frc = FrameRateController::Get();
+		if( (frameStart + c_hitFrameBuffer) < frc.FrameCount())
+		{
+			if(const Collider* collider = ecs->GetComponent(Collider, entity))
+			{
+				if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
+				{
+					ReplaceState(TakeHit);
+				}
+			}
+		}
+	}
+
+	void TakeHitState::Exit()
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		if(Collider* collider = ecs->GetComponent(Collider, entity))
+		{
+			//collider->lastHitFrame = -1;
+		}
 	}
 }

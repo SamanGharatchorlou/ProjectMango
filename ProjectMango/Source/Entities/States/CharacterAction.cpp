@@ -19,61 +19,63 @@
 #include "System/Files/ConfigManager.h"
 
 
-CharacterAction::CharacterAction() : action(ActionState::None), entity(ECS::EntityInvalid)  { }
+using namespace ECS;
+
+CharacterAction::CharacterAction() : action(ActionState::None), entity(EntityInvalid)  { }
 
 void CharacterAction::StartAnimation(bool can_flip_sprite)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Animator& animation = ecs->GetComponentRef(Animator, entity);
 	animation.StartAnimation(action);
 
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 	sprite.canFlip = can_flip_sprite;
 }
 
 void CharacterAction::StartAnimation(ActionState action_state, bool can_flip_sprite)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Animator& animation = ecs->GetComponentRef(Animator, entity);
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	Animator& animation = ecs->GetComponentRef(Animator, entity);
 	animation.StartAnimation(action_state);
 
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 	sprite.canFlip = can_flip_sprite;
 }
 
-ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, float damage_value, float force_value)
+Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, float damage_value, float force_value)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	EntityCoordinator* ecs = GameData::Get().ecs;
 
-	ECS::Entity attack_collider = ecs->CreateEntity(collider_name);
+	Entity attack_collider = ecs->CreateEntity(collider_name);
 	ecs->AddComponent(Transform, attack_collider);
 	ecs->AddComponent(Collider, attack_collider);
 	ecs->AddComponent(Damage, attack_collider);
-	ECS::EntityData::SetParent(attack_collider, entity);
+	EntityData::SetParent(attack_collider, entity);
 
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-	const ECS::Animation& animation = animator.GetActiveAnimation();
+	const Animator& animator = ecs->GetComponentRef(Animator, entity);
+	const Transform& transform = ecs->GetComponentRef(Transform, entity);
+	const Animation& animation = animator.GetActiveAnimation();
 	const VectorF pos = transform.size * animation.attackColliderPos;
 	const VectorF size = transform.size * animation.attackColliderSize;
 
 	// Transform
-	ECS::Transform& attack_transform = ecs->GetComponentRef(Transform, attack_collider);
+	Transform& attack_transform = ecs->GetComponentRef(Transform, attack_collider);
 	attack_transform.size = size;
 	attack_transform.SetLocalPosition(pos);
 	attack_transform.ignoreOutOfBounds = true;
 
 	// Collider
-	ECS::Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
+	Collider& collider = ecs->GetComponentRef(Collider, attack_collider);
 	attack_transform.InitCollider(collider);
-	collider.SetFlag(ECS::Collider::IsDamage);
+	collider.SetFlag(Collider::IsDamage);
 
 	// Damage
-	ECS::Damage& damage = ecs->GetComponentRef(Damage, attack_collider);
+	Damage& damage = ecs->GetComponentRef(Damage, attack_collider);
 	damage.value = damage_value;
 	damage.appliedTo.push_back(entity); // dont damage our self
 	
-	ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+	CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
 	damage.force = force_value;
 	damage.source = transform.GetObjectCenter();
 
@@ -82,14 +84,14 @@ ECS::Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, 
 
 float CharacterAction::GetAttackRange(ActionState action)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	EntityCoordinator* ecs = GameData::Get().ecs;
 
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	if(const ECS::Animation* animation = animator.GetAnimation(action))
+	const Animator& animator = ecs->GetComponentRef(Animator, entity);
+	if(const Animation* animation = animator.GetAnimation(action))
 	{
 		if(animation->attackColliderSize.x > 0.0f && animation->attackColliderSize.y > 0.0f)
 		{
-			const ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+			const Transform& transform = ecs->GetComponentRef(Transform, entity);
 
 			const VectorF pos =  transform.worldPosition + transform.size * animation->attackColliderPos;
 			const VectorF size = transform.size * animation->attackColliderSize;
@@ -106,12 +108,11 @@ float CharacterAction::GetAttackRange(ActionState action)
 	return -1.0f;
 }
 
-ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spawn_pos)
+Entity Character::CreateBasic(const char* id, const char* config_id, VectorF spawn_pos)
 {
-	using namespace ECS;
-
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
 
+	// adding everything something NEEDS to be an enemy... pretty much anyway
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	Entity entity = ecs->CreateEntity(id);
 	ecs->AddComponent(Transform, entity);
@@ -120,67 +121,70 @@ ECS::Entity Character::Create(const char* id, const char* config_id, VectorF spa
 	ecs->AddComponent(Sprite, entity);
 	ecs->AddComponent(Collider, entity);
 	ecs->AddComponent(Health, entity);
-	ecs->AddComponent(AIController, entity);
-	ecs->AddComponent(Pathing, entity);
-	ecs->AddComponent(CharacterState, entity);
 
 	// Transform
 	Transform& transform = ecs->GetComponentRef(Transform, entity);
 	Collider& collider = ecs->GetComponentRef(Collider, entity);
-	transform.Init(config->values, spawn_pos, collider);
-
-	// Collider
-	collider.SetFlag(Collider::IsEnemy);
+	transform.Init(config, spawn_pos, collider);
 
 	// MovementPhysics
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
-	physics.Init(config->values);
+	physics.Init(config);
 
 	// Animator
 	Animator& animation = ecs->GetComponentRef(Animator, entity);
 	animation.Init(config);
 
-	// Sprite
-	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-	sprite.renderLayer = 4;
-	
-	// Collider
-	//Collider& collider = ecs->GetComponentRef(Collider, entity);
-	//collider.SetBaseRect(RectF(VectorF::zero(), transform.size));
-	//collider.SetFlag(Collider::IsEnemy);
-	//collider.UpdateFromTransform();
-
-	CollisionSystem::FindValidPosition(entity);
-
 	// Health
 	Health& health = ecs->GetComponentRef(Health, entity);
-	health.Init(config->values);
-	health.invulnerable = false;
+	health.Init(config);
 
-	// AI Controller
-	if (config->strings.Contains("tags"))
-	{
-		const char* tag = config->strings["tags"];
-		if (StringCompare(tag, "dummy"))
-		{
-			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
-			ai_controller.moveToTarget = false;
-		}
-	}
+	// set sprite layer - default 5
+	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	sprite.Init(config);
+	sprite.renderLayer = 5;
 
+	// handle any tags here!
+	// if (config->strings.Contains("tags")) etc
+
+	return entity;
+}
+
+Entity Character::CreateBasicEnemy(const char* id, const char* config_id, VectorF spawn_pos)
+{
+	Entity entity = Character::CreateBasic(id, config_id, spawn_pos);
+
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+			
+	// make it an enemy
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	ecs->AddComponent(AIController, entity);
+
+	// CharacterState
+	CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+	character_state.config = config_id;
+	// this is specific to the enemy type and needs to be set in there
+	character_state.character = nullptr;
+
+	// set collider flags
+	Collider& collider = ecs->GetComponentRef(Collider, entity);
+	collider.SetFlag(Collider::IsEnemy);
+
+	CollisionSystem::FindValidPosition(entity);
+		
 	return entity;
 }
 
 
 // Helpers
 // ---------------------------------------------------------
-bool CharacterAction::CanEnterHitState()
+bool CharacterAction::CanEnterHitState(float frame_buffer)
 {		
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	if(const ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	if(const Collider* collider = ecs->GetComponent(Collider, entity))
 	{
 		const FrameRateController& frc = FrameRateController::Get();
-		if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
+		if(collider->lastHitFrame != -1 && (collider->lastHitFrame + frame_buffer) >= frc.FrameCount())
 		{
 			return true;
 		}
@@ -191,15 +195,15 @@ bool CharacterAction::CanEnterHitState()
 
 bool CharacterAction::CanMoveToTarget()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 	return ai_controller.moveToTarget && ecs->IsAlive(ai_controller.target);
 }
 
 bool CharacterAction::CoolingFromAttack()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
 
 	if( ai_controller.cooldownTimer.IsRunning() )
 	{
@@ -214,14 +218,14 @@ bool CharacterAction::CoolingFromAttack()
 
 void CharacterAction::InitDeathState()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	EntityCoordinator* ecs = GameData::Get().ecs;
 
-	if(ECS::Collider* collider = ecs->GetComponent(Collider, entity))
+	if(Collider* collider = ecs->GetComponent(Collider, entity))
 	{
-		SetFlag(collider->flags, (u32)ECS::Collider::IgnoreAll);
+		SetFlag(collider->flags, (u32)Collider::IgnoreAll);
 	}
 
-	if(ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+	if(Physics* physics = ecs->GetComponent(Physics, entity))
 	{
 		physics->speed.set(0.0f, 0.0f);
 	}
@@ -229,35 +233,35 @@ void CharacterAction::InitDeathState()
 
 void CharacterAction::ApplyMovementEase(int movement_factor, float dt)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-	ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+	Physics& physics = ecs->GetComponentRef(Physics, entity);
 
 	const int run_acceleration_factor = 1;
 	const VectorI facing_direction = state.GetFacingDirection();
 	physics.ApplyMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
 }
 
-bool CharacterAction::CanCreateAttackCollider(ECS::Entity attack_collider)
+bool CharacterAction::CanCreateAttackCollider(Entity attack_collider)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	const ECS::Animation& animation = animator.GetActiveAnimation();
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	const Animator& animator = ecs->GetComponentRef(Animator, entity);
+	const Animation& animation = animator.GetActiveAnimation();
 	if(animation.attackColliderFrameStart != -1)
 	{
-		return animator.frameIndex >= animation.attackColliderFrameStart && attack_collider == ECS::EntityInvalid;
+		return animator.frameIndex >= animation.attackColliderFrameStart && attack_collider == EntityInvalid;
 	}
 
 	return false;
 }
-bool CharacterAction::CanDestroyAttackCollider(ECS::Entity attack_collider)
+bool CharacterAction::CanDestroyAttackCollider(Entity attack_collider)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
-	const ECS::Animation& animation = animator.GetActiveAnimation();
+	EntityCoordinator* ecs = GameData::Get().ecs;
+	const Animator& animator = ecs->GetComponentRef(Animator, entity);
+	const Animation& animation = animator.GetActiveAnimation();
 	if(animation.attackColliderFrameEnd != -1)
 	{
-		return animator.frameIndex >= animation.attackColliderFrameEnd && attack_collider != ECS::EntityInvalid;
+		return animator.frameIndex >= animation.attackColliderFrameEnd && attack_collider != EntityInvalid;
 	}
 
 	return false;

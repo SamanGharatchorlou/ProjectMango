@@ -19,13 +19,12 @@ namespace BlindingSpider
 	// ---------------------------------------------------------
 	Entity Create(const char* id, const char* config_id, VectorF spawn_pos)
 	{
-		Entity entity = Character::Create(id, config_id, spawn_pos);
-
+		Entity entity = Character::CreateBasicEnemy(id, config_id, spawn_pos);
+				
 		// CharacterState
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
-		character_state.config = config_id;
 		
 		return entity;
 	}

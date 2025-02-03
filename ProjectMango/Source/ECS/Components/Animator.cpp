@@ -45,9 +45,14 @@ namespace ECS
 		}
 	}
 
+	bool Animator::IsValid() const
+	{
+		return animations.size() > 0;
+	}
+
 	void Animator::SetActiveSpriteFrame(Sprite& sprite)
 	{
-		if(animations.size() == 0)
+		if(!IsValid())
 			return;
 
 		const Animation& animation = animations[activeAnimation];
@@ -93,6 +98,7 @@ namespace ECS
 
 	const Animation& Animator::GetActiveAnimation() const
 	{
+		ASSERT(IsValid(), "Invalid animator, cannot get active animation");
 		return animations[activeAnimation];
 	}
 

@@ -2,16 +2,20 @@
 #include "Physics.h"
 
 #include "Core/Helpers.h"
+#include "System/Files/Config.h"
 
 namespace ECS
 {
 	Physics::Physics() : mass(1.0f), applyGravity(false), onFloor(false) { }
 
-	void Physics::Init(const SettingValues& values)
+	void Physics::Init(const ObjectConfig* config)
 	{	
-		applyGravity = values.GetBool("gravity");	
-		acceleration = values.GetVectorF("acceleration_x", "acceleration_y");
-		maxSpeed = values.GetVectorF("max_run_speed", "max_fall_speed");
+		if(config)
+		{
+			applyGravity = config->values.GetBool("gravity");	
+			acceleration = config->values.GetVectorF("acceleration_x", "acceleration_y");
+			maxSpeed = config->values.GetVectorF("max_run_speed", "max_fall_speed");
+		}
 
 		speed = VectorF::zero();
 	}
