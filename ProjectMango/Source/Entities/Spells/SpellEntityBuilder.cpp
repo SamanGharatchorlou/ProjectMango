@@ -104,6 +104,11 @@ namespace Magic
 		ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
 		sprite.rotation = direction.getRotation();
 
+		// turn into quad collider
+		collider.SetFlag(ECS::Collider::QuadCollider);
+
+
+
 		return entity;
 	}
 

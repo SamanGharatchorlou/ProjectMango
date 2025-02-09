@@ -40,22 +40,25 @@ namespace ECS
 
 			// helps prevent collider getting stuck, maybe just for player?
 			// or only for more complex moving colliders maybe
-			CanBump
+			CanBump,
+
+			QuadCollider
 		};
 
-		virtual bool intersects(const Collider& collider) const;
-		virtual bool intersects(const RectF& rect) const;
-		
-		bool contains(VectorF position) const;
+		bool Intersects(const RectF& rect) const;
+		bool Contains(VectorF position) const;
 
 		static bool Contains(const RectF& rect, VectorF point);
 		static bool Intersects(const RectF& rect_a, const RectF& rect_b);
+		static bool Intersects(const Quad2D<float>& quad, const RectF& rect);
 	
-		static bool test1DOverlap(float minA, float maxA, float minB, float maxB);
+		static bool Test1DOverlap(float minA, float maxA, float minB, float maxB);
 
 		void SetBaseRect(const RectF& rect);
 		void SetTopLeft(const VectorF& pos);
 		void SetRelativeRect(VectorF position, VectorF size);
+
+		VectorF GetRealPosition(VectorF relative_pos) const;
 
 		// assumes the rect size has been set
 		void InitFromTransform(const Transform& transform);
@@ -89,7 +92,9 @@ namespace ECS
 		VectorF forward;
 		VectorF back;
 
-		RectF rect; 
+		RectF rect;
+		// can replace rect if you need rotation by setting flag and this, can only check against a rect (not another quad)
+		QuadF quad;
 
 		std::vector<ECS::Entity> collisions;
 

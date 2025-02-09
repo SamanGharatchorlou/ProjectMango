@@ -560,4 +560,22 @@ namespace ECS
 		ASSERT(config != nullptr, "Entity has no object config");
 		return config;
 	}
+
+	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation)
+	{
+		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+		if (const Transform* transform = ecs->GetComponent(Transform, entity))
+		{
+			if (const ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+			{
+				out_rotation = sprite->rotation;
+
+				RectF rect = transform->GetRect();
+				out_aboutPoint = rect.TopLeft() + (rect.Size() * sprite->flipPoint);
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

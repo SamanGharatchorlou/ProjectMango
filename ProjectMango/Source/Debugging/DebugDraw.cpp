@@ -94,24 +94,26 @@ namespace DebugDraw
 	//}
 	//
 	//
-	//void debugDrawQuad(Quad2D<float> quad, Colour colour)
-	//{
-	//	SDL_SetRenderDrawColor(Renderer::Get()->sdlRenderer(), colour.r, colour.g, colour.b, colour.a);
-	//
-	//	for (unsigned int i = 0; i < quad.sides(); i++)
-	//	{
-	//		quad[i] = Camera::Get()->toCameraCoords(quad[i]);
-	//	}
-	//
-	//	for (unsigned int i = 0; i < quad.sides(); i++)
-	//	{
-	//		int j = i + 1 >= quad.sides() ? 0 : i + 1;
-	//
-	//		Vector2D<int> pointA = quad.at(i).toInt();
-	//		Vector2D<int> pointB = quad.at(j).toInt();
-	//		SDL_RenderDrawLine(Renderer::Get()->sdlRenderer(), pointA.x, pointA.y, pointB.x, pointB.y);
-	//	}
-	//}
+
+	void Quad(Quad2D<float> quad, Colour colour)
+	{
+		//SDL_SetRenderDrawColor(Renderer::Get()->sdlRenderer(), colour.r, colour.g, colour.b, colour.a);
+	
+		//for (unsigned int i = 0; i < quad.sides(); i++)
+		//{
+		//	quad[i] = Camera::Get()->toCameraCoords(quad[i]);
+		//}
+	
+		for (unsigned int i = 0; i < quad.sides(); i++)
+		{
+			int j = i + 1 >= quad.sides() ? 0 : i + 1;
+	
+			VectorF pointA = quad[i];
+			VectorF pointB = quad[j];
+			Line(pointA, pointB, colour);
+			//SDL_RenderDrawLine(Renderer::Get()->sdlRenderer(), pointA.x, pointA.y, pointB.x, pointB.y);
+		}
+	}
 
 //	void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment)
 //	{

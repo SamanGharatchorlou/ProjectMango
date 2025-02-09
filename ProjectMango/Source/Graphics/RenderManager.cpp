@@ -96,7 +96,7 @@ void RenderManager::render()
 
 			const RectF& rect = mDebugRenders[i].rect;
 			const Vector2D<int> A = (rect.TopLeft() + camera_shift).toInt();
-			const Vector2D<int> B = rect.Size().toInt();
+			const Vector2D<int> B = (rect.Size() + camera_shift).toInt();
 
 			SDL_RenderDrawLine(renderer, A.x, A.y, B.x, B.y);
 			break;

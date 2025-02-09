@@ -616,7 +616,7 @@
 						},
 						{
 							"__identifier": "PlayerSpawner",
-							"__grid": [4,13],
+							"__grid": [5,3],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 0, "y": 240, "w": 16, "h": 16 },
@@ -625,10 +625,10 @@
 							"width": 32,
 							"height": 16,
 							"defUid": 8,
-							"px": [64,208],
+							"px": [80,48],
 							"fieldInstances": [],
-							"__worldX": 64,
-							"__worldY": 208
+							"__worldX": 80,
+							"__worldY": 48
 						},
 						{
 							"__identifier": "ReboundRune",
@@ -648,19 +648,19 @@
 						},
 						{
 							"__identifier": "TrainingDummy",
-							"__grid": [13,13],
+							"__grid": [9,3],
 							"__pivot": [0,0],
 							"__tags": ["enemy"],
 							"__tile": { "tilesetUid": 9, "x": 176, "y": 416, "w": 16, "h": 16 },
 							"__smartColor": "#FEE761",
-							"iid": "dac67150-c210-11ef-a334-6d89d189a5ee",
+							"iid": "babb83e0-c210-11ef-bfa4-cb19d7f12a54",
 							"width": 16,
 							"height": 16,
 							"defUid": 22,
-							"px": [208,208],
+							"px": [144,48],
 							"fieldInstances": [],
-							"__worldX": 208,
-							"__worldY": 208
+							"__worldX": 144,
+							"__worldY": 48
 						}
 					]
 				},

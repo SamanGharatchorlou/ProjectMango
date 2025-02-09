@@ -73,7 +73,7 @@ namespace ECS
 					collider->forward = collider->forward + movement_dt;
 					transform.renderOffset -= movement_dt;
 				}
-				else if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
+				//else if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
 				{
 					//if (sprite.rotation != 0)
 					//{
@@ -90,6 +90,8 @@ namespace ECS
 					{
 						collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
 					}
+
+					//if(!animation.entityColliderPos.hasNegative())
 
 					//collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
 					transform.renderOffset = VectorF::zero();

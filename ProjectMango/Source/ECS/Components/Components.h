@@ -211,6 +211,7 @@ namespace ECS
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
+	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
 
 	const ObjectConfig* GetObjectConfig(Entity entity);
 }

@@ -550,7 +550,7 @@ namespace AnimationEditor
                 ECS::Collider selection;
                 selection.SetBaseRect(cs.selectionRect);
 
-                if(selection.contains(cursor_pos))
+                if(selection.Contains(cursor_pos))
                 {
                     cs.movingSelection = true;
                     cs.cursorOffset = cs.selectionRect.TopLeft() - cursor_pos;

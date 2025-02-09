@@ -87,6 +87,6 @@ namespace TrainingDummy
 		void Update(float dt) override;
 		void Exit() override;
 
-		float frameStart = 0;
+		int frameStart = 0;
 	};
 }

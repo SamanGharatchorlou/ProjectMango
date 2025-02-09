@@ -17,4 +17,6 @@ namespace DebugMenu
 	ECS::Component::Type DoAIControllerDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoHealthDebugMenu(ECS::Entity& entity);
 	ECS::Component::Type DoBiomeDebugMenu(ECS::Entity& entity);
+
+	void DrawCollider(const ECS::Collider& collider);
 }

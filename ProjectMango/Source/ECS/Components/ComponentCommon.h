@@ -7,4 +7,7 @@ namespace ECS
 
 	bool IsInLevel(const Level& level, const Transform& transform);
 	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities);
+
+	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
+
 }

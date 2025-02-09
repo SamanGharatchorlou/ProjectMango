@@ -5,6 +5,56 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "Graphics/RenderManager.h"
 
+#include "ECS/Components/Animator.h"
+
+void DebugMenu::DrawCollider(const ECS::Collider& collider)
+{
+    Colour colour = Colour::Blue;
+    bool is_static = collider.HasFlag(ECS::Collider::Static);
+    if (is_static)
+    {
+        colour = Colour::Purple;
+    }
+
+    bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
+    if (ignore_all)
+    {
+        colour = Colour::LightGrey;
+        colour.a = 100;
+    }
+
+    if (collider.HasFlag(ECS::Collider::IsEnemy))
+    {
+        colour = Colour::Red;
+        colour.a = 100;
+    }
+    if (collider.HasFlag(ECS::Collider::IsPlayer))
+    {
+        colour = Colour::Green;
+        colour.a = 100;
+    }
+    if (collider.HasFlag(ECS::Collider::TerrainOnly))
+    {
+        colour = Colour::LightGrey;
+        colour.a = 100;
+    }
+
+    if (collider.HasFlag(ECS::Collider::QuadCollider))
+    {
+		//float rotation = 0;
+		//VectorF about_point;
+		//ECS::GetRotationParams(collider.entity, about_point, rotation);
+
+		//QuadF quad = collider.quad;
+		//quad.rotate(rotation, about_point);
+        DebugDraw::Quad(collider.quad, colour);
+    }
+	else
+	{
+		DebugDraw::Shape(DebugDrawType::RectOutline, collider.rect, colour);
+	}
+}
+
 ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -39,6 +89,8 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 			ImGui::Text("GhostCollider");
 		if (collider.HasFlag(ECS::Collider::CanBump))
 			ImGui::Text("CanBump");
+		if (collider.HasFlag(ECS::Collider::QuadCollider))
+			ImGui::Text("QuadCollider");
 
 		// left/right collisions
 		bool collide_top = collider.collisionSide[ECS::Collider::Top];
@@ -51,36 +103,7 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ImGui::Text("Allowed Movement: %f, %f", collider.allowedMovement.x, collider.allowedMovement.y);
 		ImGui::Text("Desired Movement: %f, %f", collider.desiredMovement.x, collider.desiredMovement.y);
 
-		Colour colour = Colour::Blue;
-        bool is_static = collider.HasFlag(ECS::Collider::Static);
-        if(is_static)
-        {
-            colour = Colour::Purple;
-        }
-
-        bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
-        if(ignore_all)
-        {
-            colour = Colour::LightGrey;
-            colour.a = 100;
-        }
-
-        if (collider.HasFlag(ECS::Collider::IsEnemy))
-        {
-            colour = Colour::Red;
-            colour.a = 100;
-        }
-        if (collider.HasFlag(ECS::Collider::IsPlayer))
-        {
-            colour = Colour::Green;
-            colour.a = 100;
-        }
-        if (collider.HasFlag(ECS::Collider::TerrainOnly))
-        {
-            colour = Colour::LightGrey;
-            colour.a = 200;
-        }
-        DebugDraw::Shape(DebugDrawType::RectOutline, collider.rect, colour);
+		DrawCollider(collider);
 
 		ImGui::PopID();
 	}

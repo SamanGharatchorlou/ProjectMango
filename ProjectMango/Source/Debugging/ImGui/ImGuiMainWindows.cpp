@@ -275,36 +275,7 @@ void DebugMenu::DoColliderWindow()
         if(!s_displayDynamics && !is_static)
             continue;
 
-        Colour colour = Colour::Blue;
-        if(is_static)
-        {
-            colour = Colour::Purple;
-        }
-
-        bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
-        if(ignore_all)
-        {
-            colour = Colour::LightGrey;
-            colour.a = 100;
-        }
-
-        if (collider.HasFlag(ECS::Collider::IsEnemy))
-        {
-            colour = Colour::Red;
-            colour.a = 100;
-        }
-        if (collider.HasFlag(ECS::Collider::IsPlayer))
-        {
-            colour = Colour::Green;
-            colour.a = 100;
-        }
-        if (collider.HasFlag(ECS::Collider::TerrainOnly))
-        {
-            colour = Colour::LightGrey;
-            colour.a = 200;
-        }
-
-        DebugDraw::Shape(s_drawType, collider.rect, colour);
+        DebugMenu:DrawCollider(collider);
 	}
     
 }
@@ -417,7 +388,7 @@ void DebugMenu::DoGameStateWindow()
         for (auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++)
         {
             ECS::Collider& collider = colliders.GetComponentByIndex(iter->second);
-            if(collider.contains(cursor_pos))
+            if(collider.Contains(cursor_pos))
             {
                 ImGui::Text("Cursor hit: %s(%d)", ecs->GetEntityName(collider.entity), collider.entity);
             }

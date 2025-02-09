@@ -27,17 +27,51 @@ namespace ECS
 		VectorF bump = direction.normalise();
 
 		RectF bump_rect = colliderA.rect.MoveCopy(bump);
-		bool bump_still_collides = colliderB.intersects(bump_rect);
+		bool bump_still_collides = colliderB.Intersects(bump_rect);
 
 		while(bump_still_collides)
 		{
 			bump += bump;
 
 			bump_rect = colliderA.rect.MoveCopy(bump);
-			bump_still_collides = colliderB.intersects(bump_rect);
+			bump_still_collides = colliderB.Intersects(bump_rect);
 		}
 
 		return bump;
+	}
+
+	static void DebugTest(const Collider& collider)
+	{
+		// debugging
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		const char* name = ecs->GetEntityName(collider.entity);
+
+		if (collider.HasFlag(ECS::Collider::Static))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsPlayer))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsEnemy))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsTerrain))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsFloor))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsWall))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IsDamage))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IgnoreAll))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::IgnoreDamage))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::TerrainOnly))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::GhostCollider))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::CanBump))
+			int a = 4;
+		if (collider.HasFlag(ECS::Collider::QuadCollider))
+			int a = 4;
 	}
 
 	void CollisionSystem::Update(float dt)
@@ -60,6 +94,8 @@ namespace ECS
 				int a = 4;
 
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
+
+			const char* debug_collider_a_name = ecs->GetEntityName(entity);
 
 			for( u32 i = 0; i < A_collider.collisions.size(); i++ )
 			{
@@ -90,14 +126,18 @@ namespace ECS
 			bool flip_x = false;
 			bool flip_y = false;
 
+			// debugging
+			DebugTest(A_collider);
+
 			for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 			{
 				Collider& B_collider = colliders.GetComponentByIndex(iter->second);
+				const char* debug_collider_b_name = ecs->GetEntityName(B_collider.entity);
 				if(B_collider.entity == entity)
 					continue;
 
-				if(B_collider.HasFlag(Collider::IsPlayer))
-					int a = 4;
+				// debugging
+				DebugTest(B_collider);
 
 				// if IgnorePhysical then its damage we only check from these (i.e. when its collider A, not B)
 				if(B_collider.HasFlag(Collider::IgnoreAll) || B_collider.HasFlag(Collider::IsDamage) )
@@ -116,7 +156,7 @@ namespace ECS
 				if( A_collider.HasFlag(Collider::IgnorePlayer) && B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
 
-				if(A_collider.intersects(B_collider)) 
+				if(A_collider.Intersects(B_collider.rect)) 
 				{
 					if(ECS::Pickup* pick_up = ecs->GetComponent(Pickup, B_collider.entity))
 					{
@@ -132,6 +172,7 @@ namespace ECS
 					ECS::Entity B_entity = B_collider.entity;
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
+					const char* debug_collider_b_name_2 = ecs->GetEntityName(B_entity);
 
 					if( !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
@@ -141,6 +182,8 @@ namespace ECS
  							A_damage->ApplyTo(B_entity);
 						}
 					}
+
+					bool debug_test = A_collider.Intersects(B_collider.rect);
 
 					// destroy on contact
 					if (A_collider.destroyOnContact)
@@ -176,10 +219,10 @@ namespace ECS
 					const RectF horizontal_rect = rect.MoveCopy(VectorF(velocity.x, 0.0f));
 					const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
 
-					const bool still_interacts = A_collider.intersects(B_collider);
+					const bool still_interacts = A_collider.Intersects(B_collider.rect);
 					if (!still_interacts)
 					{
-						const bool cannot_move_horizontally = B_collider.intersects(horizontal_rect);
+						const bool cannot_move_horizontally = B_collider.Intersects(horizontal_rect);
 						if(cannot_move_horizontally)
 						{
 							velocity.x = 0;
@@ -192,7 +235,7 @@ namespace ECS
 						}
 
 						//const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
-						const bool cannot_move_vertically = B_collider.intersects(vertical_rect);
+						const bool cannot_move_vertically = B_collider.Intersects(vertical_rect);
 						if(cannot_move_vertically)
 						{
 							velocity.y = 0;
@@ -296,7 +339,7 @@ namespace ECS
 			if(collider_b.entity == entity)
 				continue;
 
-			if(collider_b.intersects(collider))
+			if(collider_b.Intersects(collider.rect))
 			{
 				VectorF bump = BumpCollider(collider, collider_b);
 				if(!bump.isZero())

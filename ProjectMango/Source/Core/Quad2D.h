@@ -20,11 +20,14 @@ public:
 
 	Quad2D(const Rect<T>& rect) : mAboutPoint(-1, -1), mRotation(0)
 	{
-		points = { rect.TopLeft(), rect.TopRight(), rect.BotRight(), rect.BotLeft() };
+		points[0] = rect.TopLeft();
+		points[1] = rect.TopRight();
+		points[2] = rect.BotRight();
+		points[3] = rect.BotLeft();
 	}
 
 	Point& operator [] (int index) { return points[index]; }
-	Point at(int index) const { return points.at(index); }
+	const Point& operator [] (int index) const { return points[index]; }
 
 	// TODO: Does it make more sense to make the about point relative to the quad i.e. point(width,height)/2 = the center. not quad.center()
 	// This is how the render function works, maybe better to keep consistancy?
@@ -38,7 +41,7 @@ public:
 	void setRotationAboutPoint(Point aboutPoint) { mAboutPoint = aboutPoint; }
 	Point aboutPoint() const { return mAboutPoint; }
 
-	int sides() const { return 4; }
+	static const int sides() { return 4; }
 
 	T xMin() const;
 	T xMax() const;
@@ -71,7 +74,7 @@ public:
 
 
 private:
-	std::vector<Point> points;
+	Point points[4];
 
 	Point mAboutPoint;
 	double mRotation;
@@ -158,7 +161,7 @@ Vector2D<T> Quad2D<T>::center() const
 	Point sum;
 	for (int i = 0; i < sides(); i++)
 	{
-		sum += points.at(i);
+		sum += points[i];
 	}
 
 	return sum / (T)sides();
@@ -168,27 +171,27 @@ Vector2D<T> Quad2D<T>::center() const
 template<class T>
 Vector2D<T> Quad2D<T>::rightCenter() const
 {
-	return (points.at(1) + points.at(2)) / 2.0;
+	return (points[1] + points[2]) / 2.0;
 }
 
 
 template<class T>
 Vector2D<T> Quad2D<T>::leftCenter() const
 {
-	return (points.at(3) + points.at(0)) / 2.0;
+	return (points[3] + points[0]) / 2.0;
 }
 
 
 template<class T>
 Vector2D<T> Quad2D<T>::topCenter() const
 {
-	return (points.at(0) + points.at(1)) / 2.0;
+	return (points[0] + points[1]) / 2.0;
 }
 
 template<class T>
 Vector2D<T> Quad2D<T>::botCenter() const
 {
-	return (points.at(2) + points.at(3)) / 2.0;
+	return (points[2] + points[3]) / 2.0;
 }
 
 
@@ -234,7 +237,7 @@ Vector2D<T> Quad2D<T>::normal1() const
 
 
 template<class T>
-void Quad2D<T>::rotate(double degrees, Point aboutpoint)
+void Quad2D<T>::rotate(double degrees, Point about_point)
 {
 	mRotation += degrees;
 	while(mRotation > 360)
@@ -245,7 +248,7 @@ void Quad2D<T>::rotate(double degrees, Point aboutpoint)
 
 	for (int i = 0; i < sides(); i++)
 	{
-		points[i] = rotateVector(points[i], aboutpoint, sine, cosine);
+		points[i] = points[i].rotateVector(sine, cosine, about_point);
 	}
 }
 

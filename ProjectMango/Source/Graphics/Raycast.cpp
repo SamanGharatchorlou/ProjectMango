@@ -74,7 +74,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 
 		for( u32 i = 0; i < target_colliders.size(); i++ )
 		{
-			if(target_colliders[i]->contains(ray_point))
+			if(target_colliders[i]->Contains(ray_point))
 			{
 				result.entity = target_colliders[i]->entity;
 				result.distance = ray_distance;

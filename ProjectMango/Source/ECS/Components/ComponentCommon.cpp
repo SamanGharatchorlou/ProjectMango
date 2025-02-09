@@ -5,6 +5,7 @@
 #include "Components.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Biome.h"
+#include "ECS/Components/Components.h"
 
 namespace ECS
 {

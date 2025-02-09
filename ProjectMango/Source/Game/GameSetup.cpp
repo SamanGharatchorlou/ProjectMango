@@ -3,7 +3,6 @@
 
 #include <Windows.h>
 
-
 #include "Graphics/Renderer.h"
 #include "System/Window.h"
 #include "Audio/AudioManager.h"
@@ -27,6 +26,7 @@ GameSetup::GameSetup()
 void GameSetup::initFileSystem()
 {
 	FileManager::Get()->init();
+
 }
 
 void GameSetup::initGameData(GameData& game_data)
@@ -34,6 +34,9 @@ void GameSetup::initGameData(GameData& game_data)
 	game_data.setup();
 
 	ConfigManager* cm = ConfigManager::Get();
+
+	// todo: get window size and resize the window based on that
+	// so i dont have to faff around with the screen size
 	cm->add<GameSettingsConfig>("GameSettings");
 	cm->Load();
 
