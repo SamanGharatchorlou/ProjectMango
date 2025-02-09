@@ -4,9 +4,11 @@
 #include "Animations/CharacterStates.h"
 #include "Entities/States/CharacterAction.h"
 
+namespace ECS { struct EntityMetaData; }
+
 namespace ShockSweeper
 {
-	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+	ECS::Entity Create(const ECS::EntityMetaData& emd);
 
 	struct Enemy : public Character
 	{
@@ -65,7 +67,7 @@ namespace TrainingDummy
 {
 	static constexpr float c_hitFrameBuffer = 20;
 
-	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+	ECS::Entity Create(const ECS::EntityMetaData& emd);
 
 	struct Enemy : public Character
 	{

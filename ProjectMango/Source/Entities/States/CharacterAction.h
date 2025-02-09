@@ -4,6 +4,8 @@
 
 enum class ActionState;
 
+namespace ECS { struct EntityMetaData; }
+
 struct CharacterAction : public State
 {
 	CharacterAction();
@@ -35,6 +37,6 @@ struct Character
 	virtual bool FinishedDying(ECS::Entity entity) { return false; }
 	virtual void StartDying(ECS::Entity entity) { }
 
-	static ECS::Entity CreateBasic(const char* id, const char* config_id, VectorF spawn_pos);
-	static ECS::Entity CreateBasicEnemy(const char* id, const char* config_id, VectorF spawn_pos);
+	static ECS::Entity CreateBasic(const ECS::EntityMetaData& emd);
+	static ECS::Entity CreateBasicEnemy(const ECS::EntityMetaData& emd);
 };

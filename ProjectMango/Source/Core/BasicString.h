@@ -16,6 +16,7 @@ public:
 	const char* c_str() const { return mBuffer; }
 
 	void set(const char* string);
+	void SetLength(int length);
 
 	BasicString substr(int start, int length) const;
 

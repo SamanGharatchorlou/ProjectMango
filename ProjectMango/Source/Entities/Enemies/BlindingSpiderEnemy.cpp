@@ -10,6 +10,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 #include "System/Files/Config.h"
+#include "ECS/Components/Biome.h"
 
 namespace BlindingSpider
 {
@@ -17,9 +18,9 @@ namespace BlindingSpider
 	
 	// Enemy
 	// ---------------------------------------------------------
-	Entity Create(const char* id, const char* config_id, VectorF spawn_pos)
+	Entity Create(const ECS::EntityMetaData& emd)
 	{
-		Entity entity = Character::CreateBasicEnemy(id, config_id, spawn_pos);
+		Entity entity = Character::CreateBasicEnemy(emd);
 				
 		// CharacterState
 		EntityCoordinator* ecs = GameData::Get().ecs;

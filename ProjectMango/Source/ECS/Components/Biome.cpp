@@ -93,4 +93,16 @@ namespace ECS
 
 		return RectF(tile_pos, tile_size);
 	}
+
+
+	BasicString EntityMetaData::ConfigId() const
+	{
+		char buffer[64];
+		if(tag.empty())
+			snprintf(buffer, 64, "%sConfig", id.c_str());
+		else
+			snprintf(buffer, 64, "%s%sConfig", tag.c_str(), id.c_str());
+
+		return BasicString(buffer);
+	}
 }

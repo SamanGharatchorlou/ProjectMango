@@ -118,26 +118,32 @@ namespace Scene
 						float px_x = px[0].GetFloat();// + (width * 0.5f);
 						float px_y = px[1].GetFloat();// - (height);
 
-						const char* id = entry["__identifier"].GetString();
-						std::vector<ECS::Level::EntityMetaData>& entity_positions = level.entities[id];
+						BasicString id = entry["__identifier"].GetString();
+						if (const char* sub_str = id.findSubString("_"))
+						{
+							int length = sub_str - id.buffer();
+							id.SetLength(length);
+						}
 
-						entity_positions.resize(entity_positions.size() + 1);
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[id];
 
-						ECS::Level::EntityMetaData& emd = entity_positions.back();
+						entity_data.resize(entity_data.size() + 1);
+
+						ECS::EntityMetaData& emd = entity_data.back();
+						emd.id = id;
 						emd.position = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
 
-						if (entry.HasMember("__tags"))
+						if (entry.HasMember("fieldInstances"))
 						{
-							const Value::Array& tags = entry["__tags"].GetArray();
-							if (tags.Size() > 0)
+							const Value::Array& field_instance = entry["fieldInstances"].GetArray();
+							for (u32 i = 0; i < field_instance.Size(); i++)
 							{
-								emd.tag = tags[0].GetString();
+								emd.tag = field_instance[i]["__identifier"].GetString();
 							}
 						}
 					}
 				}
 				else if( StringCompare(layer_id, "TerrainColliders" ) )
-
 				{
 					const Value::Array& entities = layer["intGridCsv"].GetArray();
 

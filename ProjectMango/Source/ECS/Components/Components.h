@@ -88,7 +88,7 @@ namespace ECS
 
 		ActionStack<CharacterAction> actions;
 
-		BasicString config;
+		BasicString id;
 
 		// overload common functions
 		Character* character;
@@ -105,8 +105,8 @@ namespace ECS
 		VectorI GetFacingDirection() const;
 		void FlipFacingDirection();
 
-		template<class T>
-		const T* GetConfig() const { return ConfigManager::Get()->GetConfig<T>(config.c_str()); }
+		//template<class T>
+		//const T* GetConfig() const { return ConfigManager::Get()->GetObjectConfig<T>(id.c_str()); }
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -158,7 +158,7 @@ namespace ECS
 	};
 
 	
-	typedef Entity (*EntitySpawnFn)( const char* id, const char* config );
+	typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );
 
 	struct Spawner
 	{
@@ -166,11 +166,10 @@ namespace ECS
 
 		EntitySpawnFn entitySpawnFn;
 		const char* spawnId;
-		const char* spawnConfig;
 
 		bool IsSpawning() { return entitySpawnFn != nullptr; }
 
-		bool Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn);
+		bool Spawn(const char* spawn_id, EntitySpawnFn spawnFn);
 		void Update();
 	};
 
@@ -195,6 +194,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Pickup)
 
+		BasicString typeId;
 		BasicString config;
 		OnPickupFn onPickupFn;
 

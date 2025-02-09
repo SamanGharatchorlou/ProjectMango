@@ -14,7 +14,24 @@ namespace ECS
 
 		void OnActiate(Entity entity) override;
 
-		int rebound_count;
+		int reboundCount;
+	};
+
+	struct EchoRune : Rune
+	{
+		EchoRune(const char* config_id);
+
+		void OnActiate(Entity entity) override;
+		void Update(Entity entity) override;
+
+		// required to re-create the spell
+		VectorF target;
+		Entity caster;
+		int spellIndex;
+
+		int echoCount;
+		float echoTime;
+		TimerF timer;
 	};
 
 	struct Spell
@@ -45,7 +62,9 @@ namespace ECS
 		void SetSpellSlotRune(int spell_index, Rune* rune);
 
 		bool CanActivateSpell(int spell_index) const;
-		void ActivateSpell(int spell_index);
+		void ActivateSpellToCursor(int spell_index);
+
+		static Entity ActivateSpell(Entity caster, int spell_index, VectorF target);
 	};
 
 }

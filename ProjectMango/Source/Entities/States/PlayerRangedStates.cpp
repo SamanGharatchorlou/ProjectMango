@@ -282,7 +282,8 @@ void BasicAttackState::Init()
 	}
 
 	SpellBook& spell_book = ecs->GetComponentRef(SpellBook, entity);
-	spell_book.ActivateSpell(0);
+	if(spell_book.CanActivateSpell(0))
+		spell_book.ActivateSpellToCursor(0);
 }
 
 void BasicAttackState::Update(float dt)

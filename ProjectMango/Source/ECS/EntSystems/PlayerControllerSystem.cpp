@@ -41,7 +41,7 @@ namespace ECS
 
 		if(spawner && !spawner->IsSpawning())
 		{
-			spawner->Spawn("Player", "PlayerDataConfig", Player::Spawn);
+			spawner->Spawn("Player", Player::Spawn);
 
 			VectorF spawner_center = GetPosition(spawner->entity);
 

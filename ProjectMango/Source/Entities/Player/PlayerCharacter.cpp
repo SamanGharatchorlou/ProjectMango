@@ -20,14 +20,16 @@ ECS::Entity Player::Get()
 	return s_playerEntity;
 }
 
-ECS::Entity Player::Spawn(const char* id, const char* player_config)
+ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->entities.KillEntity(s_playerEntity);
 
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(player_config);
+	char buffer[64];
+	snprintf(buffer, 64, "%sConfig", emd.id.c_str());
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
 
-	s_playerEntity = Character::CreateBasic(id, player_config, VectorF());
+	s_playerEntity = Character::CreateBasic(emd);
 	ecs->AddComponent(PlayerController, s_playerEntity);
 
 	// Collider
@@ -41,12 +43,12 @@ ECS::Entity Player::Spawn(const char* id, const char* player_config)
 
 	// CharacterState
 	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
-	character_state.config = player_config;
+	character_state.id = emd.id;
 	character_state.Init(config);
 
 	// Spellbook
 	ECS::SpellBook& spell_book = ecs->AddComponent(SpellBook, s_playerEntity);
-	spell_book.SetSpellSlot(0, "Lightning");
+	spell_book.SetSpellSlot(0, "Fireball");
 	
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

@@ -15,17 +15,17 @@
 #include "Input/InputManager.h"
 #include "Entities/Spells/PickupCallbacks.h"
 
-typedef ECS::Entity (*CreateEntityFn)( const char* id, const char* config, VectorF spawn_pos );
+typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 
-static ECS::Entity CreateBasicObject(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity(id);
-	if (const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id))
+	ECS::Entity entity = ecs->CreateEntity(emd.id.c_str());
+	if (const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str()))
 	{
 		// Transform
 		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
-		VectorF pos = spawn_pos - (transform.size / 2.0f);
+		VectorF pos = emd.position - (transform.size / 2.0f);
 		transform.Init(config, pos);
 
 		// Sprite
@@ -42,12 +42,12 @@ static ECS::Entity CreateBasicObject(const char* id, const char* config_id, Vect
 	return entity;
 }
 
-static ECS::Entity CreateAnimatedObject(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateBasicObject(emd);
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
 
 	// Animation
 	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
@@ -56,10 +56,10 @@ static ECS::Entity CreateAnimatedObject(const char* id, const char* config_id, V
 	return entity;
 }
 
-static ECS::Entity CreatePickup(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreatePickup(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = CreateBasicObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateBasicObject(emd);
 
 	// Pickup
 	ECS::Pickup& pickup = ecs->AddComponent(Pickup, entity);
@@ -67,9 +67,9 @@ static ECS::Entity CreatePickup(const char* id, const char* config_id, VectorF s
 	return entity;
 }
 
-static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreatePlayerSpawner(const ECS::EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateAnimatedObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateAnimatedObject(emd);
 
 	// Spawner
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -78,20 +78,20 @@ static ECS::Entity CreatePlayerSpawner(const char* id, const char* config_id, Ve
 	return entity;
 }
 
-static ECS::Entity CreateFlower(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreateFlower(const ECS::EntityMetaData& emd)
 {
-	return CreateAnimatedObject(id, config_id, spawn_pos);
+	return CreateAnimatedObject(emd);
 }
 
-static ECS::Entity CreateTorch(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreateTorch(const ECS::EntityMetaData& emd)
 {
-	return CreateAnimatedObject(id, config_id, spawn_pos);
+	return CreateAnimatedObject(emd);
 }
 
-static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spawn_pos)
+static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = CreateAnimatedObject(id, config_id, spawn_pos);
+	ECS::Entity entity = CreateAnimatedObject(emd);
 
 	ecs->AddComponent(Door, entity);
 
@@ -100,10 +100,10 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 	collider_flags.push_back(ECS::Collider::IsTerrain);
 
 	RaycastResult down_result;
-	Raycast(spawn_pos, VectorF(0.0, 1.0f), level.size.y, down_result, nullptr, &collider_flags);
+	Raycast(emd.position, VectorF(0.0, 1.0f), level.size.y, down_result, nullptr, &collider_flags);
 
 	RaycastResult up_result;
-	Raycast(spawn_pos, VectorF(0.0, -1.0f), level.size.y, up_result, nullptr, &collider_flags);
+	Raycast(emd.position, VectorF(0.0, -1.0f), level.size.y, up_result, nullptr, &collider_flags);
 
 	// no valid door position
 	if(!down_result.hasHit || !up_result.hasHit)
@@ -116,7 +116,7 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 	ECS::Door& door = ecs->GetComponentRef(Door, entity);
 	door.Init();
 
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
 	door.triggerRange = config->values.GetFloat("trigger_range");
 
 	// Transform - sandwich the door between the top and bottom raycast points
@@ -139,10 +139,23 @@ static ECS::Entity CreateDoor(const char* id, const char* config_id, VectorF spa
 ECS::Entity CreateCursor()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = CreateBasicObject( "cursor", "CursorConfig", VectorF() );
+	ECS::Entity entity = ecs->CreateEntity("cursor");
 
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("CursorConfig");
+
+	// Transform
+	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
+	transform.Init(config, VectorF());
+
+	// Sprite
+	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
 	sprite.renderLayer = 9;
+	sprite.canFlip = false;
+
+	if (config->strings.Contains("sprite"))
+	{
+		sprite.SetTexture(config->strings["sprite"]);
+	}
 		
 	ECS::UICursor& cursor = ecs->AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();
@@ -151,14 +164,14 @@ ECS::Entity CreateCursor()
 	return entity;
 }
 
-ECS::Entity CreateRune(const char* id, const char* config_id, VectorF spawn_pos)
-{	
-	ECS::Entity entity = CreateBasicObject( id, config_id, spawn_pos );
-
+ECS::Entity CreateRune(const ECS::EntityMetaData& emd)
+{
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
+	ECS::Entity entity = CreateBasicObject( emd );
 
 	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
-	pick_up.config = config_id;
+	pick_up.typeId = emd.id;
+	pick_up.config = emd.ConfigId();
 	pick_up.onPickupFn = ApplyReboundRune;
 
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
@@ -177,6 +190,12 @@ void CreateEntities(ECS::Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
 
+	// runes
+	std::unordered_map<BasicString, OnPickupFn> ApplyRuneFunctions;
+	ApplyRuneFunctions["ReboundRune"] = ApplyReboundRune;
+	ApplyRuneFunctions["EchoRune"] = ApplyEchoRune;
+
+	// map entities
 	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
 	CreateEntitiyFunctions["PlayerSpawner"] = CreatePlayerSpawner;
 	CreateEntitiyFunctions["Flower"] = CreateFlower;
@@ -186,7 +205,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
-	CreateEntitiyFunctions["ReboundRune"] = CreateRune;
+	CreateEntitiyFunctions["Rune"] = CreateRune;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
@@ -201,19 +220,10 @@ void CreateEntities(ECS::Entity& biome_entity)
 			{
 				CreateEntityFn create_fn = CreateEntitiyFunctions.at(entity_id);
 
-				char buffer[64];
-				snprintf(buffer, 64, "%sConfig", entity_id);
-
-				ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
-
-				const std::vector<ECS::Level::EntityMetaData>& entity_positions = iter->second;
-				for( u32 e = 0; e < entity_positions.size(); e++ )
+				const std::vector<ECS::EntityMetaData>& entitiy_meta_data = iter->second;
+				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
 				{
-					VectorF pos = entity_positions[e].position;
-					if(!entity_positions[e].tag.empty())
-						config->strings["tags"] = entity_positions[e].tag.c_str();
-
-					create_fn(entity_id, buffer, pos);
+					create_fn(entitiy_meta_data[e]);
 				}
 			}
 			else

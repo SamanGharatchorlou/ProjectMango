@@ -4,9 +4,11 @@
 #include "Animations/CharacterStates.h"
 #include "Entities/States/CharacterAction.h"
 
+namespace ECS { struct EntityMetaData; }
+
 namespace BlindingSpider
 {
-	ECS::Entity Create(const char* id, const char* config_id, VectorF spawn_pos);
+	ECS::Entity Create(const ECS::EntityMetaData& emd);
 
 	struct Enemy : public Character
 	{

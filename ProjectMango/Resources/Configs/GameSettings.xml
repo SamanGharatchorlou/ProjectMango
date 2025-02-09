@@ -1,7 +1,7 @@
 <Settings>
 	<Title>MANGO</Title>
-	<Width>1024</Width>
-	<Height>1024</Height>
+	<Width>640</Width>
+	<Height>640</Height>
 	<MusicVolume>25</MusicVolume>
 	<SoundVolume>50</SoundVolume>
 	<Tutorial>OFF</Tutorial>

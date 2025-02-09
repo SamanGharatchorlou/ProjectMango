@@ -12,6 +12,7 @@
 #include "System/Files/ConfigManager.h"
 #include "Graphics/TextureManager.h"
 #include "ECS/EntityCommon.h"
+#include "ECS/Components/Biome.h"
 
 namespace ECS
 {
@@ -316,12 +317,11 @@ namespace ECS
 
 	// Spawner
 	// ------------------------------------------------------------------
-	Spawner::Spawner() : entitySpawnFn(nullptr), spawnId(nullptr), spawnConfig(nullptr) { }
+	Spawner::Spawner() : entitySpawnFn(nullptr), spawnId(nullptr) { }
 
-	bool Spawner::Spawn(const char* spawn_id, const char* spawn_config, EntitySpawnFn spawnFn)
+	bool Spawner::Spawn(const char* spawn_id, EntitySpawnFn spawnFn)
 	{
 		spawnId = spawn_id;
-		spawnConfig = spawn_config;
 		entitySpawnFn = spawnFn;
 
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
@@ -342,7 +342,10 @@ namespace ECS
 				VectorF spawner_center = GetPosition(entity);
 
 				// move the object to the spawner center
-				Entity spawned_entity = entitySpawnFn(spawnId, spawnConfig);
+				ECS::EntityMetaData emd;
+				emd.id = spawnId;
+
+				Entity spawned_entity = entitySpawnFn(emd);
 				ECS::Transform& transform = ecs->GetComponentRef(Transform, spawned_entity);
 				VectorF translation = spawner_center - transform.GetObjectCenter();
 				transform.SetWorldPosition(transform.worldPosition + translation);;
@@ -489,7 +492,7 @@ namespace ECS
 
 	// Pickup
 	// ------------------------------------------------------------------
-	Pickup::Pickup() : onPickupFn(nullptr), config(nullptr) { }
+	Pickup::Pickup() : onPickupFn(nullptr), typeId(nullptr), config(nullptr) { }
 
 	void Pickup::Update()
 	{
@@ -555,9 +558,13 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		ASSERT(!state.config.empty(), "Entity %s has no object config string", ecs->entities.GetEntityName(entity));
-		ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(state.config.c_str());
-		ASSERT(config != nullptr, "Entity has no object config");
+		ASSERT(!state.id.empty(), "Entity %s has no object config string", ecs->entities.GetEntityName(entity));
+
+		char buffer[64];
+		snprintf(buffer, 64, "%sConfig", state.id.c_str());
+
+		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
+		ASSERT(config != nullptr, "Entity has no object config, do you need the tag from the entity meta data?");
 		return config;
 	}
 

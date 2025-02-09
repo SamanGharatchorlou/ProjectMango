@@ -26,6 +26,15 @@ namespace ECS
 		TileSet* tileSet;
 	};
 
+	struct EntityMetaData
+	{
+		BasicString id;
+		BasicString tag;
+		VectorF position;
+
+		BasicString ConfigId() const;
+	};
+
 	struct Level
 	{
 		VectorF worldPos;
@@ -39,11 +48,7 @@ namespace ECS
 		Grid<int> walkableTiles;
 
 		// can i assign the entity a value? do i care? a string is probably fine
-		struct EntityMetaData
-		{
-			VectorF position;
-			BasicString tag;
-		};
+
 		std::unordered_map<BasicString, std::vector<EntityMetaData>> entities;
 
 		VectorI GetTileIndex(VectorF position) const;

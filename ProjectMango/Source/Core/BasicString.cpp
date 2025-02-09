@@ -92,6 +92,19 @@ void BasicString::set(const char* string)
 	}
 }
 
+void BasicString::SetLength(int length)
+{
+	if (length >= mCap)
+	{
+		resizeBuffer(length);
+	}
+	else if(length < mCap)
+	{
+		mLength = length;
+		mBuffer[mLength] = '\0';
+	}
+}
+
 BasicString BasicString::substr(int start, int length) const
 {
 	const char* backEndString = &mBuffer[start];
@@ -102,7 +115,7 @@ BasicString BasicString::substr(int start, int length) const
 BasicString& BasicString::concat(const char* string)
 {
 	const uint32_t str_len = (uint32_t)strlen(string);
-	if (mLength + str_len < mCap)
+	if ((mLength + str_len) < mCap)
 	{
 		strcat_s(mBuffer, mCap, string);
 		mLength = (uint32_t)strlen(mBuffer);
@@ -123,7 +136,6 @@ void BasicString::clear()
 
 const char* BasicString::findSubString(const BasicString& subString) const
 {
-	//const char* value = strstr(mBuffer, subString.c_str());
 	return strstr(mBuffer, subString.c_str());
 }
 
@@ -168,15 +180,23 @@ void BasicString::setNewBuffer(int size)
 
 void BasicString::resizeBuffer(int size)
 {
+	char* new_buffer = nullptr;
+
 	mCap = size;
+	if (mCap > 0)
+	{
+		new_buffer = new char[mCap];
+		mLength = Maths::Min(mCap - 1, mLength);
 
-	char* tempBuffer = new char[mCap];
-
-	if(mLength > 0)
-		memcpy(tempBuffer, mBuffer, mLength + 1);
+		if (mLength > 0)
+		{
+			memcpy(new_buffer, mBuffer, mLength);
+			new_buffer[mLength] = '\0';
+		}
+	}
 
 	delete[] mBuffer;
-	mBuffer = tempBuffer;
+	mBuffer = new_buffer;
 }
 
 

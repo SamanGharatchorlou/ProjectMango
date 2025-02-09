@@ -108,13 +108,13 @@ float CharacterAction::GetAttackRange(ActionState action)
 	return -1.0f;
 }
 
-Entity Character::CreateBasic(const char* id, const char* config_id, VectorF spawn_pos)
+Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 {
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
 
 	// adding everything something NEEDS to be an enemy... pretty much anyway
 	EntityCoordinator* ecs = GameData::Get().ecs;
-	Entity entity = ecs->CreateEntity(id);
+	Entity entity = ecs->CreateEntity(emd.id.c_str());
 	ecs->AddComponent(Transform, entity);
 	ecs->AddComponent(Physics, entity);
 	ecs->AddComponent(Animator, entity);
@@ -125,7 +125,7 @@ Entity Character::CreateBasic(const char* id, const char* config_id, VectorF spa
 	// Transform
 	Transform& transform = ecs->GetComponentRef(Transform, entity);
 	Collider& collider = ecs->GetComponentRef(Collider, entity);
-	transform.Init(config, spawn_pos, collider);
+	transform.Init(config, emd.position, collider);
 
 	// MovementPhysics
 	Physics& physics = ecs->GetComponentRef(Physics, entity);
@@ -150,19 +150,17 @@ Entity Character::CreateBasic(const char* id, const char* config_id, VectorF spa
 	return entity;
 }
 
-Entity Character::CreateBasicEnemy(const char* id, const char* config_id, VectorF spawn_pos)
+Entity Character::CreateBasicEnemy(const ECS::EntityMetaData& emd)
 {
-	Entity entity = Character::CreateBasic(id, config_id, spawn_pos);
+	Entity entity = Character::CreateBasic(emd);
 
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
-			
 	// make it an enemy
 	EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->AddComponent(AIController, entity);
 
 	// CharacterState
 	CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
-	character_state.config = config_id;
+	character_state.id = emd.id.c_str();
 	// this is specific to the enemy type and needs to be set in there
 	character_state.character = nullptr;
 
