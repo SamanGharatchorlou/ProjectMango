@@ -1,21 +1,95 @@
 #include "pch.h"
 #include "Components.h"
 
-#include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Physics.h"
-#include "Core/Helpers.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/EntSystems/TransformSystem.h"
-#include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
-#include "Entities/Player/PlayerCharacter.h"
-#include "System/Files/ConfigManager.h"
-#include "Graphics/TextureManager.h"
-#include "ECS/EntityCommon.h"
+#include "Core/Helpers.h"
+#include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
+#include "ECS/Components/Collider.h"
+#include "ECS/Components/Physics.h"
+#include "ECS/EntityCommon.h"
+#include "ECS/EntityCoordinator.h"
+#include "ECS/EntSystems/TransformSystem.h"
+#include "Entities/Player/PlayerCharacter.h"
+#include "Entities/Spells/PickupCallbacks.h"
+#include "Graphics/TextureManager.h"
+#include "System/Files/ConfigManager.h"
 
 namespace ECS
 {
+	Entity CreateEntity(const char* id, const char* config)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Entity entity = ecs->CreateNewEntity();
+		if (id) 
+		{ 
+			EntityData& ed = ecs->AddComponent(EntityData, entity); 
+			ed.id = id; 
+			ed.config = config; 
+		}
+		return entity;
+	}
+
+	Entity CreateEntity(const char* id, bool config_postfix)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Entity entity = ecs->CreateNewEntity();
+		if (id)
+		{
+			EntityData& ed = ecs->AddComponent(EntityData, entity);
+			ed.id = id;
+			if (config_postfix)
+			{
+				char buffer[64];
+				snprintf(buffer, 64, "%sConfig", id);
+				ed.config = buffer;
+			}
+		}
+
+		return entity;
+	}
+
+	const char* GetName(Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		EntityData& ed = ecs->GetComponentRef(EntityData, entity);
+		return ed.id.c_str();
+	}
+
+	const ObjectConfig* GetObjectConfig(Entity entity)
+	{
+		EntityCoordinator* ecs = GameData::Get().ecs;
+
+		const ObjectConfig* config = nullptr;
+		if (const EntityData* ed = ecs->GetComponent(EntityData, entity))
+		{
+			if (ed->config.empty())
+			{
+				DebugPrint(Warning, "Entity: '%s' has no config string in EntityData",
+					ed->id.empty() ? "No ID" : ed->id.c_str());
+
+				return nullptr;
+			}
+
+			config = ConfigManager::Get()->GetConfig<ObjectConfig>(ed->config.c_str());
+			if (!config)
+			{
+				DebugPrint(Warning, "No config found for entity '%s' with config ID '%s'",
+					ed->id.empty() ? "No ID" : ed->id.c_str(), ed->config.c_str());
+			}
+		}
+
+		return config;
+	}
+
+
+	const ObjectConfig* GetObjectConfigFromID(const char* id)
+	{
+		char buffer[64];
+		snprintf(buffer, 64, "%sConfig", id);
+		return ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
+	}
+
 	// EntityData
 	// ------------------------------------------------------------------
 	EntityData::EntityData() : 
@@ -26,6 +100,7 @@ namespace ECS
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
 
+		// todo: now that I default add this to every entity i can remove this first check right?
 		// set new entity parent
 		EntityData* entity_data = ecs->GetComponent(EntityData, entity);
 		if(!entity_data)
@@ -389,8 +464,8 @@ namespace ECS
 	void Door::GenerateColliders(float width)
 	{
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		Entity top = ecs->CreateEntity( "top door collider");
-		Entity bot = ecs->CreateEntity( "bot door collider");
+		Entity top = CreateEntity("top door collider");
+		Entity bot = CreateEntity("bot door collider");
 		ecs->AddComponent(Transform, top);
 		ecs->AddComponent(Transform, bot);		
 		ecs->AddComponent(Collider, top);
@@ -492,11 +567,11 @@ namespace ECS
 
 	// Pickup
 	// ------------------------------------------------------------------
-	Pickup::Pickup() : onPickupFn(nullptr), typeId(nullptr), config(nullptr) { }
+	Pickup::Pickup() : pickedUp(false) { }
 
 	void Pickup::Update()
 	{
-		if (onPickupFn)
+		if (!pickedUp)
 		{
 			EntityCoordinator* ecs = GameData::Get().ecs;
 			if (Collider* collider = ecs->GetComponent(Collider, entity))
@@ -504,10 +579,14 @@ namespace ECS
 				if (collider->HasCollided())
 				{
 					Entity hit_entity = collider->collisions.front();
-					onPickupFn(entity, hit_entity);
 
-					// only trigger once
-					onPickupFn = nullptr;
+					PickUps::OnPickupFn fn = PickUps::GetCallback(itemId.c_str());
+					if (fn && fn(entity, hit_entity))
+					{
+						// only trigger once
+						//onPickupFn = nullptr;
+						pickedUp = true;
+					}
 				}
 			}
 		}
@@ -552,20 +631,6 @@ namespace ECS
 		}
 
 		return RectF();
-	}
-
-	const ObjectConfig* GetObjectConfig(Entity entity)
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		ASSERT(!state.id.empty(), "Entity %s has no object config string", ecs->entities.GetEntityName(entity));
-
-		char buffer[64];
-		snprintf(buffer, 64, "%sConfig", state.id.c_str());
-
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
-		ASSERT(config != nullptr, "Entity has no object config, do you need the tag from the entity meta data?");
-		return config;
 	}
 
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation)

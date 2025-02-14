@@ -98,10 +98,10 @@ namespace ECS
 	BasicString EntityMetaData::ConfigId() const
 	{
 		char buffer[64];
-		if(tag.empty())
+		if(idPostfix.empty())
 			snprintf(buffer, 64, "%sConfig", id.c_str());
 		else
-			snprintf(buffer, 64, "%s%sConfig", tag.c_str(), id.c_str());
+			snprintf(buffer, 64, "%sConfig", idPostfix.c_str());
 
 		return BasicString(buffer);
 	}

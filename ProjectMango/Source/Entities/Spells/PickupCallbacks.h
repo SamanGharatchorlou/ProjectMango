@@ -1,7 +1,12 @@
 #pragma once
 
-typedef void(*OnPickupFn)(ECS::Entity pickup_entity, ECS::Entity picker_upper);
+namespace PickUps
+{
+	typedef bool(*OnPickupFn)(ECS::Entity pickup_entity, ECS::Entity picker_upper);
 
+	void SetCallbacks();
+	OnPickupFn GetCallback(const char* pickup_item);
 
-void ApplyReboundRune(ECS::Entity rune_entity, ECS::Entity hit_entity);
-void ApplyEchoRune(ECS::Entity rune_entity, ECS::Entity hit_entity);
+	//bool ApplyReboundRune(ECS::Entity rune_entity, ECS::Entity hit_entity);
+	//bool ApplyEchoRune(ECS::Entity rune_entity, ECS::Entity hit_entity);
+}

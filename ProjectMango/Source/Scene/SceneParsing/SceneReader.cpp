@@ -118,20 +118,31 @@ namespace Scene
 						float px_x = px[0].GetFloat();// + (width * 0.5f);
 						float px_y = px[1].GetFloat();// - (height);
 
-						BasicString id = entry["__identifier"].GetString();
+						const char* identifier = entry["__identifier"].GetString();
+
+						BasicString id = identifier;
+						int length = 0;
 						if (const char* sub_str = id.findSubString("_"))
 						{
-							int length = sub_str - id.buffer();
+							length = (int)(sub_str - id.buffer());
 							id.SetLength(length);
 						}
 
 						std::vector<ECS::EntityMetaData>& entity_data = level.entities[id];
 
-						entity_data.resize(entity_data.size() + 1);
+						//entity_data.resize(entity_data.size() + 1);
 
-						ECS::EntityMetaData& emd = entity_data.back();
+						ECS::EntityMetaData emd;// = entity_data.pus();
 						emd.id = id;
 						emd.position = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
+
+						int postfix_index = length + 1;
+						if ( (postfix_index > 1) && (postfix_index < strlen(identifier)) )
+						{
+							emd.idPostfix = identifier + postfix_index;
+						}
+
+						entity_data.push_back(emd);
 
 						if (entry.HasMember("fieldInstances"))
 						{
@@ -244,7 +255,7 @@ namespace Scene
 
 						char buffer[32];
 						snprintf(buffer, 32, "Map Collider %d", (int)b);
-						ECS::Entity ent = ecs->CreateEntity(buffer);
+						ECS::Entity ent = ECS::CreateEntity(buffer);
 												
 						ecs->AddComponent(Transform, ent);
 						ecs->AddComponent(Collider, ent);

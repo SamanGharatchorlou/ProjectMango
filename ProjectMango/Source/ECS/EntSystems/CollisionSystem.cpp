@@ -44,7 +44,7 @@ namespace ECS
 	{
 		// debugging
 		EntityCoordinator* ecs = GameData::Get().ecs;
-		const char* name = ecs->GetEntityName(collider.entity);
+		const char* name = ECS::GetName(collider.entity);
 
 		if (collider.HasFlag(ECS::Collider::Static))
 			int a = 4;
@@ -95,7 +95,7 @@ namespace ECS
 
 			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
 
-			const char* debug_collider_a_name = ecs->GetEntityName(entity);
+			const char* debug_collider_a_name = ECS::GetName(entity);
 
 			for( u32 i = 0; i < A_collider.collisions.size(); i++ )
 			{
@@ -132,7 +132,7 @@ namespace ECS
 			for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 			{
 				Collider& B_collider = colliders.GetComponentByIndex(iter->second);
-				const char* debug_collider_b_name = ecs->GetEntityName(B_collider.entity);
+				const char* debug_collider_b_name = ECS::GetName(B_collider.entity);
 				if(B_collider.entity == entity)
 					continue;
 
@@ -172,7 +172,7 @@ namespace ECS
 					ECS::Entity B_entity = B_collider.entity;
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
-					const char* debug_collider_b_name_2 = ecs->GetEntityName(B_entity);
+					const char* debug_collider_b_name_2 = ECS::GetName(B_entity);
 
 					if( !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
@@ -325,10 +325,10 @@ namespace ECS
 		}
 	}
 
-	void CollisionSystem::FindValidPosition(ECS::Entity entity)
+	void CollisionSystem::FindValidPosition(Entity entity)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		Collider& collider = ecs->GetComponentRef(Collider, entity);
 
 		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
 		

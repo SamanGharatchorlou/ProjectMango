@@ -4,13 +4,20 @@ namespace ECS
 {
 	struct Rune
 	{
+		Rune(const char* _id, const char* _config) : id(_id), config(_config), caster(EntityInvalid), spellIndex(0) { }
 		virtual void OnActiate(Entity entity) { };
 		virtual void Update(Entity entity) { }
+
+		BasicString id;
+		BasicString config;
+
+		Entity caster;
+		int spellIndex;
 	};
 
 	struct ReboundRune : Rune
 	{
-		ReboundRune(const char* config_id);
+		ReboundRune(const char* id, const char* config);
 
 		void OnActiate(Entity entity) override;
 
@@ -19,19 +26,24 @@ namespace ECS
 
 	struct EchoRune : Rune
 	{
-		EchoRune(const char* config_id);
+		EchoRune(const char* id, const char* config);
 
 		void OnActiate(Entity entity) override;
 		void Update(Entity entity) override;
 
-		// required to re-create the spell
-		VectorF target;
-		Entity caster;
-		int spellIndex;
-
+		// number of echos
 		int echoCount;
 		float echoTime;
-		TimerF timer;
+
+		// one instance of an echo, we might have multiple at a time
+		struct Instance
+		{
+			VectorF target;
+			TimerF timer;
+			int count = 0;
+		};
+
+		Queue<Instance> echos;
 	};
 
 	struct Spell
@@ -40,6 +52,11 @@ namespace ECS
 
 		BasicString name;
 		Rune* rune;
+
+		// original target
+		VectorF target;
+
+		Entity caster;
 	};
 
 	struct SpellBook

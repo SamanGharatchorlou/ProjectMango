@@ -41,7 +41,7 @@ public:
 	void concat(const Queue<T>& otherQueue);
 
 	bool contains(const T& value) const;
-	int size() const { return mQueue.size(); }
+	int size() const { return (int)mQueue.size(); }
 
 protected:
 	std::deque<T> mQueue;

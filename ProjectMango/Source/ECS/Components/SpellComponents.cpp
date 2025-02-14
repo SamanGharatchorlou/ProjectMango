@@ -54,7 +54,7 @@ namespace ECS
 
 			Entity spell_entity = ActivateSpell(entity, spell_index, target);
 
-			// activate run rune
+			// activate rune
 			Spell& spell = ecs->GetComponentRef(Spell, spell_entity);
 			spell.rune = spells[spell_index].rune;
 			if (spell.rune)
@@ -89,6 +89,8 @@ namespace ECS
 				delete spells[spell_index].rune;
 
 			spells[spell_index].rune = rune;
+			spells[spell_index].rune->caster = entity;
+			spells[spell_index].rune->spellIndex = spell_index;
 		}
 	}
 
@@ -99,13 +101,13 @@ namespace ECS
 
 	// ReboundRune
 	// ------------------------------------------------------------------
-	ReboundRune::ReboundRune(const char* config_id)
+	ReboundRune::ReboundRune(const char* id, const char* config) : Rune(id, config)
 	{
-		if(const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id))
+		if(const ObjectConfig* obj_config = GetObjectConfigFromID(id))
 		{
-			if(config->values.Contains("rebound_count"))
+			if(obj_config->values.Contains("rebound_count"))
 			{	
-				reboundCount = (int)config->values["rebound_count"];
+				reboundCount = (int)obj_config->values["rebound_count"];
 			}
 		}
 	}
@@ -123,33 +125,53 @@ namespace ECS
 
 	// EchoRune
 	// ------------------------------------------------------------------
-	EchoRune::EchoRune(const char* config_id)
+	EchoRune::EchoRune(const char* id, const char* config) : 
+		Rune(id, config),
+		echoCount(0), echoTime(0)
 	{
-		if (const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id))
+		if (const ObjectConfig* obj_config = GetObjectConfigFromID(id))
 		{
-			if (config->values.Contains("echo_count"))
+			if (obj_config->values.Contains("echo_count"))
 			{
-				echoCount = (int)config->values["echo_count"];
+				echoCount = (int)obj_config->values["echo_count"];
 			}
 
-			if (config->values.Contains("echo_time"))
+			if (obj_config->values.Contains("echo_time"))
 			{
-				echoCount = (int)config->values["echo_time"];
+				echoTime = obj_config->values["echo_time"];
 			}
 		}
 	}
 
 	void EchoRune::OnActiate(Entity entity)
 	{
-		timer.Start();
+		Instance echo;
+		echo.timer.Start();
+
+		EntityCoordinator* ecs = GameData::Get().ecs;
+		const Spell& spell = ecs->GetComponentRef(Spell, entity);
+
+		echo.target = spell.target;
+		echo.count = echoCount;
+
+		echos.push(echo);
 	}
 
 	void EchoRune::Update(Entity entity)
 	{
-		if (echoCount > 0 && timer.GetSeconds() >= echoTime)
+		if (echos.size() > 0)
 		{
-			echoCount--;
-			Entity echo_spell = SpellBook::ActivateSpell(caster, spellIndex, target);
+			Instance& echo = echos.front();
+
+			int secs = echo.timer.GetSeconds();
+			if (echo.timer.GetSeconds() >= echoTime)
+			{
+				echo.count--;
+				SpellBook::ActivateSpell(caster, spellIndex, echo.target);
+			}
+
+			if (echo.count <= 0)
+				echos.popFront();
 		}
 	}
 }

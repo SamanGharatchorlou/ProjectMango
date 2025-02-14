@@ -4,6 +4,7 @@
 #include "Audio/AudioManager.h"
 #include "Entities/Player/PlayerCharacter.h"
 #include "ECS/Components/ComponentsSetup.h"
+#include "ECS/Components/Components.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
@@ -12,6 +13,7 @@
 #include "Input/InputManager.h"
 #include "Scene/SceneParsing/SceneReader.h"
 #include "Scene/SceneParsing/EntityBuilder.h"
+#include "Entities/Spells/PickupCallbacks.h"
 #include "System/Window.h"
 
 void GameState::Init()
@@ -20,13 +22,14 @@ void GameState::Init()
 	ECS::RegisterAllSystems();
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity biome_entity = ecs->CreateEntity("Map_1");
+	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
 	ecs->AddComponent(Biome, biome_entity);
 	Scene::BuildBiome( "Biome1", biome_entity );
 	activeLevel = biome_entity;
 
 	CreateEntities(biome_entity);
+	PickUps::SetCallbacks();
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;

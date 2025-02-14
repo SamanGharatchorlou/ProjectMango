@@ -29,6 +29,9 @@ namespace ECS
 	struct EntityMetaData
 	{
 		BasicString id;
+		BasicString idPostfix;
+
+		// entity field identifier
 		BasicString tag;
 		VectorF position;
 

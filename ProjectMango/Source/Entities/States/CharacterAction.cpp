@@ -47,7 +47,7 @@ Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, float
 {
 	EntityCoordinator* ecs = GameData::Get().ecs;
 
-	Entity attack_collider = ecs->CreateEntity(collider_name);
+	Entity attack_collider = ECS::CreateEntity(collider_name);
 	ecs->AddComponent(Transform, attack_collider);
 	ecs->AddComponent(Collider, attack_collider);
 	ecs->AddComponent(Damage, attack_collider);
@@ -110,17 +110,18 @@ float CharacterAction::GetAttackRange(ActionState action)
 
 Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 {
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
 
 	// adding everything something NEEDS to be an enemy... pretty much anyway
 	EntityCoordinator* ecs = GameData::Get().ecs;
-	Entity entity = ecs->CreateEntity(emd.id.c_str());
+	Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
 	ecs->AddComponent(Transform, entity);
 	ecs->AddComponent(Physics, entity);
 	ecs->AddComponent(Animator, entity);
 	ecs->AddComponent(Sprite, entity);
 	ecs->AddComponent(Collider, entity);
 	ecs->AddComponent(Health, entity);
+
+	const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 	// Transform
 	Transform& transform = ecs->GetComponentRef(Transform, entity);
@@ -160,7 +161,6 @@ Entity Character::CreateBasicEnemy(const ECS::EntityMetaData& emd)
 
 	// CharacterState
 	CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
-	character_state.id = emd.id.c_str();
 	// this is specific to the enemy type and needs to be set in there
 	character_state.character = nullptr;
 

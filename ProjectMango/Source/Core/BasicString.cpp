@@ -3,21 +3,14 @@
 
 #include <cstring>
 
-BasicString::BasicString(const char* string)
+BasicString::BasicString(const char* string) : mBuffer(nullptr), mLength(0), mCap(0)
 {
 	if (string)
 	{
 		mLength = (uint32_t)strlen(string);
 		mCap = mLength + 1;
 		mBuffer = new char[mCap];
-
 		assignTerminated(string);
-	}
-	else
-	{
-		mBuffer = nullptr;
-		mLength = 0;
-		mCap = 0;
 	}
 }
 
@@ -76,21 +69,21 @@ void BasicString::eliminate()
 	mBuffer = nullptr;
 }
 
-void BasicString::set(const char* string)
-{
-	uint32_t strLength = (uint32_t)strlen(string);
-
-	if (strLength < mCap)
-	{
-		assignTerminated(string);
-		mBuffer[strLength + 1] = '\0';
-	}
-	else
-	{
-		resizeBuffer(strLength + 1);
-		set(string);
-	}
-}
+//void BasicString::set(const char* string)
+//{
+//	uint32_t strLength = (uint32_t)strlen(string);
+//
+//	if (strLength < mCap)
+//	{
+//		assignTerminated(string);
+//		mBuffer[strLength + 1] = '\0';
+//	}
+//	else
+//	{
+//		resizeBuffer(strLength + 1);
+//		set(string);
+//	}
+//}
 
 void BasicString::SetLength(int length)
 {

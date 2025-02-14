@@ -396,7 +396,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Rune_Rebound",
+			"identifier": "Pickup_ReboundRune",
 			"uid": 19,
 			"tags": [],
 			"exportToToc": false,
@@ -504,7 +504,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Rune_Echo",
+			"identifier": "Pickup_EchoRune",
 			"uid": 23,
 			"tags": [],
 			"exportToToc": false,
@@ -552,7 +552,7 @@
 					"editorDisplayPos": "Above",
 					"editorLinkStyle": "StraightArrow",
 					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
+					"editorAlwaysShow": true,
 					"editorShowInWorld": true,
 					"editorCutLongValues": true,
 					"editorTextSuffix": null,
@@ -710,22 +710,6 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "Door",
-							"__grid": [9,13],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 352, "y": 272, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "59f4a390-c210-11ef-aba6-45ee4fdd29f7",
-							"width": 16,
-							"height": 16,
-							"defUid": 15,
-							"px": [144,208],
-							"fieldInstances": [],
-							"__worldX": 144,
-							"__worldY": 208
-						},
-						{
 							"__identifier": "PlayerSpawner",
 							"__grid": [6,13],
 							"__pivot": [0,0],
@@ -742,7 +726,7 @@
 							"__worldY": 208
 						},
 						{
-							"__identifier": "Rune_Rebound",
+							"__identifier": "Pickup_ReboundRune",
 							"__grid": [9,10],
 							"__pivot": [0,0],
 							"__tags": [],
@@ -759,7 +743,7 @@
 						},
 						{
 							"__identifier": "TrainingDummy",
-							"__grid": [9,3],
+							"__grid": [13,13],
 							"__pivot": [0,0],
 							"__tags": ["enemy"],
 							"__tile": { "tilesetUid": 9, "x": 176, "y": 416, "w": 16, "h": 16 },
@@ -768,14 +752,14 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 22,
-							"px": [144,48],
+							"px": [208,208],
 							"fieldInstances": [],
-							"__worldX": 144,
-							"__worldY": 48
+							"__worldX": 208,
+							"__worldY": 208
 						},
 						{
-							"__identifier": "Rune_Echo",
-							"__grid": [7,3],
+							"__identifier": "Pickup_EchoRune",
+							"__grid": [9,13],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 32, "y": 848, "w": 16, "h": 16 },
@@ -784,10 +768,10 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 23,
-							"px": [112,48],
+							"px": [144,208],
 							"fieldInstances": [{ "__identifier": "Echo", "__type": "String", "__value": null, "__tile": null, "defUid": 25, "realEditorValues": [] }],
-							"__worldX": 112,
-							"__worldY": 48
+							"__worldX": 144,
+							"__worldY": 208
 						}
 					]
 				},

@@ -119,6 +119,13 @@ namespace ECS
 			int page_index = component_index / componentPageSize;
 			int page_entry_index = component_index % componentPageSize;
 
+			Page<T>& page = componentPages[page_index];
+			for (u32 i = 0; i < page.size; i++)
+			{
+				T* comp = page.components + i;
+				int a = 4;
+			}
+
 			return componentPages[page_index].components[page_entry_index];
 		}
 

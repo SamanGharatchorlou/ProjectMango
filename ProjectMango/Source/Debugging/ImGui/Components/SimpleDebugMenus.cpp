@@ -36,12 +36,12 @@ ECS::Component::Type DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 
 		ECS::EntityManager& em = ecs->entities;
-		const char* parent = entity_data.parent != ECS::EntityInvalid ? em.entityNames[entity].c_str() : "No parent";
+		const char* parent = entity_data.parent != ECS::EntityInvalid ? ECS::GetName(entity) : "No parent";
 		ImGui::Text("Parent: %s", parent);
 
 		for( u32 i = 0; i < entity_data.children.size(); i++ )
 		{
-			const char* child = em.entityNames[entity_data.children[i]].c_str();
+			const char* child = ECS::GetName(entity_data.children[i]);
 			ImGui::Text("Child: %s", child);
 		}
 

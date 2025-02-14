@@ -5,11 +5,11 @@
 #include "EntityManager.h"
 
 
-#if ENTITY_LOGGING
-#define CreateEntity(name) CreateNewEntity(name)
-#else
-#define CreateEntity(name) CreateNewEntity()
-#endif
+//#if ENTITY_LOGGING
+//#define CreateEntity(name) CreateNewEntity(name)
+//#else
+//#define CreateEntity(name) CreateNewEntity()
+//#endif
 
 namespace ECS
 {
@@ -34,11 +34,6 @@ namespace ECS
 		void RegisterOrSystem(Archetype type) { systems.RegisterOr<T>(type); }
 
 		Entity CreateNewEntity() { return entities.CreateEntityId(); }
-#if ENTITY_LOGGING
-		Entity CreateNewEntity(const char* name) { return entities.CreateEntityWithName(name); }
-		Entity FindEntity(const char* name) { return entities.FindEntity(name); }
-		const char* GetEntityName(Entity entity) { return entities.GetEntityName(entity); }
-#endif
 
 		bool IsAlive(Entity entity) const { return entity != EntityInvalid && entities.GetAchetype(entity) != ArchetypeInvalid; }
 
@@ -114,5 +109,4 @@ namespace ECS
 #define GetComponentRef(compType, entity) GetComponentRef<ECS::compType>(entity, ECS::compType::type())
 
 #define GetAllComponents(compType) GetComponents<ECS::compType>(ECS::compType::type())
-
 }

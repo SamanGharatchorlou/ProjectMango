@@ -66,7 +66,7 @@ namespace ECS
 			{ 
 				if(!collider->initialised)
 				{
-					DebugPrint(Warning, "Collder on entity %s has not been initialised", ecs->entities.GetEntityName(entity));
+					DebugPrint(Warning, "Collder on entity %s has not been initialised", ECS::GetName(entity));
 				}
 
 				u32 flags = Collider::Flags::Static;

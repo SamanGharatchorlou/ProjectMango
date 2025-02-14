@@ -20,8 +20,8 @@ typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity(emd.id.c_str());
-	if (const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str()))
+	ECS::Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
+	if (const ObjectConfig* config = ECS::GetObjectConfig(entity))
 	{
 		// Transform
 		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
@@ -47,22 +47,11 @@ static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
 	ECS::Entity entity = CreateBasicObject(emd);
 
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
+	const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 	// Animation
 	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
 	animator.Init(config);
-
-	return entity;
-}
-
-static ECS::Entity CreatePickup(const ECS::EntityMetaData& emd)
-{
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = CreateBasicObject(emd);
-
-	// Pickup
-	ECS::Pickup& pickup = ecs->AddComponent(Pickup, entity);
 
 	return entity;
 }
@@ -139,9 +128,9 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 ECS::Entity CreateCursor()
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Entity entity = ecs->CreateEntity("cursor");
+	ECS::Entity entity = ECS::CreateEntity("Cursor", true);
 
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>("CursorConfig");
+	const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 	// Transform
 	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
@@ -164,15 +153,15 @@ ECS::Entity CreateCursor()
 	return entity;
 }
 
-ECS::Entity CreateRune(const ECS::EntityMetaData& emd)
+ECS::Entity CreatePickup(const ECS::EntityMetaData& emd)
 {
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = CreateBasicObject( emd );
 
 	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
-	pick_up.typeId = emd.id;
+	pick_up.itemId = emd.idPostfix;
 	pick_up.config = emd.ConfigId();
-	pick_up.onPickupFn = ApplyReboundRune;
+	//pick_up.onPickupFn = ApplyReboundRune;
 
 	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
 	collider.SetFlag(ECS::Collider::PlayerOnly);
@@ -190,22 +179,16 @@ void CreateEntities(ECS::Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
 
-	// runes
-	std::unordered_map<BasicString, OnPickupFn> ApplyRuneFunctions;
-	ApplyRuneFunctions["ReboundRune"] = ApplyReboundRune;
-	ApplyRuneFunctions["EchoRune"] = ApplyEchoRune;
-
 	// map entities
 	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
 	CreateEntitiyFunctions["PlayerSpawner"] = CreatePlayerSpawner;
 	CreateEntitiyFunctions["Flower"] = CreateFlower;
 	CreateEntitiyFunctions["Torch"] = CreateTorch;
 	CreateEntitiyFunctions["Door"] = CreateDoor;
-	CreateEntitiyFunctions["Pickup"] = CreatePickup;
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
-	CreateEntitiyFunctions["Rune"] = CreateRune;
+	CreateEntitiyFunctions["Pickup"] = CreatePickup;
 	
 	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);

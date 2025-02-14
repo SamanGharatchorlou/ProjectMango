@@ -22,6 +22,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(EntityData)
 
+		BasicString id;
+		BasicString config;
+
 		ECS::Entity parent;
 		std::vector<Entity> children;
 
@@ -88,8 +91,6 @@ namespace ECS
 
 		ActionStack<CharacterAction> actions;
 
-		BasicString id;
-
 		// overload common functions
 		Character* character;
 
@@ -104,9 +105,6 @@ namespace ECS
 		void Init(const ObjectConfig* config);
 		VectorI GetFacingDirection() const;
 		void FlipFacingDirection();
-
-		//template<class T>
-		//const T* GetConfig() const { return ConfigManager::Get()->GetObjectConfig<T>(id.c_str()); }
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -188,15 +186,17 @@ namespace ECS
 		void GenerateColliders(float width);
 	};
 
-	typedef void(*OnPickupFn)(Entity pickup_entity, Entity picker_upper);
-
 	struct Pickup
 	{
 		COMPONENT_TYPE(Pickup)
 
-		BasicString typeId;
+		BasicString itemId;
+		// not just IdConfig, since Id is probably just Rune
+		// but the config would be ReboundRuneConfig
 		BasicString config;
-		OnPickupFn onPickupFn;
+		//OnPickupFn onPickupFn;
+
+		bool pickedUp;
 
 		void Update();
 	};
@@ -208,10 +208,16 @@ namespace ECS
 		return (u64)1 << type;
 	}
 
+	Entity CreateEntity(const char* id, bool config_postfix = false);
+	Entity CreateEntity(const char* id, const char* config);
+
+	const char* GetName(Entity entity);
+	const ObjectConfig* GetObjectConfig(Entity entity);
+	const ObjectConfig* GetObjectConfigFromID(const char* id);
+
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
 
-	const ObjectConfig* GetObjectConfig(Entity entity);
 }

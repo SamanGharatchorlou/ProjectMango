@@ -14,17 +14,19 @@ namespace Magic
 {
 	typedef ECS::Entity (*CreateEntityFn)(ECS::Entity caster, VectorF target);
 
-	static ECS::Entity CreateBasicSpell(const char* id, const char* config_id, ECS::Entity caster)
+	static ECS::Entity CreateBasicSpell(const char* id, ECS::Entity caster, VectorF target)
 	{
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::Entity entity = ecs->CreateEntity(id);
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+
+		BasicString spell_id = id;
+		ECS::Entity entity = ECS::CreateEntity(spell_id.c_str(), true);
+
+		const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 		// Transform
 		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
 		transform.Init(config, VectorF());
 		
-
 		// Animation
 		ECS::Animator& animator = ecs->AddComponent(Animator, entity);
 		animator.Init(config);
@@ -50,7 +52,10 @@ namespace Magic
 		damage.value = config->values.GetFloat("damage");
 
 		// Spell
-		ecs->AddComponent(Spell, entity);
+		ECS::Spell& spell = ecs->AddComponent(Spell, entity);
+		spell.name = id;
+		spell.target = target;
+		spell.caster = caster;
 
 		return entity;
 	}
@@ -60,9 +65,8 @@ namespace Magic
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
 		const char* id = "Fireball";
-		const char* config_id = "FireballConfig";
-		ECS::Entity entity = CreateBasicSpell(id, config_id, caster);
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+		ECS::Entity entity = CreateBasicSpell(id, caster, target);
+		const ObjectConfig* config = ECS::GetObjectConfig(entity);
 		
 		// direction
 		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);
@@ -87,9 +91,7 @@ namespace Magic
 		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
 		const char* id = "Lightning";
-		const char* config_id = "LightningConfig";
-		ECS::Entity entity = CreateBasicSpell(id, config_id, caster);
-		const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(config_id);
+		ECS::Entity entity = CreateBasicSpell(id, caster, target);
 
 		// collder
 		ECS::Collider& collider = ecs->AddComponent(Collider, entity);
@@ -106,8 +108,6 @@ namespace Magic
 
 		// turn into quad collider
 		collider.SetFlag(ECS::Collider::QuadCollider);
-
-
 
 		return entity;
 	}

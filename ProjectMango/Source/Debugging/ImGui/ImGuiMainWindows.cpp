@@ -61,35 +61,37 @@ void DebugMenu::DoEntitySystemWindow()
     
     ECS::EntityCoordinator* ecs = GameData::Get().ecs;
     ECS::EntityManager& em = ecs->entities;
-    std::unordered_map<ECS::Entity, BasicString>& entityNames = em.entityNames;
+    //std::unordered_map<ECS::Entity, BasicString>& entityNames = em.entityNames;
 
-    const char* selected = entityNames.count(s_selectedEntity) > 0 ? entityNames[s_selectedEntity].c_str() : "No selection";
 
     ImGui::Text("Selected Entity: %d", (int)s_selectedEntity);
-
     ImGui::InputText("Entity Filter", filterBuffer.buffer(), filterBuffer.bufferLength());
+
+
+    const char* selected = ECS::GetName(s_selectedEntity);
+    if (!selected)
+        selected = "";
 
     if (ImGui::BeginCombo("Entities", selected, 0))
     {
-        for (auto iter = entityNames.begin(); iter != entityNames.end(); iter++)
+        const ECS::ComponentArray<ECS::EntityData>& entity_data = ecs->GetAllComponents(EntityData);
+        for (auto iter = entity_data.entityToComponent.begin(); iter != entity_data.entityToComponent.end(); iter++)
         {
+            const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
+            StringBuffer64 entity_name = StringBuffer64(ed.id.c_str()).to_lower();
+
             if (filterBuffer.length() > 0)
             {
                 StringBuffer64 filter = filterBuffer.to_lower();
-                StringBuffer64 entity_name = StringBuffer64(iter->second.c_str()).to_lower();
-
                 const char* value = strstr( entity_name.c_str(), filter.c_str() );
-
                 if ( !value )
-                {
                     continue;
-                }
             }
 
             ImGui::PushID(iter->first);
 
             const bool is_selected = iter->first == s_selectedEntity;
-            if (ImGui::Selectable(iter->second.c_str(), is_selected))
+            if (ImGui::Selectable(entity_name.c_str(), is_selected))
                 s_selectedEntity = iter->first;
 
             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -390,7 +392,7 @@ void DebugMenu::DoGameStateWindow()
             ECS::Collider& collider = colliders.GetComponentByIndex(iter->second);
             if(collider.Contains(cursor_pos))
             {
-                ImGui::Text("Cursor hit: %s(%d)", ecs->GetEntityName(collider.entity), collider.entity);
+                ImGui::Text("Cursor hit: %s(%d)", ECS::GetName(collider.entity), collider.entity);
             }
         }
     

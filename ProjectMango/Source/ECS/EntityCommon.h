@@ -3,8 +3,6 @@
 #include "Core/TypeDefs.h"
 #include "Game/Initialiser.h"
 
-#define ENTITY_LOGGING 1
-
 namespace ECS
 {
 	constexpr u32 MaxEntityCount = 1000;
