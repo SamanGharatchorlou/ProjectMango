@@ -10,9 +10,7 @@
 
 void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	const ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
-	//const std::vector<ECS::Collider>& collider_list = colliders.components;
+	const ECS::ComponentArray<ECS::Collider>& colliders = GetAllComponents(Collider);
 	const u32 count = (u32)colliders.entityToComponent.size();
 
 	std::vector<const ECS::Collider*> target_colliders;

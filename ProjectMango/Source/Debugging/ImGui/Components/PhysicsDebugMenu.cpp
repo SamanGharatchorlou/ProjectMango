@@ -7,13 +7,12 @@
 
 ECS::Component::Type DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Physics;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
+		ECS::Physics& physics = GetComponentRef(Physics, entity);
 
 		ImGui::VectorText("Speed", physics.speed);
 		ImGui::VectorText("Max Speed", physics.maxSpeed);

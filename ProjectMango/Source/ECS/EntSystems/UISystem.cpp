@@ -14,13 +14,13 @@ namespace ECS
 {
 	void UISystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 
 		std::vector<Entity> out_of_bounds_entities;
 
 		for (Entity entity : entities)
 		{
-			UICursor* ui_cursor = ecs->GetComponent(UICursor, entity);
+			UICursor* ui_cursor = GetComponent(UICursor, entity);
 			if (ui_cursor && ui_cursor->cursor)
 			{
 				Camera* camera = Camera::Get();
@@ -34,7 +34,7 @@ namespace ECS
 				const VectorF fake_window_size = GameData::Get().window->size();
 				const float render_scale = real_window_size.x / fake_window_size.x;
 
-				Transform& transform = ecs->GetComponentRef(Transform, entity);
+				Transform& transform = GetComponentRef(Transform, entity);
 				VectorF map_position = (ui_cursor->cursor->position() / render_scale) + camera_offset;
 
 				// check out of bounds

@@ -46,8 +46,6 @@ namespace Scene
 	
 	void BuildBiome(const char* biome_id, ECS::Entity& biome_entity)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
 		BasicString string = FileManager::Get()->findFile(FileManager::Maps, biome_id);
 		JSONParser parser(string.c_str());
 
@@ -93,7 +91,7 @@ namespace Scene
 			level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat() * level_to_window;
 			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
-			ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
+			ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
 			biome.aabb[0].x = Maths::Min(biome.aabb[0].x, level.worldPos.x);
 			biome.aabb[0].y = Maths::Min(biome.aabb[0].y, level.worldPos.y);
 			biome.aabb[1].x = Maths::Max(biome.aabb[1].x, level.worldPos.x + level.size.x);
@@ -251,17 +249,15 @@ namespace Scene
 						RectF collider_rect(top_left, size);
 
 						// create a static collider entity
-						ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
 						char buffer[32];
 						snprintf(buffer, 32, "Map Collider %d", (int)b);
 						ECS::Entity ent = ECS::CreateEntity(buffer);
 												
-						ecs->AddComponent(Transform, ent);
-						ecs->AddComponent(Collider, ent);
+						AddComponent(Transform, ent);
+						AddComponent(Collider, ent);
 
-						ECS::Transform& transform = ecs->GetComponentRef(Transform, ent);
-						ECS::Collider& collider = ecs->GetComponentRef(Collider, ent);
+						ECS::Transform& transform = GetComponentRef(Transform, ent);
+						ECS::Collider& collider = GetComponentRef(Collider, ent);
 						transform.size = size;
 						transform.SetWorldPosition(top_left);
 						transform.InitCollider(collider);

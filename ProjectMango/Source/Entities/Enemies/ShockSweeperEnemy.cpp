@@ -21,19 +21,19 @@ namespace ShockSweeper
 		Entity entity = Character::CreateBasicEnemy(emd);
 
 		// CharacterState
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+		CharacterState& character_state = AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
 
-		ecs->AddComponent(Pathing, entity);
+		// Pathing
+		Pathing& pathing = AddComponent(Pathing, entity);
+		pathing.Init();
 		
 		return entity;
 	}
 
 	void Enemy::Begin(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(!state.actions.HasAction())
 			PushState(Idle);
@@ -41,8 +41,7 @@ namespace ShockSweeper
 
 	bool Enemy::FinishedDying(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(DeathState* death_state = static_cast<DeathState*>(&(state.actions.Top())))
 			return death_state->can_kill;
@@ -52,8 +51,7 @@ namespace ShockSweeper
 
 	void Enemy::StartDying(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		state.actions.Pop();
 		state.actions.Push( new DeathState(entity) );
@@ -69,22 +67,19 @@ namespace ShockSweeper
 	}
 	void IdleState::Resume()
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		AIController& ai_controller = GetComponentRef(AIController, entity);
 		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
 		
 		StartAnimation(can_flip_sprite);
 	}
 	void IdleState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
-		Physics& physics = ecs->GetComponentRef(Physics, entity);
+		Physics& physics = GetComponentRef(Physics, entity);
 		physics.ApplyDrag(0.05f);
 
 		if( CanEnterHitState() )
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(TakeHit);
 		}
 		
@@ -93,7 +88,7 @@ namespace ShockSweeper
 
 		if( CanMoveToTarget() )
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(Run);
 		}
 	}
@@ -108,8 +103,7 @@ namespace ShockSweeper
 	}
 	void RunState::Resume()
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		AIController& ai_controller = GetComponentRef(AIController, entity);
 		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
 		
 		StartAnimation(can_flip_sprite);
@@ -117,34 +111,45 @@ namespace ShockSweeper
 
 	void RunState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Transform& transform = ecs->GetComponentRef(Transform, entity);
-		const AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		Transform& transform = GetComponentRef(Transform, entity);
+		const AIController& ai_controller = GetComponentRef(AIController, entity);
+		Pathing& pathing = GetComponentRef(Pathing, entity);
 
 		//if( ai_controller.cooldownTimer.IsRunning() )
 		//{		
-		//	Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		//	Sprite& sprite = GetComponentRef(Sprite, entity);
 		//	sprite.canFlip = false;
 		//	
 		//	PopState();
 		//	return;
 		//}
 
+		//const int run_acceleration_factor = 1;
+		//ApplyMovementEase(run_acceleration_factor, dt);
+
+		CharacterState& state = GetComponentRef(CharacterState, entity);
+		Physics& physics = GetComponentRef(Physics, entity);
+
 		const int run_acceleration_factor = 1;
-		ApplyMovementEase(run_acceleration_factor, dt);
+		const SDL_RendererFlip flip_direction = GetFacingDirection(entity);
+		const VectorI facing_direction = FacingDirectionToVector(flip_direction);
+		VectorF desired_movement = physics.GetMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
 
-		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
-		{
-			const Transform& target_transform = ecs->GetComponentRef(Transform, ai_controller.target);
-			const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
-			const float attack_range = GetAttackRange(ActionState::BasicAttack) * 0.8f;
+		VectorF position = GetPosition(entity);
+		pathing.targetLocation = position + desired_movement;
 
-			if(attack_range > 0.0f && attack_range > distance_to_target)
-			{
-				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-				ReplaceState(BasicAttack);
-			}
-		}
+		//if(ai_controller.target != EntityInvalid && IsAlive(ai_controller.target))
+		//{
+		//	const Transform& target_transform = GetComponentRef(Transform, ai_controller.target);
+		//	const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
+		//	const float attack_range = GetAttackRange(ActionState::BasicAttack) * 0.8f;
+
+		//	if(attack_range > 0.0f && attack_range > distance_to_target)
+		//	{
+		//		CharacterState& state = GetComponentRef(CharacterState, entity);
+		//		ReplaceState(BasicAttack);
+		//	}
+		//}
 	}
 
 	// TakeHitState
@@ -156,12 +161,11 @@ namespace ShockSweeper
 
 	void TakeHitState::Update(float dt)
 	{	
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animator = ecs->GetComponentRef(Animator, entity);
+		const Animator& animator = GetComponentRef(Animator, entity);
 
 		if(animator.loopCount > 0)
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PopState();
 			return;
 		}
@@ -169,8 +173,7 @@ namespace ShockSweeper
 
 	void TakeHitState::Exit()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(Collider* collider = ecs->GetComponent(Collider, entity))
+		if(Collider* collider = GetComponent(Collider, entity))
 		{
 			collider->lastHitFrame = -1;
 		}
@@ -194,8 +197,7 @@ namespace ShockSweeper
 
 	void DeathState::Update(float dt)
 	{	
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animation = ecs->GetComponentRef(Animator, entity);
+		const Animator& animation = GetComponentRef(Animator, entity);
 
 		if(animation.loopCount > 0)
 			can_kill = true;
@@ -212,9 +214,8 @@ namespace ShockSweeper
 
 	void BasicAttackState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
+		Animator& animator = GetComponentRef(Animator, entity);
 		
 		const Animation& animation = animator.GetActiveAnimation();
 		if(animation.attackColliderFrameStart != -1)
@@ -227,14 +228,14 @@ namespace ShockSweeper
 
 		if(animator.loopCount > 0)
 		{
-			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+			AIController& ai_controller = GetComponentRef(AIController, entity);
 			ai_controller.cooldownTimer.Start();
 
 			PopState();
 			return;
 		}
 
-		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		if (ECS::Physics* physics = GetComponent(Physics, entity))
 		{
 			physics->ApplyDrag(0.5f);
 		}
@@ -242,7 +243,6 @@ namespace ShockSweeper
 
 	void BasicAttackState::Exit()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		ecs->entities.KillEntity(attackCollider);
 	}
 }
@@ -259,8 +259,7 @@ namespace TrainingDummy
 		Entity entity = Character::CreateBasicEnemy(emd);
 				
 		// CharacterState
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+		CharacterState& character_state = AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
 
 		return entity;
@@ -268,8 +267,7 @@ namespace TrainingDummy
 
 	void Enemy::Begin(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(!state.actions.HasAction())
 			PushState(Idle);
@@ -283,19 +281,17 @@ namespace TrainingDummy
 	}
 	void IdleState::Resume()
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		
+		AIController& ai_controller = GetComponentRef(AIController, entity);
 		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
 		
 		StartAnimation(can_flip_sprite);
 	}
 	void IdleState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		if( CanEnterHitState(c_hitFrameBuffer) )
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(TakeHit);
 		}
 	}
@@ -313,9 +309,9 @@ namespace TrainingDummy
 
 	void TakeHitState::Update(float dt)
 	{	
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animator = ecs->GetComponentRef(Animator, entity);
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		
+		const Animator& animator = GetComponentRef(Animator, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(animator.loopCount > 0)
 		{
@@ -326,7 +322,7 @@ namespace TrainingDummy
 		const FrameRateController& frc = FrameRateController::Get();
 		if( (frameStart + c_hitFrameBuffer) < frc.FrameCount())
 		{
-			if(const Collider* collider = ecs->GetComponent(Collider, entity))
+			if(const Collider* collider = GetComponent(Collider, entity))
 			{
 				if(collider->lastHitFrame != -1 && (collider->lastHitFrame + 20) >= frc.FrameCount())
 				{
@@ -338,8 +334,8 @@ namespace TrainingDummy
 
 	void TakeHitState::Exit()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(Collider* collider = ecs->GetComponent(Collider, entity))
+		
+		if(Collider* collider = GetComponent(Collider, entity))
 		{
 			//collider->lastHitFrame = -1;
 		}

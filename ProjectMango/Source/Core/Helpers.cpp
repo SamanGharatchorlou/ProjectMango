@@ -46,8 +46,7 @@ bool RaycastToFloor(const VectorF& start, RaycastResult& result)
 
 bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	if(const ECS::Transform* transform = ecs->GetComponent(Transform, entity))
+	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
 		RectF rect = transform->GetRect();
 		ASSERT(!rect.Size().isZero(), "cant raycast to floor if the size hasnt been set");
@@ -72,8 +71,7 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 
 bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	if(const ECS::Transform* transform = ecs->GetComponent(Transform, entity))
+	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
 		VectorF bot = transform->GetRect().BotCenter();
 			

@@ -2673,7 +2673,7 @@ void ImGui::TableDrawBorders(ImGuiTable* table)
 //-------------------------------------------------------------------------
 
 // Return NULL if no sort specs (most often when ImGuiTableFlags_Sortable is not set)
-// When 'sort_specs->SpecsDirty == true' you should sort your data. It will be true when sorting specs have
+// When 'sort_spSpecsDirty == true' you should sort your data. It will be true when sorting specs have
 // changed since last call, or the first time. Make sure to set 'SpecsDirty = false' after sorting,
 // else you may wastefully sort your data every frame!
 // Lifetime: don't hold on this pointer over multiple frames or past any subsequent call to BeginTable()!

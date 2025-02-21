@@ -9,18 +9,17 @@
 
 ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::CharacterState;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::CharacterState& character_state = ecs->GetComponentRef(CharacterState, entity);
+		ECS::CharacterState& character_state = GetComponentRef(CharacterState, entity);
 		ImGui::Text("Movement Input: %f, %f", character_state.movementInput.x, character_state.movementInput.y );
 
 		if (ImGui::TreeNode("State Editor"))
 		{
-			if(ECS::AIController* aic = ecs->GetComponent(AIController, entity))
+			if(ECS::AIController* aic = GetComponent(AIController, entity))
 			{
 				if (ImGui::BeginCombo("Enter Action", "", 0))
 				{
@@ -36,7 +35,7 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 					ImGui::EndCombo();
 				}
 			}
-			else if(ECS::PlayerController* pc = ecs->GetComponent(PlayerController, entity))
+			else if(ECS::PlayerController* pc = GetComponent(PlayerController, entity))
 			{
 				if (ImGui::BeginCombo("Enter Action", "", 0))
 				{

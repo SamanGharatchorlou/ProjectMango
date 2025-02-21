@@ -11,7 +11,7 @@ namespace ECS
 {
 	void TileMapSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 		RenderManager* rm = GameData::Get().renderManager;
 		
 		// increase the camera size so we draw a little extra than the actual screen
@@ -24,7 +24,7 @@ namespace ECS
 
 		for (Entity entity : entities)
 		{
-			const Biome& biome = ecs->GetComponentRef(Biome, entity);
+			const Biome& biome = GetComponentRef(Biome, entity);
 
 			for( u32 l = 0; l < biome.levels.size(); l++ )
 			{
@@ -34,7 +34,7 @@ namespace ECS
 				{
 					const Layer& layer = level.layers[i];
 					const VectorF& tile_size = layer.tileSet->tileSize;
-					const Texture* tile_texture = layer.tileSet->texture;
+					Texture* tile_texture = layer.tileSet->texture;
 
 					for( u32 j = 0; j < layer.tiles.size(); j++ )
 					{

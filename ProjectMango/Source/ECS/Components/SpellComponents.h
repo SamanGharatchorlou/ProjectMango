@@ -6,11 +6,12 @@ namespace ECS
 	{
 		Rune(const char* _id, const char* _config) : id(_id), config(_config), caster(EntityInvalid), spellIndex(0) { }
 		virtual void OnActiate(Entity entity) { };
-		virtual void Update(Entity entity) { }
+		virtual void Update() { }
 
 		BasicString id;
 		BasicString config;
 
+		// put these in the update parameter?
 		Entity caster;
 		int spellIndex;
 	};
@@ -29,7 +30,7 @@ namespace ECS
 		EchoRune(const char* id, const char* config);
 
 		void OnActiate(Entity entity) override;
-		void Update(Entity entity) override;
+		void Update() override;
 
 		// number of echos
 		int echoCount;
@@ -51,7 +52,7 @@ namespace ECS
 		COMPONENT_TYPE(Spell)
 
 		BasicString name;
-		Rune* rune;
+		//Rune* rune;
 
 		// original target
 		VectorF target;

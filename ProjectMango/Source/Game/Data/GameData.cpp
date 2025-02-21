@@ -144,16 +144,18 @@ void GameData::setupObservers()
 void GameData::free()
 {
 	//SDL_JoystickClose()
-	ecs->Close();
+	//Close();
 
 	delete inputManager;
 	delete systemStateManager;
+	delete ecs;
 
 	AudioManager::Get()->unload();
 	TextureManager::Get()->unload();
 
 	delete renderManager;
 	delete window;
+	delete configs;
 
 	// unlink static getter
 	gd = nullptr;

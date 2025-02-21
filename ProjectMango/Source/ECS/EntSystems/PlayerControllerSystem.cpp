@@ -22,9 +22,9 @@ namespace ECS
 
 	static void SpawnPlayer()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 
-		ComponentArray<Spawner>& spawners = ecs->GetAllComponents(Spawner);
+		ComponentArray<Spawner>& spawners = GetAllComponents(Spawner);
 
 		std::vector<Entity> out_spawners;
 		GetEntitiesInLevel(Biome::GetVisibleLevel(), spawners.entityToComponent, out_spawners);
@@ -32,11 +32,11 @@ namespace ECS
 		Spawner* spawner = nullptr;
 		if(out_spawners.size() > 0)
 		{
-			spawner = ecs->GetComponent(Spawner, out_spawners.front());
+			spawner = GetComponent(Spawner, out_spawners.front());
 		}
 		if(!spawner && out_spawners.size() > 0)
 		{
-			spawner = ecs->GetComponent(Spawner, out_spawners.front());
+			spawner = GetComponent(Spawner, out_spawners.front());
 		}
 
 		if(spawner && !spawner->IsSpawning())
@@ -52,13 +52,13 @@ namespace ECS
 
 	void PlayerControllerSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 		InputManager* input = InputManager::Get();
 
 		for (Entity entity : entities)
 		{
-			PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			PlayerController& pc = GetComponentRef(PlayerController, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 
 			if(state.actions.HasAction())
 			{
@@ -88,7 +88,7 @@ namespace ECS
 				}
 				else
 				{
-					if(Health* health = ecs->GetComponent(Health, entity))
+					if(Health* health = GetComponent(Health, entity))
 					{
 						if(health->currentHealth <= 0.0f)
 						{
@@ -102,8 +102,8 @@ namespace ECS
 					}
 				}
 
-				const Physics& physics = ecs->GetComponentRef(Physics, entity);
-				const Collider& collider = ecs->GetComponentRef(Collider, entity);
+				const Physics& physics = GetComponentRef(Physics, entity);
+				const Collider& collider = GetComponentRef(Collider, entity);
 				bool not_moving_upwards = physics.speed.y > 0.0f|| collider.collisionSide[Collider::Top];
 				if(!physics.onFloor && not_moving_upwards)
 				{
@@ -143,7 +143,7 @@ namespace ECS
 
 			state.movementInput = VectorI(horizontal_direction, 0);
 
-			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+			ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 			if (sprite.canFlip)
 			{
 				if (state.movementInput.x > 0)

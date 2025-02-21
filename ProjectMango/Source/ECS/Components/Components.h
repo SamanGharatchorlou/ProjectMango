@@ -57,8 +57,7 @@ namespace ECS
 		void SetWorldPosition(VectorF pos);
 		void SetWorldRect(const VectorF& pos, const VectorF& size);
 
-		void SetWorldPositionCenter(VectorF pos);
-
+		void SetObjectCenter(VectorF pos);
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
 
@@ -72,6 +71,8 @@ namespace ECS
 		RectF subRect;
 		Texture* texture;
 		
+		Colour colourMod;
+
 		VectorF flipPoint;
 		SDL_RendererFlip flip;
 		bool canFlip;
@@ -103,8 +104,6 @@ namespace ECS
 		bool canEnterHover;
 		
 		void Init(const ObjectConfig* config);
-		VectorI GetFacingDirection() const;
-		void FlipFacingDirection();
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -116,12 +115,19 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Pathing)
 
-		Entity target;
+		//Entity target;
 
-		VectorI currentStart;
-		VectorI currentTarget;
+		// the incremental next position to move to: pos + speed
+		// probably set by the AIController
+		//VectorF currentLocation;
+		VectorF targetLocation;
 
-		std::vector<VectorI> path;
+		// sets the bounds
+		u32 levelIndex = -1;
+
+		bool hasValidPath = false;
+
+		void Init();
 	};
 
 	struct Damage
@@ -220,4 +226,13 @@ namespace ECS
 	RectF GetRect(Entity entity);
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
 
+	// facing direction
+	SDL_RendererFlip GetFacingDirection(Entity entity);
+	VectorI GetFacingDirectionVector(Entity entity);
+
+	void SetFacingDirection(Entity entity, SDL_RendererFlip direction);
+	void FlipFacingDirection(Entity entity);
+	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target);
+
+	VectorI FacingDirectionToVector(SDL_RendererFlip facing);
 }

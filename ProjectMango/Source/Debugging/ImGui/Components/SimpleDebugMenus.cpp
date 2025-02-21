@@ -7,12 +7,11 @@
 
 ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Health;
 
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Health& health = ecs->GetComponentRef(Health, entity);
+		ECS::Health& health = GetComponentRef(Health, entity);
 		ImGui::PushID(entity + (int)type);
 
 		ImGui::Text("Current Health: %.f", health.currentHealth);
@@ -27,12 +26,11 @@ ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 
 ECS::Component::Type DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::EntityData;
 
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::EntityData& entity_data = ecs->GetComponentRef(EntityData, entity);
+		ECS::EntityData& entity_data = GetComponentRef(EntityData, entity);
 		ImGui::PushID(entity + (int)type);
 
 		ECS::EntityManager& em = ecs->entities;

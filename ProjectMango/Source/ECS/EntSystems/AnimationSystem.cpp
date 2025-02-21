@@ -37,7 +37,7 @@ namespace ECS
 
 	void AnimationSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 
 		for (Entity entity : entities)
 		{
@@ -45,9 +45,9 @@ namespace ECS
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 
-			Transform& transform = ecs->GetComponentRef(Transform, entity);
-			Animator& animator = ecs->GetComponentRef(Animator, entity);
-			Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+			Transform& transform = GetComponentRef(Transform, entity);
+			Animator& animator = GetComponentRef(Animator, entity);
+			Sprite& sprite = GetComponentRef(Sprite, entity);
 
 			if(!animator.IsValid())
 				continue;
@@ -55,7 +55,7 @@ namespace ECS
 			UpdateAnimator(animator, dt);
 			animator.SetActiveSpriteFrame(sprite);
 
-			if( Collider* collider = ecs->GetComponent(Collider, entity) )
+			if( Collider* collider = GetComponent(Collider, entity) )
 			{
 				const Animation& animation = animator.GetActiveAnimation();
 

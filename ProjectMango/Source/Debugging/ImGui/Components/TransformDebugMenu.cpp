@@ -13,13 +13,13 @@ bool s_outputPosition = false;
 
 ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 {
-    ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Transform;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+		ECS::Transform& transform = GetComponentRef(Transform, entity);
+		ImGui::Text("World Position: %f, %f", transform.worldPosition.x, transform.worldPosition.y);
 
 		ImGui::Checkbox("Display Object Rect", &s_displayRect);
 		if (s_displayRect)
@@ -39,7 +39,7 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 		if (s_displayFlipPoint)
 		{
 			VectorF flip_point = transform.worldPosition + transform.size / 2.0f;
-			if(ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+			if(ECS::Sprite* sprite = GetComponent(Sprite, entity))
 				flip_point = (sprite->flipPoint * transform.size) + transform.worldPosition;
 
 			DebugDraw::Point(flip_point, Colour::Red);

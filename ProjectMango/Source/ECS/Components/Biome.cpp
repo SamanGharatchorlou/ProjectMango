@@ -6,7 +6,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "Game/Camera/Camera.h"
-
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -21,7 +21,7 @@ namespace ECS
 		State& state = GameData::Get().systemStateManager->mStates.Top();
 		if (const GameState* gs = dynamic_cast<const GameState*>(&state))
 		{
-			EntityCoordinator* ecs = GameData::Get().ecs;
+			
 			return gs->activeLevel;
 		}
 
@@ -31,8 +31,8 @@ namespace ECS
 
 	const Biome& Biome::GetActiveBiome()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		return ecs->GetComponentRef(Biome, GetActive());
+		
+		return GetComponentRef(Biome, GetActive());
 	}
 
 	
@@ -60,6 +60,18 @@ namespace ECS
 
 		ASSERT(levels.size() > 0, "We have no levels yet, biome has not been parsed");
 		return levels.front();
+	}
+
+	const Level* Biome::GetLevelFromIndex(u32 level_index)
+	{
+		const std::vector<ECS::Level>& levels = GetActiveBiome().levels;
+		for (u32 i = 0; i < levels.size(); i++)
+		{
+			if (levels[i].index == level_index)
+				return &levels[i];
+		}
+
+		return nullptr;
 	}
 
 	const Level& Biome::GetVisibleLevel()
@@ -104,5 +116,16 @@ namespace ECS
 			snprintf(buffer, 64, "%sConfig", idPostfix.c_str());
 
 		return BasicString(buffer);
+	}
+
+
+	RectF Level::GetBounds() const
+	{
+		return RectF(worldPos, size);
+	}
+
+	bool Level::IsPointInBounds(VectorF world_position) const
+	{
+		return Contains(GetBounds(), world_position);
 	}
 }

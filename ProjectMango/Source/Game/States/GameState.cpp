@@ -21,10 +21,9 @@ void GameState::Init()
 	ECS::RegisterAllComponents();
 	ECS::RegisterAllSystems();
 
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
-	ecs->AddComponent(Biome, biome_entity);
+	AddComponent(Biome, biome_entity);
 	Scene::BuildBiome( "Biome1", biome_entity );
 	activeLevel = biome_entity;
 
@@ -42,7 +41,7 @@ void GameState::Init()
 	audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
 
 	// create cursor
-	//ecs->CreateEntity("Cursor");
+	//CreateEntity("Cursor");
 	CreateCursor();
 }
 
@@ -76,9 +75,6 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
-
-
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);
@@ -106,8 +102,7 @@ void GameState::Exit()
 	//mGameData->scoreManager->reset();
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 	
-    ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ecs->Close();
+	ecs->systems.Close();
 }
 
 

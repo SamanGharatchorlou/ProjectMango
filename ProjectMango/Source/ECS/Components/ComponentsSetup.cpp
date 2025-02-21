@@ -33,7 +33,15 @@ static constexpr u32 c_rare = 4;
 
 void ECS::RegisterAllComponents()
 {
-	DEFINE_COMPONENT(Transform, c_allEntities);
+	struct Transforminitialiser : public ComponentInitialiser {
+		u32 GetType() override {
+			return Component::Transform;
+		} void OnInit() override {
+			ecs->RegisterComponent<ECS::Transform>(ECS::Transform::type(), c_allEntities);
+		} void Remove(ECS::Entity entity) {
+			ecs->RemoveComponent<ECS::Transform>(entity, ECS::Transform::type());
+		}
+	}; static Transforminitialiser s_Transforminitialiser;;
 	DEFINE_COMPONENT(Sprite, c_allEntities);
 	DEFINE_COMPONENT(Collider, c_allEntities);
 
@@ -67,8 +75,6 @@ void ECS::RemoveAllComponents(Entity entity)
 
 void ECS::RegisterAllSystems()
 {
-	EntityCoordinator* ecs = GameData::Get().ecs;
-
 	// Transform
 	Signature transformSignature = ArcheBit(Transform);
 	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
@@ -110,8 +116,8 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<UISystem>(UISignature);
 
 	// Spell
-	Signature SpellSignature = ArcheBit(Spell);
-	ecs->RegisterAndSystem<SpellSystem>(SpellSignature);
+	Signature SpellSignature = ArcheBit(Spell) | ArcheBit(SpellBook);
+	ecs->RegisterOrSystem<SpellSystem>(SpellSignature);
 
 	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
 	Signature ComponentsSignature = ArcheBit(Door) | ArcheBit(Spawner) | ArcheBit(Pickup);

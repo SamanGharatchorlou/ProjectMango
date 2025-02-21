@@ -5,35 +5,107 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/ComponentCommon.h"
+#include "Graphics/Raycast.h"
+#include "ECS/Components/Biome.h"
+#include "Core/Helpers.h"
+#include "ECS/Components/Physics.h"
 
 namespace ECS
 {
+	static bool CanMoveDistance(Entity entity, const ECS::Level* level, VectorF target_position)
+	{
+		ECS::Transform& transform = GetComponentRef(Transform, entity);
+
+		VectorF position = GetPosition(entity);
+		VectorF translation = target_position - position;
+		float length = translation.length();
+		if (length == 0)
+			return true;
+
+		RectF rect = GetRect(entity);
+		rect.Translate(translation);
+
+		VectorF start = translation.x < 0 ? rect.LeftCenter() : rect.RightCenter();
+		VectorF direction = translation.x < 0 ? VectorF(-1.0f, 0.0f) : VectorF(1.0f, 0.0f);
+
+		// is there anything blocking the path
+		RaycastResult horizontal_result;
+		Raycast(start, direction, length, horizontal_result);
+		if (horizontal_result.hasHit)
+			return false;
+
+		// is the tile at the new location valid
+		RaycastResult down_resut;
+		RaycastToFloor(start, down_resut);
+
+		if (down_resut.hasHit)
+		{
+			VectorF position = down_resut.hitPosition;
+			VectorI index = level->GetTileIndex(position);
+
+			if (index.isPositive())
+			{
+				int traversal_value = level->walkableTiles.get(index);
+				if (traversal_value == 1)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+
 	void PathingSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 		
  		for (Entity entity : entities)
 		{
-			Pathing& pathing = ecs->GetComponentRef(Pathing, entity);
-			AIController& aic = ecs->GetComponentRef(AIController, entity);
+			Pathing& pathing = GetComponentRef(Pathing, entity);
+			AIController& aic = GetComponentRef(AIController, entity);
 
-			if(aic.target != EntityInvalid)
+			// reset this every frame
+			pathing.hasValidPath = false;
+
+			const ECS::Level* level = ECS::Biome::GetLevelFromIndex(pathing.levelIndex);
+			if (!level)
 			{
-				VectorF target = GetPosition(aic.target);
-
-				// this indirectly sets the facing direction since its derived from the sprite flip
-				// I should reverse this order.... and set things like can change facing direction etc
-				Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-				if (sprite.canFlip)
-				{
-					VectorF enemy = GetPosition(entity);
-
-					if (target.x > enemy.x)
-						sprite.flip = SDL_FLIP_NONE;
-					else if (target.x < enemy.x)
-						sprite.flip = SDL_FLIP_HORIZONTAL;
-				}
+				DebugPrint(Warning, "Entity %s pathin level index invalid", GetName(entity));
+				continue;
 			}
+
+			if (!level->IsPointInBounds(pathing.targetLocation))
+				continue;
+
+			VectorF target = pathing.targetLocation;
+			VectorF position = GetPosition(entity);
+
+			// check the facing direction
+			SDL_RendererFlip desired_facing_direction = target.x > position.x ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+
+			// this indirectly sets the facing direction since its derived from the sprite flip
+			// I should reverse this order.... and set things like can change facing direction etc
+			Sprite& sprite = GetComponentRef(Sprite, entity);
+			if (sprite.canFlip)
+			{
+				sprite.flip = desired_facing_direction;
+			}
+
+			SDL_RendererFlip current_facing_direction = sprite.flip;
+			bool requires_flip = desired_facing_direction != current_facing_direction;
+			if (requires_flip)
+				continue;
+
+			bool can_move_to_target_location = CanMoveDistance(entity, level, pathing.targetLocation);
+			if (!can_move_to_target_location)
+				continue;
+
+			// passed all the tests, can move to the next location
+			pathing.hasValidPath = true;
+
+			// move the physics
+			Physics& physics = GetComponentRef(Physics, entity);
+			physics.speed += (pathing.targetLocation - position);
 		}
 	}
 }

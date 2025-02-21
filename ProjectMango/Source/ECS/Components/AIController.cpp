@@ -12,34 +12,26 @@ namespace ECS
 {
 	AIController::AIController() : 
 		target(EntityInvalid), 
-		moveToTarget(false), 
-		isAlert(false), 
+		canMoveToTarget(false),
 		attackCooldownTime(1.0f) 
 	{ }
 
-	float AIController::DistanceToTargetSquared() const
+	VectorF AIController::VectorToTarget() const
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		
-		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-
 		if(target != ECS::EntityInvalid)
 		{
-			VectorF distance = transform.GetObjectCenter() - GetPosition(target);
-			return distance.lengthSquared();
+			return GetPosition(entity) - GetPosition(target);
 		}
 
-		return -1.0f;
+		return VectorF();
 	}
 
 	bool AIController::CanMoveForward(int ease_factor, float dt) const
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-		ECS::Physics& physics = ecs->GetComponentRef(Physics, entity);
-		ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-		
-		const VectorI facing_direction = state.GetFacingDirection();
+		ECS::Physics& physics = GetComponentRef(Physics, entity);
+
+		const SDL_RendererFlip flip_direction = GetFacingDirection(entity);
+		const VectorI facing_direction = FacingDirectionToVector(flip_direction);
 		VectorF speed = physics.GetMovementEase(facing_direction.toFloat(), dt, ease_factor);
 
 		VectorF translation = speed * dt;

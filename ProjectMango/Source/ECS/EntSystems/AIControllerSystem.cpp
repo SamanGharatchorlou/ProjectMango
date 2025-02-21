@@ -17,15 +17,15 @@ namespace ECS
 {
 	void AIControllerSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		//
 		const FrameRateController& frc = FrameRateController::Get();
 
 		std::vector<Entity> dead_entities;
 
  		for (Entity entity : entities)
 		{
-			AIController& aic = ecs->GetComponentRef(AIController, entity);
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			AIController& aic = GetComponentRef(AIController, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 
 			if(state.actions.HasAction())
 			{
@@ -53,7 +53,7 @@ namespace ECS
 				}
 				else
 				{
-					if(Health* health = ecs->GetComponent(Health, entity))
+					if(Health* health = GetComponent(Health, entity))
 					{
 						if(health->currentHealth <= 0.0f)
 						{
@@ -70,11 +70,25 @@ namespace ECS
 			aic.target = Player::Get();
 
 			const ObjectConfig* config = GetObjectConfig(entity);
-			const VectorF detect_range = config->values.GetVectorF( "target_detect_range" );
-			const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
-			aic.isAlert = detect_range.x > distance.x && detect_range.y > distance.y;
+			const float detect_range = config->values.GetFloat( "alert_range" );
+			const float distance = (GetPosition(entity) - GetPosition(aic.target)).length();
+			bool target_in_range = distance < detect_range;
 
-			int a = 4;
+			// reset every frame
+			aic.canMoveToTarget = false;
+
+			if (target_in_range)
+			{
+				// try to flip to face the target direction
+				SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, aic.target);
+				SetFacingDirection(entity, desired_flip);
+
+				// if we're facing the correct direction
+				if (GetDesiredFacingDirection(entity, aic.target) == GetFacingDirection(entity))
+				{
+					aic.canMoveToTarget = true;
+				}
+			}
 		}
 
 		for( u32 i = 0; i < dead_entities.size(); i++ )

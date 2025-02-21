@@ -15,7 +15,6 @@ void PreGameState::Init()
 
 void PreGameState::Update(float dt) 
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ecs->UpdateSystems(dt);
 }
 

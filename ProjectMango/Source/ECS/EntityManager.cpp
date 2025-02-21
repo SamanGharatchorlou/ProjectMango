@@ -14,15 +14,14 @@ namespace ECS
 		if (entity == EntityInvalid)
 			return;
 		
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		if(EntityData* entity_data = ecs->GetComponent(EntityData, entity))
+		if(EntityData* entity_data = GetComponent(EntityData, entity))
 		{
 			for( u32 i = 0; i < entity_data->children.size(); i++ )
 			{
 				KillEntity(entity_data->children[i]);
 			}
 
-			if(EntityData* parent_entity_data = ecs->GetComponent(EntityData, entity_data->parent))
+			if(EntityData* parent_entity_data = GetComponent(EntityData, entity_data->parent))
 			{
 				EraseSwap(parent_entity_data->children, entity);
 			}

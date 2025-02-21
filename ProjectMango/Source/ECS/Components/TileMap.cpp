@@ -12,8 +12,8 @@
 //	if(!gs)
 //		return VectorF();
 //		
-//	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-//	const ECS::TileMap& map = ecs->GetComponentRef(TileMap, gs->activeMap);
+//	ECS::
+//	const ECS::TileMap& map = GetComponentRef(TileMap, gs->activeMap);
 //
 //	const VectorF window_size = GameData::Get().window->size();
 //	return window_size / map.tileMap.mapSize;
@@ -23,8 +23,8 @@
 //{
 //	if(const GameState* gs = GameData::Get().systemStateManager->GetActiveState<GameState>())
 //	{
-//		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-//		return ecs->GetComponent(TileMap, gs->activeMap);
+//		ECS::
+//		return GetComponent(TileMap, gs->activeMap);
 //	}
 //		
 //	return nullptr;

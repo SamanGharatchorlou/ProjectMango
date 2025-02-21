@@ -41,7 +41,7 @@ static int id_numb = 0;
 #define DoRemoveButton(type) \
     ImGui::PushID(id_numb++); do_dropdown = true; \
     if(ImGui::Button("-")) {\
-        ecs->RemoveComponent(type, s_selectedEntity); do_dropdown = false; }\
+        RemoveComponent(type, s_selectedEntity); do_dropdown = false; }\
     if(ImGui::IsItemHovered()) \
         ImGui::SetTooltip("%s", ECS::ComponentNames[(int)ECS::Component::type]); \
     ImGui::SameLine(); ImGui::PopID(); \
@@ -51,7 +51,7 @@ static int id_numb = 0;
         SetFlag<u64>(type, ECS::archetypeBit(menu(s_selectedEntity)));
 
 #define DoComponentDropdown(component) \
-    if(ecs->HasComponent(component,s_selectedEntity)) {\
+    if(HasComponent(component,s_selectedEntity)) {\
         DoRemoveButton(component); ComponentDropdown(Do##component##DebugMenu); }
 
 // Entity Window
@@ -59,14 +59,10 @@ void DebugMenu::DoEntitySystemWindow()
 {
     ImGui::Begin("Entity Window", nullptr, ImGuiWindowFlags_MenuBar);
     
-    ECS::EntityCoordinator* ecs = GameData::Get().ecs;
     ECS::EntityManager& em = ecs->entities;
-    //std::unordered_map<ECS::Entity, BasicString>& entityNames = em.entityNames;
-
 
     ImGui::Text("Selected Entity: %d", (int)s_selectedEntity);
     ImGui::InputText("Entity Filter", filterBuffer.buffer(), filterBuffer.bufferLength());
-
 
     const char* selected = ECS::GetName(s_selectedEntity);
     if (!selected)
@@ -74,7 +70,7 @@ void DebugMenu::DoEntitySystemWindow()
 
     if (ImGui::BeginCombo("Entities", selected, 0))
     {
-        const ECS::ComponentArray<ECS::EntityData>& entity_data = ecs->GetAllComponents(EntityData);
+        const ECS::ComponentArray<ECS::EntityData>& entity_data = GetAllComponents(EntityData);
         for (auto iter = entity_data.entityToComponent.begin(); iter != entity_data.entityToComponent.end(); iter++)
         {
             const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
@@ -104,11 +100,11 @@ void DebugMenu::DoEntitySystemWindow()
         ImGui::EndCombo();
     }
 
-    if (GameData::Get().ecs->IsAlive(s_selectedEntity)) 
+    if (ecs->IsAlive(s_selectedEntity)) 
     {
         if (ecs->IsAlive(s_selectedEntity))
         {
-			ECS::Health* health = ecs->GetComponent(Health, s_selectedEntity);
+			ECS::Health* health = GetComponent(Health, s_selectedEntity);
             if(ImGui::ActiveButton("Kill Entity", health != nullptr))
             {
                 health->currentHealth = 0;
@@ -116,7 +112,7 @@ void DebugMenu::DoEntitySystemWindow()
 
             if(ImGui::Button("Destroy Entity"))
             {
-                GameData::Get().ecs->entities.KillEntity(s_selectedEntity);
+                em.KillEntity(s_selectedEntity);
                 ImGui::End();
                 return;
             }
@@ -138,7 +134,7 @@ void DebugMenu::DoEntitySystemWindow()
             DoComponentDropdown(Health);
             DoComponentDropdown(Biome);
 
-            ECS::Archetype entity_type = ecs->entities.GetAchetype(s_selectedEntity);
+            ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
             for (u32 i = 0; i < ECS::Component::Count; i++) 
             {
                 if(entity_type & ECS::archetypeBit((ECS::Component::Type)i))
@@ -244,13 +240,7 @@ static DebugDrawType s_drawType = DebugDrawType::RectOutline;
 
 void DebugMenu::DoColliderWindow() 
 {
-    ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
-	//ECS::ComponentArray<ECS::Collider>& colliders =  ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
-	//std::vector<ECS::Collider>& collider_list = colliders.components;
-
-    const ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetComponents<ECS::Collider>(ECS::Component::Type::Collider);
-	//const std::vector<ECS::Collider>& collider_list = colliders.components;
+    const ECS::ComponentArray<ECS::Collider>& colliders = GetAllComponents(Collider);
 	const u32 count = (u32)colliders.entityToComponent.size();
 
     ImGui::Checkbox("Display Statics", &s_displayStatics);
@@ -260,15 +250,8 @@ void DebugMenu::DoColliderWindow()
 
     for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 	{
-	//for( u32 i = 0; i < collider_list.size(); i++ )
-	//{
-		//const ECS::Collider& collider = collider_list[i];
 		u32 component_index = iter->second;
 		const ECS::Collider& collider = colliders.GetComponentByIndex(component_index);
- //   // first we need to update the collider position with where the entity wants to be
- //   for(u32 i = 0; i < collider_list.size(); i++)
-	//{
- //       const ECS::Collider& collider = collider_list[i];
 
 		// ignore static colliders, they dont move
         bool is_static = collider.HasFlag(ECS::Collider::Static);
@@ -277,9 +260,8 @@ void DebugMenu::DoColliderWindow()
         if(!s_displayDynamics && !is_static)
             continue;
 
-        DebugMenu:DrawCollider(collider);
+        DrawCollider(collider);
 	}
-    
 }
 
 DebugMenu::GamePlayerState s_gamePlayerState;
@@ -307,8 +289,6 @@ static FrameData s_frameData;
 
 void DebugMenu::DoGameStateWindow() 
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
     if(ImGui::Button("Restart Game State"))
     {
         GameData::Get().systemStateManager->mStates.replaceState(new GameState);
@@ -347,7 +327,6 @@ void DebugMenu::DoGameStateWindow()
 
         if(s_frameData.update_timer.GetSeconds() > 1.0f)
         {
-
             s_frameData.update_timer.Restart();
             s_frameData.frameRate = fc.FrameCount() / fc.gameTimer.GetSeconds();
             s_frameData.gameTime = fc.frameTimer.GetMilliseconds();
@@ -372,7 +351,6 @@ void DebugMenu::DoGameStateWindow()
             ImGui::Text( "Frame wait time(ms): %.f (%.f)", s_frameData.waitTime, s_frameData.waitPercentage );
         }
 
-
         ImGui::TreePop();
     }
     
@@ -385,7 +363,7 @@ void DebugMenu::DoGameStateWindow()
         ImGui::Text( "Cursor sceen pos: %f, %f", input->cursorScreenPosition().x, input->cursorScreenPosition().y );
         ImGui::Text( "Cursor world pos: %f, %f", input->cursorWorldPosition().x, input->cursorWorldPosition().y );
 
-        ECS::ComponentArray<ECS::Collider>& colliders = ecs->GetAllComponents(Collider);
+        ECS::ComponentArray<ECS::Collider>& colliders = GetAllComponents(Collider);
 
         for (auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++)
         {
@@ -413,10 +391,9 @@ bool DebugMenu::DrawRaycasts()
 
 void DebugMenu::DoTweakerWindow() 
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = Player::Get();
 
-    if(ECS::Health* health = ecs->GetComponent(Health, entity))
+    if(ECS::Health* health = GetComponent(Health, entity))
     {
         ImGui::Checkbox("Player Invulnerable", &health->invulnerable);
     }
@@ -431,7 +408,7 @@ void DebugMenu::DoTweakerWindow()
         DebugDraw::RectOutline(rect, Colour::Green);
         DebugDraw::Point(rect.Center(), Colour::Green);
 
-        const ECS::Transform& transform = ecs->GetComponentRef(Transform, cam->targetEntity);
+        const ECS::Transform& transform = GetComponentRef(Transform, cam->targetEntity);
         DebugDraw::Point(transform.GetObjectCenter(),Colour::Red);
     }
 

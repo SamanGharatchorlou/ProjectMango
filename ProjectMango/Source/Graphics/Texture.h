@@ -8,25 +8,17 @@ public:
 
 	bool loadFromFile(const BasicString& filePath);
 
-	void render(const RectF& rect) const;
-	void render(const RectF& rect, SDL_RendererFlip flip) const;
 	// NOTE: angle in degress, NOT radians (why?? so annoying)
-	void render(const RectF& rect, double rotation, VectorF aboutPoint) const;
-	void render(const RectF& rect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip) const;
-
-	void renderSubTexture(const RectF& rect, const RectF& subRect) const;
-	void renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint) const;
-	void renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip) const;
-	void renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip) const;
-	void renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip, Uint8 tempAlpha);
-	void renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip, Colour colourMod);
+	void render(const RectF& rect, SDL_RendererFlip flip = SDL_FLIP_NONE, double rotation = 0, VectorF aboutPoint = VectorF());
+	void renderSubTexture(const RectF& rect, const RectF& subRect, double rotation = 0, VectorF aboutPoint = VectorF(), SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	void render(const QuadF& quad) const;
 
-	const Uint8 alpha() const;
+	void SetColourModThisFrame(Colour colour) { colourModThisFrame = colour; }
 
 public:
 	VectorF originalDimentions;
+	Colour colourModThisFrame;
 
 
 private:

@@ -8,12 +8,11 @@
 
 ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Biome;
 
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Biome& biome = ecs->GetComponentRef(Biome, entity);
+		ECS::Biome& biome = GetComponentRef(Biome, entity);
 		ImGui::PushID(entity + (int)type);
 
 		if(ImGui::TreeNode("Display Entities"))

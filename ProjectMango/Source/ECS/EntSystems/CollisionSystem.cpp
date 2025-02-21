@@ -25,25 +25,33 @@ namespace ECS
 			return VectorF::zero();
 
 		VectorF bump = direction.normalise();
+		VectorF bump_accum = direction.normalise();
 
 		RectF bump_rect = colliderA.rect.MoveCopy(bump);
 		bool bump_still_collides = colliderB.Intersects(bump_rect);
 
+		int counter = 0;
 		while(bump_still_collides)
 		{
-			bump += bump;
+			if (counter > 50)
+			{
+				return VectorF();
+			}
+
+			counter++;
+			bump_accum += bump;
 
 			bump_rect = colliderA.rect.MoveCopy(bump);
 			bump_still_collides = colliderB.Intersects(bump_rect);
 		}
 
-		return bump;
+		return bump_accum;
 	}
 
 	static void DebugTest(const Collider& collider)
 	{
 		// debugging
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 		const char* name = ECS::GetName(collider.entity);
 
 		if (collider.HasFlag(ECS::Collider::Static))
@@ -76,11 +84,10 @@ namespace ECS
 
 	void CollisionSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		const FrameRateController& frc = FrameRateController::Get();
 		const int frame_count = frc.FrameCount();
 
-		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
+		ComponentArray<Collider>& colliders =  GetAllComponents(Collider);
 
 		for (u32 i = 0; i < entitiesToDestroy.size(); i++)
 		{
@@ -93,7 +100,7 @@ namespace ECS
 			if(DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 
-			Collider& A_collider = ecs->GetComponentRef(Collider, entity);
+			Collider& A_collider = GetComponentRef(Collider, entity);
 
 			const char* debug_collider_a_name = ECS::GetName(entity);
 
@@ -121,7 +128,7 @@ namespace ECS
 			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
 				continue;
 
-			Damage* A_damage = ecs->GetComponent(Damage, entity);
+			Damage* A_damage = GetComponent(Damage, entity);
 
 			bool flip_x = false;
 			bool flip_y = false;
@@ -129,8 +136,13 @@ namespace ECS
 			// debugging
 			DebugTest(A_collider);
 
+			// to make sure we roll forward and back correctly, for sanity
+			int debug_counter = 0;
+
 			for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 			{
+				ASSERT(debug_counter == 0, "Not rolling forward and back correctly! early exit where there shouldnt be?");
+
 				Collider& B_collider = colliders.GetComponentByIndex(iter->second);
 				const char* debug_collider_b_name = ECS::GetName(B_collider.entity);
 				if(B_collider.entity == entity)
@@ -158,7 +170,7 @@ namespace ECS
 
 				if(A_collider.Intersects(B_collider.rect)) 
 				{
-					if(ECS::Pickup* pick_up = ecs->GetComponent(Pickup, B_collider.entity))
+					if(ECS::Pickup* pick_up = GetComponent(Pickup, B_collider.entity))
 					{
 						bool a = A_collider.HasFlag(Collider::PlayerOnly);
 						bool b = B_collider.HasFlag(Collider::IsPlayer);
@@ -206,26 +218,28 @@ namespace ECS
 						continue;
 
 					// Physical, can we slide 
-					VectorF& velocity = A_collider.allowedMovement;
-					if (velocity.isZero())
+					VectorF& allowed_movement = A_collider.allowedMovement;
+					if (allowed_movement.isZero())
 						continue;
 
 					// roll back collider, then roll it forward axis by axis to check which way it can move
 					A_collider.RollBackPosition();
+					debug_counter++;
 
 					// rolled back rect
 					RectF rect = A_collider.rect;
+					const RectF horizontal_rect = rect.MoveCopy(VectorF(allowed_movement.x, 0.0f));
+					const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, allowed_movement.y));
 
-					const RectF horizontal_rect = rect.MoveCopy(VectorF(velocity.x, 0.0f));
-					const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
-
+					// do we still collide with the rolled back collider, if so its bad and we're stuck
 					const bool still_interacts = A_collider.Intersects(B_collider.rect);
 					if (!still_interacts)
 					{
+						// figure out which axis we can still move in, so we can slide
 						const bool cannot_move_horizontally = B_collider.Intersects(horizontal_rect);
 						if(cannot_move_horizontally)
 						{
-							velocity.x = 0;
+							allowed_movement.x = 0;
 
 							// left/right collisions
 							if(A_collider.desiredMovement.x > 0.0f)
@@ -234,11 +248,10 @@ namespace ECS
 								A_collider.collisionSide[Collider::Left] = true;
 						}
 
-						//const RectF vertical_rect = rect.MoveCopy(VectorF(0.0f, velocity.y));
 						const bool cannot_move_vertically = B_collider.Intersects(vertical_rect);
 						if(cannot_move_vertically)
 						{
-							velocity.y = 0;
+							allowed_movement.y = 0;
 
 							float b_top = B_collider.rect.TopPoint();
 							float a_bot = A_collider.rect.BotPoint();
@@ -246,11 +259,11 @@ namespace ECS
 							{
 								float distance = b_top - a_bot - c_colliderGap;
 								if( distance > 0)
-									velocity.y = distance;
+									allowed_movement.y = distance;
 							}
 
 							// top/bot collisions
-							if( velocity.y == 0 )
+							if(allowed_movement.y == 0 )
 							{
 								if(A_collider.desiredMovement.y < 0.0f)
 									A_collider.collisionSide[Collider::Top] = true;
@@ -267,53 +280,69 @@ namespace ECS
 					}
 					else // we're still stuck
 					{
+						// Allowing moving away from the collider
 						VectorF B_center = B_collider.rect.Center();
-
-						float distance = VectorF::distanceSquared(rect.Center(), B_center);
 
 						// see if we are trying to move away from the collider, allow that even if we're still colliding
 						float distance_fwd_x = VectorF::distanceSquared(horizontal_rect.Center(), B_center);
 						float distance_fwd_y = VectorF::distanceSquared(vertical_rect.Center(), B_center);
-
+						float distance = VectorF::distanceSquared(rect.Center(), B_center);
 						if(distance_fwd_x < distance)
 						{
-							velocity.x = 0;
+							allowed_movement.x = 0;
 						}
-
 						if(distance_fwd_y < distance)
 						{
-							velocity.y = 0;
+							allowed_movement.y = 0;
+						}
+
+						if (Physics* A_physics = GetComponent(Physics, entity))
+						{
+ 							if (A_physics->onFloor)
+							{
+								if (B_collider.HasFlag(Collider::IsFloor))
+								{
+									// likely positive since we're inside it
+									float distance_to_floor = A_collider.rect.BotPoint() - B_collider.rect.TopPoint();
+									if (distance_to_floor > 0)
+									{
+										allowed_movement.y = -(distance_to_floor + c_colliderGap);
+									}
+								}
+							}
 						}
 
 						// gross we're stiil not able to move
-						if(A_collider.HasFlag(Collider::CanBump) && velocity.isZero())
+						if(A_collider.HasFlag(Collider::CanBump) && allowed_movement.isZero())
 						{	
 							VectorF bump = BumpCollider(A_collider, B_collider);
-							velocity = bump;
+							allowed_movement = bump;
 
 							DebugPrint(PriorityLevel::Debug, "Bumping %f, %f", bump.x, bump.y);
 						}
 					}
 
 					A_collider.RollForwardPosition();
+					debug_counter--;
 				}
             }
 
 			// only want to flip the direction once per loop, otherwise a double contact can double flip
 			if(flip_x || flip_y)
 			{
-				Physics& A_physics = ecs->GetComponentRef(Physics, entity);
-
-				if(flip_x)
-					A_physics.speed.x = A_physics.speed.x * -1;
-
-				if(flip_y)
-					A_physics.speed.y = A_physics.speed.y * -1;
-
-				// Rotate sprite
-				if(ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+				if (Physics* A_physics = GetComponent(Physics, entity))
 				{
-					sprite->rotation = A_physics.speed.getRotation();
+					if (flip_x)
+						A_physics->speed.x = A_physics->speed.x * -1;
+
+					if (flip_y)
+						A_physics->speed.y = A_physics->speed.y * -1;
+
+					// Rotate sprite
+					if (ECS::Sprite* sprite = GetComponent(Sprite, entity))
+					{
+						sprite->rotation = A_physics->speed.getRotation();
+					}
 				}
 
 				A_collider.reboundCount--;
@@ -327,25 +356,35 @@ namespace ECS
 
 	void CollisionSystem::FindValidPosition(Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Collider& collider = ecs->GetComponentRef(Collider, entity);
+		
+		Collider& A_collider = GetComponentRef(Collider, entity);
 
-		ComponentArray<Collider>& colliders =  ecs->GetAllComponents(Collider);
+		ComponentArray<Collider>& colliders =  GetAllComponents(Collider);
 		
 		for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 		{
-			Collider& collider_b = colliders.GetComponentByIndex(iter->second);
+			Collider& B_collider = colliders.GetComponentByIndex(iter->second);
 
-			if(collider_b.entity == entity)
+			if(B_collider.entity == entity)
 				continue;
 
-			if(collider_b.Intersects(collider.rect))
+			if(A_collider.Intersects(B_collider.rect))
 			{
-				VectorF bump = BumpCollider(collider, collider_b);
-				if(!bump.isZero())
+				if (Physics* A_physics = GetComponent(Physics, entity))
 				{
-					ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-					transform.SetWorldPosition(transform.worldPosition + bump);
+					if (A_physics->onFloor)
+					{
+						if (B_collider.HasFlag(Collider::IsFloor))
+						{
+							// likely positive since we're inside it
+							float distance_to_floor = A_collider.rect.BotPoint() - B_collider.rect.TopPoint();
+							if (distance_to_floor > 0)
+							{
+								ECS::Transform& transform = GetComponentRef(Transform, entity);
+								transform.SetWorldPosition( transform.worldPosition - (distance_to_floor + c_colliderGap) );
+							}
+						}
+					}
 				}
 			}
 		}

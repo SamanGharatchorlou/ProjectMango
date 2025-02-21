@@ -3798,25 +3798,25 @@ struct MyItem
     {
         const MyItem* a = (const MyItem*)lhs;
         const MyItem* b = (const MyItem*)rhs;
-        for (int n = 0; n < s_current_sort_specs->SpecsCount; n++)
-        {
-            // Here we identify columns using the ColumnUserID value that we ourselves passed to TableSetupColumn()
-            // We could also choose to identify columns based on their index (sort_spec->ColumnIndex), which is simpler!
-            const ImGuiTableColumnSortSpecs* sort_spec = &s_current_sort_specs->Specs[n];
-            int delta = 0;
-            switch (sort_spec->ColumnUserID)
-            {
-            case MyItemColumnID_ID:             delta = (a->ID - b->ID);                break;
-            case MyItemColumnID_Name:           delta = (strcmp(a->Name, b->Name));     break;
-            case MyItemColumnID_Quantity:       delta = (a->Quantity - b->Quantity);    break;
-            case MyItemColumnID_Description:    delta = (strcmp(a->Name, b->Name));     break;
-            default: IM_ASSERT(0); break;
-            }
-            if (delta > 0)
-                return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? +1 : -1;
-            if (delta < 0)
-                return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? -1 : +1;
-        }
+        //for (int n = 0; n < s_current_sort_spSpecsCount; n++)
+        //{
+        //    // Here we identify columns using the ColumnUserID value that we ourselves passed to TableSetupColumn()
+        //    // We could also choose to identify columns based on their index (sort_spec->ColumnIndex), which is simpler!
+        //    const ImGuiTableColumnSortSpecs* sort_spec = &s_current_sort_spSpecs[n];
+        //    int delta = 0;
+        //    switch (sort_spec->ColumnUserID)
+        //    {
+        //    case MyItemColumnID_ID:             delta = (a->ID - b->ID);                break;
+        //    case MyItemColumnID_Name:           delta = (strcmp(a->Name, b->Name));     break;
+        //    case MyItemColumnID_Quantity:       delta = (a->Quantity - b->Quantity);    break;
+        //    case MyItemColumnID_Description:    delta = (strcmp(a->Name, b->Name));     break;
+        //    default: IM_ASSERT(0); break;
+        //    }
+        //    if (delta > 0)
+        //        return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? +1 : -1;
+        //    if (delta < 0)
+        //        return (sort_spec->SortDirection == ImGuiSortDirection_Ascending) ? -1 : +1;
+        //}
 
         // qsort() is instable so always return a way to differenciate items.
         // Your own compare function may want to avoid fallback on implicit sort specs e.g. a Name compare if it wasn't already part of the sort specs.
@@ -5312,12 +5312,12 @@ static void ShowDemoWindowTables()
             ImGui::TableHeadersRow();
 
             // Sort our data if sort specs have been changed!
-            if (ImGuiTableSortSpecs* sort_specs = ImGui::TableGetSortSpecs())
-                if (sort_specs->SpecsDirty)
-                {
-                    MyItem::SortWithSortSpecs(sort_specs, items.Data, items.Size);
-                    sort_specs->SpecsDirty = false;
-                }
+            //if (ImGuiTableSortSpecs* sort_specs = ImGui::TableGetSortSpecs())
+            //    if (sort_spSpecsDirty)
+            //    {
+            //        MyItem::SortWithSortSpecs(sort_specs, items.Data, items.Size);
+            //        sort_spSpecsDirty = false;
+            //    }
 
             // Demonstrate using clipper for large vertical lists
             ImGuiListClipper clipper;
@@ -5525,13 +5525,13 @@ static void ShowDemoWindowTables()
 
             // Sort our data if sort specs have been changed!
             ImGuiTableSortSpecs* sort_specs = ImGui::TableGetSortSpecs();
-            if (sort_specs && sort_specs->SpecsDirty)
-                items_need_sort = true;
-            if (sort_specs && items_need_sort && items.Size > 1)
-            {
-                MyItem::SortWithSortSpecs(sort_specs, items.Data, items.Size);
-                sort_specs->SpecsDirty = false;
-            }
+            //if (sort_specs && sort_spSpecsDirty)
+            //    items_need_sort = true;
+            //if (sort_specs && items_need_sort && items.Size > 1)
+            //{
+            //    MyItem::SortWithSortSpecs(sort_specs, items.Data, items.Size);
+            //    sort_spSpecsDirty = false;
+            //}
             items_need_sort = false;
 
             // Take note of whether we are currently sorting based on the Quantity field,

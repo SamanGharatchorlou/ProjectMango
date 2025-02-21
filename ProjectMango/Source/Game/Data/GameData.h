@@ -8,6 +8,9 @@ class AudioManager;
 struct SystemStateManager;
 namespace ECS { struct EntityCoordinator; }
 
+// special case, since we use it everywhere
+extern ECS::EntityCoordinator* ecs;
+
 struct GameData
 {
 	static GameData& Get();
@@ -28,5 +31,6 @@ struct GameData
 	RenderManager* renderManager = nullptr;
 	AudioManager* audioManager = nullptr;
 	SystemStateManager* systemStateManager = nullptr;
-	ECS::EntityCoordinator* ecs = nullptr;
+	//ECS::EntityCoordinator* ecs = nullptr;
 };
+

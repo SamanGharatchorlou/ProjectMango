@@ -26,16 +26,15 @@ std::vector<BasicString> s_animationLog;
 
 ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Animator;
 
-	if (!ecs->HasComponent(Transform, entity))
+	if (!HasComponent(Transform, entity))
 		return type;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		const ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+		const ECS::Animator& animator = GetComponentRef(Animator, entity);
 
 		ActionState active_animation = animator.GetActiveAnimation().action;
 		if(active_animation != s_activeAction)
@@ -69,16 +68,15 @@ ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 
 ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Sprite;
 
-	if (!ecs->HasComponent(Transform, entity))
+	if (!HasComponent(Transform, entity))
 		return type;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		const ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+		const ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
@@ -106,9 +104,8 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 
 		if (ImGui::TreeNode("Display"))
 		{
-			ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
-			ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-
+			ECS::Transform& transform = GetComponentRef(Transform, entity);
+			ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 
 			ImGui::Checkbox("Render Rect", &s_renderRects.render);
 			if(s_renderRects.render)

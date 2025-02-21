@@ -6,18 +6,17 @@
 
 ECS::Component::Type DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::PlayerController;
 
-	//if (ecs->HasComponent(entity, type))
+	//if (HasComponent(entity, type))
 	{
 		if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 		{
 			ImGui::PushID(entity + (int)type);
 			if (ImGui::TreeNode("Component Data"))
 			{
-				//ECS::PlayerController& pc = ecs->GetComponentRef(PlayerController, entity);
-				ECS::CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+				//ECS::PlayerController& pc = GetComponentRef(PlayerController, entity);
+				ECS::CharacterState& state = GetComponentRef(CharacterState, entity);
 
 				//ImGui::VectorText("Movement Direction", state.movementDirection);
 				//ImGui::VectorText("Facing Direction", state.facingDirection);

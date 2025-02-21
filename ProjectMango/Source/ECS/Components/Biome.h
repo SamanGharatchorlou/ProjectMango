@@ -56,6 +56,9 @@ namespace ECS
 
 		VectorI GetTileIndex(VectorF position) const;
 		RectF GetWalkableTileRect(VectorI index) const;
+		RectF GetBounds() const;
+
+		bool IsPointInBounds(VectorF world_position) const;
 	};
 
 	struct Biome
@@ -66,6 +69,7 @@ namespace ECS
 
 		VectorF aabb[2];
 
+		static const Level* GetLevelFromIndex(u32 level_index);
 		static const Level& GetLevel(ECS::Entity entity);
 		static const Level& GetLevel(VectorF position);
 		static const Level& GetVisibleLevel();

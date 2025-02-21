@@ -88,7 +88,6 @@ namespace AnimationEditor
         if( ImGui::TreeNode("Show Frame Split") )
         {
             // file select dropdown
-            ECS::EntityCoordinator* ecs = GameData::Get().ecs;
             if (ImGui::BeginCombo("Sprite Sheet", s_state.selectedSpriteSheet.c_str()))
             {
                 FileManager* fm = FileManager::Get();
@@ -112,7 +111,7 @@ namespace AnimationEditor
             // animation editing
             if( strlen(s_state.selectedSpriteSheet.c_str()) > 0 )
             {
-                if(const Texture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Image_Animations ))
+                if(Texture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Image_Animations ))
 		        {
 			        VectorF dim = selected_tx->originalDimentions;
 			        VectorF texture_size(window_size.x, (window_size.x * dim.y) / dim. x);

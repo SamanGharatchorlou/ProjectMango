@@ -57,12 +57,11 @@ void DebugMenu::DrawCollider(const ECS::Collider& collider)
 
 ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Collider;
 
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Collider& collider = ecs->GetComponentRef(Collider, entity);
+		ECS::Collider& collider = GetComponentRef(Collider, entity);
 		ImGui::PushID(entity + (int)type);
 
         if (collider.HasFlag(ECS::Collider::Static))

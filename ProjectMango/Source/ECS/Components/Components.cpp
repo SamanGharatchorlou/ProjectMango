@@ -19,11 +19,10 @@ namespace ECS
 {
 	Entity CreateEntity(const char* id, const char* config)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		Entity entity = ecs->CreateNewEntity();
 		if (id) 
 		{ 
-			EntityData& ed = ecs->AddComponent(EntityData, entity); 
+			EntityData& ed = AddComponent(EntityData, entity); 
 			ed.id = id; 
 			ed.config = config; 
 		}
@@ -32,11 +31,10 @@ namespace ECS
 
 	Entity CreateEntity(const char* id, bool config_postfix)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		Entity entity = ecs->CreateNewEntity();
 		if (id)
 		{
-			EntityData& ed = ecs->AddComponent(EntityData, entity);
+			EntityData& ed = AddComponent(EntityData, entity);
 			ed.id = id;
 			if (config_postfix)
 			{
@@ -51,17 +49,16 @@ namespace ECS
 
 	const char* GetName(Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		EntityData& ed = ecs->GetComponentRef(EntityData, entity);
-		return ed.id.c_str();
+		if(EntityData* ed = GetComponent(EntityData, entity))
+			return ed->id.c_str();
+
+		return nullptr;
 	}
 
 	const ObjectConfig* GetObjectConfig(Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		const ObjectConfig* config = nullptr;
-		if (const EntityData* ed = ecs->GetComponent(EntityData, entity))
+		if (const EntityData* ed = GetComponent(EntityData, entity))
 		{
 			if (ed->config.empty())
 			{
@@ -98,32 +95,30 @@ namespace ECS
 
 	void EntityData::SetParent(Entity entity, Entity parent)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		// todo: now that I default add this to every entity i can remove this first check right?
 		// set new entity parent
-		EntityData* entity_data = ecs->GetComponent(EntityData, entity);
+		EntityData* entity_data = GetComponent(EntityData, entity);
 		if(!entity_data)
 		{
-			ecs->AddComponent(EntityData, entity);
-			entity_data = ecs->GetComponent(EntityData, entity);
+			AddComponent(EntityData, entity);
+			entity_data = GetComponent(EntityData, entity);
 		}
 
 		// remove ourself from the old parent, if there was one
 		if( entity_data->parent != EntityInvalid )
 		{
-			EntityData& old_parent_entity_data = ecs->GetComponentRef(EntityData, entity_data->parent);
+			EntityData& old_parent_entity_data = GetComponentRef(EntityData, entity_data->parent);
 			EraseSwap(old_parent_entity_data.children, entity);
 		}
 
 		entity_data->parent = parent;
 		
 		// add the child to the parent
-		EntityData* parent_entity_data = ecs->GetComponent(EntityData, parent);
+		EntityData* parent_entity_data = GetComponent(EntityData, parent);
 		if(!parent_entity_data)
 		{
-			ecs->AddComponent(EntityData, parent);
-			parent_entity_data = ecs->GetComponent(EntityData, parent);
+			AddComponent(EntityData, parent);
+			parent_entity_data = GetComponent(EntityData, parent);
 		}
 
 		PushBackUnique(parent_entity_data->children, entity);
@@ -181,11 +176,9 @@ namespace ECS
 
 		localPosition = pos;
 		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		// must have a parent by this point
-		EntityData& entity_data = ecs->GetComponentRef(EntityData, entity);
-		Transform& parent_transform = ecs->GetComponentRef(Transform, entity_data.parent);
+		EntityData& entity_data = GetComponentRef(EntityData, entity);
+		Transform& parent_transform = GetComponentRef(Transform, entity_data.parent);
 		SetWorldPosition(parent_transform.worldPosition + localPosition);
 
 		TransformSystem::UpdateChildrenTransforms(entity_data.parent);
@@ -197,19 +190,17 @@ namespace ECS
 		worldPosition = pos;
 		
 		// update collider positions
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if (Collider* collider = ecs->GetComponent(Collider, entity))
+		if (Collider* collider = GetComponent(Collider, entity))
 		{
 			collider->UpdateFromTransform(this);
 		}
 	}
 
-	void Transform::SetWorldPositionCenter(VectorF pos)
+	void Transform::SetObjectCenter(VectorF pos)
 	{
 		VectorF object_size = size;
 
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(Collider* collider = ecs->GetComponent(Collider, entity))
+		if(Collider* collider = GetComponent(Collider, entity))
 		{
 			if(!collider->initialised)
 				DebugPrint(Warning, "Collider has not been init'd, has no size");
@@ -223,8 +214,7 @@ namespace ECS
 
 	VectorF Transform::GetObjectCenter() const
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(const Collider* collider = ecs->GetComponent(Collider, entity))
+		if(const Collider* collider = GetComponent(Collider, entity))
 		{
 			return collider->rect.Center();
 		}
@@ -238,8 +228,7 @@ namespace ECS
 
 	VectorF Transform::GetObjectCenter(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+		const Transform& transform = GetComponentRef(Transform, entity);
 		return transform.GetObjectCenter();
 	}
 	
@@ -294,32 +283,7 @@ namespace ECS
 			isRanged = config->values.GetBool("ranged", true);
 			isMelee = config->values.GetBool("melee", false);
 		}
-	}
-
-	VectorI CharacterState::GetFacingDirection() const
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-
-		int direction = sprite.IsFlipped() ? -1 : 1;
-
-		return VectorI(direction, 0);
-	}
-
-	void CharacterState::FlipFacingDirection()
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
-
-		if( sprite.canFlip )
-		{
-			if( sprite.flip == SDL_FLIP_HORIZONTAL)
-				sprite.flip = SDL_FLIP_NONE;
-			else
-				sprite.flip = SDL_FLIP_HORIZONTAL;
-		}
-	}
-	
+	}	
 
 	// PlayerController
 	// ------------------------------------------------------------------
@@ -328,8 +292,14 @@ namespace ECS
 
 	// Pathing
 	// ------------------------------------------------------------------
-	Pathing::Pathing() : target(EntityInvalid) { }
+	Pathing::Pathing() /*: target(EntityInvalid)*/ { }
 
+	void Pathing::Init()
+	{
+		VectorF pos = GetPosition(entity);
+		const Level& level = Biome::GetLevel(pos);
+		levelIndex = level.index;
+	}
 	
 	// Damage
 	// ------------------------------------------------------------------
@@ -350,18 +320,16 @@ namespace ECS
 
 	void Damage::ApplyTo(Entity _entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		PushBackUnique(appliedTo, _entity);
 
-		if(Health* health = ecs->GetComponent(Health, _entity))
+		if(Health* health = GetComponent(Health, _entity))
 			health->ApplyDamage(*this);
 
-		if(Physics* physics = ecs->GetComponent(Physics, _entity))
+		if(Physics* physics = GetComponent(Physics, _entity))
 		{
 			float speed = physics->speed.x;
 
-			const Transform& transform = ecs->GetComponentRef(Transform, _entity);
+			const Transform& transform = GetComponentRef(Transform, _entity);
 
 			const float force_direction = source.x < transform.GetObjectCenter().x ? force : -force;
 			const float impulse = force_direction / physics->mass;
@@ -399,16 +367,14 @@ namespace ECS
 		spawnId = spawn_id;
 		entitySpawnFn = spawnFn;
 
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		ECS::Animator& animator = ecs->GetComponentRef(Animator, entity);
+		ECS::Animator& animator = GetComponentRef(Animator, entity);
 		animator.StartAnimation(ActionState::Active);
 		return true;
 	}
 
 	void Spawner::Update()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		Animator& animator = GetComponentRef(Animator, entity);
 
 		if(animator.GetActiveAnimation().action == ActionState::Active)
 		{
@@ -421,7 +387,7 @@ namespace ECS
 				emd.id = spawnId;
 
 				Entity spawned_entity = entitySpawnFn(emd);
-				ECS::Transform& transform = ecs->GetComponentRef(Transform, spawned_entity);
+				ECS::Transform& transform = GetComponentRef(Transform, spawned_entity);
 				VectorF translation = spawner_center - transform.GetObjectCenter();
 				transform.SetWorldPosition(transform.worldPosition + translation);;
 
@@ -456,36 +422,33 @@ namespace ECS
 
 	void Door::Init()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		Animator& animator = GetComponentRef(Animator, entity);
 		animator.StartAnimation(ActionState::Close);
 	}
 
 	void Door::GenerateColliders(float width)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		Entity top = CreateEntity("top door collider");
 		Entity bot = CreateEntity("bot door collider");
-		ecs->AddComponent(Transform, top);
-		ecs->AddComponent(Transform, bot);		
-		ecs->AddComponent(Collider, top);
-		ecs->AddComponent(Collider, bot);
+		AddComponent(Transform, top);
+		AddComponent(Transform, bot);		
+		AddComponent(Collider, top);
+		AddComponent(Collider, bot);
 		colliders[0] = top;
 		colliders[1] = bot;
 
-		
 		ECS::EntityData::SetParent(top, entity);
 		ECS::EntityData::SetParent(bot, entity);
 
-		const Transform& door_transform = ecs->GetComponentRef(Transform, entity);
+		const Transform& door_transform = GetComponentRef(Transform, entity);
 		const VectorF size(door_transform.size.x * width, door_transform.size.y * 0.5f);
 		const float x_pos = door_transform.worldPosition.x + door_transform.size.x * 0.5f - size.x * 0.5f;
 		const VectorF pos(x_pos, door_transform.worldPosition.y);
 		
-		Transform& top_transform = ecs->GetComponentRef(Transform, top);
-		Transform& bot_transform = ecs->GetComponentRef(Transform, bot);
-		Collider& top_collider = ecs->GetComponentRef(Collider, top);
-		Collider& bot_collider = ecs->GetComponentRef(Collider, bot);
+		Transform& top_transform = GetComponentRef(Transform, top);
+		Transform& bot_transform = GetComponentRef(Transform, bot);
+		Collider& top_collider = GetComponentRef(Collider, top);
+		Collider& bot_collider = GetComponentRef(Collider, bot);
 
 		VectorF door_part_size = VectorF(door_transform.size.x, door_transform.size.y * 0.5f);
 
@@ -512,8 +475,7 @@ namespace ECS
 
 	void Door::Update()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		Animator& animator = GetComponentRef(Animator, entity);
 		const Animation& animation = animator.GetActiveAnimation();
 	
 		Entity player_entity = Player::Get();
@@ -521,9 +483,12 @@ namespace ECS
 		if(!ecs->IsAlive(player_entity))
 			return;
 
-		const VectorF door_pos = GetPosition(entity);
-		const bool withing_range = std::abs(player_pos.x - door_pos.x) < triggerRange;
-		if(withing_range)
+		const RectF door_rect = GetRect(entity);
+		VectorF door_pos = door_rect.Center();
+
+		const bool withing_range_x = std::abs(player_pos.x - door_pos.x) < triggerRange;
+		const bool withing_range_z = std::abs(player_pos.y - door_pos.y) < door_rect.Height();
+		if(withing_range_x && withing_range_z)
 		{
 			if(animation.action != ActionState::Open)
 			{
@@ -550,15 +515,15 @@ namespace ECS
 				animation_progress = 0.0f;
 		}
 
-		const Transform& transform = ecs->GetComponentRef(Transform, entity);
+		const Transform& transform = GetComponentRef(Transform, entity);
 		float travel_distance = transform.size.y * 0.5f;
 
-		Transform& top_transform = ecs->GetComponentRef(Transform, colliders[0]);
+		Transform& top_transform = GetComponentRef(Transform, colliders[0]);
 		VectorF top_local_start_position = VectorF(top_transform.localPosition.x, 0.0f);
 		VectorF top_local_current_position = top_local_start_position - VectorF(0, travel_distance * animation_progress);
 		top_transform.SetLocalPosition(top_local_current_position);
 		
-		Transform& bot_transform = ecs->GetComponentRef(Transform, colliders[1]);
+		Transform& bot_transform = GetComponentRef(Transform, colliders[1]);
 		VectorF bot_local_start_position = VectorF(bot_transform.localPosition.x, transform.size.y * 0.5f);
 		VectorF bot_local_current_position = bot_local_start_position + VectorF(0, travel_distance * animation_progress);
 		bot_transform.SetLocalPosition(bot_local_current_position);
@@ -573,8 +538,7 @@ namespace ECS
 	{
 		if (!pickedUp)
 		{
-			EntityCoordinator* ecs = GameData::Get().ecs;
-			if (Collider* collider = ecs->GetComponent(Collider, entity))
+			if (Collider* collider = GetComponent(Collider, entity))
 			{
 				if (collider->HasCollided())
 				{
@@ -597,8 +561,7 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Entity GetParent(Entity child)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(EntityData* ed = ecs->GetComponent(EntityData, child))
+		if(EntityData* ed = GetComponent(EntityData, child))
 		{
 			return ed->parent;
 		}
@@ -607,9 +570,8 @@ namespace ECS
 	}
 
 	VectorF GetPosition(Entity entity)
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(Transform* transform = ecs->GetComponent(Transform, entity))
+	{	
+		if(Transform* transform = GetComponent(Transform, entity))
 		{
 			return transform->GetObjectCenter();
 		}
@@ -620,12 +582,11 @@ namespace ECS
 	
 	RectF GetRect(Entity entity)
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(const Collider* collider = ecs->GetComponent(Collider, entity))
+		if(const Collider* collider = GetComponent(Collider, entity))
 		{
 			return collider->rect;
 		}
-		else if(Transform* transform = ecs->GetComponent(Transform, entity))
+		else if(Transform* transform = GetComponent(Transform, entity))
 		{
 			return transform->GetRect();
 		}
@@ -635,10 +596,9 @@ namespace ECS
 
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-		if (const Transform* transform = ecs->GetComponent(Transform, entity))
+		if (const Transform* transform = GetComponent(Transform, entity))
 		{
-			if (const ECS::Sprite* sprite = ecs->GetComponent(Sprite, entity))
+			if (const ECS::Sprite* sprite = GetComponent(Sprite, entity))
 			{
 				out_rotation = sprite->rotation;
 
@@ -649,5 +609,50 @@ namespace ECS
 		}
 
 		return false;
+	}
+
+	SDL_RendererFlip GetFacingDirection(Entity entity)
+	{
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+		return sprite.flip;
+	}
+
+	VectorI GetFacingDirectionVector(Entity entity)
+	{
+		return FacingDirectionToVector(GetFacingDirection(entity));
+	}
+
+	VectorI FacingDirectionToVector(SDL_RendererFlip facing)
+	{
+		int direction = (facing == SDL_FLIP_HORIZONTAL) ? -1 : 1;
+		return VectorI(direction, 0);
+	}
+
+	void SetFacingDirection(Entity entity, SDL_RendererFlip direction)
+	{
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+
+		if (sprite.canFlip)
+			sprite.flip = direction;
+	}
+
+	void FlipFacingDirection(Entity entity)
+	{
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+
+		if (sprite.canFlip)
+		{
+			if (sprite.flip == SDL_FLIP_HORIZONTAL)
+				sprite.flip = SDL_FLIP_NONE;
+			else
+				sprite.flip = SDL_FLIP_HORIZONTAL;
+		}
+	}
+
+	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target_entity)
+	{
+		VectorF self = GetPosition(entity);
+		VectorF target = GetPosition(target_entity);
+		return (target.x > self.x) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 	}
 }

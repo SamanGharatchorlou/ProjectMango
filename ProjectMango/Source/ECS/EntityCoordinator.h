@@ -17,7 +17,7 @@ namespace ECS
 	{
 		EntityCoordinator() { }
 
-		void Close()
+		~EntityCoordinator()
 		{
 			entities.Close();
 			components.Close();
@@ -99,14 +99,14 @@ namespace ECS
 		SystemManager systems;
 	};
 
-#define RegisterComponent(compType, reserve) RegisterComponent<ECS::compType>(ECS::compType::type(), reserve)
+#define RegisterComponent(compType, reserve) ecs->RegisterComponent<ECS::compType>(ECS::compType::type(), reserve)
 
-#define AddComponent(compType, entity) AddComponent<ECS::compType>(entity, ECS::compType::type())
-#define RemoveComponent(compType, entity) RemoveComponent<ECS::compType>(entity, ECS::compType::type())
+#define AddComponent(compType, entity) ecs->AddComponent<ECS::compType>(entity, ECS::compType::type())
+#define RemoveComponent(compType, entity) ecs->RemoveComponent<ECS::compType>(entity, ECS::compType::type())
 
-#define HasComponent(compType, entity) HasComponent(entity, ECS::compType::type())
-#define GetComponent(compType, entity) GetComponent<ECS::compType>(entity, ECS::compType::type())
-#define GetComponentRef(compType, entity) GetComponentRef<ECS::compType>(entity, ECS::compType::type())
+#define HasComponent(compType, entity) ecs->HasComponent(entity, ECS::compType::type())
+#define GetComponent(compType, entity) ecs->GetComponent<ECS::compType>(entity, ECS::compType::type())
+#define GetComponentRef(compType, entity) ecs->GetComponentRef<ECS::compType>(entity, ECS::compType::type())
 
-#define GetAllComponents(compType) GetComponents<ECS::compType>(ECS::compType::type())
+#define GetAllComponents(compType) ecs->GetComponents<ECS::compType>(ECS::compType::type())
 }

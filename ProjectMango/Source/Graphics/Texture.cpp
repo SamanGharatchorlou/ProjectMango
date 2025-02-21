@@ -4,7 +4,6 @@
 
 Texture::Texture() : texture(nullptr), renderer(nullptr) { }
 
-
 Texture::~Texture()
 {
 	if (texture)
@@ -12,7 +11,6 @@ Texture::~Texture()
 		SDL_DestroyTexture(texture);
 	}
 }
-
 
 bool Texture::loadFromFile(const BasicString& filePath)
 {
@@ -65,125 +63,18 @@ bool Texture::loadFromFile(const BasicString& filePath)
 	return texture != nullptr;
 }
 
-
-const Uint8 Texture::alpha() const
-{
-	Uint8 texAlpha;
-
-	SDL_GetTextureAlphaMod(texture, &texAlpha);
-
-	return texAlpha;
-}
-
-
-void Texture::render(const RectF& rect, SDL_RendererFlip flip) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-
-	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, 0.0, NULL, flip);
-}
-
-
-void Texture::render(const RectF& rect) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-
-	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, 0.0, NULL, SDL_FLIP_NONE);
-}
-
-
 // Renders texture with the roation specified
 // NOTE: the about point is relative to the rect e.g. about the center would be rect.size()/2, not rect.center()
-void Texture::render(const RectF& rect, double rotation, VectorF aboutPoint) const
+void Texture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Point point = { (int)(aboutPoint.x + 0.5f), (int)(aboutPoint.y + 0.5f) };
 
-	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, rotation, &point, SDL_FLIP_NONE);
-}
-
-
-// Renders part of the texture, e.g. a tile in a set with the roation specified
-void Texture::render(const RectF& rect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Point point = { (int)aboutPoint.x, (int)aboutPoint.y };
-
 	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, rotation, &point, flip);
 }
 
-
-// Renders part of the texture, e.g. a tile in a set
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Rect subQuad = subRect.toSDLRect();
-
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, 0.0, NULL, SDL_FLIP_NONE);
-}
-
-
-// Renders part of the texture, e.g. a tile in a set with the rotation specified
-// NOTE: the about point is relative to the rect e.g. about the center would be rect.size()/2, not rect.center()
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Rect subQuad = subRect.toSDLRect();
-
-	// rotate about this point
-	SDL_Point point = { (int)aboutPoint.x, (int)aboutPoint.y };
-
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, rotation, &point, SDL_FLIP_NONE);
-}
-
-
-// Renders part of the texture, e.g. a tile in a set with the flip specified
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip) const
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Rect subQuad = subRect.toSDLRect();
-
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, 0.0, NULL, flip);
-}
-
-
-// Renders part of the texture, e.g. a tile in a set with the flip and alpha specified
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip, Uint8 tempAlpha)
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Rect subQuad = subRect.toSDLRect();
-
-	// Temporarily set the alpha 
-	const Uint8 currentAlpha = alpha();
-
-	SDL_SetTextureAlphaMod(texture, tempAlpha);
-
-
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, 0.0, NULL, flip);
-
-	// Set the alpha back to the default value
-	SDL_SetTextureAlphaMod(texture, tempAlpha);
-}
-
-
-// Renders part of the texture, e.g. a tile in a set with the flip and alpha specified. Also apply a colour mod.
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, SDL_RendererFlip flip, Colour colourMod)
-{
-	SDL_Rect renderQuad = rect.toSDLRect();
-	SDL_Rect subQuad = subRect.toSDLRect();
-
-	// Apply temporary colour modulation 
-	SDL_SetTextureColorMod(texture, colourMod.r, colourMod.g, colourMod.b);
-
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, 0.0, NULL, flip);
-
-	// Remove colour modulation
-	SDL_SetTextureColorMod(texture, 255, 255, 255);
-}
-
-
 // Renders part of the texture, e.g. a tile in a set with the roation specified
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip) const
+void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Rect subQuad = subRect.toSDLRect();
@@ -191,9 +82,23 @@ void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double r
 	// rotate about this point
 	SDL_Point point = aboutPoint.toSDLPoint();
 
-	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, rotation, &point, flip);
-}
+	// Apply temporary colour modulation Colour
+	int col_success = SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
+	if (col_success == -1)
+		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
 
+	// Apply temporary alpha modulation Colour
+	int alp_success = SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
+	if (alp_success == -1)
+		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
+
+	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, rotation, &point, flip);
+
+	// reset the colour mod each frame
+	colourModThisFrame = Colour();
+	SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
+	SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
+}
 
 // Render quad with an aboutpoint set.
 void Texture::render(const QuadF& quad) const

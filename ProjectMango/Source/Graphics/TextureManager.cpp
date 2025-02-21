@@ -195,32 +195,8 @@ std::vector<const TextureMap* > TextureManager::FindTextureMaps(const FileManage
 		}
 	}
 
-	//std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
-	//for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
-	//{
-	//	if (folder == iter->first)
-	//		return &iter->second;
-	//}
-
 	if(maps.size() == 0)
 		DebugPrint(Warning, "There is no texture Map in the folder '%s'", FileManager::Get()->folderPath(folder).c_str());
 
 	return maps;
-}
-
-Texture* TextureManager::searchAllFiles(const char* label) const
-{
-	Texture* texture = nullptr;
-
-	std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
-	//for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
-	//{
-	//	const TextureMap* textureMap = findTextureMap(iter->first);
-	//	texture = textureMap->find(label);
-
-	//	if (texture != nullptr)
-	//		break;
-	//}
-
-	return texture;
 }

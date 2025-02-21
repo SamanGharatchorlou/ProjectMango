@@ -19,17 +19,16 @@ typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 
 static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
 	if (const ObjectConfig* config = ECS::GetObjectConfig(entity))
 	{
 		// Transform
-		ECS::Transform& transform = ecs->AddComponent(Transform, entity);
+		ECS::Transform& transform = AddComponent(Transform, entity);
 		VectorF pos = emd.position - (transform.size / 2.0f);
 		transform.Init(config, pos);
 
 		// Sprite
-		ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
+		ECS::Sprite& sprite = AddComponent(Sprite, entity);
 		sprite.renderLayer = 6;
 		sprite.canFlip = false;
 
@@ -45,12 +44,10 @@ static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
 {
 	ECS::Entity entity = CreateBasicObject(emd);
-
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 	// Animation
-	ECS::Animator& animator = ecs->AddComponent(Animator, entity);
+	ECS::Animator& animator = AddComponent(Animator, entity);
 	animator.Init(config);
 
 	return entity;
@@ -61,8 +58,7 @@ static ECS::Entity CreatePlayerSpawner(const ECS::EntityMetaData& emd)
 	ECS::Entity entity = CreateAnimatedObject(emd);
 
 	// Spawner
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ecs->AddComponent(Spawner, entity);
+	AddComponent(Spawner, entity);
 
 	return entity;
 }
@@ -79,10 +75,9 @@ static ECS::Entity CreateTorch(const ECS::EntityMetaData& emd)
 
 static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = CreateAnimatedObject(emd);
 
-	ecs->AddComponent(Door, entity);
+	AddComponent(Door, entity);
 
 	const ECS::Level& level = ECS::Biome::GetLevel(entity);	
 	std::vector<u32> collider_flags;
@@ -102,14 +97,14 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	}
 
 	// Door
-	ECS::Door& door = ecs->GetComponentRef(Door, entity);
+	ECS::Door& door = GetComponentRef(Door, entity);
 	door.Init();
 
 	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
 	door.triggerRange = config->values.GetFloat("trigger_range");
 
 	// Transform - sandwich the door between the top and bottom raycast points
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	ECS::Transform& transform = GetComponentRef(Transform, entity);
 
 	const VectorF top = up_result.hitPosition;
 	const VectorF bot = down_result.hitPosition;
@@ -127,17 +122,16 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 
 ECS::Entity CreateCursor()
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = ECS::CreateEntity("Cursor", true);
 
 	const ObjectConfig* config = ECS::GetObjectConfig(entity);
 
 	// Transform
-	ECS::Transform& transform = ecs->AddComponent(Transform, entity);
+	ECS::Transform& transform = AddComponent(Transform, entity);
 	transform.Init(config, VectorF());
 
 	// Sprite
-	ECS::Sprite& sprite = ecs->AddComponent(Sprite, entity);
+	ECS::Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.renderLayer = 9;
 	sprite.canFlip = false;
 
@@ -146,7 +140,7 @@ ECS::Entity CreateCursor()
 		sprite.SetTexture(config->strings["sprite"]);
 	}
 		
-	ECS::UICursor& cursor = ecs->AddComponent(UICursor, entity);
+	ECS::UICursor& cursor = AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();
 	cursor.cursor = &input->mCursor;
 
@@ -155,25 +149,23 @@ ECS::Entity CreateCursor()
 
 ECS::Entity CreatePickup(const ECS::EntityMetaData& emd)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Entity entity = CreateBasicObject( emd );
 
-	ECS::Pickup& pick_up = ecs->AddComponent(Pickup, entity);
+	ECS::Pickup& pick_up = AddComponent(Pickup, entity);
 	pick_up.itemId = emd.idPostfix;
 	pick_up.config = emd.ConfigId();
 	//pick_up.onPickupFn = ApplyReboundRune;
 
-	ECS::Collider& collider = ecs->AddComponent(Collider, entity);
+	ECS::Collider& collider = AddComponent(Collider, entity);
 	collider.SetFlag(ECS::Collider::PlayerOnly);
 	collider.SetFlag(ECS::Collider::GhostCollider);
 	collider.destroyOnContact = true;
 
-	ECS::Transform& transform = ecs->GetComponentRef(Transform, entity);
+	ECS::Transform& transform = GetComponentRef(Transform, entity);
 	transform.InitCollider(collider);
 
 	return entity;
 }
-
 
 void CreateEntities(ECS::Entity& biome_entity)
 {
@@ -189,9 +181,8 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
 	CreateEntitiyFunctions["Pickup"] = CreatePickup;
-	
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-	ECS::Biome& biome = ecs->GetComponentRef(Biome, biome_entity);
+
+	ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
 	for (u32 i = 0; i < biome.levels.size(); i++)
 	{
 		const ECS::Level& level = biome.levels[i];

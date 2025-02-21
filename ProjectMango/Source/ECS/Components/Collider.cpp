@@ -130,8 +130,8 @@ namespace ECS
 	{
 		if(!transform)
 		{
-			EntityCoordinator* ecs = GameData::Get().ecs;
-			transform = ecs->GetComponent(Transform, entity);
+			
+			transform = GetComponent(Transform, entity);
 		}
 
 		back = transform->worldPosition;

@@ -60,8 +60,8 @@ namespace ECS
 #define DEFINE_COMPONENT( component, size ) \
 	struct component##initialiser : public ComponentInitialiser { \
 		u32 GetType() override { return Component::component; } \
-		void OnInit() override { GameData::Get().ecs->RegisterComponent(component, size); } \
-		void Remove(ECS::Entity entity) { GameData::Get().ecs->RemoveComponent(component, entity);  } }; \
+		void OnInit() override { RegisterComponent(component, size); } \
+		void Remove(ECS::Entity entity) { RemoveComponent(component, entity);  } }; \
 	static component##initialiser s_##component##initialiser;
 
 	// lock - system signature

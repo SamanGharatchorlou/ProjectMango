@@ -6,18 +6,16 @@
 
 ECS::Component::Type DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 	ECS::Component::Type type = ECS::Component::Pathing;
 
+	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		ECS::Pathing& pathing = ecs->GetComponentRef(Pathing, entity);
-		ImGui::PushID(entity + (int)type);
+		ECS::Pathing& pathing = GetComponentRef(Pathing, entity);
 
-
-	
-		ImGui::PopID();
+		ImGui::Text("Has valid path: ", GetBoolString(pathing.hasValidPath));
 	}
+	ImGui::PopID();
 
 	return type;
 }

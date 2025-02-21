@@ -23,8 +23,7 @@ namespace BlindingSpider
 		Entity entity = Character::CreateBasicEnemy(emd);
 				
 		// CharacterState
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& character_state = ecs->AddComponent(CharacterState, entity);
+		CharacterState& character_state = AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
 		
 		return entity;
@@ -32,8 +31,7 @@ namespace BlindingSpider
 	
 	void Enemy::Begin(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(!state.actions.HasAction())
 			PushState(Idle);
@@ -41,8 +39,7 @@ namespace BlindingSpider
 
 	bool Enemy::FinishedDying(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		if(DeathState* death_state = static_cast<DeathState*>(&(state.actions.Top())))
 			return death_state->can_kill;
@@ -52,8 +49,7 @@ namespace BlindingSpider
 
 	void Enemy::StartDying(ECS::Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		CharacterState& state = GetComponentRef(CharacterState, entity);
 
 		state.actions.Pop();
 		state.actions.Push( new DeathState(entity) );
@@ -68,22 +64,19 @@ namespace BlindingSpider
 	}
 	void IdleState::Resume()
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		AIController& ai_controller = GetComponentRef(AIController, entity);
 		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
 		
 		StartAnimation(can_flip_sprite);
 	}
 	void IdleState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
-		Physics& physics = ecs->GetComponentRef(Physics, entity);
+		Physics& physics = GetComponentRef(Physics, entity);
 		physics.ApplyDrag(0.05f);
 
 		if( CanEnterHitState() )
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(TakeHit);
 		}
 		
@@ -92,7 +85,7 @@ namespace BlindingSpider
 
 		//if( CanMoveToTarget() )
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(Run);
 		}
 	}
@@ -107,8 +100,8 @@ namespace BlindingSpider
 	}
 	void RunState::Resume()
 	{		
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		
+		AIController& ai_controller = GetComponentRef(AIController, entity);
 		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
 		
 		StartAnimation(can_flip_sprite);
@@ -116,9 +109,8 @@ namespace BlindingSpider
 
 	void RunState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Transform& transform = ecs->GetComponentRef(Transform, entity);
-		const AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+		Transform& transform = GetComponentRef(Transform, entity);
+		const AIController& ai_controller = GetComponentRef(AIController, entity);
 		
 		const int run_acceleration_factor = 1;
 
@@ -128,25 +120,25 @@ namespace BlindingSpider
 		}
 		else
 		{		
-			if(!ai_controller.isAlert)
+			//if(!ai_controller.isAlert)
 			{
 				// turn around
 				//ai_controller.
-				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
-				state.FlipFacingDirection();
+				//CharacterState& state = GetComponentRef(CharacterState, entity);
+				//state.FlipFacingDirection();
 				return;
 			}
 		}
 
 		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
 		{
-			const Transform& target_transform = ecs->GetComponentRef(Transform, ai_controller.target);
+			const Transform& target_transform = GetComponentRef(Transform, ai_controller.target);
 			const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
 			const float attack_range = GetAttackRange(ActionState::BasicAttack);
 
 			if(attack_range > 0.0f && attack_range > distance_to_target)
 			{
-				CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+				CharacterState& state = GetComponentRef(CharacterState, entity);
 				ReplaceState(BasicAttack);
 			}
 		}
@@ -161,12 +153,11 @@ namespace BlindingSpider
 
 	void TakeHitState::Update(float dt)
 	{	
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animator = ecs->GetComponentRef(Animator, entity);
+		const Animator& animator = GetComponentRef(Animator, entity);
 
 		if(animator.loopCount > 0)
 		{
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PopState();
 			return;
 		}
@@ -174,8 +165,7 @@ namespace BlindingSpider
 
 	void TakeHitState::Exit()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		if(Collider* collider = ecs->GetComponent(Collider, entity))
+		if(Collider* collider = GetComponent(Collider, entity))
 		{
 			collider->lastHitFrame = -1;
 		}
@@ -199,8 +189,7 @@ namespace BlindingSpider
 
 	void DeathState::Update(float dt)
 	{	
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Animator& animation = ecs->GetComponentRef(Animator, entity);
+		const Animator& animation = GetComponentRef(Animator, entity);
 
 		if(animation.loopCount > 0)
 			can_kill = true;
@@ -211,9 +200,8 @@ namespace BlindingSpider
 	BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
 
 	void BasicAttackState::Init()
-	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+	{	
+		Animator& animator = GetComponentRef(Animator, entity);
 		if(animator.GetAnimation(ActionState::AttackWindUp))
 		{
 			StartAnimation(ActionState::AttackWindUp);
@@ -227,14 +215,13 @@ namespace BlindingSpider
 	// THIS WHOLE THING IS FUCKED
 	void BasicAttackState::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Animator& animator = ecs->GetComponentRef(Animator, entity);
+		Animator& animator = GetComponentRef(Animator, entity);
 		
 		const Animation& animation = animator.GetActiveAnimation();
 
 		//if(attackCollider == EntityInvalid)
 		//{					
-		//	const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+		//	const CharacterState& state = GetComponentRef(CharacterState, entity);
 		//	const ObjectConfig* config = GetObjectConfig(entity);
 		//	attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
 		//}
@@ -247,7 +234,7 @@ namespace BlindingSpider
 
 				if(attackCollider == EntityInvalid)
 				{
-					const CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+					const CharacterState& state = GetComponentRef(CharacterState, entity);
 					const ObjectConfig* config = GetObjectConfig(entity);
 					attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
 				}
@@ -255,15 +242,15 @@ namespace BlindingSpider
 				return;
 			}
 
-			AIController& ai_controller = ecs->GetComponentRef(AIController, entity);
+			AIController& ai_controller = GetComponentRef(AIController, entity);
 			ai_controller.cooldownTimer.Start();
 			
-			CharacterState& state = ecs->GetComponentRef(CharacterState, entity);
+			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PopState();
 			return;
 		}
 
-		if (ECS::Physics* physics = ecs->GetComponent(Physics, entity))
+		if (ECS::Physics* physics = GetComponent(Physics, entity))
 		{
 			physics->ApplyDrag(0.5f);
 		}
@@ -271,7 +258,6 @@ namespace BlindingSpider
 
 	void BasicAttackState::Exit()
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
 		ecs->entities.KillEntity(attackCollider);
 	}
 }

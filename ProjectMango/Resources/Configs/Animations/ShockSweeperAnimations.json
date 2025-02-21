@@ -12,16 +12,18 @@
 					"startIndex": 0,
 					"frameCount": 6,
 					"frameTime": 0.25,
+					"flip_point_x": 0.307,
 					"entity_collider_pos": [ 0.239, 0.417 ],
-					"entity_collider_size": [ 0.137, 0.492 ],
-					"flip_point_x": 0.307
+					"entity_collider_size": [ 0.137, 0.492 ]
 				},
 				{
 					"action": "Run",
 					"startIndex": 10,
 					"frameCount": 8,
 					"frameTime": 0.1,
-					"flip_point_x": 0.307
+					"flip_point_x": 0.307,
+					"entity_collider_pos": [ 0.239, 0.417 ],
+					"entity_collider_size": [ 0.137, 0.492 ]
 				},
 				{
 					"action": "BasicAttack",

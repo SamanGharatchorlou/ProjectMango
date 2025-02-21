@@ -14,14 +14,12 @@ namespace ECS
 {
 	void PhysicsSystem::Update(float dt)  
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-
 		for (Entity entity : entities)
 		{
-			Physics& physics = ecs->GetComponentRef(Physics, entity);
+			Physics& physics = GetComponentRef(Physics, entity);
 
 			// todo what to use here, the sprite might be better
-			if(const Collider* collider = ecs->GetComponent(Collider, entity))
+			if(const Collider* collider = GetComponent(Collider, entity))
 			{
 				VectorF direction = VectorF(0.0f, 1.0f);
 
@@ -48,7 +46,7 @@ namespace ECS
 						break;
 				}
 								
-				if(CharacterState* state = ecs->GetComponent(CharacterState, entity))
+				if(CharacterState* state = GetComponent(CharacterState, entity))
 				{
 					if(state->actions.HasAction() && state->actions.Top().action == ActionState::Jump)
 					{
@@ -72,7 +70,6 @@ namespace ECS
 				{
 					physics.speed.y = 0.0f;
 				}
-
 			}
 		}
 	}

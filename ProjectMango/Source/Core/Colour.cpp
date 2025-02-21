@@ -13,7 +13,7 @@ Colour::Colour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 
 Colour::Colour(Enum colour)
 {
-	a = alphaMax;
+	a = c_alphaMax;
 
 	switch (colour)
 	{
@@ -57,7 +57,7 @@ Colour::Colour(Enum colour)
 void Colour::setOpacity(float opacity)
 {
 	opacity = Maths::clamp(opacity, 0.0f, 1.0f);
-	a = (Uint8)(alphaMax * opacity);
+	a = (Uint8)(c_alphaMax * opacity);
 }
 
 

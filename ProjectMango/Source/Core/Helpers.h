@@ -199,6 +199,14 @@ static VectorI IndexToGrid(int index, int grid_width)
 	return VectorI(index_x, index_y);
 }
 
+static bool Contains(const RectF& rect, VectorF point)
+{
+	return !(point.x > rect.RightPoint() ||
+				point.x < rect.LeftPoint() ||
+				point.y > rect.BotPoint() ||
+				point.y < rect.TopPoint());
+}
+
 
 //--------------------------------------------------------
 // Raycast helpers
@@ -208,3 +216,4 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance);
 bool RaycastToFloor(const RectF& rect, float& out_distance);
 bool RaycastToFloor(const VectorF& start, RaycastResult& result);
 bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance);
+

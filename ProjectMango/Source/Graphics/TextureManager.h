@@ -28,8 +28,6 @@ private:
 
 	std::vector<const TextureMap* > FindTextureMaps(const FileManager::Folder folder) const;
 
-	Texture* searchAllFiles(const char* label) const;
-
 private:
 	TextureManager();
 	~TextureManager();

@@ -43,31 +43,29 @@ namespace ECS
 
 	void SpellBook::ActivateSpellToCursor(int spell_index)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		ComponentArray<UICursor>& cursors = ecs->GetAllComponents(UICursor);
+		ComponentArray<UICursor>& cursors = GetAllComponents(UICursor);
 		if (cursors.Count() > 0)
 		{
 			auto front_index = cursors.entityToComponent.begin();
 			UICursor& cursor = cursors.GetComponentByIndex(front_index->second);
-			Transform& transform = ecs->GetComponentRef(Transform, cursor.entity);
+			Transform& transform = GetComponentRef(Transform, cursor.entity);
 			VectorF target = transform.GetRect().TopLeft();
 
 			Entity spell_entity = ActivateSpell(entity, spell_index, target);
 
 			// activate rune
-			Spell& spell = ecs->GetComponentRef(Spell, spell_entity);
-			spell.rune = spells[spell_index].rune;
-			if (spell.rune)
+			Spell& spell = GetComponentRef(Spell, spell_entity);
+			//spell.rune = spells[spell_index].rune;
+			if (spells[spell_index].rune)
 			{
-				spell.rune->OnActiate(spell_entity);
+				spells[spell_index].rune->OnActiate(spell_entity);
 			}
 		}
 	}
 
 	Entity SpellBook::ActivateSpell(Entity caster, int spell_index, VectorF target)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		SpellBook& spell_book = ecs->GetComponentRef(SpellBook, caster);
+		SpellBook& spell_book = GetComponentRef(SpellBook, caster);
 
 		return Magic::GetNewEntity(spell_book.spells[spell_index].name.c_str(), caster, target);
 	}
@@ -96,7 +94,7 @@ namespace ECS
 
 	// SpellGem
 	// ------------------------------------------------------------------
-	Spell::Spell() : rune(nullptr) { }
+	Spell::Spell() { }
 
 
 	// ReboundRune
@@ -114,8 +112,7 @@ namespace ECS
 
 	void ReboundRune::OnActiate(Entity entity)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Collider& collider = ecs->GetComponentRef(Collider, entity);
+		Collider& collider = GetComponentRef(Collider, entity);
 		if (reboundCount > 0)
 		{
 			collider.destroyOnContact = false;
@@ -148,8 +145,7 @@ namespace ECS
 		Instance echo;
 		echo.timer.Start();
 
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		const Spell& spell = ecs->GetComponentRef(Spell, entity);
+		const Spell& spell = GetComponentRef(Spell, entity);
 
 		echo.target = spell.target;
 		echo.count = echoCount;
@@ -157,17 +153,22 @@ namespace ECS
 		echos.push(echo);
 	}
 
-	void EchoRune::Update(Entity entity)
+	void EchoRune::Update()
 	{
 		if (echos.size() > 0)
 		{
 			Instance& echo = echos.front();
 
-			int secs = echo.timer.GetSeconds();
+			//float secs = echo.timer.GetSeconds();
 			if (echo.timer.GetSeconds() >= echoTime)
 			{
 				echo.count--;
-				SpellBook::ActivateSpell(caster, spellIndex, echo.target);
+				Entity entity = SpellBook::ActivateSpell(caster, spellIndex, echo.target);
+
+				Sprite& sprite = GetComponentRef(Sprite, entity);
+
+				sprite.colourMod = Colour(Colour::Blue);
+				sprite.colourMod.a = c_alphaMax * 0.75f;
 			}
 
 			if (echo.count <= 0)

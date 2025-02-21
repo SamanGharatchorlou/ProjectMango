@@ -8,13 +8,12 @@ namespace ECS
 
 		Entity target;
 
-		bool moveToTarget;
-		bool isAlert;
+		bool canMoveToTarget;
 
 		TimerF cooldownTimer;
 		float attackCooldownTime;
 
-		float DistanceToTargetSquared() const;
+		VectorF VectorToTarget() const;
 		bool CanMoveForward(int ease_factor, float dt) const;
 	};
 }

@@ -19,4 +19,9 @@ namespace DebugMenu
 	ECS::Component::Type DoBiomeDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
+
+	static inline const char* GetBoolString(bool value)
+	{
+		return value ? "true" : "false";
+	}
 }

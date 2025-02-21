@@ -22,31 +22,29 @@ ECS::Entity Player::Get()
 
 ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
 	ecs->entities.KillEntity(s_playerEntity);
 	s_playerEntity = Character::CreateBasic(emd);
 	const ObjectConfig* config = ECS::GetObjectConfig(s_playerEntity);
 
 	// PlayerController
-	ecs->AddComponent(PlayerController, s_playerEntity);
+	AddComponent(PlayerController, s_playerEntity);
 
 	// Collider
-	ECS::Collider& collider = ecs->GetComponentRef(Collider, s_playerEntity);
+	ECS::Collider& collider = GetComponentRef(Collider, s_playerEntity);
 	collider.SetFlag(ECS::Collider::IsPlayer);
-	collider.SetFlag(ECS::Collider::CanBump);
+	//collider.SetFlag(ECS::Collider::CanBump);
 
 	// Sprite
-	ECS::Sprite& sprite = ecs->GetComponentRef(Sprite, s_playerEntity);
+	ECS::Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
 	sprite.renderLayer = 5;
 
 	// CharacterState
-	ECS::CharacterState& character_state = ecs->AddComponent(CharacterState, s_playerEntity);
+	ECS::CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
 	character_state.Init(config);
 
 	// Spellbook
-	ECS::SpellBook& spell_book = ecs->AddComponent(SpellBook, s_playerEntity);
-	spell_book.SetSpellSlot(0, "Fireball");
+	ECS::SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
+	spell_book.SetSpellSlot(0, "Lightning");
 	
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

@@ -13,14 +13,14 @@ namespace ECS
 {
 	void TransformSystem::UpdateChildrenTransforms(Entity parent)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
-		Transform& parent_transform = ecs->GetComponentRef(Transform, parent);
+		
+		Transform& parent_transform = GetComponentRef(Transform, parent);
 
 		// update children positions
-		if (EntityData* entity_data = ecs->GetComponent(EntityData, parent))
+		if (EntityData* entity_data = GetComponent(EntityData, parent))
 		{
 			VectorF flip_point;
-			if (ECS::Sprite* sprite = ecs->GetComponent(Sprite, parent))
+			if (ECS::Sprite* sprite = GetComponent(Sprite, parent))
 			{
 				if (sprite->IsFlipped())
 					flip_point = sprite->flipPoint * parent_transform.size;
@@ -30,7 +30,7 @@ namespace ECS
 			for (u32 i = 0; i < entity_data->children.size(); i++)
 			{
 				Entity child = entity_data->children[i];
-				Transform& child_transform = ecs->GetComponentRef(Transform, child);
+				Transform& child_transform = GetComponentRef(Transform, child);
 				VectorF child_world_pos = parent_transform.worldPosition + child_transform.localPosition;
 
 				if (!flip_point.isZero())
@@ -47,7 +47,7 @@ namespace ECS
 
 	void TransformSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 
 		std::vector<Entity> out_of_bounds_entities;
 
@@ -57,11 +57,11 @@ namespace ECS
 			if (DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 
-			Transform& transform = ecs->GetComponentRef(Transform, entity);
+			Transform& transform = GetComponentRef(Transform, entity);
 
 			// -- UPDATE POSITION
 			// only move to the allowed position, otherwise roll back
-			Collider* collider = ecs->GetComponent(Collider, entity);
+			Collider* collider = GetComponent(Collider, entity);
 			if (collider)
 			{ 
 				if(!collider->initialised)
@@ -84,7 +84,7 @@ namespace ECS
 			UpdateChildrenTransforms(entity);
 
 			// update the target position based on physics
-			Physics* physics = ecs->GetComponent(Physics, entity);
+			Physics* physics = GetComponent(Physics, entity);
 			if (physics)
 			{
 				transform.targetWorldPosition = transform.worldPosition + (physics->speed * dt);

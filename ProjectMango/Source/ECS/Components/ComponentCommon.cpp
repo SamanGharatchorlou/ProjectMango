@@ -25,12 +25,10 @@ namespace ECS
 
 	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities)
 	{
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
 		for (auto iter = in_entities.begin(); iter != in_entities.end(); iter++)
 		{
 			ECS::Entity entity = iter->first;
-			if (const Transform* transform = ecs->GetComponent(Transform, entity))
+			if (const Transform* transform = GetComponent(Transform, entity))
 			{
 				if (IsInLevel(level, *transform))
 				{

@@ -3,7 +3,6 @@
 
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Animator.h"
-#include "ECS/Components/Animator.h"
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/Texture.h"
 #include "Graphics/TextureManager.h"
@@ -56,8 +55,6 @@ namespace AnimationReader
 			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
 			return;
 		} 
-
-		ECS::EntityCoordinator* ecs = GameData::Get().ecs;
 
 		float frame_size_x = parser.document["frameSize_x"].GetFloat();
 		float frame_size_y = parser.document["frameSize_y"].GetFloat();

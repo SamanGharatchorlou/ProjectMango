@@ -34,12 +34,10 @@ void Camera::setViewport(VectorF viewport)
 
 void Camera::Update(float dt)
 {
-	ECS::EntityCoordinator* ecs = GameData::Get().ecs;
-
 	if(!ecs->IsAlive(targetEntity))
 		return;
 
-	const ECS::Transform* transform = ecs->GetComponent(Transform, targetEntity);
+	const ECS::Transform* transform = GetComponent(Transform, targetEntity);
 	if(!transform)
 		return;
 

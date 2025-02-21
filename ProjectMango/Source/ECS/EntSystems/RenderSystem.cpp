@@ -5,14 +5,13 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
-//#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
 namespace ECS
 {
 	void RenderSystem::Update(float dt)
 	{
-		EntityCoordinator* ecs = GameData::Get().ecs;
+		
 		RenderManager* renderer = GameData::Get().renderManager;
 
 		// increase the camera size so we draw a little extra than the actual screen
@@ -29,11 +28,11 @@ namespace ECS
 			if (DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
 
-			const Sprite& sprite = ecs->GetComponentRef(Sprite, entity);
+			const Sprite& sprite = GetComponentRef(Sprite, entity);
 			if(!sprite.texture)
 				continue;
 			
-			const Transform& transform = ecs->GetComponentRef(Transform, entity);
+			const Transform& transform = GetComponentRef(Transform, entity);
 			const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
 
 			if(!camera_rect.Intersect(render_rect))
@@ -44,6 +43,7 @@ namespace ECS
 			pack.flip = sprite.flip;
 			pack.flipPoint = sprite.flipPoint * render_rect.Size();
 			pack.rotation = sprite.rotation;
+			pack.colourMod = sprite.colourMod;
 
 			renderer->AddRenderPacket(pack);
 		}
