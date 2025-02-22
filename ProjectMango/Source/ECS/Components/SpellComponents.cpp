@@ -101,12 +101,9 @@ namespace ECS
 	// ------------------------------------------------------------------
 	ReboundRune::ReboundRune(const char* id, const char* config) : Rune(id, config)
 	{
-		if(const ObjectConfig* obj_config = GetObjectConfigFromID(id))
+		if(const Config* obj_config = GetConfigFromID(id))
 		{
-			if(obj_config->values.Contains("rebound_count"))
-			{	
-				reboundCount = (int)obj_config->values["rebound_count"];
-			}
+			reboundCount = obj_config->values.GetInt("rebound_count");
 		}
 	}
 
@@ -126,17 +123,10 @@ namespace ECS
 		Rune(id, config),
 		echoCount(0), echoTime(0)
 	{
-		if (const ObjectConfig* obj_config = GetObjectConfigFromID(id))
+		if (const Config* obj_config = GetConfigFromID(id))
 		{
-			if (obj_config->values.Contains("echo_count"))
-			{
-				echoCount = (int)obj_config->values["echo_count"];
-			}
-
-			if (obj_config->values.Contains("echo_time"))
-			{
-				echoTime = obj_config->values["echo_time"];
-			}
+			echoCount = obj_config->values.GetInt("echo_count");
+			echoTime = obj_config->values.GetFloat("echo_time");
 		}
 	}
 

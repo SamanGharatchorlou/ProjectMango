@@ -8,7 +8,7 @@ namespace ECS
 {
 	Physics::Physics() : mass(1.0f), applyGravity(false), onFloor(false) { }
 
-	void Physics::Init(const ObjectConfig* config)
+	void Physics::Init(const Config* config)
 	{	
 		if(config)
 		{

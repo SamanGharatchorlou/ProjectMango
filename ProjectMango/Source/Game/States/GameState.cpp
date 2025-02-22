@@ -102,7 +102,7 @@ void GameState::Exit()
 	//mGameData->scoreManager->reset();
 	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 	
-	ecs->systems.Close();
+	ecs->Close();// systems.Close();
 }
 
 

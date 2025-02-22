@@ -33,15 +33,7 @@ static constexpr u32 c_rare = 4;
 
 void ECS::RegisterAllComponents()
 {
-	struct Transforminitialiser : public ComponentInitialiser {
-		u32 GetType() override {
-			return Component::Transform;
-		} void OnInit() override {
-			ecs->RegisterComponent<ECS::Transform>(ECS::Transform::type(), c_allEntities);
-		} void Remove(ECS::Entity entity) {
-			ecs->RemoveComponent<ECS::Transform>(entity, ECS::Transform::type());
-		}
-	}; static Transforminitialiser s_Transforminitialiser;;
+	DEFINE_COMPONENT(Transform, c_allEntities);
 	DEFINE_COMPONENT(Sprite, c_allEntities);
 	DEFINE_COMPONENT(Collider, c_allEntities);
 

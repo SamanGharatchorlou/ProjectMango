@@ -21,20 +21,16 @@ namespace ECS
 		State& state = GameData::Get().systemStateManager->mStates.Top();
 		if (const GameState* gs = dynamic_cast<const GameState*>(&state))
 		{
-			
 			return gs->activeLevel;
 		}
 
 		return EntityInvalid;
 	}
 
-
 	const Biome& Biome::GetActiveBiome()
-	{
-		
+	{	
 		return GetComponentRef(Biome, GetActive());
 	}
-
 	
 	const Level& Biome::GetLevel(ECS::Entity entity)
 	{

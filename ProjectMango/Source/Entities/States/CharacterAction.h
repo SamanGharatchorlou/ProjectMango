@@ -20,7 +20,6 @@ struct CharacterAction : public State
 
 	// helpers
 	bool CanEnterHitState(float frame_buffer = 20);
-	bool CanMoveToTarget();
 	bool CoolingFromAttack();
 	void InitDeathState();
 	void ApplyMovementEase(int movement_factor, float dt);

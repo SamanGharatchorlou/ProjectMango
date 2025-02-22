@@ -128,7 +128,7 @@ void JumpState::Init()
 	StartAnimation();
 	
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.speed.y = GetObjectConfig(entity)->values.GetFloat("jump_impulse");
+	physics.speed.y = GetConfig(entity)->values.GetFloat("jump_impulse");
 }
 
 void JumpState::Update(float dt)
@@ -222,7 +222,7 @@ void RollState::Init()
 	Physics& physics = GetComponentRef(Physics,entity);
 
 	const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetObjectConfig(entity)->values.GetFloat("roll_impulse");
+	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->values.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{
@@ -342,7 +342,7 @@ void BasicAttackState::Update(float dt)
 		if(attackCollider == EntityInvalid)
 		{					
 			const CharacterState& state = GetComponentRef(CharacterState, entity);
-			const ObjectConfig* config = GetObjectConfig(entity);
+			const Config* config = GetConfig(entity);
 			attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
 		}
 
@@ -391,7 +391,7 @@ void LungeAttackState::Update(float dt)
 	if(CanCreateAttackCollider(attackCollider))
 	{					
 		const CharacterState& state = GetComponentRef(CharacterState, entity);
-		const ObjectConfig* config = GetObjectConfig(entity);
+		const Config* config = GetConfig(entity);
 		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->values.GetFloat("jump_attack_damage"), config->values.GetFloat("jump_attack_force"));
 	}
 
@@ -502,8 +502,8 @@ void FloorSlamState::Update(float dt)
 
 			if( CanCreateAttackCollider(attackCollider))
 			{
-				const ObjectConfig* config = GetObjectConfig(entity);
-				attackCollider = CreateNewAttackCollider("player slam attack collider", config->values["slam_attack_damage"], config->values["slam_attack_force"]);
+				const Config* config = GetConfig(entity);
+				attackCollider = CreateNewAttackCollider( "player slam attack collider", config->values.GetFloat("slam_attack_damage"), config->values.GetFloat("slam_attack_force") );
 			}
 			
 			if( CanDestroyAttackCollider(attackCollider))

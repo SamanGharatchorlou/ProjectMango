@@ -9,7 +9,6 @@
 //#include "Game/Data/GameData.h"
 #include "System/Files/ConfigManager.h"
 
-
 // NSIS Installer
 #define TWEAK_OUTPUT_NSIS_FOLDER_INFO 0
 #define TWEAK_HIDE_CONSOLE 1
@@ -35,20 +34,36 @@ void GameSetup::initGameData(GameData& game_data)
 
 	ConfigManager* cm = ConfigManager::Get();
 
+	int displays = -1;
+	//SDL_DisplayID *displays = SDL_GetDisplays(&num_displays);
+	//SDL_Log("Found %d display(s)", num_displays);
+
 	// todo: get window size and resize the window based on that
 	// so i dont have to faff around with the screen size
-	cm->add<GameSettingsConfig>("GameSettings");
-	cm->Load();
+	cm->AddAndLoad("GameSettings", Config::XML);
 
 	Window* window = initSDLWindow();
 	game_data.init(window);
 
-	GameSettingsConfig* gs = cm->GetConfig<GameSettingsConfig>("GameSettings");
+	
+	
+	//// todo not working?
+	//SDL_Rect rect;
+	//bool success = SDL_GetDisplayBounds(0, &rect);
+	//if(!success)
+	//	DebugPrint(Error, "%s", SDL_GetError());
+	//
+	//SDL_Rect rect2;
+	//bool success2 = SDL_GetDisplayUsableBounds(0, &rect2);
+	//if(!success2)
+	//	DebugPrint(Error, "%s", SDL_GetError());
+
+	//Config* gs = cm->GetConfig<Config>("GameSettings");
 
 	// set default audio values from settings
-	AudioManager* audio = AudioManager::Get();
-	audio->setMusicVolume(gs->settings.getFloat("MusicVolume") / 100.0f);
-	audio->setSoundVolume(gs->settings.getFloat("SoundVolume") / 100.0f);
+	//AudioManager* audio = AudioManager::Get();
+	//audio->setMusicVolume(gs->settings.getFloat("MusicVolume") / 100.0f);
+	//audio->setSoundVolume(gs->settings.getFloat("SoundVolume") / 100.0f);
 }
 
 Window* GameSetup::initSDLWindow()
@@ -107,18 +122,18 @@ void GameSetup::closeSubSystems()
 
 void GameSetup::setTutorial(const char* mode)
 {
-	const BasicString gameSettingsPath = FileManager::Get()->findFile(FileManager::Configs, "GameSettings");
+	//const BasicString gameSettingsPath = FileManager::Get()->findFile(FileManager::Configs, "GameSettings");
 
-	XMLParser parser(gameSettingsPath.c_str());
-	XMLNode tutorialNode = parser.rootChild("Tutorial");
-	tutorialNode.setValue(mode);
+	//XMLParser parser(gameSettingsPath.c_str());
+	//XMLNode tutorialNode = parser.rootChild("Tutorial");
+	//tutorialNode.setValue(mode);
 
-	std::ofstream settingsFile;
-	settingsFile.open(gameSettingsPath.c_str());
+	//std::ofstream settingsFile;
+	//settingsFile.open(gameSettingsPath.c_str());
 
-	parser.saveToFile(settingsFile);
+	//parser.saveToFile(settingsFile);
 
-	settingsFile.close();
+	//settingsFile.close();
 }
 
 
@@ -155,13 +170,26 @@ Window* GameSetup::createWindow()
 {
 	Window* window = new Window;
 	
-	GameSettingsConfig* gs = ConfigManager::Get()->GetConfig<GameSettingsConfig>("GameSettings");
+	const Config* gs = ConfigManager::Get()->GetConfig("GameSettings");
 
-	const int width = gs->settings.getInt("Width");
-	const int height = gs->settings.getInt("Height");
-	const Vector2D<int> screenSize = Vector2D<int>(width, height);
+	if(gs->values.GetBool("FitToScreen", false))
+	{
+		SDL_Rect rect;
+		bool success = SDL_GetDisplayUsableBounds(0, &rect);
+		if(!success)
+			DebugPrint(Error, "%s", SDL_GetError());
+		
+		const VectorI screenSize(rect.w, rect.h);
+		window->init(gs->values.GetString("Title"), screenSize);
+	}
+	else
+	{	
+		const int width = gs->values.GetInt("Width");
+		const int height = gs->values.GetInt("Height");
+		const VectorI screenSize(width, height);
+		window->init(gs->values.GetString("Title"), screenSize);
+	}
 
-	window->init(gs->settings.at("Title").c_str(), screenSize);
 	return window;
 }
 

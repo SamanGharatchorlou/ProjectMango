@@ -119,7 +119,7 @@ void JumpState::Init()
 	
 	
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.speed.y = GetObjectConfig(entity)->values.GetFloat("jump_impulse");
+	physics.speed.y = GetConfig(entity)->values.GetFloat("jump_impulse");
 }
 
 void JumpState::Update(float dt)
@@ -198,7 +198,7 @@ void RollState::Init()
 	Physics& physics = GetComponentRef(Physics,entity);
 
 	const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetObjectConfig(entity)->values.GetFloat("roll_impulse");
+	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->values.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{

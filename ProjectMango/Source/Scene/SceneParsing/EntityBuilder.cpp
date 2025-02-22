@@ -20,7 +20,7 @@ typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 {
 	ECS::Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
-	if (const ObjectConfig* config = ECS::GetObjectConfig(entity))
+	if (const Config* config = ECS::GetConfig(entity))
 	{
 		// Transform
 		ECS::Transform& transform = AddComponent(Transform, entity);
@@ -31,11 +31,7 @@ static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 		ECS::Sprite& sprite = AddComponent(Sprite, entity);
 		sprite.renderLayer = 6;
 		sprite.canFlip = false;
-
-		if(config->strings.Contains("sprite"))
-		{	
-			sprite.SetTexture(config->strings["sprite"]);
-		}
+		sprite.Init(config);
 	}
 
 	return entity;
@@ -44,7 +40,7 @@ static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
 {
 	ECS::Entity entity = CreateBasicObject(emd);
-	const ObjectConfig* config = ECS::GetObjectConfig(entity);
+	const Config* config = ECS::GetConfig(entity);
 
 	// Animation
 	ECS::Animator& animator = AddComponent(Animator, entity);
@@ -100,7 +96,7 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	ECS::Door& door = GetComponentRef(Door, entity);
 	door.Init();
 
-	const ObjectConfig* config = ConfigManager::Get()->GetConfig<ObjectConfig>(emd.ConfigId().c_str());
+	const Config* config = ConfigManager::Get()->GetConfig(emd.ConfigId().c_str());
 	door.triggerRange = config->values.GetFloat("trigger_range");
 
 	// Transform - sandwich the door between the top and bottom raycast points
@@ -124,7 +120,7 @@ ECS::Entity CreateCursor()
 {
 	ECS::Entity entity = ECS::CreateEntity("Cursor", true);
 
-	const ObjectConfig* config = ECS::GetObjectConfig(entity);
+	const Config* config = ECS::GetConfig(entity);
 
 	// Transform
 	ECS::Transform& transform = AddComponent(Transform, entity);
@@ -134,11 +130,7 @@ ECS::Entity CreateCursor()
 	ECS::Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.renderLayer = 9;
 	sprite.canFlip = false;
-
-	if (config->strings.Contains("sprite"))
-	{
-		sprite.SetTexture(config->strings["sprite"]);
-	}
+	sprite.Init(config);
 		
 	ECS::UICursor& cursor = AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();

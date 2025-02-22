@@ -156,26 +156,29 @@ StringBuffer64 TextureManager::getTextureName(const Texture* texture) const
 
 Texture* TextureManager::getTexture(const char* label, const FileManager::Folder folder) const
 {
-	std::vector<const TextureMap*> texture_maps = FindTextureMaps(folder);
-
-	StringBuffer64 buffer = label;
-	for (int i = (u32)strlen(label) - 1; i >= 0; i--)
+	if(label)
 	{
-		if (label[i] == '.') 
+		std::vector<const TextureMap*> texture_maps = FindTextureMaps(folder);
+
+		StringBuffer64 buffer = label;
+		for (int i = (u32)strlen(label) - 1; i >= 0; i--)
 		{
-			buffer.buffer()[i] = '\0';
-			break;
+			if (label[i] == '.') 
+			{
+				buffer.buffer()[i] = '\0';
+				break;
+			}
 		}
-	}
 
-	for (u32 i = 0; i < texture_maps.size(); i++)
-	{
-		const TextureMap* tm = texture_maps[i];
-		if (Texture* texture = tm->find(buffer.c_str()))
-			return texture;
-	}
+		for (u32 i = 0; i < texture_maps.size(); i++)
+		{
+			const TextureMap* tm = texture_maps[i];
+			if (Texture* texture = tm->find(buffer.c_str()))
+				return texture;
+		}
 
-	DebugPrint(Warning, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
+		DebugPrint(Warning, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
+	}
 	return nullptr;
 }
 

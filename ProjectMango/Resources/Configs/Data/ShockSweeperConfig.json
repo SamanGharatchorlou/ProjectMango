@@ -13,6 +13,6 @@
 		"basic_attack_force": 150,
 		"basic_attack_cooldown": 1,
 		"max_health": 200,
-		"alert_range": 300
+		"alert_range": 600
 	}
 }

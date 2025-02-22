@@ -22,12 +22,24 @@ namespace ECS
 
 	static void SpawnPlayer()
 	{
-		
-
 		ComponentArray<Spawner>& spawners = GetAllComponents(Spawner);
 
+		const ECS::Biome& biome = Biome::GetActiveBiome();
+
+		const ECS::Level& level = biome.GetVisibleLevel();
 		std::vector<Entity> out_spawners;
-		GetEntitiesInLevel(Biome::GetVisibleLevel(), spawners.entityToComponent, out_spawners);
+		GetEntitiesInLevel(level, spawners.entityToComponent, out_spawners);
+
+		if(out_spawners.size() == 0)
+		{
+			for( int i = biome.levels.size() - 1; i >= 0; i-- )
+			{
+				GetEntitiesInLevel(biome.levels[i], spawners.entityToComponent, out_spawners);
+
+				if(out_spawners.size() > 0)
+					break;
+			}
+		}
 
 		Spawner* spawner = nullptr;
 		if(out_spawners.size() > 0)

@@ -315,7 +315,6 @@ void DebugMenu::DoGameStateWindow()
             GameData::Get().configs->Reload();
 
 	        ConfigManager* cm = ConfigManager::Get();
-	        GameSettingsConfig* gs = cm->GetConfig<GameSettingsConfig>("GameSettings");
             
             fc.start();
 

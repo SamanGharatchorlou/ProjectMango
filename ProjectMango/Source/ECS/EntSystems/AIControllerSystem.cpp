@@ -69,24 +69,34 @@ namespace ECS
 
 			aic.target = Player::Get();
 
-			const ObjectConfig* config = GetObjectConfig(entity);
-			const float detect_range = config->values.GetFloat( "alert_range" );
-			const float distance = (GetPosition(entity) - GetPosition(aic.target)).length();
-			bool target_in_range = distance < detect_range;
-
 			// reset every frame
 			aic.canMoveToTarget = false;
 
-			if (target_in_range)
-			{
-				// try to flip to face the target direction
-				SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, aic.target);
-				SetFacingDirection(entity, desired_flip);
+			if(!ecs->IsAlive(aic.target))
+				continue;
 
-				// if we're facing the correct direction
-				if (GetDesiredFacingDirection(entity, aic.target) == GetFacingDirection(entity))
+			const Config* config = GetConfig(entity);
+			const float detect_range = config->values.GetFloat( "alert_range" );
+			const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
+			float target_distance = distance.length();
+
+
+			if (target_distance < detect_range)
+			{
+				//bool target_is_close = distance.y < GetRect(entity).Height() * 1.2f;
+				//if(target_is_close)
 				{
-					aic.canMoveToTarget = true;
+					// try to flip to face the target direction
+					SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, aic.target);
+					SetFacingDirection(entity, desired_flip);
+
+					bool is_facing_target = GetDesiredFacingDirection(entity, aic.target) == GetFacingDirection(entity);
+
+					// if we're facing the correct direction
+					if (is_facing_target)
+					{
+						aic.canMoveToTarget = true;
+					}
 				}
 			}
 		}
