@@ -2,23 +2,23 @@
 #include "Maps.h"
 #include "Core/Helpers.h"
 
-void StringMap32::fillValues(const XMLNode& node)
-{
-	XMLNode childNode = node.child();
-	while (childNode)
-	{
-		mData[childNode.name()] = childNode.value();
-		childNode = childNode.next();
-	}
-}
-
-void StringMap32::fillAtributes(const XMLNode& node)
-{
-	for (XMLNode::Attribute attr = node.attribute(); attr; attr = attr->next_attribute())
-	{
-		mData[attr->name()] = attr->value();
-	}
-}
+//void StringMap32::fillValues(const XMLNode& node)
+//{
+//	XMLNode childNode = node.child();
+//	while (childNode)
+//	{
+//		mData[childNode.name()] = childNode.value();
+//		childNode = childNode.next();
+//	}
+//}
+//
+//void StringMap32::fillAtributes(const XMLNode& node)
+//{
+//	for (XMLNode::Attribute attr = node.attribute(); attr; attr = attr->next_attribute())
+//	{
+//		mData[attr->name()] = attr->value();
+//	}
+//}
 
 const char* StringMap32::getString(const char* key) const
 {
@@ -56,16 +56,13 @@ VectorI StringMap32::getVectorI(const char* x, const char* y) const
 	return VectorI();
 }
 
-// SetttingsValues
-VectorF SettingValues::GetVectorF(const char* x, const char* y) const
+// Setttings
+VectorF Settings::GetVectorF(const char* x, const char* y) const
 {
-	if( Contains(x) && Contains(y))
-		return VectorF(GetFloat(x), GetFloat(y));
-
-	return VectorF();
+	return VectorF(GetFloat(x), GetFloat(y));
 }
 
-VectorF SettingValues::GetVectorF(const char* label) const
+VectorF Settings::GetVectorF(const char* label) const
 {
 	const u32 size = 64;
 	char x[size];
@@ -74,8 +71,5 @@ VectorF SettingValues::GetVectorF(const char* label) const
 	snprintf( x, size, "%s_x", label );
 	snprintf( y, size, "%s_y", label );
 
-	if( Contains(x) && Contains(y))
-		return VectorF(GetFloat(x), GetFloat(y));
-
-	return VectorF();
+	return VectorF(GetFloat(x), GetFloat(y));
 }

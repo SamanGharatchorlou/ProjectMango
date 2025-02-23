@@ -3,9 +3,11 @@
 
 void Window::init(const char* title, Vector2D<int> size)
 {
+	float window_length = std::min(size.x, size.y ) * 0.95f;
+
 	// create window
 	mWindow = SDL_CreateWindow(title, 0, 35,
-		size.x, size.y, SDL_WINDOW_SHOWN);
+		(int)window_length, (int)window_length, SDL_WINDOW_SHOWN);
 }
 
 Window::~Window()
@@ -31,7 +33,7 @@ VectorF Window::size() const
 	return VectorF(1024, 1024);
 }
 
-VectorF Window::realSize() const
+VectorF Window::realSize() const 
 {
 	int width = -1;
 	int height = -1;

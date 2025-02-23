@@ -2,20 +2,9 @@
 #include "Config.h"
 
 #include "System/Files/JSONParser.h"
+#include "System/Files/XMLParser.h"
 
-void GameSettingsConfig::Read(const char* path)
-{
-	XMLParser* parser = new XMLParser;
-
-	parser->parseXML(path);
-	settings.fillValues(parser->rootNode());
-
-	parsed = true;
-
-	delete parser;
-}
-
-static void ReadValues(const rapidjson::Value& doc_values, SettingValues& out_values)
+static void JSONReadValues(const rapidjson::Value& doc_values, SettingValues& out_values)
 {
 	for (rapidjson::Value::ConstMemberIterator itr = doc_values.MemberBegin(); itr != doc_values.MemberEnd(); ++itr)
 	{
@@ -34,7 +23,7 @@ static void ReadValues(const rapidjson::Value& doc_values, SettingValues& out_va
 	}
 }
 
-static void ReadStrings(const rapidjson::Value& doc_values, SettingStrings& out_string)
+static void JSONReadStrings(const rapidjson::Value& doc_values, SettingStrings& out_string)
 {
 	for (rapidjson::Value::ConstMemberIterator itr = doc_values.MemberBegin(); itr != doc_values.MemberEnd(); ++itr)
 	{
@@ -45,28 +34,67 @@ static void ReadStrings(const rapidjson::Value& doc_values, SettingStrings& out_
 	}
 }
 
-void ObjectConfig::Read(const char* path)
+static void XMLReadStrings(const XMLNode& node, Settings& out_string)
 {
-	JSONParser parser(path);
+	XMLNode childNode = node.child();
+	while (childNode)
+	{
+		//if(childNode.)
 
-	if (!parser.document.IsObject())
-		return;
+		char* p = nullptr;
+		const char* in_value = childNode.value();
+		long converted = strtol(in_value, &p, 10);
+		if (*p) 
+		{
+			// conversion failed because the input wasn't a number
+			bool is_true = strncmp(in_value, "true", strlen("true") ) == 0;
+			bool is_false = strncmp(in_value, "false", strlen("false") ) == 0;
+			if( is_true || is_false )
+			{
+				out_string.values[childNode.name()] = (int)is_true;
+			}
+			else
+			{
+				out_string.strings[childNode.name()] = childNode.value();
+			}	
+		}
+		else 
+		{
+			// use converted
+			
+			out_string.values[childNode.name()] = converted;
+		}
 
-	//// animation
-	//const char* animation = "animation";
-	//if(parser.document.HasMember(animation))
-	//	strings[animation] = parser.document[animation].GetString();
+		//out_string[childNode.name()] = childNode.value();
+		childNode = childNode.next();
+	}
+}
 
-	//// spawn ID
-	//const char* spawn_id = "spawn_id";
-	//if (parser.document.HasMember(spawn_id))
-	//	strings[spawn_id] = parser.document[spawn_id].GetString();
 
-	ReadStrings(parser.document, strings);
+void Config::Read(const char* path)
+{
+	if(type == XML)
+	{
+		XMLParser* parser = new XMLParser;
+		parser->parseXML(path);
 
-	// fill all the values
-	if (parser.document.HasMember("values"))
-		ReadValues(parser.document["values"], values);
+		XMLReadStrings(parser->rootNode(), values);
 
+		delete parser;
+	}
+	else
+	{
+		JSONParser parser(path);
+
+		if (!parser.document.IsObject())
+			return;
+
+		JSONReadStrings(parser.document, values.strings);
+
+		// fill all the values
+		if (parser.document.HasMember("values"))
+			JSONReadValues(parser.document["values"], values.values);
+	}
+		
 	parsed = true;
 }

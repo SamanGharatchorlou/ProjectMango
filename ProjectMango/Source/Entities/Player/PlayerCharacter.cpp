@@ -21,7 +21,7 @@ ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
 {
 	ecs->entities.KillEntity(s_playerEntity);
 	s_playerEntity = Character::CreateBasic(emd);
-	const ObjectConfig* config = ECS::GetObjectConfig(s_playerEntity);
+	const Config* config = ECS::GetConfig(s_playerEntity);
 
 	// PlayerController
 	AddComponent(PlayerController, s_playerEntity);

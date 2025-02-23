@@ -31,6 +31,5 @@ struct GameData
 	RenderManager* renderManager = nullptr;
 	AudioManager* audioManager = nullptr;
 	SystemStateManager* systemStateManager = nullptr;
-	//ECS::EntityCoordinator* ecs = nullptr;
 };
 

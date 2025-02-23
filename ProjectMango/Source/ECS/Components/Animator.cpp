@@ -18,9 +18,9 @@ namespace ECS
 		timer(0) 
 	{ }
 	
-	void Animator::Init(const ObjectConfig* config)
+	void Animator::Init(const Config* config)
 	{
-		const char* animation = config->strings["animation"];
+		const char* animation = config->values.GetString("animation");
 		AnimationReader::BuildAnimatior( *this, animation);
 		activeAnimation = 0;
 		state = TimeState::Running;

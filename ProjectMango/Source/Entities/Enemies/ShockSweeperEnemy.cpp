@@ -85,8 +85,9 @@ namespace ShockSweeper
 		
 		if( CoolingFromAttack() )
 			return;
-
-		if( CanMoveToTarget() )
+		
+		const AIController& ai_controller = GetComponentRef(AIController, entity);
+		if( ai_controller.canMoveToTarget )
 		{
 			CharacterState& state = GetComponentRef(CharacterState, entity);
 			PushState(Run);
@@ -113,43 +114,35 @@ namespace ShockSweeper
 	{
 		Transform& transform = GetComponentRef(Transform, entity);
 		const AIController& ai_controller = GetComponentRef(AIController, entity);
-		Pathing& pathing = GetComponentRef(Pathing, entity);
-
-		//if( ai_controller.cooldownTimer.IsRunning() )
-		//{		
-		//	Sprite& sprite = GetComponentRef(Sprite, entity);
-		//	sprite.canFlip = false;
-		//	
-		//	PopState();
-		//	return;
-		//}
-
-		//const int run_acceleration_factor = 1;
-		//ApplyMovementEase(run_acceleration_factor, dt);
-
 		CharacterState& state = GetComponentRef(CharacterState, entity);
-		Physics& physics = GetComponentRef(Physics, entity);
 
-		const int run_acceleration_factor = 1;
-		const SDL_RendererFlip flip_direction = GetFacingDirection(entity);
-		const VectorI facing_direction = FacingDirectionToVector(flip_direction);
-		VectorF desired_movement = physics.GetMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
+		if(ai_controller.canMoveToTarget)
+		{
+			Pathing& pathing = GetComponentRef(Pathing, entity);
+			Physics& physics = GetComponentRef(Physics, entity);
 
-		VectorF position = GetPosition(entity);
-		pathing.targetLocation = position + desired_movement;
+			const int run_acceleration_factor = 1;
+			const SDL_RendererFlip flip_direction = GetFacingDirection(entity);
+			const VectorI facing_direction = FacingDirectionToVector(flip_direction);
+			VectorF desired_movement = physics.GetMovementEase(facing_direction.toFloat(), dt, run_acceleration_factor);
 
-		//if(ai_controller.target != EntityInvalid && IsAlive(ai_controller.target))
-		//{
-		//	const Transform& target_transform = GetComponentRef(Transform, ai_controller.target);
-		//	const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
-		//	const float attack_range = GetAttackRange(ActionState::BasicAttack) * 0.8f;
+			VectorF position = GetPosition(entity);
+			pathing.targetLocation = position + desired_movement;
+		}
+		else
+		{
+			PopState();
+		}
 
-		//	if(attack_range > 0.0f && attack_range > distance_to_target)
-		//	{
-		//		CharacterState& state = GetComponentRef(CharacterState, entity);
-		//		ReplaceState(BasicAttack);
-		//	}
-		//}
+		const Transform& target_transform = GetComponentRef(Transform, ai_controller.target);
+		const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
+		const float attack_range = GetAttackRange(ActionState::BasicAttack) * 0.8f;
+
+		if(attack_range > 0.0f && attack_range > distance_to_target)
+		{
+			CharacterState& state = GetComponentRef(CharacterState, entity);
+			ReplaceState(BasicAttack);
+		}
 	}
 
 	// TakeHitState

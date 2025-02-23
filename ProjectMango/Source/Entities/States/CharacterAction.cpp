@@ -108,7 +108,7 @@ Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 	AddComponent(Collider, entity);
 	AddComponent(Health, entity);
 
-	const ObjectConfig* config = ECS::GetObjectConfig(entity);
+	const Config* config = ECS::GetConfig(entity);
 
 	// Transform
 	Transform& transform = GetComponentRef(Transform, entity);
@@ -175,12 +175,6 @@ bool CharacterAction::CanEnterHitState(float frame_buffer)
 	}
 
 	return false;
-}
-
-bool CharacterAction::CanMoveToTarget()
-{
-	AIController& ai_controller = GetComponentRef(AIController, entity);
-	return ai_controller.canMoveToTarget && ecs->IsAlive(ai_controller.target);
 }
 
 bool CharacterAction::CoolingFromAttack()

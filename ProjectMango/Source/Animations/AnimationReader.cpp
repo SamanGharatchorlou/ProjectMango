@@ -102,8 +102,8 @@ namespace AnimationReader
 				anim.frameTime = animation["frameTime"].GetFloat();
 				anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
 				anim.reversing = animation.HasMember("reverse") ? animation["reverse"].GetBool() : false;
-				anim.attackColliderFrameStart = animation.HasMember("attack_collider_frame_start") ? animation["attack_collider_frame_start"].GetInt() : -1;
-				anim.attackColliderFrameEnd = animation.HasMember("attack_collider_frame_end") ? animation["attack_collider_frame_end"].GetInt() : -1;
+				anim.attackColliderFrameStart = animation.HasMember("attack_collider_frame_start") ? animation["attack_collider_frame_start"].GetInt() : 0;
+				anim.attackColliderFrameEnd = animation.HasMember("attack_collider_frame_end") ? animation["attack_collider_frame_end"].GetInt() : anim.frameCount;
 
 				// set object center
 				if(sprite_sheet.HasMember("object_center"))

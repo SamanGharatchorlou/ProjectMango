@@ -12,6 +12,11 @@ namespace ECS
 
 		~EntityCoordinator()
 		{
+			Close();
+		}
+
+		void Close()
+		{
 			entities.Close();
 			components.Close();
 			systems.Close();

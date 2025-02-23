@@ -71,7 +71,7 @@ namespace AnimationEditor
 
 	void DoEditor()
 	{
-        s_targetWindowSize = GameData::Get().window->size() * 0.8f;
+        s_targetWindowSize = GameData::Get().window->size() * 1.0f;
 
 		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
                 

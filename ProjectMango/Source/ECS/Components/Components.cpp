@@ -55,9 +55,9 @@ namespace ECS
 		return nullptr;
 	}
 
-	const ObjectConfig* GetObjectConfig(Entity entity)
+	const Config* GetConfig(Entity entity)
 	{
-		const ObjectConfig* config = nullptr;
+		const Config* config = nullptr;
 		if (const EntityData* ed = GetComponent(EntityData, entity))
 		{
 			if (ed->config.empty())
@@ -68,7 +68,7 @@ namespace ECS
 				return nullptr;
 			}
 
-			config = ConfigManager::Get()->GetConfig<ObjectConfig>(ed->config.c_str());
+			config = ConfigManager::Get()->GetConfig(ed->config.c_str());
 			if (!config)
 			{
 				DebugPrint(Warning, "No config found for entity '%s' with config ID '%s'",
@@ -80,11 +80,11 @@ namespace ECS
 	}
 
 
-	const ObjectConfig* GetObjectConfigFromID(const char* id)
+	const Config* GetConfigFromID(const char* id)
 	{
 		char buffer[64];
 		snprintf(buffer, 64, "%sConfig", id);
-		return ConfigManager::Get()->GetConfig<ObjectConfig>(buffer);
+		return ConfigManager::Get()->GetConfig(buffer);
 	}
 
 	// EntityData
@@ -131,7 +131,7 @@ namespace ECS
 		ignoreOutOfBounds(false) 
 	{ }
 
-	void Transform::Init(const ObjectConfig* config, VectorF pos)
+	void Transform::Init(const Config* config, VectorF pos)
 	{
 		if(config)
 		{
@@ -158,7 +158,7 @@ namespace ECS
 		collider.InitFromTransform(*this);
 	}
 	
-	void Transform::Init(const ObjectConfig* config, VectorF pos, Collider& collider)
+	void Transform::Init(const Config* config, VectorF pos, Collider& collider)
 	{
 		Init(config, pos);
 		InitCollider(collider);
@@ -249,14 +249,11 @@ namespace ECS
 		renderLayer(0)
 	{ }
 
-	void Sprite::Init(const ObjectConfig* config)
+	void Sprite::Init(const Config* config)
 	{
 		if(config)
 		{
-			if(config->strings.Contains("sprite"))
-			{	
-				SetTexture(config->strings["sprite"]);
-			}
+			SetTexture(config->values.GetString("sprite"));
 		}
 	}
 
@@ -276,7 +273,7 @@ namespace ECS
 		canEnterHover(false)
 	{ }
 
-	void CharacterState::Init(const ObjectConfig* config)
+	void CharacterState::Init(const Config* config)
 	{
 		if(config)
 		{
@@ -342,7 +339,7 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Health::Health() : maxHealth(0), currentHealth(0), invulnerable(false) { }
 
-	void Health::Init(const ObjectConfig* config)
+	void Health::Init(const Config* config)
 	{
 		maxHealth = config->values.GetFloat("max_health");
 		currentHealth = maxHealth;

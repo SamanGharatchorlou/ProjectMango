@@ -56,12 +56,10 @@ namespace ECS
 
 	void PathingSystem::Update(float dt)
 	{
-		
-		
  		for (Entity entity : entities)
 		{
 			Pathing& pathing = GetComponentRef(Pathing, entity);
-			AIController& aic = GetComponentRef(AIController, entity);
+			//AIController& aic = GetComponentRef(AIController, entity);
 
 			// reset this every frame
 			pathing.hasValidPath = false;
@@ -78,22 +76,6 @@ namespace ECS
 
 			VectorF target = pathing.targetLocation;
 			VectorF position = GetPosition(entity);
-
-			// check the facing direction
-			SDL_RendererFlip desired_facing_direction = target.x > position.x ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-
-			// this indirectly sets the facing direction since its derived from the sprite flip
-			// I should reverse this order.... and set things like can change facing direction etc
-			Sprite& sprite = GetComponentRef(Sprite, entity);
-			if (sprite.canFlip)
-			{
-				sprite.flip = desired_facing_direction;
-			}
-
-			SDL_RendererFlip current_facing_direction = sprite.flip;
-			bool requires_flip = desired_facing_direction != current_facing_direction;
-			if (requires_flip)
-				continue;
 
 			bool can_move_to_target_location = CanMoveDistance(entity, level, pathing.targetLocation);
 			if (!can_move_to_target_location)

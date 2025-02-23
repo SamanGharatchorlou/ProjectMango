@@ -2,29 +2,19 @@
 
 struct Config
 {
+	enum Type
+	{
+		JSON,
+		XML
+	};
+
 	Config(const char* config_name) : name(config_name) { };
 	
-	virtual void Read(const char* path) = 0;
+	void Read(const char* path);
+	
+	Settings values;
 
 	StringBuffer32 name;
 	bool parsed = false;
-};
-
-struct GameSettingsConfig : public Config
-{
-	GameSettingsConfig(const char* config_name) : Config(config_name) { }
-
-	void Read(const char* path) override;
-
-	StringMap32 settings;
-};
-
-struct ObjectConfig : public Config
-{
-	ObjectConfig(const char* config_name) : Config(config_name) { }
-
-	void Read(const char* path) override;
-
-	SettingValues values;
-	SettingStrings strings;
+	Type type = JSON;
 };

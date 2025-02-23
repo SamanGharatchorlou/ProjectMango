@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ConfigManager.h"
 
-
 ConfigManager* ConfigManager::Get()
 {
 	GameData& gd = GameData::Get();
@@ -16,12 +15,6 @@ void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
 	{
 		DebugPrint(Warning, "No config file found named %s found in config folder", name);
 	}
-}
-
-
-bool ConfigManager::ValidPath(const char* path)
-{
-	return FileManager::Get()->exists(FileManager::Configs, path);
 }
 
 void ConfigManager::Load()
@@ -43,6 +36,22 @@ void ConfigManager::Load()
 	}
 }
 
+void ConfigManager::Add(const char* path, Config::Type type)
+{
+	if (mConfigs.count(path) == 0)
+	{
+		Config* new_config = new Config(path);
+		mConfigs[path] = new_config;
+		mConfigs[path]->type = type;
+	}
+}
+
+Config* ConfigManager::AddAndLoad(const char* path, Config::Type type)
+{
+	Add(path, type);
+	Load();
+	return mConfigs[path];
+}
 
 void ConfigManager::Reload()
 {
@@ -52,4 +61,20 @@ void ConfigManager::Reload()
 	}
 
 	Load();
+}
+
+const Config* ConfigManager::GetConfig(const char* config)
+{
+	if (mConfigs.contains(config))
+	{
+		ASSERT(mConfigs[config]->parsed, "config %s has not been parsed yet, no data", config);
+		return mConfigs.at(config);
+	}
+	else if(FileManager::Get()->exists(FileManager::Configs, config))
+	{
+		return AddAndLoad(config);
+	}
+
+	DebugPrint(Warning, "No config in the config manager with name: %s", config);
+	return nullptr;
 }

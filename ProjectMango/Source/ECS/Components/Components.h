@@ -4,7 +4,7 @@
 #include "Entities/States/CharacterAction.h"
 
 class STexture;
-struct ObjectConfig;
+struct Config;
 
 namespace ECS
 {
@@ -48,8 +48,8 @@ namespace ECS
 
 		bool ignoreOutOfBounds;
 		
-		void Init(const ObjectConfig* config, VectorF pos, Collider& collider);
-		void Init(const ObjectConfig* config, VectorF pos);
+		void Init(const Config* config, VectorF pos, Collider& collider);
+		void Init(const Config* config, VectorF pos);
 		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
@@ -80,7 +80,7 @@ namespace ECS
 		float rotation; 
 		u32 renderLayer;
 		
-		void Init(const ObjectConfig* config);
+		void Init(const Config* config);
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
 		void SetTexture(const char* label);
 	};
@@ -102,7 +102,7 @@ namespace ECS
 		// melee only (split this into differnt state parts?)
 		bool canEnterHover;
 		
-		void Init(const ObjectConfig* config);
+		void Init(const Config* config);
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -156,7 +156,7 @@ namespace ECS
 
 		bool invulnerable;
 		
-		void Init(const ObjectConfig* config);
+		void Init(const Config* config);
 		void ApplyDamage(const Damage& damage);
 	};
 
@@ -217,8 +217,8 @@ namespace ECS
 	Entity CreateEntity(const char* id, const char* config);
 
 	const char* GetName(Entity entity);
-	const ObjectConfig* GetObjectConfig(Entity entity);
-	const ObjectConfig* GetObjectConfigFromID(const char* id);
+	const Config* GetConfig(Entity entity);
+	const Config* GetConfigFromID(const char* id);
 
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);

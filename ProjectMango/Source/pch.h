@@ -82,7 +82,6 @@ namespace fs = std::filesystem;
 #include "Core/Maps.h"
 
 // File accessors
-#include "System/Files/XMLParser.h"
 #include "System/Files/FileManager.h"
 
 // GAME DATA - all the gubbins, just saves me adding this everywhere I need it tbh... yes lazy
