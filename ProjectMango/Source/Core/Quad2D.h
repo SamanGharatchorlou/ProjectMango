@@ -2,7 +2,7 @@
 
 #include "Maths.h"
 #include "Vector2D.h"
-#include "Rect.h"
+#include "SRect.h"
 
 // TODO: many of these functions can be inlined, like vector
 template<class T>
@@ -18,7 +18,7 @@ public:
 		points = { point1, point2, point3, point4 };
 	}
 
-	Quad2D(const Rect<T>& rect) : mAboutPoint(-1, -1), mRotation(0)
+	Quad2D(const SRect<T>& rect) : mAboutPoint(-1, -1), mRotation(0)
 	{
 		points[0] = rect.TopLeft();
 		points[1] = rect.TopRight();
@@ -70,7 +70,7 @@ public:
 	Point botCenter() const;
 	Point leftCenter() const;
 
-	Rect<T> getRect() const;
+	SRect<T> getRect() const;
 
 
 private:
@@ -86,9 +86,9 @@ typedef Quad2D<float> QuadF;
 
 
 template<class T>
-Rect<T> Quad2D<T>::getRect() const
+SRect<T> Quad2D<T>::getRect() const
 {
-	Rect<T> rect;
+	SRect<T> rect;
 	rect.SetSize(width(), height());
 	rect.SetCenter(center());
 	return rect;

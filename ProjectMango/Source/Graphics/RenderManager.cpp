@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Graphics/RenderManager.h"
 
-#include "Texture.h"
+#include "STexture.h"
 #include "Renderer.h"
 #include "System/Window.h"
 #include "Game/Camera/Camera.h"
@@ -93,7 +93,7 @@ void RenderManager::render()
 		{
 		case DebugDrawType::Line:
 		{
-			Colour colour = mDebugRenders[i].colour;
+			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 
 			const RectF& rect = mDebugRenders[i].rect;
@@ -105,7 +105,7 @@ void RenderManager::render()
 		}
 		case DebugDrawType::RectOutline:
 		{
-			Colour colour = mDebugRenders[i].colour;
+			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
@@ -121,7 +121,7 @@ void RenderManager::render()
 		case DebugDrawType::Point:
 		case DebugDrawType::RectFill:
 		{
-			Colour colour = mDebugRenders[i].colour;
+			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
 			
 			RectF& rect = mDebugRenders[i].rect;

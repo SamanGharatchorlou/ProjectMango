@@ -465,6 +465,47 @@ namespace
 		CurrentDevice->UniformColorTriangleCache.Insert(key, std::move(cached));
 	}
 
+
+}
+
+namespace ImGuiSDL
+{
+	// SAMAN: START OF BLOCK
+	// I moved this block of code from the annoymous name space above into this one
+	// it was complaing otherwise, which makes sense becuase the Rect is used in this namespace but 
+	// it should have access to it unless if its in the one above... wtf? any way this fixed it
+	struct Rect
+	{
+		float MinX, MinY, MaxX, MaxY;
+		float MinU, MinV, MaxU, MaxV;
+
+		bool IsOnExtreme(const ImVec2& point) const
+		{
+			return (point.x == MinX || point.x == MaxX) && (point.y == MinY || point.y == MaxY);
+		}
+
+		bool UsesOnlyColor() const
+		{
+			const ImVec2& whitePixel = ImGui::GetIO().Fonts->TexUvWhitePixel;
+
+			return MinU == MaxU && MinU == whitePixel.x && MinV == MaxV && MaxV == whitePixel.y;
+		}
+
+		static Rect CalculateBoundingBox(const ImDrawVert& v0, const ImDrawVert& v1, const ImDrawVert& v2)
+		{
+			return Rect{
+				std::min({ v0.pos.x, v1.pos.x, v2.pos.x }),
+				std::min({ v0.pos.y, v1.pos.y, v2.pos.y }),
+				std::max({ v0.pos.x, v1.pos.x, v2.pos.x }),
+				std::max({ v0.pos.y, v1.pos.y, v2.pos.y }),
+				std::min({ v0.uv.x, v1.uv.x, v2.uv.x }),
+				std::min({ v0.uv.y, v1.uv.y, v2.uv.y }),
+				std::max({ v0.uv.x, v1.uv.x, v2.uv.x }),
+				std::max({ v0.uv.y, v1.uv.y, v2.uv.y })
+			};
+		}
+	};
+
 	void DrawRectangle(const Rect& bounding, SDL_Texture* texture, int textureWidth, int textureHeight, const Color& color, bool doHorizontalFlip, bool doVerticalFlip)
 	{
 		// We are safe to assume uniform color here, because the caller checks it and and uses the triangle renderer to render those.
@@ -511,10 +552,9 @@ namespace
 		SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
 		DrawRectangle(bounding, texture, width, height, color, doHorizontalFlip, doVerticalFlip);
 	}
-}
+	// SAMAN: END OF BLOCK
 
-namespace ImGuiSDL
-{
+
 	void Initialize(SDL_Renderer* renderer, int windowWidth, int windowHeight)
 	{
 		ImGuiIO& io = ImGui::GetIO();

@@ -5,7 +5,6 @@
 #include "ECS/Components/Biome.h"
 #include "Graphics/TextureManager.h"
 #include "System/Window.h"
-#include "Core/Helpers.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Collider.h"

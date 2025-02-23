@@ -5,13 +5,14 @@
 #include "ECS/Components/Components.h"
 #include "imgui-master/imgui.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "ECS/Components/Components.h"
 
 bool s_displayRect = false;
 bool s_displayCharacterPosition = false;
 bool s_displayFlipPoint = false;
 bool s_outputPosition = false;
 
-ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Transform;
 
@@ -25,14 +26,14 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 		if (s_displayRect)
 		{
 			RectF rect(transform.worldPosition, transform.size);
-			DebugDraw::RectOutline(rect, Colour::Blue);
+			DebugDraw::RectOutline(rect, SColour::Blue);
 		}
 
 		ImGui::Checkbox("Display Character Position", &s_displayCharacterPosition);
 		if (s_displayCharacterPosition)
 		{
 			VectorF position = transform.GetObjectCenter();
-			DebugDraw::Point(position, Colour::Green);
+			DebugDraw::Point(position, SColour::Green);
 		}
 
 		ImGui::Checkbox("Display Flip Point", &s_displayFlipPoint);
@@ -42,7 +43,7 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			if(ECS::Sprite* sprite = GetComponent(Sprite, entity))
 				flip_point = (sprite->flipPoint * transform.size) + transform.worldPosition;
 
-			DebugDraw::Point(flip_point, Colour::Red);
+			DebugDraw::Point(flip_point, SColour::Red);
 		}
 
 		ImGui::Checkbox("Output Position", &s_outputPosition);
@@ -53,5 +54,5 @@ ECS::Component::Type DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

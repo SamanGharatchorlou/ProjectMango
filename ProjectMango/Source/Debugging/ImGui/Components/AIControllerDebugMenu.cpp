@@ -4,10 +4,10 @@
 #include "ECS/Components/AIController.h"
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "ECS/Components/Components.h"
 
-ECS::Component::Type DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 {
-	//ECS::
 	ECS::Component::Type type = ECS::Component::AIController;
 
 	ImGui::PushID(entity + (int)type);
@@ -23,5 +23,5 @@ ECS::Component::Type DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 		
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

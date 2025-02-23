@@ -2,7 +2,7 @@
 
 #include "Input/Button.h"
 
-class Texture;
+class STexture;
 
 class Cursor
 {
@@ -26,7 +26,7 @@ public:
 	Cursor();
 	void render();
 
-	void setTexture(Texture* texture) { mTexture = texture; }
+	void setTexture(STexture* texture) { mTexture = texture; }
 
 	Mode mode() const { return mMode; }
 	void setMode(Mode mode) { mMode = mode; }
@@ -56,7 +56,7 @@ public:
 
 private:
 	RectF mRect;
-	Texture* mTexture;
+	STexture* mTexture;
 
 	VectorF mCursorOffsetPoint;
 

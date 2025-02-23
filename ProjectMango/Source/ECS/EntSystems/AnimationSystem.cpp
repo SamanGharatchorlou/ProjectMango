@@ -3,9 +3,10 @@
 
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
+//#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/Collider.h"
 
 namespace ECS
 {

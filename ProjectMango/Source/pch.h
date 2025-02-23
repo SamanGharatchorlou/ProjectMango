@@ -34,6 +34,14 @@
 #include <algorithm>
 
 // Other
+#include <mutex>
+#include <Windows.h>
+// what dumb macros to define, it breaks using std::min/max
+#undef min  // Remove the macro definition from <Windows.h>
+#undef max  // Remove the macro definition from <Windows.h>
+
+
+
 #include <filesystem>
 /*
 change the language standard in Project 
@@ -42,6 +50,8 @@ to at least ISO C++17 Standard(/ std:c++17)
 (Can also be found in Project properties->Configuration Properties->General->C++ Language Standard)
 */
 namespace fs = std::filesystem;
+
+// Third Party
 
 // SDL
 #include <SDL_events.h>
@@ -57,16 +67,17 @@ namespace fs = std::filesystem;
 // Basic Containers - no dependencies
 #include "Core/StringBuffers.h"
 #include "Core/BasicString.h"
-#include "Core/Vector2D.h"
 #include "Core/Queue.h"
 #include "Core/UniqueQueue.h"
 #include "Core/LinkedList.h"
+#include "Core/Maths.h"
 
 // General Containers - may have dependencies
-#include "Core/Rect.h"
+#include "Core/Vector2D.h"
+#include "Core/SRect.h"
 #include "Core/Quad2D.h"
 #include "Core/Grid.h"
-#include "Core/Colour.h"
+#include "Core/SColour.h"
 #include "Core/Timer.h"
 #include "Core/Maps.h"
 

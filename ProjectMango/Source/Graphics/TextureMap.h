@@ -1,20 +1,20 @@
 #pragma once
 
-class Texture;
+class STexture;
 
-using StringTextureMap = std::unordered_map<StringBuffer64, Texture*>;
+using StringTextureMap = std::unordered_map<StringBuffer64, STexture*>;
 
 class TextureMap
 {
 public:
 	void free();
 
-	void add(const char* id, Texture* texture);
+	void add(const char* id, STexture* texture);
 
-	Texture* texture(const char* id) const { return mData.at(id); }
+	STexture* texture(const char* id) const { return mData.at(id); }
 
-	StringBuffer64 find(const Texture* texture) const;
-	Texture* find(const char* id) const;
+	StringBuffer64 find(const STexture* texture) const;
+	STexture* find(const char* id) const;
 
 	u32 size() const { return (u32)mData.size(); }
 

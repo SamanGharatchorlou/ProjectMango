@@ -2,9 +2,8 @@
 
 #include "Core/stack.h"
 #include "Entities/States/CharacterAction.h"
-#include "IdentityCommon.h"
 
-class Texture;
+class STexture;
 struct ObjectConfig;
 
 namespace ECS
@@ -69,9 +68,9 @@ namespace ECS
 		COMPONENT_TYPE(Sprite)
 
 		RectF subRect;
-		Texture* texture;
+		STexture* texture;
 		
-		Colour colourMod;
+		SColour colourMod;
 
 		VectorF flipPoint;
 		SDL_RendererFlip flip;

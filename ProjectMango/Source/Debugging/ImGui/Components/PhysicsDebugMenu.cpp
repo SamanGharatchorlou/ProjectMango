@@ -5,7 +5,7 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "ECS/Components/Physics.h"
 
-ECS::Component::Type DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Physics;
 
@@ -21,5 +21,5 @@ ECS::Component::Type DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

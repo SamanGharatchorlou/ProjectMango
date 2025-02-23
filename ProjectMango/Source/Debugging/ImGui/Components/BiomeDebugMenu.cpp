@@ -5,8 +5,7 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "ECS/Components/Biome.h"
 
-
-ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Biome;
 
@@ -26,7 +25,7 @@ ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 					for( u32 e = 0; e < entity_positions.size(); e++ )
 					{
 						VectorF pos = entity_positions[e].position;
-						DebugDraw::Point(pos, Colour::Green);
+						DebugDraw::Point(pos, SColour::Green);
 					}
 				}
 			}
@@ -51,7 +50,7 @@ ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 							
 							RectF rect = level.GetWalkableTileRect(index);
 
-							DebugDraw::RectOutline(rect, Colour::Green);
+							DebugDraw::RectOutline(rect, SColour::Green);
 						}
 					}
 				}
@@ -63,5 +62,5 @@ ECS::Component::Type DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return type;
+	return (u32)type;
 }

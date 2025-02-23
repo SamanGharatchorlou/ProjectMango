@@ -17,6 +17,8 @@
 
 static GameData* gd = nullptr;
 
+ECS::EntityCoordinator* ecs = nullptr;
+
 GameData& GameData::Get()
 {
 	ASSERT(gd, "Game Data has not been setup yet, cannot call Get until it has been init'd");

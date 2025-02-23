@@ -14,7 +14,6 @@
 #include "Game/Camera/Camera.h"
 
 #include "ECS/Components/ComponentCommon.h"
-#include "Core/Helpers.h"
 
 namespace ECS
 {

@@ -5,12 +5,9 @@
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/SpellComponents.h"
-#include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
-#include "ECS/Components/Physics.h"
 #include "Game/Camera/Camera.h"
 
-#include "System/Files/ConfigManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
 ECS::Entity s_playerEntity = ECS::EntityInvalid;

@@ -4,13 +4,6 @@
 #include "SystemManager.h"
 #include "EntityManager.h"
 
-
-//#if ENTITY_LOGGING
-//#define CreateEntity(name) CreateNewEntity(name)
-//#else
-//#define CreateEntity(name) CreateNewEntity()
-//#endif
-
 namespace ECS
 {
 	struct EntityCoordinator

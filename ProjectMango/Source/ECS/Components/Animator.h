@@ -1,7 +1,7 @@
 #pragma once
 
 enum class ActionState;
-class Texture;
+class STexture;
 struct ObjectConfig;
 
 namespace ECS
@@ -11,7 +11,7 @@ namespace ECS
 	struct SpriteSheet
 	{
 		BasicString ID;
-		Texture* texture;
+		STexture* texture;
 		VectorF frameSize;
 		VectorI sheetSize;
 	};

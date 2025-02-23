@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 
 #include "Renderer.h"
-#include "Texture.h"
+#include "STexture.h"
 #include "Game/Data/LoadingManager.h"
 
 
@@ -113,7 +113,7 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	int mapSize = textureMap.size();
 	bool success = true;
 	FileManager* fm = FileManager::Get();
-	Texture *texture = new Texture;
+	STexture *texture = new STexture;
 
 	Renderer::Get()->lock();
 	if (texture->loadFromFile(filePath))
@@ -138,7 +138,7 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	return success;
 }
 
-StringBuffer64 TextureManager::getTextureName(const Texture* texture) const
+StringBuffer64 TextureManager::getTextureName(const STexture* texture) const
 {
 	std::unordered_map<FileManager::Folder, TextureMap>::const_iterator iter;
 	for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
@@ -150,11 +150,11 @@ StringBuffer64 TextureManager::getTextureName(const Texture* texture) const
 			return id;
 	}
 
-	DebugPrint(Log, "Texture was not found within any texture map");
+	DebugPrint(Log, "STexture was not found within any texture map");
 	return StringBuffer64();
 }
 
-Texture* TextureManager::getTexture(const char* label, const FileManager::Folder folder) const
+STexture* TextureManager::getTexture(const char* label, const FileManager::Folder folder) const
 {
 	std::vector<const TextureMap*> texture_maps = FindTextureMaps(folder);
 
@@ -171,7 +171,7 @@ Texture* TextureManager::getTexture(const char* label, const FileManager::Folder
 	for (u32 i = 0; i < texture_maps.size(); i++)
 	{
 		const TextureMap* tm = texture_maps[i];
-		if (Texture* texture = tm->find(buffer.c_str()))
+		if (STexture* texture = tm->find(buffer.c_str()))
 			return texture;
 	}
 

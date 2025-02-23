@@ -114,6 +114,10 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <PrecompiledHeaderOutputFile>$(IntDir)pch.h</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +135,10 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <PrecompiledHeaderOutputFile>$(IntDir)pch.h</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,7 +169,7 @@
     <ClCompile Include="Source\Entities\States\PlayerRangedStates.cpp" />
     <ClCompile Include="Source\Core\BasicString.cpp" />
     <ClCompile Include="Source\Core\Buffer.cpp" />
-    <ClCompile Include="Source\Core\Colour.cpp" />
+    <ClCompile Include="Source\Core\SColour.cpp" />
     <ClCompile Include="Source\Core\Events\Dispatcher.cpp" />
     <ClCompile Include="Source\Core\Helpers.cpp" />
     <ClCompile Include="Source\Core\Maps\PropertyMap.cpp" />
@@ -229,14 +237,17 @@
     <ClCompile Include="Source\Graphics\Raycast.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\RenderManager.cpp" />
-    <ClCompile Include="Source\Graphics\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\STexture.cpp" />
     <ClCompile Include="Source\Graphics\TextureManager.cpp" />
     <ClCompile Include="Source\Graphics\TextureMap.cpp" />
     <ClCompile Include="Source\Input\Button.cpp" />
     <ClCompile Include="Source\Input\Cursor.cpp" />
     <ClCompile Include="Source\Input\InputManager.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp" />
     <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
@@ -280,7 +291,7 @@
     <ClInclude Include="Source\Entities\States\PlayerRangedStates.h" />
     <ClInclude Include="Source\Core\BasicString.h" />
     <ClInclude Include="Source\Core\Buffer.h" />
-    <ClInclude Include="Source\Core\Colour.h" />
+    <ClInclude Include="Source\Core\SColour.h" />
     <ClInclude Include="Source\Core\Events\Dispatcher.h" />
     <ClInclude Include="Source\Core\Events\Events.h" />
     <ClInclude Include="Source\Core\Events\LocalDispatcher.h" />
@@ -297,7 +308,7 @@
     <ClInclude Include="Source\Core\Property.h" />
     <ClInclude Include="Source\Core\Quad2D.h" />
     <ClInclude Include="Source\Core\Queue.h" />
-    <ClInclude Include="Source\Core\Rect.h" />
+    <ClInclude Include="Source\Core\SRect.h" />
     <ClInclude Include="Source\Core\RingBuffer.h" />
     <ClInclude Include="Source\Core\Stack.h" />
     <ClInclude Include="Source\Core\StringBuffers.h" />
@@ -360,7 +371,7 @@
     <ClInclude Include="Source\Graphics\Raycast.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\RenderManager.h" />
-    <ClInclude Include="Source\Graphics\Texture.h" />
+    <ClInclude Include="Source\Graphics\STexture.h" />
     <ClInclude Include="Source\Graphics\TextureManager.h" />
     <ClInclude Include="Source\Graphics\TextureMap.h" />
     <ClInclude Include="Source\Input\Button.h" />

@@ -4,8 +4,9 @@
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "ECS/Components/Physics.h"
+#include "ECS/Components/Components.h"
 
-ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Health;
 
@@ -20,11 +21,11 @@ ECS::Component::Type DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return type;
+	return (u32)type;
 }
 
 
-ECS::Component::Type DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::EntityData;
 
@@ -46,5 +47,5 @@ ECS::Component::Type DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return type;
+	return (u32)type;
 }

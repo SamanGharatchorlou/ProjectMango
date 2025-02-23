@@ -2,7 +2,7 @@
 
 #include "TextureMap.h"
 
-class Texture;
+class STexture;
 
 class TextureManager
 {
@@ -14,13 +14,13 @@ public:
 	void load();
 	void unload();
 
-	Texture* getTexture(const char* label, const FileManager::Folder folders) const;
-	Texture* getTexture(StringBuffer64 label, const FileManager::Folder folders) const
+	STexture* getTexture(const char* label, const FileManager::Folder folders) const;
+	STexture* getTexture(StringBuffer64 label, const FileManager::Folder folders) const
 	{
 		return getTexture(label.c_str(), folders);
 	}
 
-	StringBuffer64 getTextureName(const Texture* texture) const;
+	StringBuffer64 getTextureName(const STexture* texture) const;
 
 private:
 	bool loadTexture(TextureMap& textureMap, const char* filePath);

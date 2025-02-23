@@ -167,7 +167,7 @@ namespace ECS
 
 				Sprite& sprite = GetComponentRef(Sprite, entity);
 
-				sprite.colourMod = Colour(Colour::Blue);
+				sprite.colourMod = SColour(SColour::Blue);
 				sprite.colourMod.a = c_alphaMax * 0.75f;
 			}
 

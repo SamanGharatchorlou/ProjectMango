@@ -1,10 +1,10 @@
 #pragma once
 
-class Texture
+class STexture
 {
 public:
-	Texture();
-	~Texture();
+	STexture();
+	~STexture();
 
 	bool loadFromFile(const BasicString& filePath);
 
@@ -14,11 +14,11 @@ public:
 
 	void render(const QuadF& quad) const;
 
-	void SetColourModThisFrame(Colour colour) { colourModThisFrame = colour; }
+	void SetColourModThisFrame(SColour colour) { colourModThisFrame = colour; }
 
 public:
 	VectorF originalDimentions;
-	Colour colourModThisFrame;
+	SColour colourModThisFrame;
 
 
 private:
@@ -30,8 +30,8 @@ private:
 class TextureGroup
 {
 public:
-	void add(Texture* texture) { mTextures.push_back(texture); }
+	void add(STexture* texture) { mTextures.push_back(texture); }
 
 private:
-	std::vector<Texture*> mTextures;
+	std::vector<STexture*> mTextures;
 };

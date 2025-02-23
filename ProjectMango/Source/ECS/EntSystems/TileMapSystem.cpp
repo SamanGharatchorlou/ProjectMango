@@ -34,7 +34,7 @@ namespace ECS
 				{
 					const Layer& layer = level.layers[i];
 					const VectorF& tile_size = layer.tileSet->tileSize;
-					Texture* tile_texture = layer.tileSet->texture;
+					STexture* tile_texture = layer.tileSet->texture;
 
 					for( u32 j = 0; j < layer.tiles.size(); j++ )
 					{

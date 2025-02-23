@@ -55,7 +55,7 @@ void CameraShake::fastUpdate(float dt)
 
 	// dampen trauma;
 	mTrauma -= mTraumaReduction * dt;
-	mTrauma = std::max(0.0f, mTrauma);
+	mTrauma = Maths::Max(0.0f, mTrauma);
 }
 
 

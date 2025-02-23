@@ -4,7 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ImGui/ImGuiHelpers.h"
 #include "Graphics/TextureManager.h"
-#include "Graphics/Texture.h"
+#include "Graphics/STexture.h"
 #include "System/Window.h"
 #include "Graphics/RenderManager.h"
 #include "Input/InputManager.h"
@@ -111,7 +111,7 @@ namespace AnimationEditor
             // animation editing
             if( strlen(s_state.selectedSpriteSheet.c_str()) > 0 )
             {
-                if(Texture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Image_Animations ))
+                if(STexture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Image_Animations ))
 		        {
 			        VectorF dim = selected_tx->originalDimentions;
 			        VectorF texture_size(window_size.x, (window_size.x * dim.y) / dim. x);
@@ -123,7 +123,7 @@ namespace AnimationEditor
 			        RenderPack pack(selected_tx, animation, 1);
 			        rm->AddRenderPacket(pack);
 
-			        DebugDraw::RectOutline(animation, Colour::Yellow);
+			        DebugDraw::RectOutline(animation, SColour::Yellow);
                     s_state.drawHeight = texture_size.y;
 
                     ImGui::VectorText("Texture Size", texture_size);
@@ -140,13 +140,13 @@ namespace AnimationEditor
                     {
                         VectorF pointA((float)ix * frame_size.x, 0.0f);
                         VectorF pointB((float)ix * frame_size.x, texture_size.y);
-                        DebugDraw::Line(pointA + animation.TopLeft(), pointB + animation.TopLeft(), Colour::Blue);
+                        DebugDraw::Line(pointA + animation.TopLeft(), pointB + animation.TopLeft(), SColour::Blue);
                     }
                     for( u32 iy = 0; iy < frame_split_y; iy++ )
                     {
                         VectorF pointA(0.0f, (float)iy * frame_size.y);
                         VectorF pointB(texture_size.x, (float)iy * frame_size.y);
-                        DebugDraw::Line(pointA + animation.TopLeft(), pointB + animation.TopLeft(), Colour::Blue);
+                        DebugDraw::Line(pointA + animation.TopLeft(), pointB + animation.TopLeft(), SColour::Blue);
                     }
 
                     if(im->isCursorHeld(Cursor::ButtonType::Left))
@@ -160,15 +160,15 @@ namespace AnimationEditor
                                 VectorF pos = frame_size * VectorI(ix,iy).toFloat() + animation.TopLeft();
                                 RectF rect(pos, frame_size);
                                 
-                                if(PointInRect(rect, cursor_pos))
-                                {
-                                    VectorI index = VectorI(ix, iy);
-                                    if( !Contains(s_state.selectedFrameIndexes, index) )
-                                    {
-                                        s_state.selectedFrameIndexes.push_back(index);
-                                        s_state.previousSelectedFrameIndex = index;
-                                    }
-                                }
+                                //if(PointInRect(rect, cursor_pos))
+                                //{
+                                //    VectorI index = VectorI(ix, iy);
+                                //    if( !Contains(s_state.selectedFrameIndexes, index) )
+                                //    {
+                                //        s_state.selectedFrameIndexes.push_back(index);
+                                //        s_state.previousSelectedFrameIndex = index;
+                                //    }
+                                //}
                             }
                         }
                     }
@@ -218,7 +218,7 @@ namespace AnimationEditor
                         VectorF pos = frame_size * tile_index.toFloat() + animation.TopLeft();
                         RectF rect(pos, frame_size);
 
-                        DebugDraw::RectOutline(RectF(pos, frame_size), Colour::Purple);
+                        DebugDraw::RectOutline(RectF(pos, frame_size), SColour::Purple);
                     }
                     
                     if (s_state.selectedFrameIndexes.size() > 0)
@@ -256,14 +256,14 @@ namespace AnimationEditor
                         pack.subRect = subRect;
 			            rm->AddRenderPacket(pack);
 
-                        DebugDraw::RectOutline(renderRect, Colour::Yellow);
+                        DebugDraw::RectOutline(renderRect, SColour::Yellow);
                         s_state.drawHeight = renderRect.BotPoint();
 
                         // display the frame on the row showing the active render frame
                         VectorF render_row_frame_size = VectorF(renderRect.Width() / (float)selected_count, renderRect.Height());
                         VectorF renderRowFrame_topLeft = renderRect.TopLeft() + VectorF(s_state.targetFrame * render_row_frame_size.x, 0.f);
                         RectF renderRowFrameRect(renderRowFrame_topLeft, render_row_frame_size);
-                        DebugDraw::RectOutline(renderRowFrameRect, Colour::Blue);
+                        DebugDraw::RectOutline(renderRowFrameRect, SColour::Blue);
 
                         // Display Target Frame
                         ImGui::DragFloat("frame time", &s_state.frameTime);
@@ -300,7 +300,7 @@ namespace AnimationEditor
                         frame_pack.subRect = frameSubRect;
 			            rm->AddRenderPacket(frame_pack);
 
-                        DebugDraw::RectOutline(renderFrameRect, Colour::Yellow);
+                        DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);
                         s_state.drawHeight = renderFrameRect.BotPoint();
 
                         if(s_state.isPlayingFrames)
@@ -488,7 +488,7 @@ namespace AnimationEditor
 
 			    rm->AddRenderPacket(frame_pack);
 
-                DebugDraw::RectOutline(renderFrameRect, Colour::Yellow);
+                DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);
                 relative_selection_top_left = renderFrameRect.TopLeft();
 
                 // COLLIDERS
@@ -500,7 +500,7 @@ namespace AnimationEditor
                     collider.SetSize(selected_animation.entityColliderSize * renderFrameRect.Size());
                     collider.SetTopLeft(renderFrameRect.TopLeft() + selected_animation.entityColliderPos * renderFrameRect.Size());
 
-                    DebugDraw::RectOutline(collider, Colour::Blue);
+                    DebugDraw::RectOutline(collider, SColour::Blue);
                 }
             
                 ImGui::PopID();
@@ -570,7 +570,7 @@ namespace AnimationEditor
         const RectF& selection_rect = s_state.cursorSelection.selectionRect;
         if(!selection_rect.Size().isZero())
         {
-            DebugDraw::RectOutline( selection_rect, Colour::Green);
+            DebugDraw::RectOutline( selection_rect, SColour::Green);
             ImGui::VectorText("Absolute Position", selection_rect.TopLeft());
             ImGui::VectorText("Absolute Size", selection_rect.Size());
 
@@ -605,7 +605,7 @@ namespace AnimationEditor
 	    RenderManager* rm = GameData::Get().renderManager;
 
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
-	    Texture* bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
+	    STexture* bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
 	    RenderPack pack(bg, screen, 0);
 	    rm->AddRenderPacket(pack);
     }

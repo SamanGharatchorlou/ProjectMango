@@ -5,9 +5,10 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "ECS/Components/AIController.h"
 #include "Animations/CharacterStates.h"
+#include "ECS/Components/Components.h"
 
 
-ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::CharacterState;
 
@@ -57,5 +58,5 @@ ECS::Component::Type DebugMenu::DoCharacterStateDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

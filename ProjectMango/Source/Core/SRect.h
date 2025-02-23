@@ -4,23 +4,23 @@
 #include "Debugging/Logging.h"
 
 template<class T>
-class Rect
+class SRect
 {
 public:
 
 	// Constructors
-	Rect() { SetRect(0, 0, 0, 0); }
-	Rect(T x1, T y1, T x2, T y2) { SetRect(x1, y1, x2, y2); }
-	Rect(Vector2D<T> top_left, Vector2D<T> size) { SetRect(top_left, size); }
-	//Rect(int isValid) { if(isValid == -1) SetRect(-1, -1, -1, -1); }
+	SRect() { SetRect(0, 0, 0, 0); }
+	SRect(T x1, T y1, T x2, T y2) { SetRect(x1, y1, x2, y2); }
+	SRect(Vector2D<T> top_left, Vector2D<T> size) { SetRect(top_left, size); }
+	//SRect(int isValid) { if(isValid == -1) SetRect(-1, -1, -1, -1); }
 
 	template<class K>
-	Rect(const Rect<K>& rect) { x1 = (T)rect.x1; x2 = (T)rect.x2; y1 = (T)rect.y1; y2 = (T)rect.y2; }
+	SRect(const SRect<K>& rect) { x1 = (T)rect.x1; x2 = (T)rect.x2; y1 = (T)rect.y1; y2 = (T)rect.y2; }
 
 	// Initialisations
 	inline void SetRect(T left, T top, T right, T bot) { x1 = left; y1 = top; x2 = right, y2 = bot; }
 	inline void SetRect(Vector2D<T> top_left, Vector2D<T> dimentions);
-	inline void SetRect(const Rect<T>& rect) { x1 = rect.x1; y1 = rect.y1; x2 = rect.x2; y2 = rect.y2; }
+	inline void SetRect(const SRect<T>& rect) { x1 = rect.x1; y1 = rect.y1; x2 = rect.x2; y2 = rect.y2; }
 
 	// Corners
 	inline Vector2D<T> TopLeft() const { return Vector2D<T>(x1, y1); }
@@ -37,10 +37,10 @@ public:
 
 
 	// Sides - returns a new rect with zero width or height
-	inline Rect<T> TopSide() const { return Rect<T>(x1, x2, y1, y1); }
-	inline Rect<T> RightSide() const { return Rect<T>(x2, x2, y1, y1); }
-	inline Rect<T> BotSide() const { return Rect<T>(x1, x2, y1, y1); }
-	inline Rect<T> LeftSide() const { return Rect<T>(x1, x2, y1, y1); }
+	inline SRect<T> TopSide() const { return SRect<T>(x1, x2, y1, y1); }
+	inline SRect<T> RightSide() const { return SRect<T>(x2, x2, y1, y1); }
+	inline SRect<T> BotSide() const { return SRect<T>(x1, x2, y1, y1); }
+	inline SRect<T> LeftSide() const { return SRect<T>(x1, x2, y1, y1); }
 
 
 	// Side Points
@@ -100,8 +100,8 @@ public:
 
 	// Movement
 	inline void Translate(Vector2D<T> vector);
-	//inline Rect<T> Translate(T lateral, T vertical) const { return Rect<T>(x1 + lateral, y1 + vertical, x2 + lateral, y2 + vertical); }
-	inline Rect<T> MoveCopy(Vector2D<T> vector) const { return Rect<T>(TopLeft() + vector, Size()); }
+	//inline SRect<T> Translate(T lateral, T vertical) const { return SRect<T>(x1 + lateral, y1 + vertical, x2 + lateral, y2 + vertical); }
+	inline SRect<T> MoveCopy(Vector2D<T> vector) const { return SRect<T>(TopLeft() + vector, Size()); }
 
 	// Get Size
 	inline Vector2D<T> Size() const { return Vector2D<T>(Width(), Height()); }
@@ -116,7 +116,7 @@ public:
 
 
 	// return true if rectangles overlap
-	bool Intersect(const Rect<T>& rect) const;
+	bool Intersect(const SRect<T>& rect) const;
 	Vector2D<T> closestRectSide(Vector2D<T> point) const;
 
 	// SDL
@@ -124,8 +124,8 @@ public:
 
 
 	// -- Operators --
-	inline Rect<T> operator * (T scalar) { return Rect<T>(x1, y1, x1 + (Width() * scalar), y1 + (Height() * scalar)); }
-	inline Rect<T> operator + (const Rect<T>& rect) { return Rect<T>(x1 + rect.x1, y1 + rect.y1, x2 + rect.x2, y2 + rect.y2); }
+	inline SRect<T> operator * (T scalar) { return SRect<T>(x1, y1, x1 + (Width() * scalar), y1 + (Height() * scalar)); }
+	inline SRect<T> operator + (const SRect<T>& rect) { return SRect<T>(x1 + rect.x1, y1 + rect.y1, x2 + rect.x2, y2 + rect.y2); }
 
 #if DEBUG_MODE
 	BasicString  infoString();
@@ -139,11 +139,11 @@ public:
 };
 
 // typedefs
-typedef Rect<float>  RectF;
-#define InvalidRectF Rect<float>(0.0f, -1.0f, 0.0f, - 1.0f)
+typedef SRect<float>  RectF;
+#define InvalidRectF SRect<float>(0.0f, -1.0f, 0.0f, - 1.0f)
 
 template <class T>
-inline void Rect<T>::SetRect(const Vector2D<T> top_left, const Vector2D<T> dimentions)
+inline void SRect<T>::SetRect(const Vector2D<T> top_left, const Vector2D<T> dimentions)
 {
 	x1 = top_left.x;
 	x2 = top_left.x + dimentions.x;
@@ -154,7 +154,7 @@ inline void Rect<T>::SetRect(const Vector2D<T> top_left, const Vector2D<T> dimen
 
 // Returns 1 if the rectangles overlap
 template <class T>
-inline bool Rect<T>::Intersect(const Rect<T> &rect) const
+inline bool SRect<T>::Intersect(const SRect<T> &rect) const
 {
 	if ((y2 >= rect.y1) && (rect.y2 >= y1))
 		if ((rect.x2 >= x1) && (x2 >= rect.x1))
@@ -164,7 +164,7 @@ inline bool Rect<T>::Intersect(const Rect<T> &rect) const
 
 
 template <class T>
-inline void Rect<T>::SetTopLeft(Vector2D<T> point)
+inline void SRect<T>::SetTopLeft(Vector2D<T> point)
 { 
 	T width = Width();
 	T height = Height();
@@ -177,7 +177,7 @@ inline void Rect<T>::SetTopLeft(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetTopRight(Vector2D<T> point)
+inline void SRect<T>::SetTopRight(Vector2D<T> point)
 {
 	T width = Width();
 	T height = Height();
@@ -190,7 +190,7 @@ inline void Rect<T>::SetTopRight(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetBotRight(Vector2D<T> point)
+inline void SRect<T>::SetBotRight(Vector2D<T> point)
 {
 	T width = Width();
 	T height = Height();
@@ -202,7 +202,7 @@ inline void Rect<T>::SetBotRight(Vector2D<T> point)
 }
 
 template <class T>
-inline void Rect<T>::SetBotLeft(Vector2D<T> point)
+inline void SRect<T>::SetBotLeft(Vector2D<T> point)
 {
 	T width = Width();
 	T height = Height();
@@ -215,7 +215,7 @@ inline void Rect<T>::SetBotLeft(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetLeftCenter(Vector2D<T> point)
+inline void SRect<T>::SetLeftCenter(Vector2D<T> point)
 {
 	T halfWidth = Width() / 2;
 	T halfHeight = Height() / 2;
@@ -228,7 +228,7 @@ inline void Rect<T>::SetLeftCenter(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetRightCenter(Vector2D<T> point)
+inline void SRect<T>::SetRightCenter(Vector2D<T> point)
 {
 	T halfWidth = Width() / 2;
 	T halfHeight = Height() / 2;
@@ -241,7 +241,7 @@ inline void Rect<T>::SetRightCenter(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetTopCenter(Vector2D<T> point)
+inline void SRect<T>::SetTopCenter(Vector2D<T> point)
 {
 	T halfWidth = Width() / 2;
 	T height = Height();
@@ -253,7 +253,7 @@ inline void Rect<T>::SetTopCenter(Vector2D<T> point)
 }
 
 template <class T>
-inline void Rect<T>::SetBotCenter(Vector2D<T> point)
+inline void SRect<T>::SetBotCenter(Vector2D<T> point)
 {
 	T halfWidth = Width() / 2;
 	T halfHeight = Height() / 2;
@@ -266,7 +266,7 @@ inline void Rect<T>::SetBotCenter(Vector2D<T> point)
 
 
 template <class T>
-inline void Rect<T>::SetCenter(Vector2D<T> point)
+inline void SRect<T>::SetCenter(Vector2D<T> point)
 {
 	T halfWidth = Width() / 2;
 	T halfHeight = Height() / 2;
@@ -278,7 +278,7 @@ inline void Rect<T>::SetCenter(Vector2D<T> point)
 }
 
 template <class T>
-inline void Rect<T>::SetCenter(T x, T y)
+inline void SRect<T>::SetCenter(T x, T y)
 {
 	T halfWidth = Width() / 2;
 	T halfHeight = Height() / 2;
@@ -290,7 +290,7 @@ inline void Rect<T>::SetCenter(T x, T y)
 }
 
 template <class T>
-inline void Rect<T>::Scale(Vector2D<T> scale)
+inline void SRect<T>::Scale(Vector2D<T> scale)
 {
 	SetTopLeft(TopLeft() * scale);
 	SetSize(Size() * scale);
@@ -298,7 +298,7 @@ inline void Rect<T>::Scale(Vector2D<T> scale)
 
 
 template <class T>
-inline void Rect<T>::Translate(Vector2D<T> vector)
+inline void SRect<T>::Translate(Vector2D<T> vector)
 {
 	x1 += vector.x;
 	x2 += vector.x;
@@ -307,14 +307,14 @@ inline void Rect<T>::Translate(Vector2D<T> vector)
 }
 
 template <class T>
-SDL_Rect Rect<T>::toSDLRect() const
+SDL_Rect SRect<T>::toSDLRect() const
 {
 	return SDL_Rect{ static_cast<int>(x1 + 0.5f), static_cast<int>(y1 + 0.5f),
 				static_cast<int>(Width() + 0.5f), static_cast<int>(Height() + 0.5f) };
 }
 
 template <class T>
-Vector2D<T> Rect<T>::closestRectSide(Vector2D<T> point) const
+Vector2D<T> SRect<T>::closestRectSide(Vector2D<T> point) const
 {
 	VectorF rectSides[] = { TopCenter(), RightCenter(), BotCenter(), LeftCenter() };
 
@@ -337,7 +337,7 @@ Vector2D<T> Rect<T>::closestRectSide(Vector2D<T> point) const
 
 #if DEBUG_MODE
 template <class T>
-BasicString Rect<T>::infoString()
+BasicString SRect<T>::infoString()
 {
 	const int len = 512;
 	char buffer[len];

@@ -8,7 +8,7 @@
 #include "Game/FrameRateController.h"
 #include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
-#include "Game/FrameRateController.h"
+#include "ECS/Components/Components.h"
 
 struct RenderRects
 {
@@ -24,7 +24,7 @@ static ActionState s_activeAction = ActionState::None;
 
 std::vector<BasicString> s_animationLog;
 
-ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Animator;
 
@@ -62,16 +62,15 @@ ECS::Component::Type DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }
 
-
-ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Sprite;
 
 	if (!HasComponent(Transform, entity))
-		return type;
+		return (u32)type;
 
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
@@ -111,7 +110,7 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			if(s_renderRects.render)
 			{	
 				const RectF renderRect(transform.worldPosition, transform.size);
-				DebugDraw::RectOutline(renderRect, Colour::Green);
+				DebugDraw::RectOutline(renderRect, SColour::Green);
 			}
 
 			ImGui::TreePop();
@@ -120,5 +119,5 @@ ECS::Component::Type DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

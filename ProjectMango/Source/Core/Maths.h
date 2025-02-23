@@ -11,9 +11,15 @@ namespace Maths
 	}
 
 	template<typename T>
+	static T Max(T a, T b) { return a > b ? a : b; }
+
+	template<typename T>
+	static T Min(T a, T b) { return a < b ? a : b; }
+
+	template<typename T>
 	static T clamp(const T value, const T min, const T max)
 	{
-		return std::min(max, std::max(value, min));
+		return Min(max, Max(value, min));
 	}
 
 	template<typename T>
@@ -28,9 +34,5 @@ namespace Maths
 		return radians * static_cast<T>(180.0f / pi);
 	}
 	
-	template<typename T>
-	static T Max(T a, T b) { return a > b ? a : b; }
 
-	template<typename T>
-	static T Min(T a, T b) { return a < b ? a : b; }
 }

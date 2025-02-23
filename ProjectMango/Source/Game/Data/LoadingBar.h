@@ -1,6 +1,6 @@
 #pragma once
 
-class Texture;
+class STexture;
 
 class LoadingBar //: public Renderable
 {
@@ -10,7 +10,7 @@ public:
 
 	void free();
 
-	void setTextures(Texture* loadingBar, Texture* loadingBarContainer);
+	void setTextures(STexture* loadingBar, STexture* loadingBarContainer);
 	void setRect(RectF rect) { mRect = rect; }
 
 	void setPercentage(float percentage) { mPercentage = percentage; }
@@ -20,6 +20,6 @@ public:
 private:
 	float mPercentage;
 	RectF mRect;
-	Texture* mLoadingBar;
-	Texture* mLoadingBarContainer;
+	STexture* mLoadingBar;
+	STexture* mLoadingBarContainer;
 };

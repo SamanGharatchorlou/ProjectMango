@@ -4,38 +4,39 @@
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "Graphics/RenderManager.h"
-
+#include "ECS/Components/Components.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/Collider.h"
 
 void DebugMenu::DrawCollider(const ECS::Collider& collider)
 {
-    Colour colour = Colour::Blue;
+    SColour colour = SColour::Blue;
     bool is_static = collider.HasFlag(ECS::Collider::Static);
     if (is_static)
     {
-        colour = Colour::Purple;
+        colour = SColour::Purple;
     }
 
     bool ignore_all = collider.HasFlag(ECS::Collider::IgnoreAll);
     if (ignore_all)
     {
-        colour = Colour::LightGrey;
+        colour = SColour::LightGrey;
         colour.a = 100;
     }
 
     if (collider.HasFlag(ECS::Collider::IsEnemy))
     {
-        colour = Colour::Red;
+        colour = SColour::Red;
         colour.a = 100;
     }
     if (collider.HasFlag(ECS::Collider::IsPlayer))
     {
-        colour = Colour::Green;
+        colour = SColour::Green;
         colour.a = 100;
     }
     if (collider.HasFlag(ECS::Collider::TerrainOnly))
     {
-        colour = Colour::LightGrey;
+        colour = SColour::LightGrey;
         colour.a = 100;
     }
 
@@ -55,7 +56,7 @@ void DebugMenu::DrawCollider(const ECS::Collider& collider)
 	}
 }
 
-ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Collider;
 
@@ -107,5 +108,5 @@ ECS::Component::Type DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return type;
+	return (u32)type;
 }

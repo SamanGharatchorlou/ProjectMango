@@ -2,7 +2,7 @@
 
 //class Enemy;
 class TargePositionAttackAbility;
-class Texture;
+class STexture;
 
 
 enum class Event
@@ -106,9 +106,9 @@ struct LevelUpdatedEvent : public EventData
 
 struct RenderEvent : public EventData
 {
-	RenderEvent(Texture* texture, RectF rect, int renderLayer) : EventData(Event::Render), mTexture(texture), mRect(rect), mRenderLayer(renderLayer) { }
+	RenderEvent(STexture* texture, RectF rect, int renderLayer) : EventData(Event::Render), mTexture(texture), mRect(rect), mRenderLayer(renderLayer) { }
 
-	Texture* mTexture;
+	STexture* mTexture;
 	RectF mRect;
 	int mRenderLayer;
 };

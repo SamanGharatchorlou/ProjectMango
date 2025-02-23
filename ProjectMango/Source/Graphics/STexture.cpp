@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "Texture.h"
+#include "STexture.h"
 #include "Renderer.h"
 
-Texture::Texture() : texture(nullptr), renderer(nullptr) { }
+STexture::STexture() : texture(nullptr), renderer(nullptr) { }
 
-Texture::~Texture()
+STexture::~STexture()
 {
 	if (texture)
 	{
@@ -12,7 +12,7 @@ Texture::~Texture()
 	}
 }
 
-bool Texture::loadFromFile(const BasicString& filePath)
+bool STexture::loadFromFile(const BasicString& filePath)
 {
 	// remove any existing texture
 	if (texture)
@@ -65,7 +65,7 @@ bool Texture::loadFromFile(const BasicString& filePath)
 
 // Renders texture with the roation specified
 // NOTE: the about point is relative to the rect e.g. about the center would be rect.size()/2, not rect.center()
-void Texture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
+void STexture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Point point = { (int)(aboutPoint.x + 0.5f), (int)(aboutPoint.y + 0.5f) };
@@ -74,7 +74,7 @@ void Texture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, 
 }
 
 // Renders part of the texture, e.g. a tile in a set with the roation specified
-void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip)
+void STexture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Rect subQuad = subRect.toSDLRect();
@@ -95,13 +95,13 @@ void Texture::renderSubTexture(const RectF& rect, const RectF& subRect, double r
 	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, rotation, &point, flip);
 
 	// reset the colour mod each frame
-	colourModThisFrame = Colour();
+	colourModThisFrame = SColour();
 	SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
 	SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
 }
 
 // Render quad with an aboutpoint set.
-void Texture::render(const QuadF& quad) const
+void STexture::render(const QuadF& quad) const
 {
 	SDL_Rect renderQuad = quad.getRect().toSDLRect();
 	SDL_Point point = quad.aboutPoint().toSDLPoint();

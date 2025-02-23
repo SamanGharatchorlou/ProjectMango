@@ -4,7 +4,6 @@
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Biome.h"
-#include "Entities/Player/PlayerCharacter.h"
 
 #define PRINT_SHAKEYCAM_VALUES 0
 

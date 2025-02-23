@@ -3,8 +3,9 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "ECS/Components/Components.h"
 
-ECS::Component::Type DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::PlayerController;
 
@@ -32,5 +33,5 @@ ECS::Component::Type DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
 		}
 	}
 
-	return type;
+	return (u32)type;
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-class Texture;
+class STexture;
 
 namespace ECS
 {
 	struct TileSet
 	{
-		Texture* texture;
+		STexture* texture;
 
 		VectorF mapSize;
 		VectorF tileSize;

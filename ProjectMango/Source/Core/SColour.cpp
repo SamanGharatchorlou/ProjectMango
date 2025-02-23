@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Colour.h"
+#include "SColour.h"
 
 
-Colour::Colour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
+SColour::SColour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 {
 	r = red;
 	g = green;
@@ -11,7 +11,7 @@ Colour::Colour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 }
 
 
-Colour::Colour(Enum colour)
+SColour::SColour(Enum colour)
 {
 	a = c_alphaMax;
 
@@ -54,14 +54,14 @@ Colour::Colour(Enum colour)
 	}
 }
 
-void Colour::setOpacity(float opacity)
+void SColour::setOpacity(float opacity)
 {
 	opacity = Maths::clamp(opacity, 0.0f, 1.0f);
 	a = (Uint8)(c_alphaMax * opacity);
 }
 
 
-SDL_Colour Colour::toSDL()
+SDL_Colour SColour::toSDL()
 {
 	return SDL_Color{ r, g, b };
 }

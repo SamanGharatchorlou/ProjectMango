@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "TextureMap.h"
-#include "Texture.h"
+#include "STexture.h"
 
 
 void TextureMap::free()
@@ -18,7 +18,7 @@ void TextureMap::free()
 	mData.clear();
 }
 
-void TextureMap::add(const char* id, Texture* texture)
+void TextureMap::add(const char* id, STexture* texture)
 {
 #if DEBUG_MODE
 	if (mData.count(id) > 0)
@@ -30,7 +30,7 @@ void TextureMap::add(const char* id, Texture* texture)
 }
 
 
-StringBuffer64 TextureMap::find(const Texture* texture) const
+StringBuffer64 TextureMap::find(const STexture* texture) const
 {
 	StringTextureMap::const_iterator iter;
 	for (iter = mData.begin(); iter != mData.end(); iter++)
@@ -45,7 +45,7 @@ StringBuffer64 TextureMap::find(const Texture* texture) const
 }
 
 
-Texture* TextureMap::find(const char* id) const 
+STexture* TextureMap::find(const char* id) const 
 { 
  	StringTextureMap::const_iterator iter = mData.find(id);
 	return iter != mData.end() ? iter->second : nullptr;

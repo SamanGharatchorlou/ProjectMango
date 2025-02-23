@@ -6,7 +6,7 @@
 #include "Input/InputManager.h"
 
 #include "Debugging/AnimationEditor.h"
-#include "Graphics/Texture.h"
+#include "Graphics/STexture.h"
 #include "Game/SystemStateManager.h"
 
 #include "Debugging/ImGui/ImGuiMenu.h"

@@ -8,7 +8,7 @@
 
 namespace DebugDraw 
 {
-	void Shape(DebugDrawType renderType, RectF rect, Colour colour) 
+	void Shape(DebugDrawType renderType, RectF rect, SColour colour) 
 	{
 	  switch (renderType) 
 	  {
@@ -38,7 +38,7 @@ namespace DebugDraw
 	  }
 	}
 
-	void Point(VectorF point, Colour colour, float size)
+	void Point(VectorF point, SColour colour, float size)
 	{
 		RectF rect;
 		rect.SetSize(size, size);
@@ -47,7 +47,7 @@ namespace DebugDraw
 		RectFill(rect, colour);
 	}
 
-	void Line(VectorF pointA, VectorF pointB, Colour colour)
+	void Line(VectorF pointA, VectorF pointB, SColour colour)
 	{
 		DebugRenderPack pack;
 		pack.colour = colour;
@@ -57,7 +57,7 @@ namespace DebugDraw
 	}
 
 
-	void RectOutline(const RectF& rect, Colour colour)
+	void RectOutline(const RectF& rect, SColour colour)
 	{
 		DebugRenderPack pack;
 		pack.colour = colour;
@@ -67,7 +67,7 @@ namespace DebugDraw
 	}
 
 
-	void RectFill(const RectF& rect, Colour colour)
+	void RectFill(const RectF& rect, SColour colour)
 	{
 		DebugRenderPack pack;
 		pack.colour = colour;
@@ -77,7 +77,7 @@ namespace DebugDraw
 	}
 
 
-	//void debugDrawRects(const std::vector<RectF>& rects, Colour colour)
+	//void debugDrawRects(const std::vector<RectF>& rects, SColour colour)
 	//{
 	//	SDL_SetRenderDrawColor(Renderer::Get()->sdlRenderer(), colour.r, colour.g, colour.b, colour.a);
 	//	
@@ -95,7 +95,7 @@ namespace DebugDraw
 	//
 	//
 
-	void Quad(Quad2D<float> quad, Colour colour)
+	void Quad(Quad2D<float> quad, SColour colour)
 	{
 		//SDL_SetRenderDrawColor(Renderer::Get()->sdlRenderer(), colour.r, colour.g, colour.b, colour.a);
 	
@@ -115,7 +115,7 @@ namespace DebugDraw
 		}
 	}
 
-//	void Text(const BasicString text, int ptSize, VectorF position, Colour colour, const char* alignment)
+//	void Text(const BasicString text, int ptSize, VectorF position, SColour colour, const char* alignment)
 //	{
 //		UITextBox textBox;
 //		textBox.setAlignment(alignment);

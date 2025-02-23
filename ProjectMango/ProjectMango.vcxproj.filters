@@ -57,7 +57,7 @@
     <ClCompile Include="Source\Core\Buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Colour.cpp">
+    <ClCompile Include="Source\Core\SColour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\Helpers.cpp">
@@ -222,7 +222,7 @@
     <ClCompile Include="Source\Graphics\RenderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Texture.cpp">
+    <ClCompile Include="Source\Graphics\STexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\TextureManager.cpp">
@@ -422,7 +422,7 @@
     <ClInclude Include="Source\Core\Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Colour.h">
+    <ClInclude Include="Source\Core\SColour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Grid.h">
@@ -452,7 +452,7 @@
     <ClInclude Include="Source\Core\Queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Rect.h">
+    <ClInclude Include="Source\Core\SRect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\RingBuffer.h">
@@ -617,7 +617,7 @@
     <ClInclude Include="Source\Graphics\RenderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Texture.h">
+    <ClInclude Include="Source\Graphics\STexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\TextureManager.h">

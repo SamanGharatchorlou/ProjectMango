@@ -135,18 +135,18 @@ T Vector2D<T>::getRotation() const
 }
 
 template<class T>
-Vector2D<T> Vector2D<T>::clamp(const T min, const T max) const
+Vector2D<T> Vector2D<T>::clamp(const T _min, const T _max) const
 {
-	T _x = std::min(max, std::max(x, min));
-	T _y = std::min(max, std::max(y, min));
+	T _x = Maths::Min(_max, Maths::Max(x, _min));
+	T _y = Maths::Min(_max, Maths::Max(y, _min));
 	return Vector2D<T>(_x, _y);;
 }
 
 template<class T>
-Vector2D<T> Vector2D<T>::clamp(const Vector2D<T> min, const Vector2D<T> max) const
+Vector2D<T> Vector2D<T>::clamp(const Vector2D<T> _min, const Vector2D<T> _max) const
 {
-	T _x = std::min(max.x, std::max(x, min.x));
-	T _y = std::min(max.y, std::max(y, min.y));
+	T _x = Maths::Min(_max.x, Maths::Max(x, _min.x));
+	T _y = Maths::Min(_max.y, Maths::Max(y, _min.y));
 	return Vector2D<T>(_x, _y);
 }
 
@@ -154,7 +154,7 @@ template<class T>
 Vector2D<T> Vector2D<T>::realiseSize(T maxDimention) const
 {
 	Vector2D<T> ratio( x / maxDimention, y / maxDimention);
-	float maxRatio = std::max(ratio.x, ratio.y);
+	float maxRatio = Maths::Max(ratio.x, ratio.y);
 	return Vector2D<T>(x,y) / maxRatio;
 }
 

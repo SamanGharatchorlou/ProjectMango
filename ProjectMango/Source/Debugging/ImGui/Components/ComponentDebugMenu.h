@@ -1,22 +1,24 @@
 #pragma once
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/Collider.h"
+//#include "ECS/Components/Components.h"
+//#include "ECS/Components/Collider.h"
+
+namespace ECS { struct Collider; }
 
 namespace DebugMenu 
 {
-	ECS::Component::Type DoEntityDataDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoTransformDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoSpriteDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoCharacterStateDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoPhysicsDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoAnimatorDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoColliderDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoPlayerControllerDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoPathingDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoAIControllerDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoHealthDebugMenu(ECS::Entity& entity);
-	ECS::Component::Type DoBiomeDebugMenu(ECS::Entity& entity);
+	u32 DoEntityDataDebugMenu(ECS::Entity& entity);
+	u32 DoTransformDebugMenu(ECS::Entity& entity);
+	u32 DoSpriteDebugMenu(ECS::Entity& entity);
+	u32 DoCharacterStateDebugMenu(ECS::Entity& entity);
+	u32 DoPhysicsDebugMenu(ECS::Entity& entity);
+	u32 DoAnimatorDebugMenu(ECS::Entity& entity);
+	u32 DoColliderDebugMenu(ECS::Entity& entity);
+	u32 DoPlayerControllerDebugMenu(ECS::Entity& entity);
+	u32 DoPathingDebugMenu(ECS::Entity& entity);
+	u32 DoAIControllerDebugMenu(ECS::Entity& entity);
+	u32 DoHealthDebugMenu(ECS::Entity& entity);
+	u32 DoBiomeDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 

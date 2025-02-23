@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LoadingBar.h"
 
-#include "Graphics/Texture.h"
+#include "Graphics/STexture.h"
 
 
 LoadingBar::~LoadingBar()
@@ -25,7 +25,7 @@ void LoadingBar::free()
 	mRect = RectF();
 }
 
-void LoadingBar::setTextures(Texture* loadingBar, Texture* loadingBarContainer)
+void LoadingBar::setTextures(STexture* loadingBar, STexture* loadingBarContainer)
 {
 	mLoadingBar = loadingBar;
 	mLoadingBarContainer = loadingBarContainer;

@@ -1,14 +1,12 @@
 #include "pch.h"
 #include "BlindingSpiderEnemy.h"
 
-#include "Core/Helpers.h"
 #include "ECS/Components/AIController.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
-#include "Game/FrameRateController.h"
 #include "System/Files/Config.h"
 #include "ECS/Components/Biome.h"
 

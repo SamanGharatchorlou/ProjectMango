@@ -80,7 +80,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 				result.hasHit = true;
 
 				if(DebugMenu::DrawRaycasts())
-					DebugDraw::Line(from, ray_point, Colour::Red);
+					DebugDraw::Line(from, ray_point, SColour::Red);
 				return;
 			}
 		}
@@ -89,5 +89,5 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 	}
 	
 	if(DebugMenu::DrawRaycasts())
-		DebugDraw::Line(from, from + ray_direction * distance, Colour::Green);
+		DebugDraw::Line(from, from + ray_direction * distance, SColour::Green);
 }

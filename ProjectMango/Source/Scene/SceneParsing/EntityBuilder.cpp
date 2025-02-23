@@ -6,14 +6,12 @@
 #include "System/Files/ConfigManager.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Animator.h"
-#include "Core/Helpers.h"
 #include "ECS/Components/Collider.h"
 #include "Graphics/Raycast.h"
 #include "Entities/Enemies/ShockSweeperEnemy.h"
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
 #include "ECS/Components/UIComponents.h"
 #include "Input/InputManager.h"
-#include "Entities/Spells/PickupCallbacks.h"
 
 typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 

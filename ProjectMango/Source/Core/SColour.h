@@ -4,7 +4,7 @@ constexpr Uint8 c_rgbMax = 255;
 constexpr Uint8 c_alphaMax = 255;
 constexpr Uint8 c_alphaMin = 0;
 
-struct Colour
+struct SColour
 {
 	enum Enum
 	{
@@ -20,9 +20,9 @@ struct Colour
 		White,
 	};
 
-	Colour() { }
-	Colour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = c_alphaMax);
-	Colour(Enum colour);
+	SColour() { }
+	SColour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = c_alphaMax);
+	SColour(Enum colour);
 
 	void setOpacity(float opacity);
 

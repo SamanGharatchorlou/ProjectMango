@@ -181,16 +181,15 @@ static void merge(std::unordered_map<T, K>& map_a, std::unordered_map<T, K>& map
 }
 
 
-//--------------------------------------------------------
-// rect helpers
-template<class T>
-bool PointInRect(Rect<T> rect, Vector2D<T> position) 
-{
-	return !(	position.x > rect.RightPoint() || 
-				position.x < rect.LeftPoint()  || 
-				position.y > rect.BotPoint()   || 
-				position.y < rect.TopPoint());
-}
+////--------------------------------------------------------
+//// rect helpers
+//bool PointInRect(RectF rect, VectorF position) 
+//{
+//	return !(	position.x > rect.RightPoint() || 
+//				position.x < rect.LeftPoint()  || 
+//				position.y > rect.BotPoint()   || 
+//				position.y < rect.TopPoint());
+//}
 
 static VectorI IndexToGrid(int index, int grid_width)
 {

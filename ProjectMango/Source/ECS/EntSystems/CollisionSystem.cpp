@@ -10,10 +10,6 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/ComponentCommon.h"
-
-
 namespace ECS
 {
 	static const float c_colliderGap = 1.0f;

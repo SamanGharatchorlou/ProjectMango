@@ -18,11 +18,11 @@ struct Camera
 
 	void Update(float dt);
 
-	template <typename T>
-	bool inView(const Rect<T>& object) const;
+	//template <typename T>
+	//bool inView(const SRect<T>& object) const;
 
-	template <typename T>
-	bool inView(const Vector2D<T>& point) const;
+	//template <typename T>
+	//bool inView(const Vector2D<T>& point) const;
 
 	RectF GetRect() const { return rect; }
 	VectorF GetSize() const { return rect.Size(); }
@@ -46,8 +46,9 @@ private:
 	void LerpToTarget();
 };
 
+/*
 template <typename T>
-bool Camera::inView(const Rect<T>& object) const
+bool Camera::inView(const SRect<T>& object) const
 {
 	// Pretend the camera is wider than it actually is as when running fast sometimes
 	// there's a white flicker on the right. This would happen for any 
@@ -81,10 +82,10 @@ bool Camera::inView(const Vector2D<T>& object) const
 	else
 		return true;
 }
-
+*/
 
 //template <typename T>
-//Rect<T> Camera::toCameraCoords(const Rect<T>& worldCoords) const
+//SRect<T> Camera::toCameraCoords(const SRect<T>& worldCoords) const
 //{
-//	return Rect<T>(worldCoords.TopLeft() - mActiveRect->TopLeft(), worldCoords.Size());
+//	return SRect<T>(worldCoords.TopLeft() - mActiveRect->TopLeft(), worldCoords.Size());
 //}

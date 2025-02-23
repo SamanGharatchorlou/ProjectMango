@@ -1,34 +1,28 @@
 #include "pch.h"
 #include "ImGuiMainWindows.h"
 
-#include "imgui-master/imgui.h"
-#include "ImGuiHelpers.h"
 #include "Core/Helpers.h"
+#include "ImGuiHelpers.h"
+#include "imgui-master/imgui.h"
 
-#include "ECS/EntityManager.h"
-#include "ECS/EntityCoordinator.h"
-#include "Graphics/RenderManager.h"
-#include "Input/InputManager.h"
-#include "Game/FrameRateController.h"
-#include "ECS/Components/ComponentsSetup.h"
-#include "Game/SystemStateManager.h"
-#include "Game/States/GameState.h"
-
+#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "ECS/Components/AIController.h"
+#include "ECS/Components/Animator.h"
+#include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/TileMap.h"
-#include "ECS/Components/Biome.h"
-#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
-#include "ECS/Components/Animator.h"
-#include "Game/Camera/Camera.h"
-#include "System/Files/ConfigManager.h"
+#include "ECS/EntityCoordinator.h"
+#include "ECS/EntityManager.h"
 #include "Entities/Player/PlayerCharacter.h"
-
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/ComponentCommon.h"
-#include "System/Window.h"
+#include "Game/Camera/Camera.h"
+#include "Game/FrameRateController.h"
+#include "Game/States/GameState.h"
+#include "Game/SystemStateManager.h"
+#include "Graphics/RenderManager.h"
+#include "Input/InputManager.h"
+#include "System/Files/ConfigManager.h"
 
 static ECS::Entity s_selectedEntity = 0;
 static StringBuffer64 filterBuffer;
@@ -48,7 +42,7 @@ static int id_numb = 0;
 
 #define ComponentDropdown(menu) \
     if(do_dropdown) \
-        SetFlag<u64>(type, ECS::archetypeBit(menu(s_selectedEntity)));
+        SetFlag<u64>(type, ECS::archetypeBit((ECS::Component::Type)menu(s_selectedEntity)));
 
 #define DoComponentDropdown(component) \
     if(HasComponent(component,s_selectedEntity)) {\
@@ -405,11 +399,11 @@ void DebugMenu::DoTweakerWindow()
     {
         Camera* cam = Camera::Get();
         RectF rect = cam->GetRect();
-        DebugDraw::RectOutline(rect, Colour::Green);
-        DebugDraw::Point(rect.Center(), Colour::Green);
+        DebugDraw::RectOutline(rect, SColour::Green);
+        DebugDraw::Point(rect.Center(), SColour::Green);
 
         const ECS::Transform& transform = GetComponentRef(Transform, cam->targetEntity);
-        DebugDraw::Point(transform.GetObjectCenter(),Colour::Red);
+        DebugDraw::Point(transform.GetObjectCenter(),SColour::Red);
     }
 
     s_getRenderLayerData = false;

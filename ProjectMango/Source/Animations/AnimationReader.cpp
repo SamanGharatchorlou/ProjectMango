@@ -3,8 +3,7 @@
 
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Animator.h"
-#include "ECS/EntityCoordinator.h"
-#include "Graphics/Texture.h"
+#include "Graphics/STexture.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/JSONParser.h"
 
@@ -65,7 +64,7 @@ namespace AnimationReader
 			const Value& sprite_sheet = sprite_sheets[i];
 
 			const char* spriteSheet_id = sprite_sheet["spriteSheet"].GetString();
-			Texture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+			STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
 			if (!texture)
 			{
 				DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);

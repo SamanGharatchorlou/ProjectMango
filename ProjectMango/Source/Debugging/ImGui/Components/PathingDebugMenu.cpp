@@ -3,8 +3,9 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "ECS/Components/Components.h"
 
-ECS::Component::Type DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
+u32 DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Pathing;
 
@@ -17,5 +18,5 @@ ECS::Component::Type DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return type;
+	return (u32)type;
 }

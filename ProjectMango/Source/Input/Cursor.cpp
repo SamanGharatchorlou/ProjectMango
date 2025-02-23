@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Cursor.h"
-#include "Graphics/Texture.h"
+#include "Graphics/STexture.h"
 #include "Game/FrameRateController.h"
 
 Cursor::Cursor() : mTexture(nullptr), mMoving(false), mVisibility(false), mMode(Cursor::None) { }
