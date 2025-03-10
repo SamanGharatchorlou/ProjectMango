@@ -33,7 +33,7 @@ ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
 
 	// Sprite
 	ECS::Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
-	sprite.renderLayer = 5;
+	sprite.renderLayer = ECS::RenderLayer::Characters;
 
 	// CharacterState
 	ECS::CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
@@ -41,7 +41,7 @@ ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
 
 	// Spellbook
 	ECS::SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
-	spell_book.SetSpellSlot(0, "Lightning");
+	spell_book.SetSpellSlot(0, "Fireball");
 	
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;

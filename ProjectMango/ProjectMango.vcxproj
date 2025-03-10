@@ -250,6 +250,7 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp" />
     <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp" />
+    <ClCompile Include="Source\Scene\SceneParsing\UIEntityBuilder.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
@@ -261,6 +262,7 @@
     <ClCompile Include="Source\System\Window.cpp" />
     <ClCompile Include="Source\UI\Text\Font.cpp" />
     <ClCompile Include="Source\UI\Text\Text.cpp" />
+    <ClCompile Include="Source\UI\UIManager.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
@@ -380,6 +382,7 @@
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h" />
     <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h" />
+    <ClInclude Include="Source\Scene\SceneParsing\UIEntityBuilder.h" />
     <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />
@@ -391,6 +394,7 @@
     <ClInclude Include="Source\System\Window.h" />
     <ClInclude Include="Source\UI\Text\Font.h" />
     <ClInclude Include="Source\UI\Text\Text.h" />
+    <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
     <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
     <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />

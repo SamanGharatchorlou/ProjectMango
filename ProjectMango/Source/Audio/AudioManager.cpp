@@ -18,7 +18,7 @@ AudioManager* AudioManager::Get()
 
 AudioManager::AudioManager()
 {
-	DebugPrint(Log, "Audio manager *created");
+	DebugPrint(Log, "Audio manager created");
 }
 
 
@@ -56,7 +56,7 @@ void AudioManager::load()
 	DebugPrint(Log, "\n--- Loading Audio ---");
 	int fails = 0;
 
-	DebugPrint(Log, "\nBackground Music");
+	DebugPrint(Log, "Background Music");
 	fails += loadAllMusic(FileManager::Audio_Music);
 
 	DebugPrint(Log, "\nAudio Effects");
@@ -211,9 +211,11 @@ bool AudioManager::isActive(const char* label, const void* sourceId) const
 // --- Private Functions --- //
 int AudioManager::loadAllMusic(FileManager::Folder folder)
 {
-	int fails = 0;
-	std::vector<BasicString> paths = FileManager::Get()->allFilesInFolder(folder);
 	const FileManager* fm = FileManager::Get();
+
+	int fails = 0;
+	std::vector<BasicString> paths;
+	fm->GetFilesInFolder(folder, paths);
 
 	for (const BasicString& path : paths)
 	{
@@ -232,9 +234,11 @@ int AudioManager::loadAllMusic(FileManager::Folder folder)
 
 int AudioManager::loadAllSound(FileManager::Folder folder)
 {
-	int fails = 0;
-	std::vector<BasicString> paths = FileManager::Get()->allFilesInFolder(folder);
 	const FileManager* fm = FileManager::Get();
+
+	int fails = 0;
+	std::vector<BasicString> paths;
+	fm->GetFilesInFolder(folder, paths);
 
 	for (const BasicString& path : paths)
 	{

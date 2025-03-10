@@ -13,7 +13,7 @@ void FrameRateController::start()
 	
 	ConfigManager* cm = ConfigManager::Get();
 	const Config* gs = cm->GetConfig("GameSettings");
-	frameRateCap = gs->values.GetInt("FramerateCap");
+	frameRateCap = gs->data.GetInt("FramerateCap");
 	if(frameRateCap > 0)
 		capTimer.Start();
 }

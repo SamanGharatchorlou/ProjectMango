@@ -42,7 +42,89 @@ namespace Scene
 			}
 		}
 	}
-	
+
+	static bool SplitIdentiferType(const char* indentifier_in, BasicString& prefix, BasicString& postfix)
+	{
+		prefix = indentifier_in;
+		int length = 0;
+		if (const char* sub_str = prefix.findSubString("_"))
+		{
+			length = (int)(sub_str - prefix.buffer());
+			prefix.SetLength(length);
+
+			postfix = sub_str + 1;
+			return true;
+		}
+
+		return false;
+	}
+
+	static void ReadMetaData(Value& data_in, ECS::EntityMetaData& data_out, VectorF level_to_window, VectorF level_world_pos)
+	{
+		float width = data_in["width"].GetFloat();
+		float height = data_in["height"].GetFloat();
+
+		Value& px = data_in["px"];
+		float px_x = px[0].GetFloat(); // + (width * 0.5f);
+		float px_y = px[1].GetFloat(); // - (height);
+
+		const char* identifier = data_in["__identifier"].GetString();
+
+		// split formatted entities like Rune_Rebound
+		// id = RuneRebound
+		// type = Rune
+		BasicString prefix;
+		BasicString postfix;
+		if (SplitIdentiferType(identifier, prefix, postfix))
+		{
+			data_out.type = prefix;
+
+			char buffer[64];
+			snprintf(buffer, 64, "%s%s", prefix.c_str(), postfix.c_str());
+			data_out.id = buffer;
+		}
+		else
+		{
+			data_out.id = identifier;
+			data_out.type = identifier;
+		}
+
+		data_out.position = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
+	}
+
+	void ParseUILayer(Value& ui_layer, VectorF level_to_window)
+	{
+		Value& layers = ui_layer["layerInstances"];
+		for (SizeType i = 0; i < layers.Size(); i++)
+		{
+			Value& layer = layers[i];
+			const char* layer_id = layer["__identifier"].GetString();
+			if (StringCompare(layer_id, "UI"))
+			{
+				std::unordered_map<BasicString, std::vector<ECS::EntityMetaData>> elements;
+
+				const Value::Array& entities = layer["entityInstances"].GetArray();
+				for (u32 e = 0; e < entities.Size(); e++)
+				{
+					Value& entry = entities[e];
+
+					ECS::EntityMetaData emd;
+					ReadMetaData(entry, emd, level_to_window, VectorF());
+
+					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.id];
+					entity_data.push_back(emd);
+				}
+
+			}
+			else
+			{
+				const Value::Array& entities = layer["entityInstances"].GetArray();
+				if (entities.Size() > 0)
+					DebugPrint(Warning, "Layer %s is not a UI layer, wrong level", layer_id);
+			}
+		}
+	}
+
 	void BuildBiome(const char* biome_id, ECS::Entity& biome_entity)
 	{
 		BasicString string = FileManager::Get()->findFile(FileManager::Maps, biome_id);
@@ -72,11 +154,23 @@ namespace Scene
 			}
 		}
 
+		u32 level_index = 0;
+
 		const Value::Array& levels = parser.document["levels"].GetArray();
 		for( u32 i = 0; i < levels.Size(); i++ )
 		{
 			ECS::Level level;
-			level.index = i;
+			level.index = level_index;
+			level.id = levels[i]["identifier"].GetString();
+
+			if (StringCompare(level.id.c_str(), "PlayerHUD"))
+			{
+				ParseUILayer(levels[i], level_to_window);
+				continue;
+			}
+
+			// bump the level index
+			level_index++;
 
 			int level_px_width = levels[i]["pxWid"].GetInt();
 			int level_px_height = levels[i]["pxHei"].GetInt();
@@ -108,37 +202,10 @@ namespace Scene
 					{
 						Value& entry = entities[e];
 
-						float width = entry["width"].GetFloat();
-						float height = entry["height"].GetFloat();
+						ECS::EntityMetaData emd;
+						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						Value& px = entry["px"];
-						float px_x = px[0].GetFloat();// + (width * 0.5f);
-						float px_y = px[1].GetFloat();// - (height);
-
-						const char* identifier = entry["__identifier"].GetString();
-
-						BasicString id = identifier;
-						int length = 0;
-						if (const char* sub_str = id.findSubString("_"))
-						{
-							length = (int)(sub_str - id.buffer());
-							id.SetLength(length);
-						}
-
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[id];
-
-						//entity_data.resize(entity_data.size() + 1);
-
-						ECS::EntityMetaData emd;// = entity_data.pus();
-						emd.id = id;
-						emd.position = (VectorF(px_x, px_y) * level_to_window) + level.worldPos;
-
-						int postfix_index = length + 1;
-						if ( (postfix_index > 1) && (postfix_index < strlen(identifier)) )
-						{
-							emd.idPostfix = identifier + postfix_index;
-						}
-
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.type];
 						entity_data.push_back(emd);
 
 						if (entry.HasMember("fieldInstances"))

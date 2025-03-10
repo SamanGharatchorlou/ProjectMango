@@ -6,6 +6,7 @@ class RenderManager;
 class ConfigManager;
 class AudioManager;
 struct SystemStateManager;
+struct UIManager;
 namespace ECS { struct EntityCoordinator; }
 
 // special case, since we use it everywhere
@@ -31,5 +32,6 @@ struct GameData
 	RenderManager* renderManager = nullptr;
 	AudioManager* audioManager = nullptr;
 	SystemStateManager* systemStateManager = nullptr;
+	UIManager* uiManager = nullptr;
 };
 

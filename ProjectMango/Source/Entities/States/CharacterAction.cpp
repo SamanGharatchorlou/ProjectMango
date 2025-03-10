@@ -100,15 +100,16 @@ float CharacterAction::GetAttackRange(ActionState action)
 Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 {
 	// adding everything something NEEDS to be an enemy... pretty much anyway
-	Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
+	Entity entity = ECS::CreateEntity(emd);
+	const Config* config = ECS::GetConfig(entity);
+	ASSERT(config != nullptr, "No characer congif for %s", emd.id.c_str());
+
 	AddComponent(Transform, entity);
 	AddComponent(Physics, entity);
 	AddComponent(Animator, entity);
 	AddComponent(Sprite, entity);
 	AddComponent(Collider, entity);
 	AddComponent(Health, entity);
-
-	const Config* config = ECS::GetConfig(entity);
 
 	// Transform
 	Transform& transform = GetComponentRef(Transform, entity);
@@ -130,7 +131,7 @@ Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 	// set sprite layer - default 5
 	Sprite& sprite = GetComponentRef(Sprite, entity);
 	sprite.Init(config);
-	sprite.renderLayer = 5;
+	sprite.renderLayer = RenderLayer::Characters;
 
 	// handle any tags here!
 	// if (config->strings.Contains("tags")) etc

@@ -10,14 +10,11 @@
 #include "Graphics/Raycast.h"
 #include "Entities/Enemies/ShockSweeperEnemy.h"
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
-#include "ECS/Components/UIComponents.h"
-#include "Input/InputManager.h"
 
-typedef ECS::Entity (*CreateEntityFn)(const ECS::EntityMetaData&);
 
-static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
+ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 {
-	ECS::Entity entity = ECS::CreateEntity(emd.id.c_str(), emd.ConfigId().c_str());
+	ECS::Entity entity = ECS::CreateEntity(emd);
 	if (const Config* config = ECS::GetConfig(entity))
 	{
 		// Transform
@@ -27,7 +24,7 @@ static ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 
 		// Sprite
 		ECS::Sprite& sprite = AddComponent(Sprite, entity);
-		sprite.renderLayer = 6;
+		sprite.renderLayer = ECS::RenderLayer::BasicObject;
 		sprite.canFlip = false;
 		sprite.Init(config);
 	}
@@ -94,8 +91,8 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	ECS::Door& door = GetComponentRef(Door, entity);
 	door.Init();
 
-	const Config* config = ConfigManager::Get()->GetConfig(emd.ConfigId().c_str());
-	door.triggerRange = config->values.GetFloat("trigger_range");
+	const Config* config = ConfigManager::Get()->GetConfig(emd.id.c_str());
+	door.triggerRange = config->data.GetFloat("trigger_range");
 
 	// Transform - sandwich the door between the top and bottom raycast points
 	ECS::Transform& transform = GetComponentRef(Transform, entity);
@@ -109,42 +106,18 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	transform.size = transform.size * size_ratio;
 	transform.SetWorldPosition(top);
 
-	door.GenerateColliders(config->values.GetFloat("collider_width"));
+	door.GenerateColliders(config->data.GetFloat("collider_width"));
 	
 	return entity;
 }
 
-ECS::Entity CreateCursor()
-{
-	ECS::Entity entity = ECS::CreateEntity("Cursor", true);
-
-	const Config* config = ECS::GetConfig(entity);
-
-	// Transform
-	ECS::Transform& transform = AddComponent(Transform, entity);
-	transform.Init(config, VectorF());
-
-	// Sprite
-	ECS::Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.renderLayer = 9;
-	sprite.canFlip = false;
-	sprite.Init(config);
-		
-	ECS::UICursor& cursor = AddComponent(UICursor, entity);
-	InputManager* input = InputManager::Get();
-	cursor.cursor = &input->mCursor;
-
-	return entity;
-}
-
-ECS::Entity CreatePickup(const ECS::EntityMetaData& emd)
+ECS::Entity CreateRune(const ECS::EntityMetaData& emd)
 {
 	ECS::Entity entity = CreateBasicObject( emd );
 
 	ECS::Pickup& pick_up = AddComponent(Pickup, entity);
-	pick_up.itemId = emd.idPostfix;
-	pick_up.config = emd.ConfigId();
-	//pick_up.onPickupFn = ApplyReboundRune;
+	pick_up.itemId = emd.id;
+	//pick_up.config = emd.id;
 
 	ECS::Collider& collider = AddComponent(Collider, entity);
 	collider.SetFlag(ECS::Collider::PlayerOnly);
@@ -170,7 +143,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
-	CreateEntitiyFunctions["Pickup"] = CreatePickup;
+	CreateEntitiyFunctions["Rune"] = CreateRune;
 
 	ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
 	for (u32 i = 0; i < biome.levels.size(); i++)
@@ -178,11 +151,12 @@ void CreateEntities(ECS::Entity& biome_entity)
 		const ECS::Level& level = biome.levels[i];
 		for (auto iter = level.entities.begin(); iter != level.entities.end(); iter++)
 		{
-			const char* entity_id = iter->first.c_str();
+			//const ECS::EntityData* ed = GetComponent()
+			const char* type = iter->first.c_str();
 
-			if(CreateEntitiyFunctions.contains(entity_id))
+			if(CreateEntityFn create_fn = CreateEntitiyFunctions.at(type))
 			{
-				CreateEntityFn create_fn = CreateEntitiyFunctions.at(entity_id);
+				//CreateEntityFn create_fn = CreateEntitiyFunctions.at(type);
 
 				const std::vector<ECS::EntityMetaData>& entitiy_meta_data = iter->second;
 				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
@@ -192,7 +166,7 @@ void CreateEntities(ECS::Entity& biome_entity)
 			}
 			else
 			{
-				DebugPrint(Warning, "No CreateEntity function defined for %s", entity_id);
+				DebugPrint(Warning, "No CreateEntity function defined for %s", type);
 			}
 		}
 	}

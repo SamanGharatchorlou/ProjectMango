@@ -32,6 +32,7 @@ static constexpr u32 c_rare = 4;
 
 void ECS::RegisterAllComponents()
 {
+	// add an entry into EntityCommon.h
 	DEFINE_COMPONENT(Transform, c_allEntities);
 	DEFINE_COMPONENT(Sprite, c_allEntities);
 	DEFINE_COMPONENT(Collider, c_allEntities);
@@ -50,11 +51,13 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Door, c_uncommon);
 	DEFINE_COMPONENT(Pickup, c_uncommon);
 	DEFINE_COMPONENT(Spawner, c_uncommon);
+	DEFINE_COMPONENT(UIButton, c_uncommon);
 
 	DEFINE_COMPONENT(PlayerController, c_rare);
 	DEFINE_COMPONENT(Biome, c_rare);
-	DEFINE_COMPONENT(UICursor, c_rare);
 	DEFINE_COMPONENT(SpellBook, c_rare);
+
+	DEFINE_COMPONENT(UICursor, 1);
 
 	ComponentInitialiser::InitAll();
 }

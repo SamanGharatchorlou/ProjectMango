@@ -1,8 +1,0 @@
-{
-	"animation": "LightningAnimations",
-	"values": {
-		"size_x": 128,
-		"size_y": 96,
-		"damage" : 10
-	}
-}

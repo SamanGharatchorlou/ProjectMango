@@ -17,7 +17,8 @@ void LoadingManager::init()
 	folders.push_back(FileManager::Audio);
 	for (FileManager::Folder folder : folders)
 	{
-		std::vector<BasicString> filePaths = FileManager::Get()->allFilesInFolder(folder);
+		std::vector<BasicString> filePaths;
+		FileManager::Get()->GetFilesInFolder(folder, filePaths);
 
 		for (int i = 0; i < filePaths.size(); i++)
 		{
@@ -90,7 +91,8 @@ void LoadingManager::successfullyLoaded(const BasicString& filePath)
 	{
 		if (fs::is_directory(fileSystemPath))
 		{
-			std::vector<BasicString> files = FileManager::Get()->allFilesInFolder(fileSystemPath);
+			std::vector<BasicString> files;
+			FileManager::Get()->GetFilesInFolder(fileSystemPath, files);
 
 			for(const BasicString& file : files)
 				mLoadedFileSizes += fs::file_size(fs::path(file.c_str()));

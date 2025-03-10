@@ -37,6 +37,7 @@ namespace AnimationReader
 		}
 	}
 
+	// this runs every time i fire a spell, lets not...
 	void BuildAnimatior(ECS::Animator& animator, const char* file)
 	{
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);

@@ -13,10 +13,6 @@ namespace ECS
 {
 	void UISystem::Update(float dt)
 	{
-		
-
-		std::vector<Entity> out_of_bounds_entities;
-
 		for (Entity entity : entities)
 		{
 			UICursor* ui_cursor = GetComponent(UICursor, entity);
@@ -35,16 +31,6 @@ namespace ECS
 
 				Transform& transform = GetComponentRef(Transform, entity);
 				VectorF map_position = (ui_cursor->cursor->position() / render_scale) + camera_offset;
-
-				// check out of bounds
-				const Biome& biome = Biome::GetActiveBiome();
-				const VectorF position = transform.GetObjectCenter();
-				if (position.x < biome.aabb[0].x || position.y < biome.aabb[0].y || 
-					position.x > biome.aabb[1].x || position.y > biome.aabb[1].y)
-				{
-					out_of_bounds_entities.push_back(entity);
-				}
-
 				transform.SetWorldPosition(map_position);
 				transform.size = VectorF(50, 50);
 			}

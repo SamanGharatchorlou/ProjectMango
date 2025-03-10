@@ -1,0 +1,15 @@
+{
+	"Buttons" :
+	[
+		{
+			"id": "SpellSelect",
+			"icon": "Fireball",
+			"button" : "Plain"
+			"size" :  [64, 64]
+		},
+		{
+			"id": "Quit",
+			"size": [ 64, 64 ]
+		}
+	]
+}

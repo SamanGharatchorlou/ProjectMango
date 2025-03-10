@@ -72,19 +72,17 @@ namespace ECS
 			// reset every frame
 			aic.canMoveToTarget = false;
 
-			if(!ecs->IsAlive(aic.target))
-				continue;
-
-			const Config* config = GetConfig(entity);
-			const float detect_range = config->values.GetFloat( "alert_range" );
-			const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
-			float target_distance = distance.length();
-
-
-			if (target_distance < detect_range)
+			if (HasComponent(Pathing, entity))
 			{
-				//bool target_is_close = distance.y < GetRect(entity).Height() * 1.2f;
-				//if(target_is_close)
+				if (!ecs->IsAlive(aic.target))
+					continue;
+
+				const Config* config = GetConfig(entity);
+				const float detect_range = config->data.GetFloat("alert_range");
+				const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
+				const float target_distance = distance.length();
+
+				if (target_distance < detect_range)
 				{
 					// try to flip to face the target direction
 					SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, aic.target);

@@ -17,14 +17,14 @@
 
 namespace ECS
 {
-	Entity CreateEntity(const char* id, const char* config)
+	Entity CreateEntity(const ECS::EntityMetaData& emd)
 	{
 		Entity entity = ecs->CreateNewEntity();
-		if (id) 
+		if (!emd.id.empty()) 
 		{ 
 			EntityData& ed = AddComponent(EntityData, entity); 
-			ed.id = id; 
-			ed.config = config; 
+			ed.id = emd.id; 
+			ed.subType = emd.type; 
 		}
 		return entity;
 	}
@@ -36,16 +36,21 @@ namespace ECS
 		{
 			EntityData& ed = AddComponent(EntityData, entity);
 			ed.id = id;
-			if (config_postfix)
-			{
-				char buffer[64];
-				snprintf(buffer, 64, "%sConfig", id);
-				ed.config = buffer;
-			}
+			//if (config_postfix)
+			//{
+			//	char buffer[64];
+			//	snprintf(buffer, 64, "%sConfig", id);
+			//	ed.config = buffer;
+			//}
 		}
 
 		return entity;
 	}
+
+	//Entity CreateEntity(const EntityMetaData& emd)
+	//{
+	//	return CreateEntity(emd.id.c_str(), emd.idPostfix.c_str());
+	//}
 
 	const char* GetName(Entity entity)
 	{
@@ -60,37 +65,40 @@ namespace ECS
 		const Config* config = nullptr;
 		if (const EntityData* ed = GetComponent(EntityData, entity))
 		{
-			if (ed->config.empty())
-			{
-				DebugPrint(Warning, "Entity: '%s' has no config string in EntityData",
-					ed->id.empty() ? "No ID" : ed->id.c_str());
 
-				return nullptr;
-			}
+			config = ConfigManager::Get()->GetConfig(ed->id.c_str());
 
-			config = ConfigManager::Get()->GetConfig(ed->config.c_str());
-			if (!config)
-			{
-				DebugPrint(Warning, "No config found for entity '%s' with config ID '%s'",
-					ed->id.empty() ? "No ID" : ed->id.c_str(), ed->config.c_str());
-			}
+			//if (ed->config.empty())
+			//{
+			//	DebugPrint(Warning, "Entity: '%s' has no config string in EntityData",
+			//		ed->id.empty() ? "No ID" : ed->id.c_str());
+
+			//	return nullptr;
+			//}
+
+			//config = ConfigManager::Get()->GetConfig(ed->config.c_str());
+			//if (!config)
+			//{
+			//	DebugPrint(Warning, "No config found for entity '%s' with config ID '%s'",
+			//		ed->id.empty() ? "No ID" : ed->id.c_str(), ed->config.c_str());
+			//}
 		}
 
 		return config;
 	}
 
 
-	const Config* GetConfigFromID(const char* id)
-	{
-		char buffer[64];
-		snprintf(buffer, 64, "%sConfig", id);
-		return ConfigManager::Get()->GetConfig(buffer);
-	}
+	//const Config* GetConfigFromID(const char* id)
+	//{
+	//	char buffer[64];
+	//	snprintf(buffer, 64, "%sConfig", id);
+	//	return ConfigManager::Get()->GetConfig(buffer);
+	//}
 
 	// EntityData
 	// ------------------------------------------------------------------
 	EntityData::EntityData() : 
-		parent(EntityInvalid) 
+		parent(EntityInvalid)
 	{ }
 
 	void EntityData::SetParent(Entity entity, Entity parent)
@@ -135,10 +143,10 @@ namespace ECS
 	{
 		if(config)
 		{
-			size = config->values.GetVectorF("size_x", "size_y");
+			size = config->data.GetVectorF("size_x", "size_y");
 			SetWorldPosition(pos);
 
-			if(config->values.GetBool("snap_to_floor"))
+			if(config->data.GetBool("snap_to_floor"))
 			{
 				float distance = 0.0f;
 				if( RaycastToFloor(entity, distance) )
@@ -246,14 +254,14 @@ namespace ECS
 		flip(SDL_FLIP_NONE),
 		canFlip(true),
 		rotation(0),
-		renderLayer(0)
+		renderLayer(RenderLayer::None)
 	{ }
 
 	void Sprite::Init(const Config* config)
 	{
 		if(config)
 		{
-			SetTexture(config->values.GetString("sprite"));
+			SetTexture(config->data.GetString("sprite"));
 		}
 	}
 
@@ -277,8 +285,8 @@ namespace ECS
 	{
 		if(config)
 		{
-			isRanged = config->values.GetBool("ranged", true);
-			isMelee = config->values.GetBool("melee", false);
+			isRanged = config->data.GetBool("ranged", true);
+			isMelee = config->data.GetBool("melee", false);
 		}
 	}	
 
@@ -341,7 +349,7 @@ namespace ECS
 
 	void Health::Init(const Config* config)
 	{
-		maxHealth = config->values.GetFloat("max_health");
+		maxHealth = config->data.GetFloat("max_health");
 		currentHealth = maxHealth;
 	}
 

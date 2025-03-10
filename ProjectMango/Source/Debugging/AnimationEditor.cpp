@@ -91,7 +91,7 @@ namespace AnimationEditor
             if (ImGui::BeginCombo("Sprite Sheet", s_state.selectedSpriteSheet.c_str()))
             {
                 FileManager* fm = FileManager::Get();
-                std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Image_Animations);
+                std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Images);
 
                 for( u32 i = 0; i < file_names.size(); i++ )
                 {
@@ -111,7 +111,7 @@ namespace AnimationEditor
             // animation editing
             if( strlen(s_state.selectedSpriteSheet.c_str()) > 0 )
             {
-                if(STexture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Image_Animations ))
+                if(STexture* selected_tx = TextureManager::Get()->getTexture( s_state.selectedSpriteSheet.c_str(), FileManager::Images ))
 		        {
 			        VectorF dim = selected_tx->originalDimentions;
 			        VectorF texture_size(window_size.x, (window_size.x * dim.y) / dim. x);

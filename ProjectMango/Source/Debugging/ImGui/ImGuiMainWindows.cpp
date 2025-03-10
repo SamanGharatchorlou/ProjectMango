@@ -290,7 +290,7 @@ void DebugMenu::DoGameStateWindow()
 
     if(ImGui::Button("Reload Configs"))
     {
-        GameData::Get().configs->Reload();
+        GameData::Get().configs->mConfigs.clear();
     }
 
     ImGui::Checkbox("Game Player", &s_gamePlayerState.isActive);
@@ -306,7 +306,7 @@ void DebugMenu::DoGameStateWindow()
         ImGui::Text("max frme rate: %d", fc.frameRateCap);
         if(ImGui::Button("Update Framerate Cap"))
         {
-            GameData::Get().configs->Reload();
+            GameData::Get().configs->mConfigs.clear();
 
 	        ConfigManager* cm = ConfigManager::Get();
             

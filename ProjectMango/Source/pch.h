@@ -83,6 +83,7 @@ namespace fs = std::filesystem;
 
 // File accessors
 #include "System/Files/FileManager.h"
+#include "System/Files/ConfigManager.h"
 
 // GAME DATA - all the gubbins, just saves me adding this everywhere I need it tbh... yes lazy
 #include "Game/Data/GameData.h"

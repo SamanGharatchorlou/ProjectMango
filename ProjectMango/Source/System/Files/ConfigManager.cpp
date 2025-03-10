@@ -1,11 +1,70 @@
 #include "pch.h"
 #include "ConfigManager.h"
 
+#include "System/Files/JSONParser.h"
+#include "System/Files/XMLParser.h"
+
 ConfigManager* ConfigManager::Get()
 {
 	GameData& gd = GameData::Get();
 	ASSERT(gd.configs != nullptr, "Config manager has no been set up yet");
 	return gd.configs;
+}
+
+using namespace rapidjson;
+
+static void JSONReadData(const Value& doc_values, Settings& settings)
+{
+	for (Value::ConstMemberIterator itr = doc_values.MemberBegin(); itr != doc_values.MemberEnd(); ++itr)
+	{
+		if (itr->value.GetType() == kJsonType::Number)
+		{
+			settings.values[itr->name.GetString()] = itr->value.GetFloat();
+		}
+		else if (itr->value.GetType() == kJsonType::True)
+		{
+			settings.values[itr->name.GetString()] = true;
+		}
+		else if (itr->value.GetType() == kJsonType::False)
+		{
+			settings.values[itr->name.GetString()] = false;
+		}
+		else if (itr->value.GetType() == kJsonType::String)
+		{
+			settings.strings[itr->name.GetString()] = itr->value.GetString();
+		}
+	}
+}
+
+static void XMLReadStrings(const XMLNode& node, Settings& out_string)
+{
+	XMLNode childNode = node.child();
+	while (childNode)
+	{
+		char* p = nullptr;
+		const char* in_value = childNode.value();
+		long converted = strtol(in_value, &p, 10);
+		if (*p)
+		{
+			// conversion failed because the input wasn't a number
+			bool is_true = strncmp(in_value, "true", strlen("true")) == 0;
+			bool is_false = strncmp(in_value, "false", strlen("false")) == 0;
+			if (is_true || is_false)
+			{
+				out_string.values[childNode.name()] = (int)is_true;
+			}
+			else
+			{
+				out_string.strings[childNode.name()] = childNode.value();
+			}
+		}
+		else
+		{
+			out_string.values[childNode.name()] = converted;
+		}
+
+		childNode = childNode.next();
+	}
 }
 
 void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
@@ -16,63 +75,144 @@ void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
 		DebugPrint(Warning, "No config file found named %s found in config folder", name);
 	}
 }
+//
+//void ConfigManager::Load()
+//{
+//	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
+//	{
+//		Config& config = iter->second;
+//
+//		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, iter->first.c_str());
+//		if(!file_path.empty())
+//		{
+//			Read(file_path.c_str());
+//			continue;
+//		}
+//
+//		DebugPrint(Warning, "No config file found named %s found in config folder", iter->first.c_str());
+//	}
+//}
 
-void ConfigManager::Load()
+
+void ConfigManager::ParseAll()
 {
-	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
-	{
-		Config* config = iter->second;
-		if (config->parsed)
-			continue;
+	std::vector<BasicString> configs;
+	FileManager::Get()->GetFilesInFolder(FileManager::Configs, configs);
 
-		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, iter->first.c_str());
-		if(!file_path.empty())
+	for (u32 i = 0; i < configs.size(); i++)
+	{
+		bool success = Parse(configs[i].c_str());
+		if (!success)
+			DebugPrint(Warning, "Failed to load config %s", configs[i].c_str());
+	}
+}
+
+bool ConfigManager::Parse(const char* path)
+{
+	bool did_read = false;
+
+	if (FileManager::Get()->IsValidPath(path))
+	{
+		// check ext then run xml or json?
+		JSONParser parser(path);
+
+		if (!parser.document.IsObject())
+			return false;
+
+		if (parser.document.HasMember("types"))
 		{
-			config->Read(file_path.c_str());
-			continue;
+			Value& types = parser.document["types"];
+			if (types.IsArray())
+			{
+				for (u32 i = 0; i < types.Size(); i++)
+				{
+					Value& type = types[i];
+
+					ASSERT(type.HasMember("id"), "config has no id");
+
+					const char* id = type["id"].GetString();
+					mConfigs[id] = Config(id);
+					JSONReadData(type, mConfigs[id].data);
+
+					did_read = true;
+				}
+			}
 		}
+		else
+		{
+			ASSERT(parser.document.HasMember("id"), "config %s has no id", path);
 
-		DebugPrint(Warning, "No config file found named %s found in config folder", iter->first.c_str());
-	}
-}
+			Config config;
+			JSONReadData(parser.document, config.data);
+			config.name = parser.document["id"].GetString();
 
-void ConfigManager::Add(const char* path, Config::Type type)
-{
-	if (mConfigs.count(path) == 0)
-	{
-		Config* new_config = new Config(path);
-		mConfigs[path] = new_config;
-		mConfigs[path]->type = type;
-	}
-}
+			mConfigs[config.name] = config;
 
-Config* ConfigManager::AddAndLoad(const char* path, Config::Type type)
-{
-	Add(path, type);
-	Load();
-	return mConfigs[path];
-}
-
-void ConfigManager::Reload()
-{
-	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
-	{
-		iter->second->parsed = false;
+			did_read = true;
+		}
 	}
 
-	Load();
+	return did_read;
 }
+
+//
+//void ConfigManager::Add(const char* path, Config::Type type)
+//{
+//	if (mConfigs.count(path) == 0)
+//	{
+//		Config* new_config = new Config(path);
+//		mConfigs[path] = new_config;
+//		mConfigs[path]->type = type;
+//	}
+//}
+//
+//Config* ConfigManager::AddAndLoad(const char* path, Config::Type type)
+//{
+//	if (mConfigs.count(path) == 0)
+//	{
+//		Config* new_config = new Config(path);
+//		mConfigs[path] = new_config;
+//		mConfigs[path]->type = type;
+//
+//		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, path);
+//		if (!file_path.empty())
+//		{
+//
+//			config->Read(file_path.c_str());
+//			continue;
+//		}
+//
+//	}
+//
+//
+//
+//	Add(path, type);
+//	Load();
+//	return mConfigs[path];
+//}
+
+//void ConfigManager::Reload()
+//{
+//	//for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
+//	//{
+//	//	iter->second->parsed = false;
+//	//}
+//
+//	Load();
+//}
 
 const Config* ConfigManager::GetConfig(const char* config)
 {
 	if (mConfigs.contains(config))
 	{
-		ASSERT(mConfigs[config]->parsed, "config %s has not been parsed yet, no data", config);
-		return mConfigs.at(config);
+		ASSERT(mConfigs.contains(config), "config %s has not been parsed yet, no data", config);
+		return &mConfigs.at(config);
 	}
 	else if(FileManager::Get()->exists(FileManager::Configs, config))
 	{
-		return AddAndLoad(config);
+		if(Parse(config))
+			return &mConfigs.at(config);
+		//return AddAndLoad(config);
 	}
 
 	DebugPrint(Warning, "No config in the config manager with name: %s", config);

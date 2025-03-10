@@ -43,8 +43,8 @@ namespace PickUps
 	{
 		// runes
 		std::unordered_map<BasicString, OnPickupFn> OnPickupFunctions;
-		s_onPickupFunctions["ReboundRune"] = ReboundRune;
-		s_onPickupFunctions["EchoRune"] = EchoRune;
+		s_onPickupFunctions["RuneRebound"] = ReboundRune;
+		s_onPickupFunctions["RuneEcho"] = EchoRune;
 	}
 
 	OnPickupFn GetCallback(const char* pickup_item)
@@ -53,6 +53,8 @@ namespace PickUps
 		{
 			if (s_onPickupFunctions.contains(pickup_item))
 				return s_onPickupFunctions[pickup_item];
+
+			DebugPrint(Warning, "No pickup callback with id %s", pickup_item);
 		}
 
 		return nullptr;

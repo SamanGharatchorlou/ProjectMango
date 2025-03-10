@@ -45,7 +45,7 @@ namespace ECS
 
 						RectF subRect(layer.tiles[j].tileset_pos, tile_size);
 
-						RenderPack pack(tile_texture, rect, 1);
+						RenderPack pack(tile_texture, rect, (u32)RenderLayer::Scenery);
 						pack.subRect = subRect;
 
 						rm->AddRenderPacket(pack);

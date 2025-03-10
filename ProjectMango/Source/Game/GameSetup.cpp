@@ -37,7 +37,9 @@ void GameSetup::initGameData(GameData& game_data)
 
 	// todo: get window size and resize the window based on that
 	// so i dont have to faff around with the screen size
-	cm->AddAndLoad("GameSettings", Config::XML);
+	BasicString path = FileManager::Get()->findFile(FileManager::Configs, "GameSettings").c_str();
+	ASSERT(path.c_str() != nullptr, "No game settings");
+	cm->Parse(path.c_str());
 
 	Window* window = initSDLWindow();
 	game_data.init(window);
@@ -169,22 +171,22 @@ Window* GameSetup::createWindow()
 	
 	const Config* gs = ConfigManager::Get()->GetConfig("GameSettings");
 
-	if(gs->values.GetBool("FitToScreen", false))
+	if(gs->data.GetBool("fit_to_screen", false))
 	{
 		SDL_Rect rect;
-		bool success = SDL_GetDisplayUsableBounds(0, &rect);
+		bool success = SDL_GetDisplayUsableBounds(0, &rect) == 0;
 		if(!success)
 			DebugPrint(Error, "%s", SDL_GetError());
 		
 		const VectorI screenSize(rect.w, rect.h);
-		window->init(gs->values.GetString("Title"), screenSize);
+		window->init(gs->data.GetString("Title"), screenSize);
 	}
 	else
 	{	
-		const int width = gs->values.GetInt("Width");
-		const int height = gs->values.GetInt("Height");
+		const int width = gs->data.GetInt("size_x");
+		const int height = gs->data.GetInt("size_y");
 		const VectorI screenSize(width, height);
-		window->init(gs->values.GetString("Title"), screenSize);
+		window->init(gs->data.GetString("title"), screenSize);
 	}
 
 	return window;

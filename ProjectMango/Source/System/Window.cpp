@@ -6,7 +6,7 @@ void Window::init(const char* title, Vector2D<int> size)
 	float window_length = std::min(size.x, size.y ) * 0.95f;
 
 	// create window
-	mWindow = SDL_CreateWindow(title, 0, 35,
+	mWindow = SDL_CreateWindow(title, 50, 30,
 		(int)window_length, (int)window_length, SDL_WINDOW_SHOWN);
 }
 

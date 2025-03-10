@@ -12,9 +12,9 @@ namespace ECS
 	{	
 		if(config)
 		{
-			applyGravity = config->values.GetBool("gravity");	
-			acceleration = config->values.GetVectorF("acceleration_x", "acceleration_y");
-			maxSpeed = config->values.GetVectorF("max_run_speed", "max_fall_speed");
+			applyGravity = config->data.GetBool("gravity");	
+			acceleration = config->data.GetVectorF("acceleration_x", "acceleration_y");
+			maxSpeed = config->data.GetVectorF("max_run_speed", "max_fall_speed");
 		}
 
 		speed = VectorF::zero();

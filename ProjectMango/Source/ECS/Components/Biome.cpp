@@ -103,16 +103,16 @@ namespace ECS
 	}
 
 
-	BasicString EntityMetaData::ConfigId() const
-	{
-		char buffer[64];
-		if(idPostfix.empty())
-			snprintf(buffer, 64, "%sConfig", id.c_str());
-		else
-			snprintf(buffer, 64, "%sConfig", idPostfix.c_str());
+	//BasicString EntityMetaData::ConfigId() const
+	//{
+	//	char buffer[64];
+	//	if(idPostfix.empty())
+	//		snprintf(buffer, 64, "%sConfig", id.c_str());
+	//	else
+	//		snprintf(buffer, 64, "%s%sConfig", idPostfix.c_str(), id.c_str());
 
-		return BasicString(buffer);
-	}
+	//	return BasicString(buffer);
+	//}
 
 
 	RectF Level::GetBounds() const

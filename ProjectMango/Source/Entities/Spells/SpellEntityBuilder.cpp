@@ -43,11 +43,11 @@ namespace Magic
 
 		// Sprite
 		ECS::Sprite& sprite = AddComponent(Sprite, entity);
-		sprite.renderLayer = 4;
+		sprite.renderLayer = ECS::RenderLayer::Spell;
 
 		// Damage
 		ECS::Damage& damage = AddComponent(Damage, entity);
-		damage.value = config->values.GetFloat("damage");
+		damage.value = config->data.GetFloat("damage");
 
 		// Spell
 		ECS::Spell& spell = AddComponent(Spell, entity);
@@ -71,7 +71,7 @@ namespace Magic
 
 		// Physics
 		ECS::Physics& physics = AddComponent(Physics, entity);
-		float speed = config->values.GetFloat("speed");
+		float speed = config->data.GetFloat("speed");
 		physics.speed = direction * speed;
 		physics.maxSpeed = physics.speed;
 

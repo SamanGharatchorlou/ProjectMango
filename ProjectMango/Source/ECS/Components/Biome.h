@@ -29,13 +29,16 @@ namespace ECS
 	struct EntityMetaData
 	{
 		BasicString id;
-		BasicString idPostfix;
+
+		// generic type e.g. Rune_Rebound, this would be Rune
+		// then id would be RuneRebound
+		BasicString type;
 
 		// entity field identifier
 		BasicString tag;
 		VectorF position;
 
-		BasicString ConfigId() const;
+		//BasicString ConfigId() const;
 	};
 
 	struct Level
@@ -44,6 +47,8 @@ namespace ECS
 		VectorF size;
 
 		u32 index;
+
+		BasicString id;
 
 		std::vector<Layer> layers;
 		std::vector<ECS::Entity> colliders;

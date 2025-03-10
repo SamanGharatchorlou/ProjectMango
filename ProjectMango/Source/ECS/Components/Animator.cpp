@@ -20,20 +20,20 @@ namespace ECS
 	
 	void Animator::Init(const Config* config)
 	{
-		const char* animation = config->values.GetString("animation");
+		const char* animation = config->data.GetString("animation");
 		AnimationReader::BuildAnimatior( *this, animation);
 		activeAnimation = 0;
 		state = TimeState::Running;
 
-		if (config->values.GetBool("randomise_frame_start"))
+		if (config->data.GetBool("randomise_frame_start"))
 		{
 			int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
 			frameIndex = frame_start;
 		}
 
-		if (config->values.Contains("randomise_frame_speed"))
+		if (config->data.Contains("randomise_frame_speed"))
 		{
-			float variation = config->values.GetFloat("randomise_frame_speed");
+			float variation = config->data.GetFloat("randomise_frame_speed");
 
 			int var_range = (int)(variation * 100.0f);
 

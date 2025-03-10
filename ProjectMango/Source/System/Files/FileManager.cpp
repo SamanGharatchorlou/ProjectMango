@@ -141,6 +141,12 @@ bool FileManager::exists(const Folder folder, const char* name) const
 	return false;
 }
 
+
+bool FileManager::IsValidPath(const char* path) const
+{
+	return fs::exists(fs::path(path));
+}
+
 BasicString FileManager::findFile(const Folder folder, const char* name) const
 {
 	BasicString outPath("");
@@ -261,9 +267,10 @@ std::vector<BasicString> FileManager::fullPathsInFolder(const char* directoryPat
 // TODO: will also get folder names?
 std::vector<BasicString> FileManager::fileNamesInFolder(const Folder folder) const
 {
-	std::vector<BasicString> fileList = allFilesInFolder(folder);
-	std::vector<BasicString> fileNameList;
+	std::vector<BasicString> fileList;
+	GetFilesInFolder(folder, fileList);
 
+	std::vector<BasicString> fileNameList;
 	for( u32 i = 0; i < fileList.size(); i++ )
 	{
 		fileNameList.push_back( getItemName(fileList[i].c_str()).c_str() );
@@ -273,41 +280,33 @@ std::vector<BasicString> FileManager::fileNamesInFolder(const Folder folder) con
 }
 
 
-std::vector<BasicString> FileManager::allFilesInFolder(const Folder folder) const
+void FileManager::GetFilesInFolder(const Folder folder, std::vector<BasicString>& out_files) const
 {
-	std::vector<BasicString> fileNameList;
-
 	fs::path folder_path = fsPath(folder);
 	if (!folder_path.empty())
 	{
 		for (const auto& path : fs::directory_iterator(folder_path))
 		{
 			if (fs::is_directory(path))
-				addFilesToList(fileNameList, path.path());
+				addFilesToList(out_files, path.path());
 			else
-				fileNameList.push_back(pathToString(path.path()));
+				out_files.push_back(pathToString(path.path()));
 		}
 	}
-
-	return fileNameList;
 }
 
-std::vector<BasicString> FileManager::allFilesInFolder(const fs::path& directoryPath) const
+void FileManager::GetFilesInFolder(const fs::path& directoryPath, std::vector<BasicString>& out_files) const
 {
-	std::vector<BasicString> fileNameList;
-
 	if (!directoryPath.empty())
 	{
 		for (const auto& path : fs::directory_iterator(directoryPath))
 		{
 			if (fs::is_directory(path))
-				addFilesToList(fileNameList, path.path());
+				addFilesToList(out_files, path.path());
 			else
-				fileNameList.push_back(pathToString(path.path()));
+				out_files.push_back(pathToString(path.path()));
 		}
 	}
-
-	return fileNameList;
 }
 
 // Stores all folders the contains at least 1 immeditate file

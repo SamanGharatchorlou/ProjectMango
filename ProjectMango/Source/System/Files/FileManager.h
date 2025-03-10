@@ -46,6 +46,8 @@ public:
 	Folder GetFolderFromPath(const char* path) const;
 
 	bool exists(const Folder folder, const char* name) const;
+	bool IsValidPath(const char* path) const;
+
 	BasicString findFile(const Folder folder, const char* name) const;
 	BasicString findFile(const Folder folder, StringBuffer64 name) const { findFile(folder, name.c_str()); }
 	BasicString findFileEtx(const Folder folder, const char* name) const;
@@ -59,8 +61,8 @@ public:
 	StringBuffer64 getItemName(const fs::path& filePath) const;
 	StringBuffer64 getItemNameAndExt(const fs::path& filePath) const;
 
-	std::vector<BasicString> allFilesInFolder(const Folder folder) const;
-	std::vector<BasicString> allFilesInFolder(const fs::path& directory) const;
+	void GetFilesInFolder(const Folder folder, std::vector<BasicString>& out_files) const;
+	void GetFilesInFolder(const fs::path& directory, std::vector<BasicString>& out_files) const;
 
 	void AllFolders(const fs::path& directoryPath, std::unordered_set<BasicString>& folderList) const;
 	void AllFoldersContainingFiles(const fs::path& directoryPath, std::unordered_set<BasicString>& folderList) const;

@@ -1,0 +1,19 @@
+{
+	"types" : [
+		{
+			"id": "RuneEcho",
+			"sprite": "echo_rune",
+			"size_x": 64,
+			"size_y": 64,
+			"echo_count": 1,
+			"echo_time": 0.2
+		},
+		{
+			"id": "RuneRebound",
+			"sprite": "rebound_rune",
+			"size_x": 64,
+			"size_y": 64,
+			"rebound_count": 3
+		}
+	]
+}

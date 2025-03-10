@@ -20,13 +20,19 @@ namespace ShockSweeper
 	{
 		Entity entity = Character::CreateBasicEnemy(emd);
 
+		const Config* config = ECS::GetConfig(entity);
+
 		// CharacterState
 		CharacterState& character_state = AddComponent(CharacterState, entity);
 		character_state.character = new Enemy();
 
 		// Pathing
-		Pathing& pathing = AddComponent(Pathing, entity);
-		pathing.Init();
+		bool disable_pathing = config->data.GetBool("disable_pathing", false);
+		if(!disable_pathing)
+		{
+			Pathing& pathing = AddComponent(Pathing, entity);
+			pathing.Init();
+		}
 		
 		return entity;
 	}

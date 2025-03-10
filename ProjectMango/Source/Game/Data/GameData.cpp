@@ -12,6 +12,7 @@
 #include "Game/SystemStateManager.h"
 #include "System/Files/ConfigManager.h"
 #include "ECS/EntityCoordinator.h"
+#include "UI/UIManager.h"
 
 #include "Debugging/ImGui/ImGuiMenu.h"
 
@@ -53,6 +54,9 @@ void GameData::init(Window* newWindow)
 	// Input
 	inputManager = new InputManager;
 
+	// UI
+	uiManager = new UIManager;
+
 	// Entity Component System
 	ecs = new ECS::EntityCoordinator;
 
@@ -86,15 +90,11 @@ void GameData::load()
 	LoadingManager* loader = LoadingManager::Get();
 	loader->setLoadingAssets(true);
 
-	DebugPrint(Log, "Start loading textures");
-
 	if (endLoading())
 		return;
 
 	// Texture Manager
 	TextureManager::Get()->load();
-
-	DebugPrint(Log, "finish loading textures");
 
 	if (endLoading())
 		return;
@@ -116,7 +116,7 @@ void GameData::load()
 		return;
 
 	// load this right at the end since some of the above init's might add more configs to load
-	configs->Load();
+	configs->ParseAll();
 
 	loader->setLoadingAssets(false);
 
@@ -148,6 +148,7 @@ void GameData::free()
 	//SDL_JoystickClose()
 	//Close();
 
+	delete uiManager;
 	delete inputManager;
 	delete systemStateManager;
 	delete ecs;

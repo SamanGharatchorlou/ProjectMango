@@ -59,7 +59,7 @@ namespace ECS
 			if (spells[spell_index].rune)
 			{
 				spells[spell_index].rune->OnActiate(spell_entity);
-			}
+			} 
 		}
 	}
 
@@ -101,9 +101,9 @@ namespace ECS
 	// ------------------------------------------------------------------
 	ReboundRune::ReboundRune(const char* id, const char* config) : Rune(id, config)
 	{
-		if(const Config* obj_config = GetConfigFromID(id))
+		if(const Config* obj_config = ConfigManager::Get()->GetConfig(id))
 		{
-			reboundCount = obj_config->values.GetInt("rebound_count");
+			reboundCount = obj_config->data.GetInt("rebound_count");
 		}
 	}
 
@@ -123,10 +123,10 @@ namespace ECS
 		Rune(id, config),
 		echoCount(0), echoTime(0)
 	{
-		if (const Config* obj_config = GetConfigFromID(id))
+		if (const Config* obj_config = ConfigManager::Get()->GetConfig(id))
 		{
-			echoCount = obj_config->values.GetInt("echo_count");
-			echoTime = obj_config->values.GetFloat("echo_time");
+			echoCount = obj_config->data.GetInt("echo_count");
+			echoTime = obj_config->data.GetFloat("echo_time");
 		}
 	}
 

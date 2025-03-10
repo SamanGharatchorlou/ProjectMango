@@ -57,7 +57,8 @@ void OutputNSISFolderInfo()
 
 
 	// Delete all files
-	std::vector<BasicString> allFiles = fm->allFilesInFolder(FileManager::Root);
+	std::vector<BasicString> allFiles;
+	fm->GetFilesInFolder(FileManager::Root, allFiles);
 	for (int i = 0; i < allFiles.size(); i++)
 	{
 		BasicString subbed = allFiles[i].substr(cwdLength, allFiles[i].length() - cwdLength);

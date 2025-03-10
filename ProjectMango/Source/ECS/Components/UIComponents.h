@@ -14,4 +14,11 @@ namespace ECS
 
 		Cursor* cursor;
 	};
+
+	struct UIButton
+	{
+		COMPONENT_TYPE(UIButton);
+
+
+	};
 }

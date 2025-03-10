@@ -10,10 +10,8 @@
 #include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
-#include "System/Files/ConfigManager.h"
 #include "Entities/Spells/SpellEntityBuilder.h"
 #include "ECS/Components/UIComponents.h"
-//#include ""
 
 using namespace PlayerRanged;
 using namespace ECS;
@@ -119,7 +117,7 @@ void JumpState::Init()
 	
 	
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.speed.y = GetConfig(entity)->values.GetFloat("jump_impulse");
+	physics.speed.y = GetConfig(entity)->data.GetFloat("jump_impulse");
 }
 
 void JumpState::Update(float dt)
@@ -198,7 +196,7 @@ void RollState::Init()
 	Physics& physics = GetComponentRef(Physics,entity);
 
 	const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->values.GetFloat("roll_impulse");
+	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->data.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{

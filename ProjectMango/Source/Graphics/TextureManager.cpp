@@ -88,8 +88,9 @@ int TextureManager::loadAllTexturesIn(FileManager::Folder resource_folder, FileM
 	int count = 0;
 #endif
 
-	std::vector<BasicString> imagePaths = FileManager::Get()->allFilesInFolder(resource_folder);
-	for (const BasicString& path : imagePaths)
+	std::vector<BasicString> image_paths;
+	FileManager::Get()->GetFilesInFolder(resource_folder, image_paths);
+	for (const BasicString& path : image_paths)
 	{
 		if (!FileManager::HasExt(path.c_str(), ".png"))
 			continue;

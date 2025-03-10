@@ -31,7 +31,7 @@ namespace ECS
 
 		if(out_spawners.size() == 0)
 		{
-			for( int i = biome.levels.size() - 1; i >= 0; i-- )
+			for( int i = (int)biome.levels.size() - 1; i >= 0; i-- )
 			{
 				GetEntitiesInLevel(biome.levels[i], spawners.entityToComponent, out_spawners);
 

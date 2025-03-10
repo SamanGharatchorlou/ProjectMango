@@ -22,7 +22,9 @@ namespace ECS
 		COMPONENT_TYPE(EntityData)
 
 		BasicString id;
-		BasicString config;
+
+		// might be a general name like, "Rune" then use the id to get
+		BasicString subType;
 
 		ECS::Entity parent;
 		std::vector<Entity> children;
@@ -63,6 +65,19 @@ namespace ECS
 		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
 
+	enum class RenderLayer
+	{
+		None = -1,
+		Bottom = 0,
+		Scenery = 1,
+		Spell = 4,
+		Characters = 5,
+		BasicObject = 6,
+		UI = 8,
+		Top = 9,
+		Count = 10
+	};
+
 	struct Sprite
 	{
 		COMPONENT_TYPE(Sprite)
@@ -78,7 +93,7 @@ namespace ECS
 		
 		// in degress (because of the render function input)
 		float rotation; 
-		u32 renderLayer;
+		RenderLayer renderLayer;
 		
 		void Init(const Config* config);
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
@@ -214,11 +229,12 @@ namespace ECS
 	}
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);
-	Entity CreateEntity(const char* id, const char* config);
+	//Entity CreateEntity(const char* id, const char* config);
+	Entity CreateEntity(const EntityMetaData& emd);
 
 	const char* GetName(Entity entity);
 	const Config* GetConfig(Entity entity);
-	const Config* GetConfigFromID(const char* id);
+	//const Config* GetConfigFromID(const char* id);
 
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);

@@ -1,5 +1,9 @@
 #pragma once
 
+namespace ECS { struct EntityMetaData; }
+
+typedef ECS::Entity(*CreateEntityFn)(const ECS::EntityMetaData& emd);
+
 void CreateEntities(ECS::Entity& biome);
 
-ECS::Entity CreateCursor();
+ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd);

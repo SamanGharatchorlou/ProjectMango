@@ -29,7 +29,7 @@ namespace ECS
 				int a = 4;
 
 			const Sprite& sprite = GetComponentRef(Sprite, entity);
-			if(!sprite.texture)
+			if(!sprite.texture || sprite.renderLayer == RenderLayer::None)
 				continue;
 			
 			const Transform& transform = GetComponentRef(Transform, entity);
@@ -38,7 +38,7 @@ namespace ECS
 			if(!camera_rect.Intersect(render_rect))
 				continue;
 
-			RenderPack pack(sprite.texture, render_rect, sprite.renderLayer);
+			RenderPack pack(sprite.texture, render_rect, (u32)sprite.renderLayer);
 			pack.subRect = sprite.subRect;
 			pack.flip = sprite.flip;
 			pack.flipPoint = sprite.flipPoint * render_rect.Size();

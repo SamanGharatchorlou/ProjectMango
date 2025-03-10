@@ -13,6 +13,7 @@
 #include "Input/InputManager.h"
 #include "Scene/SceneParsing/SceneReader.h"
 #include "Scene/SceneParsing/EntityBuilder.h"
+#include "Scene/SceneParsing/UIEntityBuilder.h"
 #include "Entities/Spells/PickupCallbacks.h"
 #include "System/Window.h"
 
@@ -41,10 +42,8 @@ void GameState::Init()
 	audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
 
 	// create cursor
-	//CreateEntity("Cursor");
-	CreateCursor();
+	CreateUIEntities();
 }
-
 
 void GameState::HandleInput()
 {

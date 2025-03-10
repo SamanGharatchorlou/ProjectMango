@@ -34,6 +34,7 @@ namespace ECS
 			_entry( Spawner ) \
 			_entry( Door ) \
 			_entry( UICursor ) \
+			_entry( UIButton ) \
 			_entry( SpellBook ) \
 			_entry( Spell ) \
 			_entry( Pickup ) \
