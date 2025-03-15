@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Initialiser.h"
-#include "ECS/EntityCommon.h"
 
 static std::vector<ComponentInitialiser*> s_compInitialisers;
 

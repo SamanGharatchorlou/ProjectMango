@@ -157,6 +157,7 @@
     <ClCompile Include="Source\Audio\SoundController.cpp" />
     <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />
+    <ClCompile Include="Source\ECS\Entities\EntityPool.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\SpellSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp" />
     <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="Source\Audio\SoundController.h" />
     <ClInclude Include="Source\ECS\Components\SpellComponents.h" />
     <ClInclude Include="Source\ECS\Components\UIComponents.h" />
+    <ClInclude Include="Source\ECS\Entities\EntityPool.h" />
     <ClInclude Include="Source\ECS\EntSystems\SpellSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h" />
     <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
@@ -338,7 +340,7 @@
     <ClInclude Include="Source\ECS\Components\Biome.h" />
     <ClInclude Include="Source\ECS\Components\Physics.h" />
     <ClInclude Include="Source\ECS\Components\TileMap.h" />
-    <ClInclude Include="Source\ECS\EntityCommon.h" />
+    <ClInclude Include="Source\ECS\Entities\EntityCommon.h" />
     <ClInclude Include="Source\ECS\EntityCoordinator.h" />
     <ClInclude Include="Source\ECS\EntityManager.h" />
     <ClInclude Include="Source\ECS\EntSystems\AIControllerSystem.h" />

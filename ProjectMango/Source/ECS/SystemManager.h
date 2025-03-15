@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Debugging/Logging.h"
-#include "EntityCommon.h"
+#include "Entities/EntityCommon.h"
 
 namespace ECS
 {

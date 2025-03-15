@@ -372,6 +372,9 @@
     <ClCompile Include="Source\UI\UIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Entities\EntityPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animations\AnimationReader.h">
@@ -560,7 +563,7 @@
     <ClInclude Include="Source\ECS\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\EntityCommon.h">
+    <ClInclude Include="Source\ECS\Entities\EntityCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntityCoordinator.h">
@@ -1146,6 +1149,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\UI\UIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Entities\EntityPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

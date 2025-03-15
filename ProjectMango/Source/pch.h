@@ -93,7 +93,7 @@ namespace fs = std::filesystem;
 #include "Core/TypeDefs.h"
 
 // Entity and Component types
-#include "ECS/EntityCommon.h"
+#include "ECS/Entities/EntityCommon.h"
 
 // --- Debug Only Includes ---
 #if DEBUG_MODE

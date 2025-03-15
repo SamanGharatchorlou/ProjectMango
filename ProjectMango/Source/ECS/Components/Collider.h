@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ECS/EntityCommon.h"
-
 namespace ECS
 {
 	struct Transform; 

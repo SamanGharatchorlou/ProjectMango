@@ -1,7 +1,5 @@
 #pragma once
 
-#include "EntityCommon.h"
-
 namespace ECS
 {
 	struct EntityManager

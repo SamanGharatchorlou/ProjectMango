@@ -40,24 +40,33 @@ namespace AnimationReader
 	// this runs every time i fire a spell, lets not...
 	void BuildAnimatior(ECS::Animator& animator, const char* file)
 	{
-		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
-		if(full_path.length() == 0)
+		//BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
+		//if(full_path.length() == 0)
+		//{
+		//	DebugPrint(PriorityLevel::Log, "Animation file does not exist: '%s'", file);
+		//	return;
+		//}
+
+
+		//JSONParser parser(full_path.c_str());
+		//
+		//if(!parser.document.IsObject())
+		//{
+		//	DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
+		//	return;
+		//}
+
+		/*
+		const Config* config = ConfigManager::Get()->GetConfig(file);
+		if(!config)
 		{
-			DebugPrint(PriorityLevel::Log, "Animation file does not exist: '%s'", file);
+			BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
+			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
 			return;
 		}
 
-
-		JSONParser parser(full_path.c_str());
-		
-		if(!parser.document.IsObject())
-		{
-			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
-			return;
-		} 
-
-		float frame_size_x = parser.document["frameSize_x"].GetFloat();
-		float frame_size_y = parser.document["frameSize_y"].GetFloat();
+		float frame_size_x = config->data.GetFloat("frameSize_x");
+		float frame_size_y = config->data.GetFloat("frameSize_y");
 
 		const Value::Array& sprite_sheets = parser.document["spriteSheets"].GetArray();
 		for( u32 i = 0; i < sprite_sheets.Size(); i++ )
@@ -128,5 +137,6 @@ namespace AnimationReader
 				animator.animations.push_back(anim);
 			}
 		}
+		*/
 	}
 }

@@ -211,10 +211,10 @@ namespace ECS
 		COMPONENT_TYPE(Pickup)
 
 		BasicString itemId;
+
 		// not just IdConfig, since Id is probably just Rune
 		// but the config would be ReboundRuneConfig
 		BasicString config;
-		//OnPickupFn onPickupFn;
 
 		bool pickedUp;
 
@@ -229,12 +229,10 @@ namespace ECS
 	}
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);
-	//Entity CreateEntity(const char* id, const char* config);
 	Entity CreateEntity(const EntityMetaData& emd);
 
 	const char* GetName(Entity entity);
 	const Config* GetConfig(Entity entity);
-	//const Config* GetConfigFromID(const char* id);
 
 	Entity GetParent(Entity child);
 	VectorF GetPosition(Entity entity);

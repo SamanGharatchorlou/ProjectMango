@@ -117,7 +117,6 @@ ECS::Entity CreateRune(const ECS::EntityMetaData& emd)
 
 	ECS::Pickup& pick_up = AddComponent(Pickup, entity);
 	pick_up.itemId = emd.id;
-	//pick_up.config = emd.id;
 
 	ECS::Collider& collider = AddComponent(Collider, entity);
 	collider.SetFlag(ECS::Collider::PlayerOnly);
@@ -151,13 +150,10 @@ void CreateEntities(ECS::Entity& biome_entity)
 		const ECS::Level& level = biome.levels[i];
 		for (auto iter = level.entities.begin(); iter != level.entities.end(); iter++)
 		{
-			//const ECS::EntityData* ed = GetComponent()
 			const char* type = iter->first.c_str();
 
 			if(CreateEntityFn create_fn = CreateEntitiyFunctions.at(type))
 			{
-				//CreateEntityFn create_fn = CreateEntitiyFunctions.at(type);
-
 				const std::vector<ECS::EntityMetaData>& entitiy_meta_data = iter->second;
 				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
 				{

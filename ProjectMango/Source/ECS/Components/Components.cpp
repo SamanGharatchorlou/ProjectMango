@@ -7,7 +7,6 @@
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Physics.h"
-#include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/TransformSystem.h"
 #include "Entities/Player/PlayerCharacter.h"
@@ -553,7 +552,6 @@ namespace ECS
 					if (fn && fn(entity, hit_entity))
 					{
 						// only trigger once
-						//onPickupFn = nullptr;
 						pickedUp = true;
 					}
 				}
