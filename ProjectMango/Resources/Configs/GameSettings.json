@@ -4,5 +4,5 @@
 	"size_x": 1024,
 	"size_y": 1024,
 	"fit_to_screen": true,
-	"framerate_cap": 120
+	"framerate_cap": 60
 }
