@@ -132,32 +132,6 @@ static Vector2D<int> toVectorI(const char* x, const char* y)
 	return Vector2D<int>(xVec, yVec);
 }
 
-
-
-////--------------------------------------------------------
-//// Parser helpers
-//static VectorF attributesToVectorF(XMLNode node)
-//{
-//	VectorF vector;
-//	if(node)
-//	{
-//		if( XMLNode::Attribute attribute = node.attribute("x"))
-//			vector.x = toFloat(attribute->value());
-//		if( XMLNode::Attribute attribute = node.attribute("y"))
-//			vector.y = toFloat(attribute->value());
-//	}
-//
-//	return vector;
-//}
-//
-//static VectorI attributesToVectorI(XMLNode node, const char* x, const char* y)
-//{
-//	int vec_x = toInt(node.attribute(x)->value());
-//	int vec_y = toInt(node.attribute(y)->value());
-//	return VectorI(vec_x, vec_y);
-//}
-
-
 //--------------------------------------------------------
 // map helpers
 template<class T, class K>
@@ -216,3 +190,11 @@ bool RaycastToFloor(const RectF& rect, float& out_distance);
 bool RaycastToFloor(const VectorF& start, RaycastResult& result);
 bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance);
 
+
+
+
+bool IsPlayer(ECS::Entity entity);
+bool IsEnemy(ECS::Entity entity);
+bool IsTerrain(ECS::Entity entity);
+
+bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity);

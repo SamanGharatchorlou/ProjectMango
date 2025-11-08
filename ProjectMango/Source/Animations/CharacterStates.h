@@ -19,6 +19,7 @@ enum class ActionState
 	Hover,
 
 	Roll,
+	Crouch,
 
 	AttackWindUp,
 	BasicAttack,

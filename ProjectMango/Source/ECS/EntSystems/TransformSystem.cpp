@@ -19,11 +19,16 @@ namespace ECS
 		// update children positions
 		if (EntityData* entity_data = GetComponent(EntityData, parent))
 		{
+			SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;;
+
 			VectorF flip_point;
 			if (ECS::Sprite* sprite = GetComponent(Sprite, parent))
 			{
 				if (sprite->IsFlipped())
+				{
 					flip_point = sprite->flipPoint * parent_transform.size;
+					sprite_flip = sprite->flip;
+				}
 			}
 
 			// handle horizontal flip 
@@ -40,7 +45,26 @@ namespace ECS
 					child_world_pos -= (flip_distance * 2.0f + VectorF(child_transform.size.x, 0.0f));
 				}
 
+				if (ECS::Sprite* sprite = GetComponent(Sprite, child))
+				{
+					if (sprite->canFlip)
+					{
+						bool was_flipped = sprite->IsFlipped();
+
+						sprite->flip = sprite_flip;
+						
+						bool is_flipped = sprite->IsFlipped();
+
+						if(was_flipped != is_flipped)
+						{
+							int a = 4;
+						}
+
+					}
+				}
+
 				child_transform.SetWorldPosition(child_world_pos);
+
 			}
 		}
 	}

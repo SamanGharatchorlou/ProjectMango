@@ -24,7 +24,7 @@ namespace AnimationEditor
     struct AnimationState
 	{
 		StringBuffer64 selectedSpriteSheet;
-		VectorI frameCounts = VectorI(10,9);
+		VectorI frameCounts = VectorI(9,13);
 
         VectorI previousSelectedFrameIndex;
 		std::vector<VectorI> selectedFrameIndexes;
@@ -160,15 +160,15 @@ namespace AnimationEditor
                                 VectorF pos = frame_size * VectorI(ix,iy).toFloat() + animation.TopLeft();
                                 RectF rect(pos, frame_size);
                                 
-                                //if(PointInRect(rect, cursor_pos))
-                                //{
-                                //    VectorI index = VectorI(ix, iy);
-                                //    if( !Contains(s_state.selectedFrameIndexes, index) )
-                                //    {
-                                //        s_state.selectedFrameIndexes.push_back(index);
-                                //        s_state.previousSelectedFrameIndex = index;
-                                //    }
-                                //}
+                                if(Contains(rect, cursor_pos))
+                                {
+                                    VectorI index = VectorI(ix, iy);
+                                    if( !Contains(s_state.selectedFrameIndexes, index) )
+                                    {
+                                        s_state.selectedFrameIndexes.push_back(index);
+                                        s_state.previousSelectedFrameIndex = index;
+                                    }
+                                }
                             }
                         }
                     }
@@ -250,7 +250,7 @@ namespace AnimationEditor
                         RectF subRect(top_left_pos, size);
 
                         RectF renderRect( draw_point_TL, adjusted_frame_texture_size * s_state.screenSizeFactor );
-                        draw_point_TL += VectorF(0, adjusted_frame_texture_size.y) + y_spacing;
+                        draw_point_TL += VectorF(0, adjusted_frame_texture_size.y * s_state.screenSizeFactor) + y_spacing;
 
 			            RenderPack pack(selected_tx, renderRect, 1);
                         pack.subRect = subRect;
@@ -466,8 +466,12 @@ namespace AnimationEditor
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat();
             
                 // the visible size of the frame you're looking at, probably the yellow box
+                float x_spacing = y_spacing.y;
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
-                RectF renderFrameRect(draw_point_TL, frame_texture_size);
+                frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
+                frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
+
+                RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
                 RenderPack frame_pack(c.sprite.texture, renderFrameRect, 1);
@@ -580,7 +584,13 @@ namespace AnimationEditor
                 const ECS::Animation& selected_animation = s_state.configAnim.animator.GetActiveAnimation();
                 const VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat(); 
-                const VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+
+                float x_spacing = y_spacing.y;
+                VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+                frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
+                frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
+
+                //const VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
 
                 VectorF relative_pos = (selection_rect.TopLeft() - relative_selection_top_left) / frame_texture_size;
                 VectorF relative_size = selection_rect.Size() / frame_texture_size;
@@ -605,8 +615,9 @@ namespace AnimationEditor
 	    RenderManager* rm = GameData::Get().renderManager;
 
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
-	    STexture* bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
-	    RenderPack pack(bg, screen, 0);
+	    STexture* black_bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
+	    STexture* white_bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
+	    RenderPack pack(white_bg, screen, 0);
 	    rm->AddRenderPacket(pack);
     }
 }

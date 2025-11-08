@@ -155,6 +155,7 @@
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
     <ClCompile Include="Source\Audio\SoundController.cpp" />
+    <ClCompile Include="Source\ECS\Components\GunComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\SpellSystem.cpp" />
@@ -162,8 +163,9 @@
     <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
     <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp" />
-    <ClCompile Include="Source\Entities\Spells\PickupCallbacks.cpp" />
-    <ClCompile Include="Source\Entities\Spells\SpellEntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\Weapons\GunEntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\Weapons\PickupCallbacks.cpp" />
+    <ClCompile Include="Source\Entities\Weapons\SpellEntityBuilder.cpp" />
     <ClCompile Include="Source\Entities\States\CharacterAction.cpp" />
     <ClCompile Include="Source\Entities\States\PlayerMeleeStates.cpp" />
     <ClCompile Include="Source\Entities\States\PlayerRangedStates.cpp" />
@@ -279,6 +281,7 @@
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\Channel.h" />
     <ClInclude Include="Source\Audio\SoundController.h" />
+    <ClInclude Include="Source\ECS\Components\GunComponents.h" />
     <ClInclude Include="Source\ECS\Components\SpellComponents.h" />
     <ClInclude Include="Source\ECS\Components\UIComponents.h" />
     <ClInclude Include="Source\ECS\EntSystems\SpellSystem.h" />
@@ -286,8 +289,9 @@
     <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
     <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h" />
     <ClInclude Include="Source\Entities\Player\PlayerCharacter.h" />
-    <ClInclude Include="Source\Entities\Spells\PickupCallbacks.h" />
-    <ClInclude Include="Source\Entities\Spells\SpellEntityBuilder.h" />
+    <ClInclude Include="Source\Entities\Weapons\GunEntityBuilder.h" />
+    <ClInclude Include="Source\Entities\Weapons\PickupCallbacks.h" />
+    <ClInclude Include="Source\Entities\Weapons\SpellEntityBuilder.h" />
     <ClInclude Include="Source\Entities\States\CharacterAction.h" />
     <ClInclude Include="Source\Entities\States\PlayerMeleeStates.h" />
     <ClInclude Include="Source\Entities\States\PlayerRangedStates.h" />

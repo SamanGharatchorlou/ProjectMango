@@ -14,20 +14,30 @@ namespace ECS
 			dt = 1.0f / 60.0f;
 		}
 
-		for (size_t i = 0; i < systems.entAndSystems.size(); i++)
+		for( u32 order = 0; order < systems.entAndSystems.size() + systems.entOrSystems.size(); order++ )
 		{
-			if(game_state_active)
+			for (size_t i = 0; i < systems.entAndSystems.size(); i++)
 			{
-				if(i != 1 && i != 4 && i != 5)
+				if(systems.entAndSystems[i]->orderIndex != order)
 					continue;
+
+				if(game_state_active)
+				{
+					// ignore all systems except rendering
+					if( i < systems.entAndSystems.size() - 4 )
+						continue;
+				}
+
+				systems.entAndSystems[i]->Update(dt);
 			}
 
-			systems.entAndSystems[i]->Update(dt);
-		}
+			for (size_t i = 0; i < systems.entOrSystems.size(); i++)
+			{
+				if(systems.entOrSystems[i]->orderIndex != order)
+					continue;
 
-		for (size_t i = 0; i < systems.entOrSystems.size(); i++)
-		{
-			systems.entOrSystems[i]->Update(dt);
+				systems.entOrSystems[i]->Update(dt);
+			}
 		}
 	}
 }

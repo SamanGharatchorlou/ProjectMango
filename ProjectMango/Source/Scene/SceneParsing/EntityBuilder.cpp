@@ -27,6 +27,9 @@ ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 		sprite.renderLayer = ECS::RenderLayer::BasicObject;
 		sprite.canFlip = false;
 		sprite.Init(config);
+
+		if(sprite.texture && transform.size.isZero())
+			DebugPrint(Warning, "CreateBasicObject - Have Sprite, but has no size");
 	}
 
 	return entity;

@@ -38,6 +38,9 @@ namespace ECS
 			_entry( SpellBook ) \
 			_entry( Spell ) \
 			_entry( Pickup ) \
+			_entry( DeathScentence ) \
+			_entry( Firearm ) \
+			_entry( Arm ) \
 
 
 	struct Component

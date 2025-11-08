@@ -61,13 +61,10 @@ void RenderManager::render()
 		std::vector<RenderPack>& render_packs = mRenderPackets[i];
 		for (u32 i = 0; i < render_packs.size(); i++)
 		{
-			if(render_packs[i].flip == SDL_FLIP_HORIZONTAL)
-			{
-				// same distance but flipped over to the other side, so x2 the diff between rect center and the flip point
-				VectorF diff = render_packs[i].rect.Size() - (render_packs[i].flipPoint * 2.0f);
-				render_packs[i].rect.Translate(diff * -1);
-			}
-				
+			// debug break point
+			if (DebugMenu::GetSelectedEntity() == render_packs[i].entity)
+				int a = 4;
+			
 			render_packs[i].rect.Translate(camera_shift);
 
 			render_packs[i].texture->colourModThisFrame = render_packs[i].colourMod;

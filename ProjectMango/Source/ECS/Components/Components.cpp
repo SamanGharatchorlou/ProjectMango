@@ -11,9 +11,12 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/TransformSystem.h"
 #include "Entities/Player/PlayerCharacter.h"
-#include "Entities/Spells/PickupCallbacks.h"
+#include "Entities/Weapons/PickupCallbacks.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/ConfigManager.h"
+
+#include "Graphics/RenderManager.h"
+#include "ECS/EntSystems/RenderSystem.h"
 
 namespace ECS
 {
@@ -136,7 +139,8 @@ namespace ECS
 	// Transform
 	// ------------------------------------------------------------------
 	Transform::Transform() : 
-		ignoreOutOfBounds(false) 
+		ignoreOutOfBounds(false),
+		center(0.5f, 0.5f)
 	{ }
 
 	void Transform::Init(const Config* config, VectorF pos)
@@ -245,6 +249,11 @@ namespace ECS
 		return RectF(worldPosition, size);
 	}
 
+	
+	VectorF Transform::GetRelativePosition(VectorF relative) const
+	{
+		return worldPosition + (relative * size);
+	}
 
 	// Sprite
 	// ------------------------------------------------------------------
@@ -262,6 +271,7 @@ namespace ECS
 		if(config)
 		{
 			SetTexture(config->data.GetString("sprite"));
+			canFlip = config->data.GetBool("can_flip", true);
 		}
 	}
 
@@ -286,7 +296,7 @@ namespace ECS
 		if(config)
 		{
 			isRanged = config->data.GetBool("ranged", true);
-			isMelee = config->data.GetBool("melee", false);
+			isMelee = !isRanged;
 		}
 	}	
 
@@ -310,6 +320,12 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Damage::Damage() : value(0), force(0) 
 	{ }
+
+	
+	void Damage::Init(const Config* config)
+	{
+		value = config->data.GetFloat("damage");
+	}
 
 	bool Damage::CanApplyTo(Entity _entity) const
 	{
@@ -561,6 +577,112 @@ namespace ECS
 		}
 	}
 
+	// DeathScentence
+	// ------------------------------------------------------------------
+	DeathScentence::DeathScentence() : deathTimer(-FLT_MAX), deathZone(InvalidRectF) { }
+
+	void DeathScentence::Update(float dt)
+	{
+		if(deathTimer != -FLT_MAX)
+		{
+			deathTimer -= dt;
+		}
+
+		if(canDie)
+		{
+			if(deathTimer != -FLT_MAX)
+			{
+				if(deathTimer < 0)
+				{
+					ecs->entities.KillEntity(entity);
+					return;
+				}
+
+			}
+
+			if( deathZone.isValid() )
+			{
+				if(Contains(deathZone, GetPosition(entity)))
+				{
+					ecs->entities.KillEntity(entity);
+					return;
+				}
+			}
+		}
+	}
+
+	// Arm
+	// ------------------------------------------------------------------
+	Arm::Arm() : anchorPoint( VectorF(0.5f, 0.5f)), target(EntityInvalid) { }
+
+	void Arm::Update()
+	{
+		if(ecs->IsAlive(target))
+		{
+			// make sure we're all up to date with parent and child positions
+			TransformSystem::UpdateChildrenTransforms(GetParent(entity));
+
+			if(const Transform* transform = GetComponent(Transform, entity))
+			{
+				if(Sprite* sprite = GetComponent(Sprite, entity))
+				{
+					// direction
+					VectorF caster_position = transform->GetObjectCenter();
+					// could be center, but realistically its the cursor thats the target, and we want the top left
+					// hmmmm will this be a problem for when we dont was it to be the cursor and not the top left?
+					VectorF direction = GetRect(target).TopLeft() - caster_position;
+					direction = direction.normalise();
+					
+					if(sprite->IsFlipped())
+					{
+						sprite->flipPoint = (VectorF(1.0f,1.0f) - anchorPoint);
+						
+						direction = direction * -1;
+					}
+					else
+					{
+						sprite->flipPoint = anchorPoint;
+					}
+					
+					float rotation = direction.getRotation();
+
+					// handle cursor behind the player, mirror the rotation
+					if(!IsTargetInFrontOfSource(target, entity))
+					{
+						direction.y = -direction.y;
+						rotation = direction.getRotation();
+
+						rotation += 180.0f;
+					}
+								
+					// we live between
+					if(rotation > 180)
+						rotation -= 360;
+
+					rotation = Maths::clamp(rotation, -45.0f, 45.0f);
+					sprite->rotation = rotation;
+				}
+			}
+		}
+	}
+
+	VectorF Arm::GetPosition(VectorF relative_posision) const
+	{
+		Sprite* sprite = GetComponent(Sprite, entity);
+		Transform* transform = GetComponent(Transform, entity);
+
+		if(sprite && transform)
+		{
+			relative_posision = sprite->IsFlipped() ? VectorF(1.0f,1.0f) - relative_posision : relative_posision;
+
+			VectorF initial_position = transform->GetRelativePosition(relative_posision);
+			VectorF about_point = transform->GetRelativePosition(sprite->flipPoint);
+
+			return initial_position.rotateVector(sprite->rotation, about_point);
+		}
+
+		return c_invalidVector;
+	}
 
 	// helpers
 	// ------------------------------------------------------------------
@@ -569,6 +691,17 @@ namespace ECS
 		if(EntityData* ed = GetComponent(EntityData, child))
 		{
 			return ed->parent;
+		}
+
+		return EntityInvalid;
+	}
+
+	Entity GetFirstChild(Entity parent)
+	{
+		if(EntityData* ed = GetComponent(EntityData, parent))
+		{
+			if(ed->children.size() > 0)
+				return ed->children.front();
 		}
 
 		return EntityInvalid;
@@ -584,7 +717,6 @@ namespace ECS
 		return VectorF::zero();
 	}
 
-	
 	RectF GetRect(Entity entity)
 	{		
 		if(const Collider* collider = GetComponent(Collider, entity))

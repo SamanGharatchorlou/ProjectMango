@@ -62,6 +62,9 @@ void DebugMenu::DoEntitySystemWindow()
     if (!selected)
         selected = "";
 
+    static bool s_ignoreTerrain = true;
+    ImGui::Checkbox("Ignore Terrain Entities", &s_ignoreTerrain);
+
     if (ImGui::BeginCombo("Entities", selected, 0))
     {
         const ECS::ComponentArray<ECS::EntityData>& entity_data = GetAllComponents(EntityData);
@@ -76,6 +79,11 @@ void DebugMenu::DoEntitySystemWindow()
                 const char* value = strstr( entity_name.c_str(), filter.c_str() );
                 if ( !value )
                     continue;
+            }
+
+            if(s_ignoreTerrain && IsTerrain(ed.entity))
+            {
+                continue;
             }
 
             ImGui::PushID(iter->first);
@@ -93,6 +101,7 @@ void DebugMenu::DoEntitySystemWindow()
 
         ImGui::EndCombo();
     }
+    
 
     if (ecs->IsAlive(s_selectedEntity)) 
     {
@@ -127,6 +136,7 @@ void DebugMenu::DoEntitySystemWindow()
             DoComponentDropdown(PlayerController);
             DoComponentDropdown(Health);
             DoComponentDropdown(Biome);
+            DoComponentDropdown(Arm);
 
             ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
             for (u32 i = 0; i < ECS::Component::Count; i++) 
@@ -230,6 +240,8 @@ void DebugMenu::DoInputWindow()
 
 static bool s_displayStatics = true;
 static bool s_displayDynamics = true;
+static bool s_displayRaycasts = true;
+static bool s_displayTransforms = true;
 static DebugDrawType s_drawType = DebugDrawType::RectOutline;
 
 void DebugMenu::DoColliderWindow() 
@@ -239,6 +251,8 @@ void DebugMenu::DoColliderWindow()
 
     ImGui::Checkbox("Display Statics", &s_displayStatics);
     ImGui::Checkbox("Display Dynamics", &s_displayDynamics);
+    ImGui::Checkbox("Display Raycasts", &s_displayRaycasts);
+    ImGui::Checkbox("Display Transforms", &s_displayTransforms);
 
     ImGui::DoDebugRenderTypeDropDown(s_drawType);
 
@@ -256,6 +270,21 @@ void DebugMenu::DoColliderWindow()
 
         DrawCollider(collider);
 	}
+    
+    if(s_displayTransforms)
+    {
+        const ECS::ComponentArray<ECS::Transform>& transforms = GetAllComponents(Transform);
+	    const u32 count = (u32)transforms.entityToComponent.size();
+
+        for( auto iter = transforms.entityToComponent.begin(); iter != transforms.entityToComponent.end(); iter++ )
+	    {
+		    u32 component_index = iter->second;
+		    const ECS::Transform& transform = transforms.GetComponentByIndex(component_index);
+            
+			RectF rect(transform.worldPosition, transform.size);
+			DebugDraw::RectOutline(rect, SColour::Blue);
+	    }
+    }
 }
 
 DebugMenu::GamePlayerState s_gamePlayerState;

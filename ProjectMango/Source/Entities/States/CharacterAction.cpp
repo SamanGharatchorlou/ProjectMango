@@ -41,7 +41,7 @@ Entity CharacterAction::CreateNewAttackCollider(const char* collider_name, float
 	Entity attack_collider = ECS::CreateEntity(collider_name);
 	AddComponent(Transform, attack_collider);
 	AddComponent(Collider, attack_collider);
-	AddComponent(Damage, attack_collider);
+	AddComponent(Damage, attack_collider); 
 	EntityData::SetParent(attack_collider, entity);
 
 	const Animator& animator = GetComponentRef(Animator, entity);

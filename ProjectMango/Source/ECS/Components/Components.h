@@ -6,6 +6,9 @@
 class STexture;
 struct Config;
 
+// when adding a component, define it in EntityCommon.h
+// then setup how its updated in ComponentsSetup
+
 namespace ECS
 {
 	struct Collider;
@@ -45,7 +48,7 @@ namespace ECS
 		VectorF size;
 
 		// set through the anim config, might not be the technical center, 
-		// but it should be the visual one
+		// but it should be the visual one (relative value)
 		VectorF center;
 
 		bool ignoreOutOfBounds;
@@ -61,6 +64,8 @@ namespace ECS
 		void SetObjectCenter(VectorF pos);
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
+
+		VectorF GetRelativePosition(VectorF relative) const;
 
 		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
@@ -158,6 +163,7 @@ namespace ECS
 		// the damage
 		float value;
 
+		void Init(const Config* config);
 		bool CanApplyTo(Entity entity) const;
 		void ApplyTo(Entity entity);
 	};
@@ -175,6 +181,17 @@ namespace ECS
 		void ApplyDamage(const Damage& damage);
 	};
 
+	struct DeathScentence
+	{
+		COMPONENT_TYPE(DeathScentence)
+
+		float deathTimer;
+		RectF deathZone;
+
+		bool canDie;
+		
+		void Update(float dt);
+	};
 	
 	typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );
 
@@ -221,6 +238,24 @@ namespace ECS
 		void Update();
 	};
 
+	// should be attached to a character, will rotate with the cursor
+	struct Arm
+	{
+		COMPONENT_TYPE(Arm)
+			
+		Entity target;
+		VectorF anchorPoint;
+
+		// taking the x axis as 0, how much we can rotate above and below it
+		float rotationAnlgeAbove;
+		float rotationAnlgeBelow;
+
+		void Update();
+
+		// pass in a relative position i.e. 0 - 1, and gives the position based on flip and rotaion
+		VectorF GetPosition(VectorF relative_posision) const;
+	};
+
 	// ----------------------------------------------------------------------
 	// helpers
 	static u64 archetypeBit(ECS::Component::Type type)
@@ -237,6 +272,7 @@ namespace ECS
 	//const Config* GetConfigFromID(const char* id);
 
 	Entity GetParent(Entity child);
+	Entity GetFirstChild(Entity parent);
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);

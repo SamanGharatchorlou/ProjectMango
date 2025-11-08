@@ -3,7 +3,7 @@
 
 #include "Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Spells/SpellEntityBuilder.h"
+#include "Entities/Weapons/SpellEntityBuilder.h"
 #include "UIComponents.h"
 #include "Collider.h"
 #include "System/Files/Config.h"

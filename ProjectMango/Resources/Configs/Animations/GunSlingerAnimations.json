@@ -1,0 +1,55 @@
+{
+	"id": "GunSlinger",
+	"frameSize_x": 48,
+	"frameSize_y": 48,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "GunSlinger_NoGun",
+			"animations": [
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 1.0,
+					"entity_collider_pos": [ 0.415, 0.455 ],
+					"entity_collider_size": [ 0.169, 0.545 ]
+				},				
+				{
+					"action": "Run",
+					"startIndex": 9,
+					"frameCount": 8,
+					"frameTime": 0.1,
+					"entity_collider_pos": [ 0.415, 0.455 ],
+					"entity_collider_size": [ 0.169, 0.545 ]
+				},
+				{
+					"action": "Death",
+					"startIndex": 99,
+					"frameCount": 4,
+					"frameTime": 0.3,
+					"looping": false,
+					"entity_collider_pos": [ 0.415, 0.455 ],
+					"entity_collider_size": [ 0.169, 0.545 ]
+				},
+				{
+					"action": "Roll",
+					"startIndex": 91,
+					"frameCount": 7,
+					"frameTime": 0.08,
+					"entity_collider_pos": [ 0.415, 0.455 ],
+					"entity_collider_size": [ 0.169, 0.545 ]
+				},
+				{
+					"action": "Crouch",
+					"startIndex": 81,
+					"frameCount": 3,
+					"frameTime": 0.15,
+					"looping": false,
+					"entity_collider_pos": [ 0.437, 0.605 ],
+					"entity_collider_size": [ 0.148, 0.395 ]
+				}
+			]
+		}
+	]
+}

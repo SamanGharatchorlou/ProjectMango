@@ -14,6 +14,8 @@ namespace ECS
 		std::vector<Entity> entities;
 		Signature signature;
 
+		int orderIndex;
+
 		// need to implement this below
 		// the signature can be an AND or OR match, defaults to OR
 		bool signature_OR = false;
@@ -21,6 +23,8 @@ namespace ECS
 
 	struct SystemManager
 	{
+		int orderCounter = 0;
+
 		void Close()
 		{
 			// shut down all systems
@@ -36,6 +40,8 @@ namespace ECS
 
 			entAndSystems.clear();
 			entOrSystems.clear();
+
+			orderCounter = 0;
 		}
 
 		template<class T>
@@ -52,6 +58,7 @@ namespace ECS
 			}
 
 			entAndSystems.emplace_back(new T(type));
+			entAndSystems.back()->orderIndex = orderCounter++;
 		}
 
 		template<class T>
@@ -68,6 +75,7 @@ namespace ECS
 			}
 
 			entOrSystems.emplace_back(new T(type));
+			entOrSystems.back()->orderIndex = orderCounter++;
 		}
 
 		void EntityAddType(Entity entity, Signature type)

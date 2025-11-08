@@ -9,6 +9,8 @@
 #include "ECS/Components/Animator.h"
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Components.h"
+#include "Graphics/RenderManager.h"
+#include "ECS/EntSystems/RenderSystem.h"
 
 struct RenderRects
 {
@@ -75,7 +77,7 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 	ImGui::PushID(entity + (int)type);
 	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
 	{
-		const ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
+		ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
@@ -98,19 +100,38 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 					s_spriteFlip = SDL_FLIP_HORIZONTAL;
 			}
 
+			// messing around with the flip here... could break it
+			if(s_flipOverride)
+			{
+				sprite.canFlip = false;
+				sprite.flip = s_spriteFlip;
+			}
+
+			
+			ImGui::Text("rotation: %f", sprite.rotation);
+
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Display"))
 		{
 			ECS::Transform& transform = GetComponentRef(Transform, entity);
-			ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 
 			ImGui::Checkbox("Render Rect", &s_renderRects.render);
 			if(s_renderRects.render)
-			{	
-				const RectF renderRect(transform.worldPosition, transform.size);
-				DebugDraw::RectOutline(renderRect, SColour::Green);
+			{
+				RenderPack pack;
+				ECS::GenerateRenderPack(sprite, pack);
+
+				DebugDraw::RectOutline(pack.rect, SColour::Green);
+
+				VectorF about_point = (pack.flipPoint) + pack.rect.TopLeft();
+
+				QuadF quad(pack.rect);
+				quad.rotate(pack.rotation, about_point);
+
+				DebugDraw::Quad(quad, SColour::Purple);
+				DebugDraw::Point(about_point, SColour::Red, 2.0f);
 			}
 
 			ImGui::TreePop();

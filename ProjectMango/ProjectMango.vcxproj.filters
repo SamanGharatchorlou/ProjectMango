@@ -345,7 +345,7 @@
     <ClCompile Include="Source\Entities\States\PlayerRangedStates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Spells\SpellEntityBuilder.cpp">
+    <ClCompile Include="Source\Entities\Weapons\SpellEntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp">
@@ -363,13 +363,19 @@
     <ClCompile Include="Source\ECS\EntSystems\SpellSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Spells\PickupCallbacks.cpp">
+    <ClCompile Include="Source\Entities\Weapons\PickupCallbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneParsing\UIEntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\UI\UIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Weapons\GunEntityBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Components\GunComponents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1121,7 +1127,7 @@
     <ClInclude Include="Source\Entities\States\PlayerRangedStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Spells\SpellEntityBuilder.h">
+    <ClInclude Include="Source\Entities\Weapons\SpellEntityBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h">
@@ -1139,13 +1145,19 @@
     <ClInclude Include="Source\ECS\EntSystems\SpellSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\Spells\PickupCallbacks.h">
+    <ClInclude Include="Source\Entities\Weapons\PickupCallbacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneParsing\UIEntityBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\UI\UIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Weapons\GunEntityBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\GunComponents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,6 +13,8 @@ namespace ECS
 		~UICursor();
 
 		Cursor* cursor;
+
+		static UICursor* Get();
 	};
 
 	struct UIButton

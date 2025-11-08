@@ -43,7 +43,7 @@ private:
 	Camera();
 	~Camera() { }
 
-	void LerpToTarget();
+	//void LerpToTarget();
 };
 
 /*

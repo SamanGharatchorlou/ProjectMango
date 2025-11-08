@@ -14,7 +14,7 @@
 #include "Scene/SceneParsing/SceneReader.h"
 #include "Scene/SceneParsing/EntityBuilder.h"
 #include "Scene/SceneParsing/UIEntityBuilder.h"
-#include "Entities/Spells/PickupCallbacks.h"
+#include "Entities/Weapons/PickupCallbacks.h"
 #include "System/Window.h"
 
 void GameState::Init()

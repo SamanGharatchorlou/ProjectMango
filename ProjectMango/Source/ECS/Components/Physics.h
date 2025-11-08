@@ -20,7 +20,7 @@ namespace ECS
 		void Init(const Config* config);
 
 		void ApplyMovement(VectorF movement_direction, float dt);
-		void ApplyDrag(float drag_coefficient);
+		void ApplyHorizontalDrag(float drag_coefficient);
 
 		void ApplyMovementEase(VectorF movement_direction, float dt, int easing_factor);
 		VectorF GetMovementEase(VectorF movement_direction, float dt, int easing_factor) const ;

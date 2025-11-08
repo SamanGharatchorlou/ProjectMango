@@ -20,7 +20,7 @@ namespace ECS
 		speed = VectorF::zero();
 	}
 
-	void Physics::ApplyDrag(float drag_coefficient)
+	void Physics::ApplyHorizontalDrag(float drag_coefficient)
 	{
 		const float dragFractor = 1.0f - drag_coefficient;
 		const float minSpeedMultiple = 0.01f;

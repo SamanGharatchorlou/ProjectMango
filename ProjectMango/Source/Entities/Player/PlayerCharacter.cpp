@@ -4,49 +4,56 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/SpellComponents.h"
+#include "ECS/Components/GunComponents.h"
 #include "ECS/Components/Biome.h"
 #include "Game/Camera/Camera.h"
+#include "Scene/SceneParsing/EntityBuilder.h"
+#include "Entities/Weapons/GunEntityBuilder.h"
 
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
-ECS::Entity s_playerEntity = ECS::EntityInvalid;
+using namespace ECS;
 
-ECS::Entity Player::Get()
+Entity s_playerEntity = EntityInvalid;
+
+Entity Player::Get()
 {
 	return s_playerEntity;
 }
 
-ECS::Entity Player::Spawn(const ECS::EntityMetaData& emd)
+Entity Player::Spawn(const EntityMetaData& emd)
 {
 	ecs->entities.KillEntity(s_playerEntity);
 	s_playerEntity = Character::CreateBasic(emd);
-	const Config* config = ECS::GetConfig(s_playerEntity);
+	const Config* config = GetConfig(s_playerEntity);
 
 	// PlayerController
 	AddComponent(PlayerController, s_playerEntity);
 
 	// Collider
-	ECS::Collider& collider = GetComponentRef(Collider, s_playerEntity);
-	collider.SetFlag(ECS::Collider::IsPlayer);
-	//collider.SetFlag(ECS::Collider::CanBump);
+	Collider& collider = GetComponentRef(Collider, s_playerEntity);
+	collider.SetFlag(Collider::IsPlayer);
+	collider.SetFlag(Collider::CanBump);
 
 	// Sprite
-	ECS::Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
-	sprite.renderLayer = ECS::RenderLayer::Characters;
+	Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
+	sprite.renderLayer = RenderLayer::Characters;
 
 	// CharacterState
-	ECS::CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
+	CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
 	character_state.Init(config);
 
 	// Spellbook
-	ECS::SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
-	spell_book.SetSpellSlot(0, "Fireball");
+	//SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
+	//spell_book.SetSpellSlot(0, "Fireball");
+
+	// Firearm
+	EquipFirearm(s_playerEntity, "BasicRifle");
 	
 	Camera* camera = Camera::Get();
 	camera->targetEntity = s_playerEntity;
 	
-	if(DebugMenu::GetSelectedEntity() == ECS::EntityInvalid)
+	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
 		DebugMenu::SelectEntity(s_playerEntity);
 
 	return s_playerEntity;

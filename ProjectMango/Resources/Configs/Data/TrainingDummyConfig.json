@@ -5,5 +5,5 @@
 	"size_y": 128,
 	"snap_to_floor": true,
 	"gravity": true,
-	"max_health": 20
+	"max_health": 20000
 }

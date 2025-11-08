@@ -5,7 +5,7 @@ class FrameRateController
 public:
 	static FrameRateController& Get();
 
-	float delta() const { return (1 / 120.0f); }
+	float delta() const { return (1.0f / (float)frameRateCap); }
 	void start();
 	void update();
 

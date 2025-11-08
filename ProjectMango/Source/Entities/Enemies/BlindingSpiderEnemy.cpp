@@ -70,7 +70,7 @@ namespace BlindingSpider
 	void IdleState::Update(float dt)
 	{
 		Physics& physics = GetComponentRef(Physics, entity);
-		physics.ApplyDrag(0.05f);
+		physics.ApplyHorizontalDrag(0.05f);
 
 		if( CanEnterHitState() )
 		{
@@ -250,7 +250,7 @@ namespace BlindingSpider
 
 		if (ECS::Physics* physics = GetComponent(Physics, entity))
 		{
-			physics->ApplyDrag(0.5f);
+			physics->ApplyHorizontalDrag(0.5f);
 		}
 	}
 

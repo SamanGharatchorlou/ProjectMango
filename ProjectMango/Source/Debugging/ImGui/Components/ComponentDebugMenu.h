@@ -1,8 +1,5 @@
 #pragma once
 
-//#include "ECS/Components/Components.h"
-//#include "ECS/Components/Collider.h"
-
 namespace ECS { struct Collider; }
 
 namespace DebugMenu 
@@ -19,6 +16,7 @@ namespace DebugMenu
 	u32 DoAIControllerDebugMenu(ECS::Entity& entity);
 	u32 DoHealthDebugMenu(ECS::Entity& entity);
 	u32 DoBiomeDebugMenu(ECS::Entity& entity);
+	u32 DoArmDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 

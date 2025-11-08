@@ -10,14 +10,29 @@
 #include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Spells/SpellEntityBuilder.h"
+#include "Entities/Weapons/SpellEntityBuilder.h"
 #include "ECS/Components/UIComponents.h"
+
+#include "ECS/Components/GunComponents.h"
+#include "Entities/Weapons/GunEntityBuilder.h"
 
 using namespace PlayerRanged;
 using namespace ECS;
 
 static const int c_defaultEasingSpeed = 3;
 
+static void UpdateShoot(ECS::Entity entity)
+{
+	InputManager* input = InputManager::Get();
+	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
+	{
+		if(Entity gun_entity = GetFirstChild(entity))
+		{	 
+			Firearm& firearm = GetComponentRef(Firearm, gun_entity);
+			firearm.Fire();
+		}
+	}
+}
 
 // Idle
 // ---------------------------------------------------------
@@ -34,7 +49,6 @@ void IdleState::Resume()
 
 void IdleState::Update(float dt)
 {
-	
 	CharacterState& state = GetComponentRef(CharacterState, entity);
 
 	// Run
@@ -46,7 +60,7 @@ void IdleState::Update(float dt)
 	else
 	{
 		Physics& physics = GetComponentRef(Physics, entity);
-		physics.ApplyDrag(0.4f);
+		physics.ApplyHorizontalDrag(0.4f);
 	}
 
 	// Jump
@@ -56,12 +70,15 @@ void IdleState::Update(float dt)
 		PushState(Jump);
 		return;
 	}
-
-	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
+	
+	// Crouch
+	if (input->isPressed(Button::Down))
 	{
-		PushState(BasicAttack);
+		PushState(Crouch);
 		return;
 	}
+
+	UpdateShoot(entity);
 }
 
 // Run
@@ -80,7 +97,6 @@ void RunState::Resume()
 
 void RunState::Update(float dt)
 {
-	
 	CharacterState& state = GetComponentRef(CharacterState, entity);
 	Physics& physics = GetComponentRef(Physics, entity);
 	
@@ -105,6 +121,14 @@ void RunState::Update(float dt)
 		PushState(Roll);
 		return;
 	}
+	
+	if (input->isPressed(Button::Down))
+	{
+		PushState(Crouch);
+		return;
+	}
+
+	UpdateShoot(entity);
 }
 
 // JumpState
@@ -114,29 +138,39 @@ JumpState::JumpState(Entity _entity) : CharacterAction(ActionState::Jump, _entit
 void JumpState::Init()
 {
 	StartAnimation();
-	
-	
-	Physics& physics = GetComponentRef(Physics, entity);
-	physics.speed.y = GetConfig(entity)->data.GetFloat("jump_impulse");
+
+	//Physics& physics = GetComponentRef(Physics, entity);
+	//physics.speed.y = GetConfig(entity)->data.GetFloat("jump_impulse");
+
+	cumulativeJump = 0.0f;
 }
 
 void JumpState::Update(float dt)
 {
-	
 	CharacterState& state = GetComponentRef(CharacterState, entity);
 	Physics& physics = GetComponentRef(Physics, entity);
+	InputManager* input = InputManager::Get();
+
+	if (input->isHeld(Button::Space))
+	{
+		if(cumulativeJump < GetConfig(entity)->data.GetFloat("jump_impulse"))
+		{
+			physics.speed.y += -200.0f;
+			cumulativeJump += 200.0f;
+			return;
+		}
+	}
 
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
-	physics.ApplyDrag(0.2f);
+	physics.ApplyHorizontalDrag(0.15f);
 
-	// rapidly slow upwards movement while not holding space
-	InputManager* input = InputManager::Get();
-	if (!input->isHeld(Button::Space))
+	// rapidly slow upwards movement while not holding space or slowing down
+	if (!input->isHeld(Button::Space) || physics.speed.y > -200.0f)
 	{
 		if (physics.speed.y < 0)
 		{
-			physics.speed.y -= physics.speed.y * 8.0f * dt;
+			physics.speed.y -= physics.speed.y * 25.0f * dt;
 		}
 	}
 
@@ -146,6 +180,9 @@ void JumpState::Update(float dt)
 		PopState();
 		return;
 	}
+
+	// debuff?
+	UpdateShoot(entity);
 }
 
 // FallState
@@ -155,8 +192,7 @@ FallState::FallState(ECS::Entity _entity) : CharacterAction(ActionState::Fall, _
 void FallState::Init()
 {
 	StartAnimation();
-	
-	
+
 	Physics& physics = GetComponentRef(Physics, entity);
 	if(physics.speed.y < 0.0f)
 		physics.speed.y = 0.0f;
@@ -168,13 +204,12 @@ void FallState::Resume()
 
 void FallState::Update(float dt)
 {
-	
 	CharacterState& state = GetComponentRef(CharacterState, entity);
 	Physics& physics = GetComponentRef(Physics, entity);
 
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
-	physics.ApplyDrag(0.2f);
+	physics.ApplyHorizontalDrag(0.2f);
 
 	if(physics.onFloor)
 	{
@@ -182,6 +217,9 @@ void FallState::Update(float dt)
 		PopState();
 		return;
 	}
+
+	// debuff?
+	UpdateShoot(entity);
 }
 
 // RollState
@@ -192,11 +230,10 @@ void RollState::Init()
 {
 	StartAnimation(ActionState::Roll, false);
 
-	
 	Physics& physics = GetComponentRef(Physics,entity);
 
-	const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->data.GetFloat("roll_impulse");
+	//const CharacterState& state = GetComponentRef(CharacterState, entity);
+	physics.speed = GetFacingDirectionVector(entity).toFloat() * GetConfig(entity)->data.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{
@@ -206,8 +243,6 @@ void RollState::Init()
 
 void RollState::Update(float dt)
 {
-	
-	
 	const Animator& animation = GetComponentRef(Animator, entity);
 	if (animation.loopCount > 0)
 	{
@@ -219,13 +254,55 @@ void RollState::Update(float dt)
 
 void RollState::Exit()
 {
-	
 	if(Collider* collider = GetComponent(Collider, entity))
 	{
 		collider->RemoveFlag(Collider::TerrainOnly);
 	}
 }
 
+
+// CrouchState
+// ---------------------------------------------------------
+CrouchState::CrouchState(Entity _entity) : CharacterAction(ActionState::Crouch, _entity) { }
+
+void CrouchState::Init()
+{
+	StartAnimation(ActionState::Crouch, true);
+}
+
+void CrouchState::Resume()
+{
+	rollColldown = 2.0f;
+	StartAnimation(ActionState::Crouch, true);
+}
+
+void CrouchState::Update(float dt)
+{
+	InputManager* input = InputManager::Get();
+	CharacterState& state = GetComponentRef(CharacterState, entity);
+	Physics& physics = GetComponentRef(Physics, entity);
+
+	physics.ApplyHorizontalDrag(0.8f);
+
+	rollColldown-= dt;
+
+	if(input->isPressed(Button::Shift, c_inputBuffer) && rollColldown < 0.0f)
+	{
+		PushState(Roll);
+	}
+	
+	UpdateShoot(entity);
+		
+	const Animator& animation = GetComponentRef(Animator, entity);
+	if (animation.loopCount > 0)
+	{
+		if (!input->isHeld(Button::Down))
+		{
+			PopState();
+			return;
+		}
+	}
+}
 
 
 // DeathState
@@ -238,7 +315,6 @@ void DeathState::Init()
 
 	StartAnimation(false);
 	
-	
 	if(Physics* physics = GetComponent(Physics, entity))
 	{
 		physics->speed.set(0.0f, 0.0f);
@@ -247,7 +323,6 @@ void DeathState::Init()
 
 void DeathState::Update(float dt)
 {	
-	
 	Animator& animator = GetComponentRef(Animator, entity);
 
 	if(animator.loopCount > 0)
@@ -267,7 +342,6 @@ BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(Action
 
 void BasicAttackState::Init()
 {
-	
 	Animator& animator = GetComponentRef(Animator, entity);
 
 	if(animator.GetAnimation(ActionState::AttackWindUp))
@@ -278,17 +352,12 @@ void BasicAttackState::Init()
 	{	
 		StartAnimation();
 	}
-
-	SpellBook& spell_book = GetComponentRef(SpellBook, entity);
-	if(spell_book.CanActivateSpell(0))
-		spell_book.ActivateSpellToCursor(0);
 }
 
 void BasicAttackState::Update(float dt)
 {
-	
 	Animator& animator = GetComponentRef(Animator, entity);
-	if(animator.loopCount > 0)
+	if(animator.loopCount > 0) 
 	{		
 		CharacterState& state = GetComponentRef(CharacterState, entity);
 		PopState();
@@ -297,7 +366,7 @@ void BasicAttackState::Update(float dt)
 
 	if (ECS::Physics* physics = GetComponent(Physics, entity))
 	{
-		physics->ApplyDrag(0.5f);
+		physics->ApplyHorizontalDrag(0.5f);
 	}
 }
 

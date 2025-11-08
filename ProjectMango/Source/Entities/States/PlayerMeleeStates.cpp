@@ -42,7 +42,7 @@ void IdleState::Update(float dt)
 	else
 	{
 		Physics& physics = GetComponentRef(Physics, entity);
-		physics.ApplyDrag(0.4f);
+		physics.ApplyHorizontalDrag(0.4f);
 	}
 
 	// Basic Attack
@@ -138,7 +138,7 @@ void JumpState::Update(float dt)
 
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
-	physics.ApplyDrag(0.2f);
+	physics.ApplyHorizontalDrag(0.2f);
 
 	// rapidly slow upwards movement while not holding space
 	InputManager* input = InputManager::Get();
@@ -191,7 +191,7 @@ void FallState::Update(float dt)
 
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
-	physics.ApplyDrag(0.2f);
+	physics.ApplyHorizontalDrag(0.2f);
 	
 	InputManager* input = InputManager::Get();
 	if(input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer))
@@ -354,7 +354,7 @@ void BasicAttackState::Update(float dt)
 	}
 
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.ApplyDrag(0.5f);
+	physics.ApplyHorizontalDrag(0.5f);
 }
 
 void BasicAttackState::Exit()
@@ -376,7 +376,7 @@ void LungeAttackState::Update(float dt)
 	
 
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.ApplyDrag(0.02f);
+	physics.ApplyHorizontalDrag(0.02f);
 
 	const Animator& animation = GetComponentRef(Animator, entity);
 	if (animation.loopCount > 0)
@@ -428,7 +428,7 @@ void HoverState::Update(float dt)
 	Physics& physics = GetComponentRef(Physics, entity);
 	const int jump_acceleration_factor = 2;
 	physics.ApplyMovementEase(state.movementInput.toFloat(), dt, jump_acceleration_factor);
-	physics.ApplyDrag(0.3f);
+	physics.ApplyHorizontalDrag(0.3f);
 
 	InputManager* input = InputManager::Get();
 	if(input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer))
@@ -479,7 +479,7 @@ void FloorSlamState::Update(float dt)
 	{
 		const int fall_acceleration_factor = 3;
 		physics.ApplyMovementEase(VectorF(0,1.0f), dt, fall_acceleration_factor);
-		physics.ApplyDrag(0.1f);
+		physics.ApplyHorizontalDrag(0.1f);
 	}
 	// slammin
 	else

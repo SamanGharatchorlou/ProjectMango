@@ -7,11 +7,27 @@
 #include "Graphics/RenderManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
+
+
 namespace ECS
 {
+	void GenerateRenderPack(const Sprite& sprite, RenderPack& pack)
+	{
+		const Transform& transform = GetComponentRef(Transform, sprite.entity);
+		const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+
+		pack = RenderPack(sprite.texture, render_rect, (u32)sprite.renderLayer);
+		pack.subRect = sprite.subRect;
+		pack.flip = sprite.flip;
+		pack.flipPoint = sprite.flipPoint * render_rect.Size();
+		pack.rotation = sprite.rotation;
+		pack.colourMod = sprite.colourMod;
+
+		pack.entity = sprite.entity;
+	}
+
 	void RenderSystem::Update(float dt)
 	{
-		
 		RenderManager* renderer = GameData::Get().renderManager;
 
 		// increase the camera size so we draw a little extra than the actual screen
@@ -38,12 +54,8 @@ namespace ECS
 			if(!camera_rect.Intersect(render_rect))
 				continue;
 
-			RenderPack pack(sprite.texture, render_rect, (u32)sprite.renderLayer);
-			pack.subRect = sprite.subRect;
-			pack.flip = sprite.flip;
-			pack.flipPoint = sprite.flipPoint * render_rect.Size();
-			pack.rotation = sprite.rotation;
-			pack.colourMod = sprite.colourMod;
+			RenderPack pack;
+			GenerateRenderPack(sprite, pack);
 
 			renderer->AddRenderPacket(pack);
 		}

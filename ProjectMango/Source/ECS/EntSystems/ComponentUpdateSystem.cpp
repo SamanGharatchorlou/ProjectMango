@@ -8,8 +8,6 @@ namespace ECS
 {
 	void ComponentUpdateSystem::Update(float dt)
 	{
-		
-
 		for (Entity entity : entities)
 		{
 			Entity the_entity = entity;
@@ -25,6 +23,14 @@ namespace ECS
 			if (Pickup* pick_up = GetComponent(Pickup, the_entity))
 			{
 				pick_up->Update();
+			}
+			if (DeathScentence* ds = GetComponent(DeathScentence, the_entity))
+			{
+				ds->Update(dt);
+			}
+			if (Arm* arm = GetComponent(Arm, the_entity))
+			{
+				arm->Update();
 			}
 		}
 	}

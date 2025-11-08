@@ -25,6 +25,7 @@ static void initActionMap()
 	s_actionMap["Hover"] = ActionState::Hover;
 
 	s_actionMap["Roll"] = ActionState::Roll;
+	s_actionMap["Crouch"] = ActionState::Crouch;
 	
 	s_actionMap["AttackWindUp"] = ActionState::AttackWindUp;
 	s_actionMap["BasicAttack"] = ActionState::BasicAttack;

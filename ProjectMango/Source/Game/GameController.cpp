@@ -29,7 +29,6 @@ void GameController::run()
 	SystemStateManager* sm = mGameData.systemStateManager;
 
 	// add first game state
-	//sm->replaceState(SystemStates::GameState);
     sm->mStates.replaceState(new GameState);
 
 	FrameRateController& frc = FrameRateController::Get();

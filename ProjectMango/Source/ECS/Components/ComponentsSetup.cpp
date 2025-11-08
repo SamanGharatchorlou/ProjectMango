@@ -23,6 +23,7 @@
 #include "ECS/EntSystems/UISystem.h"
 #include "ECS/EntSystems/SpellSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
+#include "ECS/Components/GunComponents.h"
 
 static constexpr u32 c_allEntities = 128;
 static constexpr u32 c_veryCommon = 64 ;
@@ -47,6 +48,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Pathing, c_common);
 	DEFINE_COMPONENT(Damage, c_common);
 	DEFINE_COMPONENT(Spell, c_common);
+	DEFINE_COMPONENT(DeathScentence, c_common);
 
 	DEFINE_COMPONENT(Door, c_uncommon);
 	DEFINE_COMPONENT(Pickup, c_uncommon);
@@ -56,6 +58,8 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(PlayerController, c_rare);
 	DEFINE_COMPONENT(Biome, c_rare);
 	DEFINE_COMPONENT(SpellBook, c_rare);
+	DEFINE_COMPONENT(Firearm, c_rare);
+	DEFINE_COMPONENT(Arm, c_rare);
 
 	DEFINE_COMPONENT(UICursor, 1);
 
@@ -69,33 +73,11 @@ void ECS::RemoveAllComponents(Entity entity)
 
 void ECS::RegisterAllSystems()
 {
-	// Transform
-	Signature transformSignature = ArcheBit(Transform);
-	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
-
-	// Rendering
-	Signature renderSignature = ArcheBit(Transform) | ArcheBit(Sprite);
-	ecs->RegisterAndSystem<RenderSystem>(renderSignature);
+	// --------- higher-level systems ---------
 
 	// Player Controller
 	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(CharacterState) | ArcheBit(Physics);
 	ecs->RegisterAndSystem<PlayerControllerSystem>(playerInputSignature);
-
-	// Physics
-	Signature physicsSignature = ArcheBit(Physics);
-	ecs->RegisterAndSystem<PhysicsSystem>(physicsSignature);
-
-	// Animation
-	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
-	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
-
-	// todo: change name to BiomeSystem or something
-	Signature biomeSignature = ArcheBit(Biome);
-	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
-
-	// Collisions
-	Signature collisionSignature = ArcheBit(Collider);
-	ecs->RegisterAndSystem<CollisionSystem>(collisionSignature);
 
 	// AI Controller
 	Signature AIControllerSignature = ArcheBit(AIController) | ArcheBit(CharacterState);
@@ -105,16 +87,57 @@ void ECS::RegisterAllSystems()
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterAndSystem<PathingSystem>(PathingSignature);
 
-	// UI
-	Signature UISignature = ArcheBit(UICursor);
-	ecs->RegisterAndSystem<UISystem>(UISignature);
+	
+
+	// --------- gameplay-logic systems ---------
 
 	// Spell
 	Signature SpellSignature = ArcheBit(Spell) | ArcheBit(SpellBook);
 	ecs->RegisterOrSystem<SpellSystem>(SpellSignature);
 
 	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
-	Signature ComponentsSignature = ArcheBit(Door) | ArcheBit(Spawner) | ArcheBit(Pickup);
+	Signature ComponentsSignature = 
+		ArcheBit(Door) | 
+		ArcheBit(Spawner) | 
+		ArcheBit(Pickup) | 
+		ArcheBit(DeathScentence) |
+		ArcheBit(Arm);
 	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
+
+
+	
+	// --------- physics systems ---------
+
+	// Physics
+	Signature physicsSignature = ArcheBit(Physics);
+	ecs->RegisterAndSystem<PhysicsSystem>(physicsSignature);
+
+	// Collisions
+	Signature collisionSignature = ArcheBit(Collider);
+	ecs->RegisterAndSystem<CollisionSystem>(collisionSignature);
+
+	// Transform
+	Signature transformSignature = ArcheBit(Transform);
+	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
+
+
+	
+	// --------- rendering systems ---------
+
+	// Animation
+	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
+	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
+
+	// UI
+	Signature UISignature = ArcheBit(UICursor);
+	ecs->RegisterAndSystem<UISystem>(UISignature);
+	
+	// Biome (this is basically just rendering right now)
+	Signature biomeSignature = ArcheBit(Biome);
+	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
+
+	// Rendering
+	Signature renderSignature = ArcheBit(Transform) | ArcheBit(Sprite);
+	ecs->RegisterAndSystem<RenderSystem>(renderSignature);
 }
 

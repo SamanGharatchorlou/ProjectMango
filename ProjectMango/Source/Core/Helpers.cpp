@@ -89,3 +89,47 @@ bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance)
 
 	return false;
 }
+
+
+
+bool IsPlayer(ECS::Entity entity)
+{
+	if(ECS::Collider* collder = GetComponent(Collider, entity))
+		return collder->HasFlag(ECS::Collider::Flags::IsPlayer);
+
+	return false;
+}
+bool IsEnemy(ECS::Entity entity)
+{
+	if(ECS::Collider* collder = GetComponent(Collider, entity))
+		return collder->HasFlag(ECS::Collider::Flags::IsEnemy);
+
+	return false;
+}
+bool IsTerrain(ECS::Entity entity)
+{
+	if(ECS::Collider* collder = GetComponent(Collider, entity))
+		return collder->HasFlag(ECS::Collider::Flags::IsTerrain);
+
+	return false;
+}
+
+
+bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity source)
+{
+	VectorF source_pos = ECS::GetPosition(source);
+	VectorI facing = ECS::GetFacingDirectionVector(source);
+
+	VectorF target_pos = ECS::GetPosition(target);
+	// target pos relative to source
+	target_pos = target_pos - source_pos;
+
+	if(facing.x > 0)
+	{
+		return target_pos.x > 0;
+	}
+	else
+	{
+		return target_pos.x < 0;
+	}
+}

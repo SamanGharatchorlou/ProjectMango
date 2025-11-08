@@ -1,0 +1,18 @@
+{
+	"types" : [
+		{
+			"id": "BasicRifle",
+			"sprite" : "basic_rifle",
+			"can_flip" : true,
+			"size_x": 64,
+			"size_y": 64,
+			"barrel_end_x" : 0.7,
+			"barrel_end_y" : 0.5,
+			"anchor_point_x" : 0.2,
+			"anchor_point_y" : 0,
+			"defaultMagazine" : "BasicBullet",
+			"reloadTime": 1.0,
+			"timeBetweenShots": 0.2
+		}
+	]
+}

@@ -59,10 +59,11 @@ namespace ECS
 			{
 				if(!physics.onFloor)
 				{
-					float multiplyer = 200.0;
+					float multiplyer = 120.0;
 
+					// returning to floor
 					if(physics.speed.y > 0.0f)
-						multiplyer *= 2.2f;
+						multiplyer *= 2.5f;
 				
 					physics.speed += VectorF(0.0f, 9.8f) * multiplyer * dt;
 				}

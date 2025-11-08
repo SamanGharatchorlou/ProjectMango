@@ -7,7 +7,7 @@ void Window::init(const char* title, Vector2D<int> size)
 
 	// create window
 	mWindow = SDL_CreateWindow(title, 50, 30,
-		(int)window_length, (int)window_length, SDL_WINDOW_SHOWN);
+		(int)/*window_length*/size.x, (int)/*window_length*/size.y, SDL_WINDOW_SHOWN);
 }
 
 Window::~Window()
@@ -30,7 +30,10 @@ void Window::setTitle(const char* title)
 
 VectorF Window::size() const
 {
-	return VectorF(1024, 1024);
+	return realSize();
+
+	// confused why i did this, having any render scale != 1 messes with the animation editor
+	//return VectorF(1024, 1024);
 }
 
 VectorF Window::realSize() const 

@@ -15,6 +15,9 @@ namespace PlayerRanged
 		void Init() override;
 		void Update(float dt) override;
 		void Resume() override;
+
+		float cooldown = 0.2f;
+		float timer = 0.0f;
 	};
 
 	struct RunState : public CharacterAction
@@ -31,6 +34,8 @@ namespace PlayerRanged
 
 		void Init() override;
 		void Update(float dt) override;
+
+		float cumulativeJump = 0.0f;
 	};
 
 	struct FallState : public CharacterAction
@@ -49,6 +54,18 @@ namespace PlayerRanged
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
+	};
+		
+	struct CrouchState : public CharacterAction
+	{
+		CrouchState(ECS::Entity _entity);
+
+		void Init() override;
+		void Update(float dt) override;
+
+		void Resume() override;
+
+		float rollColldown;
 	};
 
 	struct DeathState : public CharacterAction
@@ -69,8 +86,5 @@ namespace PlayerRanged
 		void Init() override;
 		void Update(float dt) override;
 		void Exit() override;
-		
-		//bool
-		//ECS::Entity attackCollider = ECS::EntityInvalid;
 	};
 }

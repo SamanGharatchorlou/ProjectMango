@@ -2,7 +2,7 @@
 #include "SpellSystem.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Spells/SpellEntityBuilder.h"
+#include "Entities/Weapons/SpellEntityBuilder.h"
 #include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/Animator.h"
 #include "Input/InputManager.h"

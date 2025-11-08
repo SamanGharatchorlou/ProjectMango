@@ -6,11 +6,14 @@ constexpr u32 c_RenderLayers = 10;
 
 struct RenderPack
 {
+	RenderPack() { }
 	RenderPack(STexture* tex, RectF box, u32 renderLayer) : texture(tex), rect(box), layer(renderLayer) 
 	{
 		// override if required
 		flipPoint = box.Size() * 0.5f;
 	}
+
+	ECS::Entity entity;
 
 	STexture* texture = nullptr;
 	RectF rect;
