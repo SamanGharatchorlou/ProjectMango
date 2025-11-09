@@ -41,6 +41,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Physics, c_veryCommon);
 	DEFINE_COMPONENT(Animator, c_veryCommon);
 	DEFINE_COMPONENT(Health, c_veryCommon);
+	DEFINE_COMPONENT(Audio, c_veryCommon);
 
 	DEFINE_COMPONENT(EntityData, c_common)
 	DEFINE_COMPONENT(CharacterState, c_common);

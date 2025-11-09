@@ -97,7 +97,7 @@ namespace AnimationReader
 
 				const Value& animation = anims[i];
 				anim.spriteSheet = s_spriteSheets[spriteSheet_id];
-				anim.action = StringToAction(animation["action"].GetString());
+				anim.action = animation.HasMember("action") ? StringToAction(animation["action"].GetString()) : ActionState::None;
 				anim.startIndex = animation["startIndex"].GetInt();
 				anim.frameCount = animation["frameCount"].GetInt();
 				anim.frameTime = animation["frameTime"].GetFloat();

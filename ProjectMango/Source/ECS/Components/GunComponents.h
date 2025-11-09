@@ -17,10 +17,13 @@ namespace ECS
 		
 		Magazine magazine;
 
-		float lastFireTime;
-		float reloadTime;
-		float timeBetweenShots;
+		u64 lastShotTimeMS;
+		u64 shotTime;
+		
+		u64 reloadTimeMS;
+		u64 lastReloadTimeMS;
 
 		Entity Fire();
+		void Reload();
 	};
 }

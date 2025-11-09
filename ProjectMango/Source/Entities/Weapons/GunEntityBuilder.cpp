@@ -10,6 +10,8 @@
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/UIComponents.h"
+#include "ECS/Components/Animator.h"
+#include "Animations/AnimationReader.h"
 
 #include "ECS/Components/GunComponents.h"
 #include "Core/Helpers.h"
@@ -58,18 +60,36 @@ Entity CreateBasicBullet(Firearm& firearm)
 	// damage
 	Damage& damage = AddComponent(Damage, bullet_entity);
 	damage.Init(config);
-	
-	// DeathScentence
+
+	// Audio
+	Audio& shoot_audio = AddComponent(Audio, bullet_entity);
+	const char* audio_group_id = config->data.GetString("on_start_audio_group");
+	int shot_audio_time = config->data.GetInt("on_start_audio_time_ms", -1);
+	shoot_audio.PopulateGroup(audio_group_id, shot_audio_time);
+	shoot_audio.Play();
+
+	// Bullet on death VFX
+	Entity vfx_entity = CreateBasicObject("bullet vfx", bullet_transform.size);
+
+	Animator& animator = AddComponent(Animator, vfx_entity);
+	AnimationReader::BuildAnimatior(animator, config->data.GetString("vfx_animation"));
+	animator.activeAnimation = Maths::randomNumberBetween(0, (int)animator.animations.size());
+	animator.state = TimeState::Stopped;
+
+	// bullet vfx DeathScentence
+	DeathScentence& vfx_death_scenetence = AddComponent(DeathScentence, vfx_entity);
+	vfx_death_scenetence.deathLoops = 1;
+
+	// bullet DeathScentence
 	DeathScentence& death_scenetence = AddComponent(DeathScentence, bullet_entity);
-	// give it a 2 second death time... just in case
-	death_scenetence.deathTimer = 2.0f;
+	death_scenetence.deathTimer =  5.0f;
+	death_scenetence.startAnimatiorOnDeath = vfx_entity;
 
+	// raycast hit
 	const Level& level = Biome::GetLevel(start_position);
-
+	std::vector<u32> no_collider_flags;
 	std::vector<Entity> entities_to_ignore;
 	entities_to_ignore.push_back(handler);
-	
-	std::vector<u32> no_collider_flags;
 	
 	RaycastResult result;
 	Raycast(start_position, direction, level.size.y, result, &entities_to_ignore, &no_collider_flags);
@@ -119,11 +139,20 @@ Entity EquipFirearm(Entity handler, const char* firearm_id)
 	// Firearm
 	Firearm& firearm = AddComponent(Firearm, firearm_entity);
 
+	// Audio
+	Audio& reload_audio = AddComponent(Audio, firearm_entity);
+	const char* reload_group_id = config->data.GetString("reload_audio_group");
+	reload_audio.PopulateGroup(reload_group_id, -1, "reload");
+	reload_audio.Play("reload");
+	const char* empty_group_id = config->data.GetString("empty_audio_group");
+	reload_audio.PopulateGroup(empty_group_id, -1, "empty");
+
 	// Transform
 	Transform& transform = GetComponentRef(Transform, firearm_entity);
 	RectF handler_rect = GetRect(handler);
 	VectorF center_pos = handler_rect.Size() * 0.5f;
 
+	// Arm
 	Arm* arm = GetComponent(Arm, firearm_entity);
 	if(!arm)
 		arm = &AddComponent(Arm, firearm_entity);
@@ -141,7 +170,7 @@ Entity EquipFirearm(Entity handler, const char* firearm_id)
 
 	transform.SetLocalPosition(center_pos);
 
-	firearm.magazine.bulletId = config->data.GetString("defaultMagazine");
+	firearm.magazine.bulletId = config->data.GetString("bullet_id");
 
 	return firearm_entity;
 }

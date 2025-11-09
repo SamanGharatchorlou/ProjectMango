@@ -20,6 +20,7 @@ Entity CreateUICursor()
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
 	transform.Init(config, VectorF());
+	transform.renderOffset = transform.size * -0.5;
 
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);

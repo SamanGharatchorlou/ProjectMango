@@ -7,6 +7,8 @@ enum class TimeState
 	Paused
 };
 
+static u64 GetTicksMS() { return SDL_GetTicks(); }
+
 template <typename T>
 class Timer
 {

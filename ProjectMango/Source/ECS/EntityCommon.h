@@ -21,6 +21,7 @@ namespace ECS
 			_entry( EntityData ) \
 			_entry( Transform ) \
 			_entry( Sprite ) \
+			_entry( Audio ) \
 			_entry( CharacterState ) \
 			_entry( PlayerController ) \
 			_entry( Physics ) \

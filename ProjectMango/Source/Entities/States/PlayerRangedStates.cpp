@@ -21,7 +21,7 @@ using namespace ECS;
 
 static const int c_defaultEasingSpeed = 3;
 
-static void UpdateShoot(ECS::Entity entity)
+static void UpdateWeapon(ECS::Entity entity)
 {
 	InputManager* input = InputManager::Get();
 	if (input->isCursorPressed(Cursor::ButtonType::Left, c_inputBuffer) || input->isCursorHeld(Cursor::ButtonType::Left))
@@ -30,6 +30,14 @@ static void UpdateShoot(ECS::Entity entity)
 		{	 
 			Firearm& firearm = GetComponentRef(Firearm, gun_entity);
 			firearm.Fire();
+		}
+	}
+	else if ( input->isCursorPressed(Cursor::ButtonType::Right, c_inputBuffer) )
+	{
+		if(Entity gun_entity = GetFirstChild(entity))
+		{	 
+			Firearm& firearm = GetComponentRef(Firearm, gun_entity);
+			firearm.Reload();
 		}
 	}
 }
@@ -78,7 +86,7 @@ void IdleState::Update(float dt)
 		return;
 	}
 
-	UpdateShoot(entity);
+	UpdateWeapon(entity);
 }
 
 // Run
@@ -128,7 +136,7 @@ void RunState::Update(float dt)
 		return;
 	}
 
-	UpdateShoot(entity);
+	UpdateWeapon(entity);
 }
 
 // JumpState
@@ -182,7 +190,7 @@ void JumpState::Update(float dt)
 	}
 
 	// debuff?
-	UpdateShoot(entity);
+	UpdateWeapon(entity);
 }
 
 // FallState
@@ -219,7 +227,7 @@ void FallState::Update(float dt)
 	}
 
 	// debuff?
-	UpdateShoot(entity);
+	UpdateWeapon(entity);
 }
 
 // RollState
@@ -291,7 +299,7 @@ void CrouchState::Update(float dt)
 		PushState(Roll);
 	}
 	
-	UpdateShoot(entity);
+	UpdateWeapon(entity);
 		
 	const Animator& animation = GetComponentRef(Animator, entity);
 	if (animation.loopCount > 0)

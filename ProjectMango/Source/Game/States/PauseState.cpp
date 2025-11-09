@@ -10,7 +10,7 @@
 void PauseState::Init() 
 {
 	AudioManager* audio = AudioManager::Get();
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 750));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 750));
 }
 
 
@@ -26,5 +26,5 @@ void PauseState::Update(float dt)
 
 void PauseState::Exit()
 {
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Menu", nullptr, 150));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Menu", nullptr, 150));
 }

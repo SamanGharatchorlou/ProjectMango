@@ -80,7 +80,6 @@ void GameController::restartGame()
 	DebugPrint(Log, "--- Begin game restart ---");
 
 	GameSetup::setTutorial("OFF");
-	AudioManager::Get()->resetController();
 
 	// Remove all states
 	sm->mStates.shallowClear();
@@ -121,7 +120,7 @@ void GameController::updateLoops(float dt)
 {
 	SystemStateManager* sm = mGameData.systemStateManager;
 
-	AudioManager::Get()->Update();
+	//AudioManager::Get()->Update();
 
 	// Fast update runs updateLoopRepeats number of times per frame
 	float updateLoopRepeats = 10;

@@ -1,59 +1,75 @@
 #pragma once
 
-#include "Channel.h"
+#include "Audio.h"
 
-//class Actor;
-
-// 14 seems to be more than enough mixer channels
-int constexpr mixerChannels = 8;
+static int constexpr c_mixerChannels = 8;
 float constexpr maxVolume = (float)MIX_MAX_VOLUME;
 
-class SoundController
+struct Channel
 {
-public:
+	//Sound sound;
+	
+	Mix_Chunk* sound;
+	VectorF sourcePosition = c_invalidVector;
+
+	// 0 - 1 independant of game sound volume
+	float volume = 1.0f;
+	int index = -1;
+
+	// game time we started playing
+	u32 playedAtTick = 0;
+};
+
+//// --- Channel --- //
+//bool Channel::ShouldAttenuate() const
+//{
+//	return sourcePosition != c_invalidVector;
+//}
+
+struct SoundController
+{
 	SoundController();
 
-	void clear();
+	void ClearChannels();
 
-	void init();
-	void attenuationDistance(float maxDistance) { mAttenuationDistance = maxDistance * maxDistance; }
+	//void init();
+	//void attenuationDistance(float maxDistance) { mAttenuationDistance = maxDistance * maxDistance; }
 	//void setListener(Actor* listener) { mListener = listener; }
 
-	void Update();
+	//void Update();
 
-	void play(const Audio* audio, uintptr_t id, VectorF source);
-	void loop(const Audio* audio, uintptr_t id, VectorF source);
+	// note need to pass in an ID, play will replay the same audio, but that only
+	// makes sense if the audio is from the same entity
+	bool Play(Mix_Chunk* sound, int time, const char* id = nullptr);
+	bool Pause(Mix_Chunk* sound);
+	bool Resume(Mix_Chunk* sound);
+	bool Stop(Mix_Chunk* sound);
 
-	void pauseSound(const Audio* audio, uintptr_t id);
-	void resumeSound(const Audio* audio, uintptr_t id);
-	void stopSound(const Audio* audio, uintptr_t id);
+	//void fadeIn(const Audio* audio, uintptr_t id, int ms, VectorF source);
+	//void fadeInMusic(const Audio* audio, uintptr_t id, int ms);
+	//void fadeOut(const Audio* audio, uintptr_t id, int ms);
 
-	void fadeIn(const Audio* audio, uintptr_t id, int ms, VectorF source);
-	void fadeInMusic(const Audio* audio, uintptr_t id, int ms);
-	void fadeOut(const Audio* audio, uintptr_t id, int ms);
+	//bool hasActiveAudio(const Audio* audio, uintptr_t id) const;
+	bool IsPlaying(Mix_Chunk* sound) const;
+	bool IsPlaying(Channel channel) const;
 
-	bool hasActiveAudio(const Audio* audio, uintptr_t id) const;
-	bool isPlaying(const Audio* audio, uintptr_t id) const;
+	void SetSoundVolume(float volume);
+	//float getSoundVolume() const { return soundVolume; }
 
-	void setSoundVolume(float volume);
-	float getSoundVolume() const { return soundVolume; }
+	void SetMusicVolume(float volume);
+	//float getMusicVolume() const { return musicVolume; }
 
-	void setMusicVolume(float volume);
-	float getMusicVolume() const { return musicVolume; }
-	
+	//void updateMixerVolume(Channel& channel);
+	//float attenuation(Channel& channel);
 
-private:
-	void updateMixerVolume(Channel& channel);
-	float attenuation(Channel& channel);
 
-private:
-	Channel channels[mixerChannels];
 
 	float soundVolume;
 	float musicVolume;
 
-	//Actor* mListener;
-	float mAttenuationDistance;
+	//float mAttenuationDistance;
+
+	Channel channels[c_mixerChannels];
 };
 
 

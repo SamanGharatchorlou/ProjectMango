@@ -1,0 +1,49 @@
+{
+	"id": "BulletImpacts",
+	"frameSize_x": 64,
+	"frameSize_y": 64,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "BulletImpacts",
+			"animations": [
+				{					
+					"startIndex": 0,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				},				
+				{
+					"startIndex": 8,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				},
+				{
+					"startIndex": 32,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				},
+				{
+					"startIndex": 40,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				},
+				{
+					"startIndex": 80,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				},
+				{
+					"startIndex": 88,
+					"frameCount": 8,
+					"frameTime": 0.08,
+					"looping": false
+				}
+			]
+		}
+	]
+}

@@ -43,6 +43,11 @@ namespace ECS
 			ECS::Animation& animation = animations[activeAnimation];
 			animation.frameTime = animation.frameTime + (diff * animation.frameTime);
 		}
+		
+		if (config->data.GetBool("randomise_animation", false))
+		{
+			activeAnimation = Maths::randomNumberBetween(0, (int)animations.size());
+		}
 	}
 
 	bool Animator::IsValid() const

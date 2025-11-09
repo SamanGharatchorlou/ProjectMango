@@ -23,6 +23,7 @@
 #include "Graphics/RenderManager.h"
 #include "Input/InputManager.h"
 #include "System/Files/ConfigManager.h"
+#include "Audio/AudioManager.h"
 
 static ECS::Entity s_selectedEntity = 0;
 static StringBuffer64 filterBuffer;
@@ -398,6 +399,29 @@ void DebugMenu::DoGameStateWindow()
     
         ImGui::TreePop();
     }
+
+    if (ImGui::TreeNode("Audio"))
+    {
+		AudioManager* am = AudioManager::Get();
+
+        for( u32 i = 0; i < c_mixerChannels; i++ )
+        {
+            ImGui::PushID(i);
+            const Channel& channel = am->mSoundController.channels[i];
+            const char* id = "";
+            if(channel.sound)
+            {
+                if(am->mSoundController.IsPlaying(channel))
+                    id = am->GetSoundEffectId(channel.sound);
+            }
+
+            ImGui::Text("%d. %s", i, id);
+            ImGui::PopID();
+        }
+    
+        ImGui::TreePop();
+    }
+
 }
 
 static bool s_drawRaycasts = false;

@@ -32,7 +32,7 @@ namespace ECS
 				Transform& transform = GetComponentRef(Transform, entity);
 				VectorF map_position = (ui_cursor->cursor->position() / render_scale) + camera_offset;
 				transform.SetWorldPosition(map_position);
-				transform.size = VectorF(50, 50);
+				//transform.size = VectorF(50, 50);
 			}
 		}
 	}

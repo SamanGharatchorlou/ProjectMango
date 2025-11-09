@@ -50,7 +50,7 @@ void StartupState::Init()
 	DebugPrint(Log, " -------------------------- starting loader thread -------------------------- ");
 	timer.Start();
 
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));
 
 	LoadingManager loader;
 	loader.init();

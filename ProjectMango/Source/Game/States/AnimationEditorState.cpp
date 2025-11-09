@@ -17,6 +17,9 @@ TimerF s_timer;
 
 void AnimationEditorState::Init()
 {	
+	SDL_ShowCursor(true);
+	//SDL_SetRelativeMouseMode(SDL_FALSE);
+
 	DebugMenu::OpenEditorWindow();
 
 	s_timer.Start();
@@ -50,5 +53,8 @@ void AnimationEditorState::Update(float dt)
 
 void AnimationEditorState::Exit()
 {
+	SDL_ShowCursor(false);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	s_timer.Stop();
 }

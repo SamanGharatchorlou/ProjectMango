@@ -39,7 +39,13 @@ void GameState::Init()
 
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
-	audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
+	audio->PlayMusic("Game");
+
+	SoundController* sc = AudioManager::GetController();
+	sc->SetMusicVolume(0.05f);
+	//audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
+	//float vol = audio->musicVolume();
+	//audio->setMusicVolume(0.2f);
 
 	// create cursor
 	CreateUIEntities();
@@ -85,13 +91,13 @@ void GameState::Update(float dt)
 void GameState::Resume() 
 {
 	//mGameData->environment->resume();
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 750));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 750));
 }
 
 void GameState::Pause()
 {
 	//mGameData->environment->pause();
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 }
 
 
@@ -99,7 +105,7 @@ void GameState::Exit()
 {
 	//mGameData->environment->clear();
 	//mGameData->scoreManager->reset();
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 	
 	ecs->Close();// systems.Close();
 }

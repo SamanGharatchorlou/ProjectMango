@@ -4,49 +4,32 @@
 #include "Audio.h"
 
 // Audio
-#define MUTE_AUDIO 1
+#define MUTE_AUDIO 0
 #define DISABLE_UI_AUDIO 0
 #define PRINT_PLAYING_AUDIO 0
 #define PRINT_FULL_AUDIO_CHANNELS 0
 #define AUDIO_LOGGING (PRINT_PLAYING_AUDIO || PRINT_FULL_AUDIO_CHANNELS)
 
+// global limit - the max number of the same audio that can play at a time
+static constexpr int c_audioPlayCountLimit = 3;
 
-SoundController::SoundController() : soundVolume(-1), musicVolume(-1)
+SoundController::SoundController() : soundVolume(1.0f), musicVolume(1.0f)
 {
-	Mix_AllocateChannels(mixerChannels);
+	Mix_AllocateChannels(c_mixerChannels);
+	ClearChannels();
+}
 
-	for (int i = 0; i < mixerChannels; i++)
+
+void SoundController::ClearChannels()
+{
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
-		channels[i].init(i);
+		Mix_HaltChannel(i);
+		channels[i] = Channel();
 	}
-
-
-	clear();
 }
 
-void SoundController::clear()
-{
-	setMusicVolume(musicVolume);
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.audio())
-			channel.stop();
-
-		channel.free();
-		updateMixerVolume(channel);
-	}
-
-	float vol = getMusicVolume();
-	int vim = Mix_VolumeMusic(-1);
-}
-
-void SoundController::init()
-{
-	clear();
-}
-
-
+/*
 void SoundController::Update()
 {
 #if DEBUG_MODE
@@ -55,7 +38,7 @@ void SoundController::Update()
 	float vol = getMusicVolume();
 	int vim = Mix_VolumeMusic(-1);
 
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& sound = channels[i];
 
@@ -89,12 +72,12 @@ void SoundController::Update()
 	}
 
 #if DEBUG_MODE // Check channels aren't getting clogged up with paused audio
-	if (counter >= mixerChannels)
+	if (counter >= c_mixerChannels)
 	{
 		int playingCounter = 0;
 		int pauseCounter = 0;
 
-		for (int i = 0; i < mixerChannels; i++)
+		for (int i = 0; i < c_mixerChannels; i++)
 		{
 			const Channel& channel = channels[i];
 			if (channel.hasPlayingState())
@@ -106,7 +89,7 @@ void SoundController::Update()
 		DebugPrint(Warning, "All the the 8 audio channels are being used. %d channels are playing and %d channels are paused", playingCounter, pauseCounter);
 
 #if PRINT_FULL_AUDIO_CHANNELS
-		for (int i = 0; i < mixerChannels; i++)
+		for (int i = 0; i < c_mixerChannels; i++)
 		{
 			const Channel& channel = channels[i];
 			DebugPrint(Log, "Audio name: %s", channel.audio()->name().c_str());
@@ -116,146 +99,169 @@ void SoundController::Update()
 #endif // DEBUG_MODE
 
 }
+*/
+
+//bool SoundController::isPlaying(const Audio* audio, uintptr_t id) const
+//{
+//	for (int i = 0; i < c_mixerChannels; i++)
+//	{
+//		if (channels[i].isPlaying(audio, id))
+//			return true;
+//	}
+//
+//	return false;
+//}
+//
+//
+//bool SoundController::hasActiveAudio(const Audio* audio, uintptr_t id) const
+//{
+//	for (int i = 0; i < c_mixerChannels; i++)
+//	{
+//		if (channels[i].has(audio, id))
+//			return true;
+//	}
+//
+//	return false;
+//}
 
 
-bool SoundController::isPlaying(const Audio* audio, uintptr_t id) const
+//void Sound::Stop(int channel)
+//{
+//	Mix_HaltChannel(channel);
+//}
+//
+//bool Sound::IsPlaying(int channel) 
+//{
+//	return Mix_Playing(channel);
+//}
+//
+//void Sound::Pause(int channel)
+//{
+//	Mix_Pause(channel);
+//}
+//
+//void Sound::Resume(int channel)
+//{
+//	Mix_Resume(channel);
+//}
+
+
+bool SoundController::IsPlaying(Mix_Chunk* sound) const
 {
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
-		if (channels[i].isPlaying(audio, id))
+		if ( channels[i].sound == sound )
+		{
+			return Mix_Playing(i);
+		}
+	}
+
+	return false;
+}
+
+bool SoundController::IsPlaying(Channel channel) const
+{
+	return Mix_Playing(channel.index);
+}
+
+bool SoundController::Play( Mix_Chunk* sound, int time, const char* id )
+{
+	int loops = 0;
+
+	// Check if the source is already playing this sound
+	int playing_count = 0;
+
+	u32 lowest_tick = UINT32_MAX;
+	int best_channel = -1;
+	for (int i = 0; i < c_mixerChannels; i++)
+	{
+		if ( channels[i].sound == sound && Mix_Playing(i) )
+		{
+			playing_count++;
+
+			// find the channel we played first
+			if(channels[i].playedAtTick < lowest_tick)
+			{
+				best_channel = i;
+				lowest_tick = channels[i].playedAtTick;
+			}
+		}
+	}
+
+	// todo: this doesnt work for audio groups since they have different names
+	if(playing_count >= c_audioPlayCountLimit && best_channel != -1)
+	{
+		Mix_HaltChannel(best_channel);
+	}
+
+	// Find free channel
+	for (int i = 0; i < c_mixerChannels; i++)
+	{
+		if(!Mix_Playing(i))
+		{
+			channels[i] = Channel();
+			channels[i].index = i;
+			channels[i].sound = sound;
+			channels[i].playedAtTick = SDL_GetTicks();
+			
+			Mix_PlayChannelTimed(i, sound, loops, time);
 			return true;
+		}
+	}
+
+	DebugPrint(Warning, "no available channels to play audio");
+	return false;
+}
+
+bool SoundController::Pause(Mix_Chunk* sound)
+{
+	// Check if the source is already playing this sound
+	for (int i = 0; i < c_mixerChannels; i++)
+	{
+		if ( channels[i].sound == sound )
+		{
+			Mix_Pause(i);
+			return true;
+		}
 	}
 
 	return false;
 }
 
 
-bool SoundController::hasActiveAudio(const Audio* audio, uintptr_t id) const
+bool SoundController::Resume(Mix_Chunk* sound)
 {
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
-		if (channels[i].has(audio, id))
+		if ( channels[i].sound == sound )
+		{
+			Mix_Resume(i);
 			return true;
+		}
 	}
 
 	return false;
 }
 
 
-void SoundController::play(const Audio* audio, uintptr_t id, VectorF position)
+bool SoundController::Stop(Mix_Chunk* sound)
 {
-	// Check if the source is already playing this sound
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
-		Channel& channel = channels[i];
-		if (channel.isPlaying(audio, id))
+		if ( channels[i].sound == sound )
 		{
-			channel.play();
-			channel.mSource = position;
-			return;
+			Mix_HaltChannel(i);
+			return true;
 		}
 	}
 
-	// Find free channel
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.mState == Channel::Free)
-		{
-			channel.setAudio(audio);
-			channel.mID = id;
-			channel.mSource = position;
-			channel.play();
-			return;
-		}
-	}
-
-	DebugPrint(Warning, " -------------- No available channels to play audio --------------");
+	return false;
 }
 
-
-void SoundController::loop(const Audio* audio, uintptr_t id, VectorF position)
-{
-	// Check if the source is already playing this sound
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.isPlaying(audio, id))
-		{
-			channel.mSource = position;
-			return;
-		}
-	}
-
-	// Find free channel
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.mState == Channel::Free)
-		{
-			channel.setAudio(audio);
-			channel.mID = id;
-			channel.mSource = position;
-			channel.loop();
-			return;
-		}
-	}
-
-	DebugPrint(Warning, "No available channels to loop audio");
-}
-
-
-void SoundController::pauseSound(const Audio* audio, uintptr_t id)
-{
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.isPlaying(audio, id))
-		{
-			channel.pause();
-			return;
-		}
-	}
-
-	DebugPrint(Warning, "Could not pause audio");
-}
-
-
-void SoundController::resumeSound(const Audio* audio, uintptr_t id)
-{
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.isPaused() && channel.has(audio, id))
-		{
-			channel.resume();
-			return;
-		}
-	}
-
-	DebugPrint(Warning, "Could not resume audio");
-}
-
-
-void SoundController::stopSound(const Audio* audio, uintptr_t id)
-{
-	for (int i = 0; i < mixerChannels; i++)
-	{
-		Channel& channel = channels[i];
-		if (channel.has(audio, id))
-		{
-			channel.stop();
-			return;
-		}
-	}
-
-	/*DebugPrint*/(Warning, "Could not stop audio");
-}
-
-
+/*
 void SoundController::fadeOut(const Audio* audio, uintptr_t id, int ms)
 {
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& channel = channels[i];
 		if (channel.isPlaying(audio, id))
@@ -271,7 +277,7 @@ void SoundController::fadeOut(const Audio* audio, uintptr_t id, int ms)
 void SoundController::fadeIn(const Audio* audio, uintptr_t id, int ms, VectorF position)
 {
 	// Check if the source is already playing this sound
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& channel = channels[i];
 		if (channel.isPlaying(audio, id))
@@ -283,7 +289,7 @@ void SoundController::fadeIn(const Audio* audio, uintptr_t id, int ms, VectorF p
 	}
 
 	// Find free channel
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& channel = channels[i];
 		if (channel.mState == Channel::Free)
@@ -303,7 +309,7 @@ void SoundController::fadeIn(const Audio* audio, uintptr_t id, int ms, VectorF p
 void SoundController::fadeInMusic(const Audio* audio, uintptr_t id, int ms)
 {
 	// Check if the music is already playing
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& channel = channels[i];
 		if (channel.mState == Channel::Playing)
@@ -315,7 +321,7 @@ void SoundController::fadeInMusic(const Audio* audio, uintptr_t id, int ms)
 			{
 				channel.stop();
 				channel.free();
-				DebugPrint(Log, "Stopped channel %d music before fading in new music");
+				DebugPrint(Log, "Stopped channel %d music before fading in new music", i);
 
 				// May as well use the same channel to play the next music file
 				channel.setAudio(audio);
@@ -328,7 +334,7 @@ void SoundController::fadeInMusic(const Audio* audio, uintptr_t id, int ms)
 	}
 
 	// Find free channel
-	for (int i = 0; i < mixerChannels; i++)
+	for (int i = 0; i < c_mixerChannels; i++)
 	{
 		Channel& channel = channels[i];
 		if (channel.mState == Channel::Free)
@@ -343,39 +349,49 @@ void SoundController::fadeInMusic(const Audio* audio, uintptr_t id, int ms)
 
 	DebugPrint(Warning, "Could not fade in audio");
 }
+*/
 
 
-void SoundController::setSoundVolume(float volume)
+void SoundController::SetSoundVolume(float volume)
 { 
 #if MUTE_AUDIO
 	volume = 0;
 #endif
-	soundVolume = volume;
+
+	soundVolume = volume <= 0.05 ? 0 : volume;
+
+	for (int i = 0; i < c_mixerChannels; i++)
+	{
+		float relativeVolume = soundVolume * channels[i].volume * maxVolume;
+		Mix_Volume(i, (int)(relativeVolume + 0.5f));
+	}
 }
 
 
-void SoundController::setMusicVolume(float volume)
+void SoundController::SetMusicVolume(float volume)
 {
 #if MUTE_AUDIO
 	volume = 0;
 #endif
+
 	musicVolume = volume <= 0.05 ? 0 : volume;
+
 	float mixVolume = maxVolume * musicVolume;
-	Mix_VolumeMusic((int)mixVolume);
+	Mix_VolumeMusic((int)(mixVolume + 0.5f));
 }
 
 
 // -- Private Functions -- //
 
-void SoundController::updateMixerVolume(Channel& channel)
-{
-	float relativeVolume = soundVolume * channel.mVolume * maxVolume;
-	Mix_Volume(channel.index(), (int)relativeVolume);
-}
+//void SoundController::updateMixerVolume(Channel& channel)
+//{
+//	float relativeVolume = soundVolume * channel.mVolume * maxVolume;
+//	Mix_Volume(channel.index(), (int)relativeVolume);
+//}
 
-float SoundController::attenuation(Channel& channel)
-{
-	float audioDistance = 0; //distanceSquared(mListener->position(), channel.mSource);
-	float attenuation = (mAttenuationDistance - audioDistance) / mAttenuationDistance;
-	return Maths::clamp(attenuation, 0.0f, 1.0f);
-}
+//float SoundController::attenuation(Channel& channel)
+//{
+//	float audioDistance = 0; //distanceSquared(mListener->position(), channel.mSource);
+//	float attenuation = (mAttenuationDistance - audioDistance) / mAttenuationDistance;
+//	return Maths::clamp(attenuation, 0.0f, 1.0f);
+//}

@@ -35,6 +35,22 @@ ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
 	return entity;
 }
 
+ECS::Entity CreateBasicObject(const char* id, VectorF size)
+{
+	ECS::Entity entity = ECS::CreateEntity(id);
+
+	// Transform
+	ECS::Transform& transform = AddComponent(Transform, entity);
+	transform.size = size;
+
+	// Sprite
+	ECS::Sprite& sprite = AddComponent(Sprite, entity);
+	sprite.renderLayer = ECS::RenderLayer::BasicObject;
+	sprite.canFlip = false;
+
+	return entity;
+}
+
 static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
 {
 	ECS::Entity entity = CreateBasicObject(emd);

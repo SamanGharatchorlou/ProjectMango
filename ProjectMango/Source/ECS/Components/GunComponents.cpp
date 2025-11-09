@@ -3,28 +3,59 @@
 
 #include "Entities/Weapons/GunEntityBuilder.h"
 
-#include "Game/FrameRateController.h"
+#include "Audio/AudioManager.h"
+#include "ECS/Components/Components.h"
+#include "ECS/EntityCoordinator.h"
 
 namespace ECS
 {
-	Firearm::Firearm() : lastFireTime(0), reloadTime(1.0f), timeBetweenShots(0.2f)
+	Firearm::Firearm() : lastShotTimeMS(0), shotTime(200), 
+		lastReloadTimeMS(0), reloadTimeMS(1000)
 	{
 
 	}
 
 	Entity Firearm::Fire()
 	{
-		const FrameRateController& frc = FrameRateController::Get();
-		float game_time = frc.GameSeconds();
+		bool shot_cooldown = GetTicksMS() > (lastShotTimeMS + shotTime);
+		bool has_bullets = magazine.remaining > 0;
 
-		bool can_shoot = game_time > (lastFireTime + timeBetweenShots);
-		if(can_shoot)
+		if( shot_cooldown )
 		{
-			lastFireTime = game_time;
-			return CreateBasicBullet(*this);
+			lastShotTimeMS = GetTicksMS();
+
+			// play empty mag audio
+			if(has_bullets)
+			{
+				magazine.remaining--;
+				return CreateBasicBullet(*this);
+			}
+			if(Audio* audio = GetComponent(Audio, entity))
+			{
+				lastShotTimeMS += 100;
+				audio->Play("empty");
+			}
 		}
 
 		return EntityInvalid;
+	}
+
+	
+	void Firearm::Reload()
+	{
+		bool can_reload = GetTicksMS() > (lastReloadTimeMS + reloadTimeMS);
+
+		if(can_reload)
+		{
+			magazine.remaining = magazine.capacity;
+			lastReloadTimeMS = GetTicksMS();
+			lastShotTimeMS = 0;
+
+			if(Audio* audio = GetComponent(Audio, entity))
+			{
+				audio->Play("reload");
+			}
+		}
 	}
 }
 

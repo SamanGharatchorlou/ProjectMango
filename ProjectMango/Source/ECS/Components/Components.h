@@ -105,6 +105,27 @@ namespace ECS
 		void SetTexture(const char* label);
 	};
 	
+	static constexpr const char* c_noAudioId = "";
+
+	struct Audio
+	{
+		COMPONENT_TYPE(Audio)
+
+		struct Group
+		{
+			std::vector<BasicString> sounds;
+			int time;
+		};
+
+		std::unordered_map<const char*, Group> soundEffects;
+
+		void Play(const char* sound_effect = c_noAudioId);
+
+		// a group has a format like "GunShot 1", then each audio within that group will be
+		// GunShot 1-1, GunShot 1-2, etc. starting at 1 and ending until there is not another sequential number
+		void PopulateGroup(const char* group, int time = -1, const char* id = c_noAudioId);
+	};
+
 	struct CharacterState
 	{
 		COMPONENT_TYPE(CharacterState)
@@ -185,12 +206,18 @@ namespace ECS
 	{
 		COMPONENT_TYPE(DeathScentence)
 
-		float deathTimer;
-		RectF deathZone;
+		// begin this animator entity on death
+		Entity startAnimatiorOnDeath;
 
-		bool canDie;
+		// kill at animator loop count
+		int deathLoops;
+		// kill on timer
+		float deathTimer;
+		// kill once in area
+		RectF deathZone;
 		
 		void Update(float dt);
+		void OnDeath();
 	};
 	
 	typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );

@@ -10,9 +10,10 @@
 			"barrel_end_y" : 0.5,
 			"anchor_point_x" : 0.2,
 			"anchor_point_y" : 0,
-			"defaultMagazine" : "BasicBullet",
-			"reloadTime": 1.0,
-			"timeBetweenShots": 0.2
+			"bullet_id" : "BasicBullet",
+			"reload_time": 1.0,
+			"reload_audio_group" : "Reload 1",
+			"empty_audio_group" : "Empty 1"
 		}
 	]
 }

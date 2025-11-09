@@ -49,7 +49,7 @@ void GameData::init(Window* newWindow)
 	systemStateManager = new SystemStateManager;
 
 	audioManager = new AudioManager;
-	AudioManager::Get()->init();
+	//AudioManager::Get()->init();
 
 	// Input
 	inputManager = new InputManager;
@@ -153,7 +153,8 @@ void GameData::free()
 	delete systemStateManager;
 	delete ecs;
 
-	AudioManager::Get()->unload();
+	//AudioManager::Get()->unload();
+	// todo: make this work the same as audio manager
 	TextureManager::Get()->unload();
 
 	delete renderManager;

@@ -7,10 +7,10 @@
 #include "ECS/EntityCoordinator.h"
 
 void PreGameState::Init()
-{	
+{	/*
 	AudioManager* audio = AudioManager::Get();
 	if(!audio->isPlaying("Menu", nullptr))
-		audio->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));
+		audio->push(AudioEvent(AudioEvent::FadeInMusic, "Menu", nullptr, 1000));*/
 }
 
 void PreGameState::Update(float dt) 
@@ -20,6 +20,6 @@ void PreGameState::Update(float dt)
 
 void PreGameState::Exit()
 {
-	AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Menu", nullptr, 150));
+	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Menu", nullptr, 150));
 }
 

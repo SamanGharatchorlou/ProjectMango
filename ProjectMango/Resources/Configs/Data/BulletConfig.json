@@ -5,8 +5,11 @@
 			"sprite": "basic_bullet",
 			"size_x": 16,
 			"size_y": 16,
-			"speed": 1200,
-			"damage": 10
+			"speed": 1300,
+			"damage": 10,
+			"on_start_audio_group" : "Gunshot 1",
+			"on_start_audio_time_ms" : 600,
+			"vfx_animation": "BulletImpactAnimations"
 		}
 	]
 }

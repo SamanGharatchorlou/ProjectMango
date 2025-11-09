@@ -17,6 +17,7 @@
 
 #include "Graphics/RenderManager.h"
 #include "ECS/EntSystems/RenderSystem.h"
+#include "Audio/AudioManager.h"
 
 namespace ECS
 {
@@ -281,6 +282,51 @@ namespace ECS
 		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
 	}
 
+	
+	// Audio
+	// ------------------------------------------------------------------
+	Audio::Audio() { }
+
+	void Audio::Play(const char* sound_effect)
+	{
+		const Group& group = soundEffects.at(sound_effect);
+
+		int index = Maths::randomNumberBetween(0, (int)group.sounds.size());
+		if(index >= 0)
+		{
+			AudioManager* am = AudioManager::Get();
+			am->PlaySoundEffect( group.sounds[index].c_str(), group.time );
+		}
+	}
+
+	void Audio::PopulateGroup(const char* group_id, int time, const char* id)
+	{
+		if(soundEffects.contains(id))
+		{
+			DebugPrint(Warning, "Populating group with an already existing id: '%s'", id);
+		}
+		
+		AudioManager* am = AudioManager::Get();
+		Group& group = soundEffects[id];
+		group.time = time;
+
+		char buffer[64] { 0 };
+
+		int counter = 1;
+		bool has_entry = true;
+		while(has_entry)
+		{
+			snprintf(buffer, 64, "%s-%d", group_id, counter++);
+			if(am->GetSoundEffectNoError(buffer))
+			{
+				group.sounds.push_back(buffer);
+			}
+			else
+			{
+				has_entry = false;
+			}
+		}
+	}
 
 	// CharacterState
 	// ------------------------------------------------------------------
@@ -577,9 +623,15 @@ namespace ECS
 		}
 	}
 
+
 	// DeathScentence
 	// ------------------------------------------------------------------
-	DeathScentence::DeathScentence() : deathTimer(-FLT_MAX), deathZone(InvalidRectF) { }
+	DeathScentence::DeathScentence() : 
+		deathTimer(-FLT_MAX), 
+		deathZone(InvalidRectF), 
+		deathLoops(-1),
+		startAnimatiorOnDeath(EntityInvalid)
+	{ }
 
 	void DeathScentence::Update(float dt)
 	{
@@ -588,27 +640,53 @@ namespace ECS
 			deathTimer -= dt;
 		}
 
-		if(canDie)
+		// timer trigger
+		if(deathTimer != -FLT_MAX)
 		{
-			if(deathTimer != -FLT_MAX)
+			if(deathTimer < 0)
 			{
-				if(deathTimer < 0)
-				{
-					ecs->entities.KillEntity(entity);
-					return;
-				}
-
+				OnDeath();
+				return;
 			}
 
-			if( deathZone.isValid() )
+		}
+
+		// area trigger
+		if( deathZone.isValid() )
+		{
+			if(Contains(deathZone, GetPosition(entity)))
 			{
-				if(Contains(deathZone, GetPosition(entity)))
+				OnDeath();
+				return;
+			}
+		}
+
+		// animator trigger
+		if( deathLoops != -1)
+		{
+			if(const Animator* animator = GetComponent(Animator, entity))
+			{
+				if(animator->loopCount >= deathLoops)
 				{
-					ecs->entities.KillEntity(entity);
+					OnDeath();
 					return;
 				}
 			}
 		}
+	}
+		
+	void DeathScentence::OnDeath()
+	{
+		if( startAnimatiorOnDeath != EntityInvalid )
+		{
+			Transform& transform = GetComponentRef(Transform, startAnimatiorOnDeath);
+			transform.SetObjectCenter(GetPosition(entity));
+						
+			Animator& animator = GetComponentRef(Animator, startAnimatiorOnDeath);
+			animator.state = TimeState::Running;
+		}
+		
+		ecs->entities.KillEntity(entity);
 	}
 
 	// Arm
