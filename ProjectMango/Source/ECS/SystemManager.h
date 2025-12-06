@@ -19,6 +19,7 @@ namespace ECS
 		// need to implement this below
 		// the signature can be an AND or OR match, defaults to OR
 		bool signature_OR = false;
+		bool paused = false;
 	};
 
 	struct SystemManager

@@ -92,6 +92,9 @@ namespace ECS
 
 		void UpdateSystems(float dt);
 
+		void SetSystemPaused(Archetype type, bool is_paused);
+		void ToggleSystemPaused(Archetype type);
+
 		EntityManager entities;
 		ComponentManager components;
 		SystemManager systems;

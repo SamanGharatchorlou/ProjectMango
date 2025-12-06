@@ -17,6 +17,8 @@
 #include "Entities/Weapons/PickupCallbacks.h"
 #include "System/Window.h"
 
+#include "ECS/Components/Physics.h"
+
 void GameState::Init()
 {
 	ECS::RegisterAllComponents();
@@ -69,6 +71,17 @@ void GameState::HandleInput()
 		return;
 	}
 #endif
+
+	if(input->isPressed(Button::P))
+	{
+		// pause physics	
+		ECS::Signature physics_signature = ArcheBit(Physics);
+		ecs->ToggleSystemPaused( physics_signature );
+				
+		ECS::Signature transform_signature = ArcheBit(Transform);
+		ecs->ToggleSystemPaused( transform_signature );
+		return;
+	}
 }
 
 

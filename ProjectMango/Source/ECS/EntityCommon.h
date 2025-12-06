@@ -76,5 +76,5 @@ namespace ECS
 		return (lock & key) == lock;
 	}
 
-#define ArcheBit(compType) archetypeBit(compType::type())
+#define ArcheBit(compType) archetypeBit(ECS::compType::type())
 }

@@ -42,6 +42,7 @@ public:
 		// Keys
 		E = SDLK_e,
 		R = SDLK_r,
+		P = SDLK_p,
 
 		// Numbers
 		Zero = SDLK_0,
