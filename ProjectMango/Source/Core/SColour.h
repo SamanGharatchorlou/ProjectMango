@@ -18,13 +18,18 @@ struct SColour
 		MidGrey,
 		Black,
 		White,
+
+		Count
 	};
 
 	SColour() { }
 	SColour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = c_alphaMax);
 	SColour(Enum colour);
+	SColour(int hexValue);
 
 	void setOpacity(float opacity);
+
+	Enum GetColosestColour() const;
 
 	SDL_Colour toSDL();
 

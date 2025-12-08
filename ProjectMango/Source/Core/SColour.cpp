@@ -10,6 +10,12 @@ SColour::SColour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 	a = alpha;
 }
 
+SColour::SColour(int hexValue)
+{
+	r = (Uint8)((hexValue >> 16) & 0xFF);
+	g = (Uint8)((hexValue >> 8) & 0xFF);
+	b = (Uint8)((hexValue) & 0xFF);
+}
 
 SColour::SColour(Enum colour)
 {
@@ -52,6 +58,36 @@ SColour::SColour(Enum colour)
 		DebugPrint(Warning, "Render colour has not been defined");
 		break;
 	}
+}
+
+
+SColour::Enum SColour::GetColosestColour() const
+{
+	Enum closest_colour = Count;
+	//int r_diff;
+	//int g_diff;
+	//int b_diff;
+	int total_diff = INT_MAX;
+
+	for( u32 i = 1; i < Count; i++ )
+	{
+		Enum colour_type = (Enum)i;
+		SColour test_colour(colour_type);
+
+		int test_r_diff = r - test_colour.r;
+		int test_g_diff = g - test_colour.g;
+		int test_b_diff = b - test_colour.b;
+
+		int diff = sqrt( (test_r_diff*test_r_diff) + (test_g_diff*test_g_diff) + (test_b_diff*test_b_diff) );
+
+		if(diff < total_diff)
+		{
+			closest_colour = colour_type;
+			total_diff = diff;
+		}
+	}
+
+	return closest_colour;
 }
 
 void SColour::setOpacity(float opacity)

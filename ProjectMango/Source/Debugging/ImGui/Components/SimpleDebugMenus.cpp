@@ -24,7 +24,6 @@ u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 	return (u32)type;
 }
 
-
 u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::EntityData;
@@ -42,6 +41,55 @@ u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		{
 			const char* child = ECS::GetName(entity_data.children[i]);
 			ImGui::Text("Child: %s", child);
+		}
+
+		ImGui::PopID();
+	}
+
+	return (u32)type;
+}
+
+u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
+{
+	ECS::Component::Type type = ECS::Component::CoinStack;
+
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	{
+		ECS::CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+		ImGui::PushID(entity + (int)type);
+		
+		SColour col = coin_stack.colour;
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(col.r, col.g, col.b, 255));
+		ImGui::Text("Type: %d", coin_stack.colourType);
+		ImGui::PopStyleColor();
+
+		ImGui::Text("Remaining: %d", coin_stack.remaining);
+		ImGui::Text("Capacity: %d", coin_stack.capacity);
+
+		if(ImGui::Button("Restock"))
+		{
+			coin_stack.remaining = coin_stack.capacity;
+		}
+
+		ImGui::PopID();
+	}
+
+	return (u32)type;
+}
+
+u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
+{
+	ECS::Component::Type type = ECS::Component::Inventory;
+
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	{
+		ECS::Inventory& inventory = GetComponentRef(Inventory, entity);
+		ImGui::PushID(entity + (int)type);
+		
+		ImGui::Text("Owned coins");
+		for( u32 i = 0; i < ECS::CoinStack::ColourType::Count; i++ )
+		{
+			ImGui::Text("%d: %d", i, inventory.coins[i]);
 		}
 
 		ImGui::PopID();

@@ -2,6 +2,8 @@
 #include "UIComponents.h"
 
 #include "ECS/EntityCoordinator.h"
+#include "Game/FrameRateController.h"
+#include "Input/Cursor.h"
 
 namespace ECS
 {
@@ -19,5 +21,20 @@ namespace ECS
 		}
 
 		return nullptr;
+	}
+
+	VectorF UICursor::Position() const
+	{
+		return cursor->position();
+	}
+
+	UIButton::UIButton() : lastPressedFrameCount(-100) { }
+	
+	bool UIButton::IsPressed(int frame_buffer) const
+	{
+		const FrameRateController& frc = FrameRateController::Get();
+		const int frame_count = frc.frameCount;
+
+		return (lastPressedFrameCount + frame_buffer) >= frame_count;
 	}
 }

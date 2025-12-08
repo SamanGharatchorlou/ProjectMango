@@ -149,6 +149,8 @@ namespace ECS
 		if(config)
 		{
 			size = config->data.GetVectorF("size_x", "size_y");
+			pos = pos - (size / 2.0f);
+
 			SetWorldPosition(pos);
 
 			if(config->data.GetBool("snap_to_floor"))
@@ -206,6 +208,14 @@ namespace ECS
 		if (Collider* collider = GetComponent(Collider, entity))
 		{
 			collider->UpdateFromTransform(this);
+		}
+	}
+
+	void Transform::SetWorldPosition(ECS::Entity entity, VectorF pos)
+	{
+		if(Transform* transform = GetComponent(Transform, entity))
+		{
+			transform->SetWorldPosition(pos);
 		}
 	}
 
@@ -761,6 +771,28 @@ namespace ECS
 
 		return c_invalidVector;
 	}
+
+
+	// Inventory
+	// ------------------------------------------------------------------
+	Inventory::Inventory()
+	{
+
+	}
+
+	void Inventory::Update()
+	{
+
+	}
+
+
+	// CoinStack
+	// ------------------------------------------------------------------
+	CoinStack::CoinStack() : capacity(0), remaining(0), colourType(Count), colour(SColour::None)
+	{
+
+	}
+
 
 	// helpers
 	// ------------------------------------------------------------------

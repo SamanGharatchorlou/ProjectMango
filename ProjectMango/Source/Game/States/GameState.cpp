@@ -14,7 +14,7 @@
 #include "Scene/SceneParsing/SceneReader.h"
 #include "Scene/SceneParsing/EntityBuilder.h"
 #include "Scene/SceneParsing/UIEntityBuilder.h"
-#include "Entities/Weapons/PickupCallbacks.h"
+#include "Entities/Weapons/PickupCallbacks.h" 
 #include "System/Window.h"
 
 #include "ECS/Components/Physics.h"
@@ -27,7 +27,7 @@ void GameState::Init()
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
 	AddComponent(Biome, biome_entity);
-	Scene::BuildBiome( "Biome1", biome_entity );
+	Scene::BuildBiome( "GemBiome", biome_entity );
 	activeLevel = biome_entity;
 
 	CreateEntities(biome_entity);
@@ -44,7 +44,7 @@ void GameState::Init()
 	audio->PlayMusic("Game");
 
 	SoundController* sc = AudioManager::GetController();
-	sc->SetMusicVolume(0.05f);
+	sc->SetMusicVolume(0);//0.05f);
 	//audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
 	//float vol = audio->musicVolume();
 	//audio->setMusicVolume(0.2f);
@@ -93,6 +93,8 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
+
+
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);

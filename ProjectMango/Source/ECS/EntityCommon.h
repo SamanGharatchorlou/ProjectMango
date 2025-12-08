@@ -36,13 +36,15 @@ namespace ECS
 			_entry( Door ) \
 			_entry( UICursor ) \
 			_entry( UIButton ) \
+			_entry( UIText ) \
 			_entry( SpellBook ) \
 			_entry( Spell ) \
 			_entry( Pickup ) \
 			_entry( DeathScentence ) \
 			_entry( Firearm ) \
 			_entry( Arm ) \
-
+			_entry( Inventory ) \
+			_entry( CoinStack ) \
 
 	struct Component
 	{

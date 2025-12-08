@@ -190,9 +190,7 @@ bool RaycastToFloor(const RectF& rect, float& out_distance);
 bool RaycastToFloor(const VectorF& start, RaycastResult& result);
 bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance);
 
-
-
-
+// Identifiers
 bool IsPlayer(ECS::Entity entity);
 bool IsEnemy(ECS::Entity entity);
 bool IsTerrain(ECS::Entity entity);

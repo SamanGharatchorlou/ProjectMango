@@ -1,5 +1,11 @@
 #pragma once
 
+namespace ECS
+{
+	struct EntityMetaData;
+}
 
 void CreateUIEntities();
-ECS::Entity CreateUICursor();
+
+//bool IsUIEntity(const char* entity_type);
+//ECS::Entity CreateUIEntity(const char* entity_type, const ECS::EntityMetaData& emd);

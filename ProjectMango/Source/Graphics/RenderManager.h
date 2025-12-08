@@ -1,6 +1,7 @@
 #pragma once
 
 class STexture;
+class Text;
 
 constexpr u32 c_RenderLayers = 10;
 
@@ -16,6 +17,8 @@ struct RenderPack
 	ECS::Entity entity;
 
 	STexture* texture = nullptr;
+	Text* text = nullptr;
+
 	RectF rect;
 	RectF subRect = InvalidRectF;
 	VectorF flipPoint;

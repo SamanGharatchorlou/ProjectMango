@@ -3,6 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 
 namespace ECS
 {
@@ -10,27 +11,51 @@ namespace ECS
 	{
 		for (Entity entity : entities)
 		{
-			Entity the_entity = entity;
-			if(Spawner* spawner = GetComponent(Spawner, the_entity))
+			if(Spawner* spawner = GetComponent(Spawner, entity))
 			{
 				spawner->Update();
 			}
-			if(Door* door = GetComponent(Door, the_entity))
+			if(Door* door = GetComponent(Door, entity))
 			{
 				door->Update();
 			}			
 			// dont think this is running, need to just fix what runs in this function
-			if (Pickup* pick_up = GetComponent(Pickup, the_entity))
+			if (Pickup* pick_up = GetComponent(Pickup, entity))
 			{
 				pick_up->Update();
 			}
-			if (DeathScentence* ds = GetComponent(DeathScentence, the_entity))
+			if (DeathScentence* ds = GetComponent(DeathScentence, entity))
 			{
 				ds->Update(dt);
 			}
-			if (Arm* arm = GetComponent(Arm, the_entity))
+			if (Arm* arm = GetComponent(Arm, entity))
 			{
 				arm->Update();
+			}			
+			if (Inventory* inventory = GetComponent(Inventory, entity))
+			{
+				//inventory->Update();
+
+				ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
+				for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
+				{
+					CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
+					if(UIButton* button = GetComponent(UIButton, coin_stack.entity))
+					{
+						// take a coin from the coin stack
+						if(button->IsPressed())
+						{
+							if(coin_stack.remaining > 0)
+							{
+								// remove from stack
+								coin_stack.remaining--;
+
+								// add to inventory
+								inventory->coins[coin_stack.colourType]++;
+							}
+						}
+					}
+				}
 			}
 		}
 	}

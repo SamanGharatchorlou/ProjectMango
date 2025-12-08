@@ -50,17 +50,21 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Damage, c_common);
 	DEFINE_COMPONENT(Spell, c_common);
 	DEFINE_COMPONENT(DeathScentence, c_common);
+	DEFINE_COMPONENT(UIText, c_uncommon);
 
 	DEFINE_COMPONENT(Door, c_uncommon);
 	DEFINE_COMPONENT(Pickup, c_uncommon);
 	DEFINE_COMPONENT(Spawner, c_uncommon);
 	DEFINE_COMPONENT(UIButton, c_uncommon);
+	
+	DEFINE_COMPONENT(CoinStack, CoinStack::Count);
 
 	DEFINE_COMPONENT(PlayerController, c_rare);
 	DEFINE_COMPONENT(Biome, c_rare);
 	DEFINE_COMPONENT(SpellBook, c_rare);
 	DEFINE_COMPONENT(Firearm, c_rare);
 	DEFINE_COMPONENT(Arm, c_rare);
+	DEFINE_COMPONENT(Inventory, c_rare);
 
 	DEFINE_COMPONENT(UICursor, 1);
 
@@ -74,6 +78,14 @@ void ECS::RemoveAllComponents(Entity entity)
 
 void ECS::RegisterAllSystems()
 {
+	// --------- input systems ---------
+	
+	// UI
+	Signature UISignature = ArcheBit(UICursor) | ArcheBit(UIButton);
+	ecs->RegisterOrSystem<UISystem>(UISignature);
+
+
+
 	// --------- higher-level systems ---------
 
 	// Player Controller
@@ -88,7 +100,7 @@ void ECS::RegisterAllSystems()
 	Signature PathingSignature = ArcheBit(Pathing) | ArcheBit(AIController) | ArcheBit(CharacterState);
 	ecs->RegisterAndSystem<PathingSystem>(PathingSignature);
 
-	
+
 
 	// --------- gameplay-logic systems ---------
 
@@ -102,7 +114,8 @@ void ECS::RegisterAllSystems()
 		ArcheBit(Spawner) | 
 		ArcheBit(Pickup) | 
 		ArcheBit(DeathScentence) |
-		ArcheBit(Arm);
+		ArcheBit(Arm) |
+		ArcheBit(Inventory);
 	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 
@@ -128,10 +141,6 @@ void ECS::RegisterAllSystems()
 	// Animation
 	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator);
 	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
-
-	// UI
-	Signature UISignature = ArcheBit(UICursor);
-	ecs->RegisterAndSystem<UISystem>(UISignature);
 	
 	// Biome (this is basically just rendering right now)
 	Signature biomeSignature = ArcheBit(Biome);

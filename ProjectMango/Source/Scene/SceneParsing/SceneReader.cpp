@@ -90,6 +90,52 @@ namespace Scene
 		}
 
 		data_out.position = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
+		data_out.size = (VectorF(width, height) * level_to_window);
+
+		const Value::Array& tags = data_in["__tags"].GetArray();
+		for (u32 i = 0; i < tags.Size(); i++)
+		{
+			data_out.tags.push_back(tags[i].GetString());
+		}
+
+		if (data_in.HasMember("fieldInstances"))
+		{
+			const Value::Array& field_instance = data_in["fieldInstances"].GetArray();
+			for (u32 i = 0; i < field_instance.Size(); i++)
+			{
+				if( field_instance[i]["__identifier"].IsString() )
+				{
+					if( StringCompare("Sprite", field_instance[i]["__identifier"].GetString()) )
+					{
+						// might be null, so need to check
+						if(field_instance[i]["__value"].IsString())
+							data_out.spriteId = field_instance[i]["__value"].GetString();
+					}
+					if( StringCompare("Color", field_instance[i]["__identifier"].GetString()) )
+					{
+						// might be null, so need to check
+						if(field_instance[i]["__value"].IsString())
+						{
+							int hex = 0;
+							const char* string = field_instance[i]["__value"].GetString();
+							//int hex = std::stoi(string + 1, 0, 16);
+
+							std::stringstream ss(string + 1);
+							ss >> std::hex >> hex;
+
+							data_out.colourMod = SColour(hex);
+						}
+					}
+					if( StringCompare("UIButton", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsBool())
+						{
+							data_out.isButton = field_instance[i]["__value"].GetBool();
+						}
+					}
+				}
+			}
+		}
 	}
 
 	void ParseUILayer(Value& ui_layer, VectorF level_to_window)
@@ -208,14 +254,14 @@ namespace Scene
 						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.type];
 						entity_data.push_back(emd);
 
-						if (entry.HasMember("fieldInstances"))
-						{
-							const Value::Array& field_instance = entry["fieldInstances"].GetArray();
-							for (u32 i = 0; i < field_instance.Size(); i++)
-							{
-								emd.tag = field_instance[i]["__identifier"].GetString();
-							}
-						}
+						//if (entry.HasMember("fieldInstances"))
+						//{
+						//	const Value::Array& field_instance = entry["fieldInstances"].GetArray();
+						//	for (u32 i = 0; i < field_instance.Size(); i++)
+						//	{
+						//		emd.tag = field_instance[i]["__identifier"].GetString();
+						//	}
+						//}
 					}
 				}
 				else if( StringCompare(layer_id, "TerrainColliders" ) )
@@ -397,6 +443,30 @@ namespace Scene
 						tile.draw_pos = tile_pos;
 						tile.tileset_pos = VectorF(src_x, src_y);
 						level_layer.tiles.push_back(tile);
+					}
+				}
+				// handle all other entities
+				else
+				{
+					const Value::Array& entities = layer["entityInstances"].GetArray();
+					for( u32 e = 0; e < entities.Size(); e++ )
+					{
+						Value& entry = entities[e];
+
+						ECS::EntityMetaData emd;
+						ReadMetaData(entry, emd, level_to_window, level.worldPos);
+
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.type];
+						entity_data.push_back(emd);
+
+						//if (entry.HasMember("fieldInstances"))
+						//{
+						//	const Value::Array& field_instance = entry["fieldInstances"].GetArray();
+						//	for (u32 i = 0; i < field_instance.Size(); i++)
+						//	{
+						//		emd.tag = field_instance[i]["__identifier"].GetString();
+						//	}
+						//}
 					}
 				}
 			}

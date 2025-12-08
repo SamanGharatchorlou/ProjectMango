@@ -11,6 +11,7 @@
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/TileMap.h"
 #include "ECS/EntityCoordinator.h"
@@ -138,6 +139,9 @@ void DebugMenu::DoEntitySystemWindow()
             DoComponentDropdown(Health);
             DoComponentDropdown(Biome);
             DoComponentDropdown(Arm);
+            DoComponentDropdown(UIButton);
+            DoComponentDropdown(CoinStack);
+            DoComponentDropdown(Inventory);
 
             ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
             for (u32 i = 0; i < ECS::Component::Count; i++) 

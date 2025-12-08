@@ -21,6 +21,11 @@ namespace ECS
 
 	static void SpawnPlayer()
 	{
+		EntityMetaData empty_data;
+		Player::Spawn(empty_data);
+
+		return;
+
 		ComponentArray<Spawner>& spawners = GetAllComponents(Spawner);
 
 		const ECS::Biome& biome = Biome::GetActiveBiome();

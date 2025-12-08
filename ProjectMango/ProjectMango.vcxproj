@@ -155,6 +155,7 @@
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
     <ClCompile Include="Source\Audio\SoundController.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp" />
     <ClCompile Include="Source\ECS\Components\GunComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />

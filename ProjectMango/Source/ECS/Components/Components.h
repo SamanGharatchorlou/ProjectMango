@@ -59,6 +59,7 @@ namespace ECS
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
+		static void SetWorldPosition(ECS::Entity entity, VectorF pos);
 		void SetWorldRect(const VectorF& pos, const VectorF& size);
 
 		void SetObjectCenter(VectorF pos);
@@ -281,6 +282,38 @@ namespace ECS
 
 		// pass in a relative position i.e. 0 - 1, and gives the position based on flip and rotaion
 		VectorF GetPosition(VectorF relative_posision) const;
+	};
+
+	struct CoinStack
+	{
+		COMPONENT_TYPE(CoinStack)
+
+		enum ColourType
+		{
+			White,
+			Blue,
+			Black,
+			Red,
+			Green,
+
+			Count
+		};
+
+		ColourType colourType;
+		SColour colour;
+
+		int remaining;
+		int capacity;
+	};
+
+	struct Inventory
+	{
+		COMPONENT_TYPE(Inventory)
+
+		// amount of coins the player owns
+		int coins[CoinStack::Count] { 0 };
+
+		void Update();
 	};
 
 	// ----------------------------------------------------------------------

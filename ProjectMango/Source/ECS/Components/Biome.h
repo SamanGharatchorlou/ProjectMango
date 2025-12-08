@@ -34,11 +34,16 @@ namespace ECS
 		// then id would be RuneRebound
 		BasicString type;
 
-		// entity field identifier
-		BasicString tag;
 		VectorF position;
+		VectorF size;
 
-		//BasicString ConfigId() const;
+		BasicString spriteId;
+		SColour colourMod;
+
+		// base indentifier i.e. 'button', 'player'
+		std::vector<BasicString> tags;
+
+		bool isButton = false;
 	};
 
 	struct Level

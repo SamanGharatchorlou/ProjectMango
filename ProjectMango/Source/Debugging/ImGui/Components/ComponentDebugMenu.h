@@ -17,6 +17,9 @@ namespace DebugMenu
 	u32 DoHealthDebugMenu(ECS::Entity& entity);
 	u32 DoBiomeDebugMenu(ECS::Entity& entity);
 	u32 DoArmDebugMenu(ECS::Entity& entity);
+	u32 DoUIButtonDebugMenu(ECS::Entity& entity);
+	u32 DoCoinStackDebugMenu(ECS::Entity& entity);
+	u32 DoInventoryDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 

@@ -63,14 +63,42 @@ bool STexture::loadFromFile(const BasicString& filePath)
 	return texture != nullptr;
 }
 
+	
+void STexture::SetColourModThisFrame()
+{
+	// Apply temporary colour modulation Colour
+	int col_success = SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
+	if (col_success == -1)
+		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
+
+	// Apply temporary alpha modulation Colour
+	int alp_success = SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
+	if (alp_success == -1)
+		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
+}
+
+void STexture::ResetColourMod()
+{
+	// reset the colour mod each frame
+	colourModThisFrame = SColour();
+	SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
+	SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
+}
+
 // Renders texture with the roation specified
 // NOTE: the about point is relative to the rect e.g. about the center would be rect.size()/2, not rect.center()
 void STexture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Point point = { (int)(aboutPoint.x + 0.5f), (int)(aboutPoint.y + 0.5f) };
+		
+	// Apply temporary colour modulation Colour
+	SetColourModThisFrame();
 
 	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, rotation, &point, flip);
+
+	// reset the colour mod each frame
+	ResetColourMod();
 }
 
 // Renders part of the texture, e.g. a tile in a set with the roation specified
@@ -83,28 +111,25 @@ void STexture::renderSubTexture(const RectF& rect, const RectF& subRect, double 
 	SDL_Point point = aboutPoint.toSDLPoint();
 
 	// Apply temporary colour modulation Colour
-	int col_success = SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
-	if (col_success == -1)
-		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
-
-	// Apply temporary alpha modulation Colour
-	int alp_success = SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
-	if (alp_success == -1)
-		DebugPrint(PriorityLevel::Log, "%s", SDL_GetError());
+	SetColourModThisFrame();
 
 	SDL_RenderCopyEx(renderer, texture, &subQuad, &renderQuad, rotation, &point, flip);
 
 	// reset the colour mod each frame
-	colourModThisFrame = SColour();
-	SDL_SetTextureColorMod(texture, colourModThisFrame.r, colourModThisFrame.g, colourModThisFrame.b);
-	SDL_SetTextureAlphaMod(texture, colourModThisFrame.a);
+	ResetColourMod();
 }
 
 // Render quad with an aboutpoint set.
-void STexture::render(const QuadF& quad) const
+void STexture::render(const QuadF& quad)
 {
 	SDL_Rect renderQuad = quad.getRect().toSDLRect();
 	SDL_Point point = quad.aboutPoint().toSDLPoint();
 
+	// Apply temporary colour modulation Colour
+	SetColourModThisFrame();
+
 	SDL_RenderCopyEx(renderer, texture, nullptr, &renderQuad, quad.rotation(), &point, SDL_FLIP_NONE);
+
+	// reset the colour mod each frame
+	ResetColourMod();
 }

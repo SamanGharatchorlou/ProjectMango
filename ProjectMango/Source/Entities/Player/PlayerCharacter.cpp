@@ -24,34 +24,39 @@ Entity Player::Get()
 Entity Player::Spawn(const EntityMetaData& emd)
 {
 	ecs->entities.KillEntity(s_playerEntity);
-	s_playerEntity = Character::CreateBasic(emd);
-	const Config* config = GetConfig(s_playerEntity);
 
-	// PlayerController
-	AddComponent(PlayerController, s_playerEntity);
+	s_playerEntity = CreateEntity( "player" );
 
-	// Collider
-	Collider& collider = GetComponentRef(Collider, s_playerEntity);
-	collider.SetFlag(Collider::IsPlayer);
-	collider.SetFlag(Collider::CanBump);
+	Inventory& inventory = AddComponent(Inventory, s_playerEntity);
 
-	// Sprite
-	Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
-	sprite.renderLayer = RenderLayer::Characters;
+	//s_playerEntity = Character::CreateBasic(emd);
+	//const Config* config = GetConfig(s_playerEntity);
 
-	// CharacterState
-	CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
-	character_state.Init(config);
+	//// PlayerController
+	//AddComponent(PlayerController, s_playerEntity);
 
-	// Spellbook
-	//SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
-	//spell_book.SetSpellSlot(0, "Fireball");
+	//// Collider
+	//Collider& collider = GetComponentRef(Collider, s_playerEntity);
+	//collider.SetFlag(Collider::IsPlayer);
+	//collider.SetFlag(Collider::CanBump);
 
-	// Firearm
-	EquipFirearm(s_playerEntity, "BasicRifle");
-	
-	Camera* camera = Camera::Get();
-	camera->targetEntity = s_playerEntity;
+	//// Sprite
+	//Sprite& sprite = GetComponentRef(Sprite, s_playerEntity);
+	//sprite.renderLayer = RenderLayer::Characters;
+
+	//// CharacterState
+	//CharacterState& character_state = AddComponent(CharacterState, s_playerEntity);
+	//character_state.Init(config);
+
+	//// Spellbook
+	////SpellBook& spell_book = AddComponent(SpellBook, s_playerEntity);
+	////spell_book.SetSpellSlot(0, "Fireball");
+
+	//// Firearm
+	//EquipFirearm(s_playerEntity, "BasicRifle");
+	//
+	//Camera* camera = Camera::Get();
+	//camera->targetEntity = s_playerEntity;
 	
 	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
 		DebugMenu::SelectEntity(s_playerEntity);

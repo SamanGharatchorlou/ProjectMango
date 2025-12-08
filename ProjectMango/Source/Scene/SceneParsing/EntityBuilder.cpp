@@ -3,6 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "System/Files/ConfigManager.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Animator.h"
@@ -10,62 +11,85 @@
 #include "Graphics/Raycast.h"
 #include "Entities/Enemies/ShockSweeperEnemy.h"
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
+#include "UIEntityBuilder.h"
 
 
-ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd)
+using namespace ECS;
+
+// Base functions
+Entity CreateBasicObject(const char* id, VectorF size)
 {
-	ECS::Entity entity = ECS::CreateEntity(emd);
-	if (const Config* config = ECS::GetConfig(entity))
+	Entity entity = CreateEntity(id);
+
+	// Transform
+	Transform& transform = AddComponent(Transform, entity);
+	transform.size = size;
+
+	// Sprite
+	Sprite& sprite = AddComponent(Sprite, entity);
+	sprite.renderLayer = RenderLayer::BasicObject;
+	sprite.canFlip = false;
+
+	return entity;
+}
+
+Entity CreateBasicObject(const EntityMetaData& emd)
+{
+	Entity entity = CreateEntity(emd);
+	if (const Config* config = GetConfig(entity))
 	{
 		// Transform
-		ECS::Transform& transform = AddComponent(Transform, entity);
-		VectorF pos = emd.position - (transform.size / 2.0f);
-		transform.Init(config, pos);
+		Transform& transform = AddComponent(Transform, entity);
+		transform.Init(config, emd.position);
 
 		// Sprite
-		ECS::Sprite& sprite = AddComponent(Sprite, entity);
-		sprite.renderLayer = ECS::RenderLayer::BasicObject;
+		Sprite& sprite = AddComponent(Sprite, entity);
+		sprite.renderLayer = RenderLayer::BasicObject;
 		sprite.canFlip = false;
 		sprite.Init(config);
 
 		if(sprite.texture && transform.size.isZero())
 			DebugPrint(Warning, "CreateBasicObject - Have Sprite, but has no size");
 	}
+	else
+	{
+		// Transform
+		Transform& transform = AddComponent(Transform, entity);
+		transform.size = emd.size;
+		transform.SetWorldPosition(emd.position - (emd.size * 0.5f));
+
+		// Sprite
+		Sprite& sprite = AddComponent(Sprite, entity);
+		sprite.renderLayer = RenderLayer::BasicObject;
+		sprite.canFlip = false;
+		sprite.SetTexture(emd.spriteId.c_str());
+		sprite.colourMod = emd.colourMod;
+	}
+
+	if(emd.isButton)
+	{
+		AddComponent(UIButton, entity);
+	}
 
 	return entity;
 }
 
-ECS::Entity CreateBasicObject(const char* id, VectorF size)
+static Entity CreateAnimatedObject(const EntityMetaData& emd)
 {
-	ECS::Entity entity = ECS::CreateEntity(id);
-
-	// Transform
-	ECS::Transform& transform = AddComponent(Transform, entity);
-	transform.size = size;
-
-	// Sprite
-	ECS::Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.renderLayer = ECS::RenderLayer::BasicObject;
-	sprite.canFlip = false;
-
-	return entity;
-}
-
-static ECS::Entity CreateAnimatedObject(const ECS::EntityMetaData& emd)
-{
-	ECS::Entity entity = CreateBasicObject(emd);
-	const Config* config = ECS::GetConfig(entity);
+	Entity entity = CreateBasicObject(emd);
+	const Config* config = GetConfig(entity);
 
 	// Animation
-	ECS::Animator& animator = AddComponent(Animator, entity);
+	Animator& animator = AddComponent(Animator, entity);
 	animator.Init(config);
 
 	return entity;
 }
 
-static ECS::Entity CreatePlayerSpawner(const ECS::EntityMetaData& emd)
+// Entitiy creation callbacks
+static Entity CreatePlayerSpawner(const EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateAnimatedObject(emd);
+	Entity entity = CreateAnimatedObject(emd);
 
 	// Spawner
 	AddComponent(Spawner, entity);
@@ -73,25 +97,25 @@ static ECS::Entity CreatePlayerSpawner(const ECS::EntityMetaData& emd)
 	return entity;
 }
 
-static ECS::Entity CreateFlower(const ECS::EntityMetaData& emd)
+static Entity CreateFlower(const EntityMetaData& emd)
 {
 	return CreateAnimatedObject(emd);
 }
 
-static ECS::Entity CreateTorch(const ECS::EntityMetaData& emd)
+static Entity CreateTorch(const EntityMetaData& emd)
 {
 	return CreateAnimatedObject(emd);
 }
 
-static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
+static Entity CreateDoor(const EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateAnimatedObject(emd);
+	Entity entity = CreateAnimatedObject(emd);
 
 	AddComponent(Door, entity);
 
-	const ECS::Level& level = ECS::Biome::GetLevel(entity);	
+	const Level& level = Biome::GetLevel(entity);	
 	std::vector<u32> collider_flags;
-	collider_flags.push_back(ECS::Collider::IsTerrain);
+	collider_flags.push_back(Collider::IsTerrain);
 
 	RaycastResult down_result;
 	Raycast(emd.position, VectorF(0.0, 1.0f), level.size.y, down_result, nullptr, &collider_flags);
@@ -103,18 +127,18 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	if(!down_result.hasHit || !up_result.hasHit)
 	{
 		ecs->entities.KillEntity(entity);
-		return ECS::EntityInvalid;
+		return EntityInvalid;
 	}
 
 	// Door
-	ECS::Door& door = GetComponentRef(Door, entity);
+	Door& door = GetComponentRef(Door, entity);
 	door.Init();
 
 	const Config* config = ConfigManager::Get()->GetConfig(emd.id.c_str());
 	door.triggerRange = config->data.GetFloat("trigger_range");
 
 	// Transform - sandwich the door between the top and bottom raycast points
-	ECS::Transform& transform = GetComponentRef(Transform, entity);
+	Transform& transform = GetComponentRef(Transform, entity);
 
 	const VectorF top = up_result.hitPosition;
 	const VectorF bot = down_result.hitPosition;
@@ -130,30 +154,83 @@ static ECS::Entity CreateDoor(const ECS::EntityMetaData& emd)
 	return entity;
 }
 
-ECS::Entity CreateRune(const ECS::EntityMetaData& emd)
+Entity CreateRune(const EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateBasicObject( emd );
+	Entity entity = CreateBasicObject( emd );
 
-	ECS::Pickup& pick_up = AddComponent(Pickup, entity);
+	Pickup& pick_up = AddComponent(Pickup, entity);
 	pick_up.itemId = emd.id;
 	//pick_up.config = emd.id;
 
-	ECS::Collider& collider = AddComponent(Collider, entity);
-	collider.SetFlag(ECS::Collider::PlayerOnly);
-	collider.SetFlag(ECS::Collider::GhostCollider);
+	Collider& collider = AddComponent(Collider, entity);
+	collider.SetFlag(Collider::PlayerOnly);
+	collider.SetFlag(Collider::GhostCollider);
 	collider.destroyOnContact = true;
 
-	ECS::Transform& transform = GetComponentRef(Transform, entity);
+	Transform& transform = GetComponentRef(Transform, entity);
 	transform.InitCollider(collider);
 
 	return entity;
 }
 
-void CreateEntities(ECS::Entity& biome_entity)
+Entity CreateCard(const EntityMetaData& emd)
+{
+	Entity entity = CreateBasicObject( emd );
+	return entity;
+}
+
+Entity CreateCoinStack(const EntityMetaData& emd)
+{
+	Entity entity = CreateBasicObject( emd );
+
+	CoinStack& coin_stack = AddComponent(CoinStack, entity);
+	coin_stack.capacity = 5;
+	coin_stack.remaining = coin_stack.capacity;
+	coin_stack.colour = emd.colourMod;
+
+	// convert SColour into CoinStack colour
+	SColour::Enum colour_type = emd.colourMod.GetColosestColour();
+	CoinStack::ColourType type = CoinStack::ColourType::Count;
+	switch( colour_type )
+	{
+		case SColour::White:
+		coin_stack.colourType = CoinStack::ColourType::White;
+		break;
+
+		case SColour::Blue:
+		coin_stack.colourType = CoinStack::ColourType::Blue;
+		break;
+
+		case SColour::Black:
+		coin_stack.colourType = CoinStack::ColourType::Black;
+		break;	
+
+		case SColour::Red:
+		coin_stack.colourType = CoinStack::ColourType::Red;
+		break;
+		
+		case SColour::Green:
+		coin_stack.colourType = CoinStack::ColourType::Green;
+		break;
+
+		case SColour::Count:	
+		case SColour::None:
+		case SColour::Purple:
+		case SColour::Yellow:
+		case SColour::LightGrey:
+		case SColour::MidGrey:
+		default:		
+		break;
+	}
+
+	return entity;
+}
+
+void CreateEntities(Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
 
-	// map entities
+	// game object entities
 	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
 	CreateEntitiyFunctions["PlayerSpawner"] = CreatePlayerSpawner;
 	CreateEntitiyFunctions["Flower"] = CreateFlower;
@@ -163,26 +240,39 @@ void CreateEntities(ECS::Entity& biome_entity)
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
 	CreateEntitiyFunctions["Rune"] = CreateRune;
+	CreateEntitiyFunctions["Card"] = CreateCard;
+	CreateEntitiyFunctions["CoinStack"] = CreateCoinStack;
 
-	ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
+	// UI entities
+	CreateUIEntities();
+
+	Biome& biome = GetComponentRef(Biome, biome_entity);
 	for (u32 i = 0; i < biome.levels.size(); i++)
 	{
-		const ECS::Level& level = biome.levels[i];
+		const Level& level = biome.levels[i];
 		for (auto iter = level.entities.begin(); iter != level.entities.end(); iter++)
 		{
-			//const ECS::EntityData* ed = GetComponent()
 			const char* type = iter->first.c_str();
 
-			if(CreateEntityFn create_fn = CreateEntitiyFunctions.at(type))
+			// create game object
+			if(CreateEntitiyFunctions.contains(type))
 			{
-				//CreateEntityFn create_fn = CreateEntitiyFunctions.at(type);
+				CreateEntityFn create_fn = CreateEntitiyFunctions.at(type);
 
-				const std::vector<ECS::EntityMetaData>& entitiy_meta_data = iter->second;
+				const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
 				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
 				{
 					create_fn(entitiy_meta_data[e]);
 				}
 			}
+			//else if(IsUIEntity(type))
+			//{
+			//	const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
+			//	for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
+			//	{
+			//		CreateUIEntity(type, entitiy_meta_data[e]);
+			//	}
+			//}
 			else
 			{
 				DebugPrint(Warning, "No CreateEntity function defined for %s", type);

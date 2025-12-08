@@ -2,6 +2,7 @@
 #include "Graphics/RenderManager.h"
 
 #include "STexture.h"
+#include "UI/Text/Text.h"
 #include "Renderer.h"
 #include "System/Window.h"
 #include "Game/Camera/Camera.h"
@@ -67,15 +68,23 @@ void RenderManager::render()
 			
 			render_packs[i].rect.Translate(camera_shift);
 
-			render_packs[i].texture->colourModThisFrame = render_packs[i].colourMod;
+			if(render_packs[i].texture)
+			{
+				render_packs[i].texture->colourModThisFrame = render_packs[i].colourMod;
 
-			if (render_packs[i].subRect.isValid())
-			{
-				render_packs[i].texture->renderSubTexture(render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
+				if (render_packs[i].subRect.isValid())
+				{
+					render_packs[i].texture->renderSubTexture(render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
+				}
+				else
+				{
+					render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip, render_packs[i].rotation, render_packs[i].flipPoint);
+				}
 			}
-			else
+
+			if(render_packs[i].text)
 			{
-				render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip, render_packs[i].rotation, render_packs[i].flipPoint);
+				render_packs[i].text->render(render_packs[i].rect.TopLeft());
 			}
 		}
 

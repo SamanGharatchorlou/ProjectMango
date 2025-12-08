@@ -1,6 +1,5 @@
 #include "UIEntityBuilder.h"
 
-
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/UIComponents.h"
@@ -35,22 +34,42 @@ Entity CreateUICursor()
 	return entity;
 }
 
-static ECS::Entity CreateButton(const ECS::EntityMetaData& emd)
-{
-
-
-	return CreateBasicObject(emd);
-}
-
+//static ECS::Entity CreateButton(const ECS::EntityMetaData& emd)
+//{
+//	return CreateBasicObject(emd);
+//}
+//
+//Entity CreateText(const EntityMetaData& emd)
+//{
+//	return CreateBasicObject(emd);
+//}
 
 void CreateUIEntities()
 {
 	CreateUICursor();
-
-	// map entities
-	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
-	//CreateEntitiyFunctions["Cursor"] = CreatePlayerSpawner;
-
-
-	CreateEntitiyFunctions["Button"] = CreateButton;
 }
+
+//static std::unordered_map<BasicString, CreateEntityFn> s_createEntitiyFunctions;
+//
+//void CreateUIEntities()
+//{
+//	s_createEntitiyFunctions.clear();
+//
+//	// UI entities
+//	s_createEntitiyFunctions["Cursor"] = CreateUICursor;
+//
+//	// these dont seem correct, its not often ill just want to create an entity called button that is a button
+//	// is first some other entity, e.g. a card, and i add a button thing to it, to make it also be a button
+//	s_createEntitiyFunctions["Text"] = CreateText;
+//	s_createEntitiyFunctions["Button"] = CreateButton;
+//}
+
+//// accessors
+//bool IsUIEntity(const char* entity_type)
+//{
+//	return s_createEntitiyFunctions.contains(entity_type);
+//}
+//ECS::Entity CreateUIEntity(const char* entity_type, const ECS::EntityMetaData& emd)
+//{
+//	return s_createEntitiyFunctions.at(entity_type)(emd);
+//}

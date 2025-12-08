@@ -378,6 +378,9 @@
     <ClCompile Include="Source\ECS\Components\GunComponents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Animations\AnimationReader.h">
