@@ -28,7 +28,11 @@ namespace ECS
 
 	struct EntityMetaData
 	{
+		// the base name e.g. text, card etc.
 		BasicString id;
+
+		// unique name e.g. InventoryCoins_White, used to lookup a specific thing
+		BasicString uid;
 
 		// generic type e.g. Rune_Rebound, this would be Rune
 		// then id would be RuneRebound

@@ -47,7 +47,7 @@ namespace Scene
 	{
 		prefix = indentifier_in;
 		int length = 0;
-		if (const char* sub_str = prefix.findSubString("_"))
+		if (const char* sub_str = prefix.FindSubString("_"))
 		{
 			length = (int)(sub_str - prefix.buffer());
 			prefix.SetLength(length);
@@ -131,6 +131,13 @@ namespace Scene
 						if(field_instance[i]["__value"].IsBool())
 						{
 							data_out.isButton = field_instance[i]["__value"].GetBool();
+						}
+					}
+					if( StringCompare("UID", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsString())
+						{
+							data_out.uid = field_instance[i]["__value"].GetString();
 						}
 					}
 				}

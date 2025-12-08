@@ -312,8 +312,11 @@ namespace ECS
 
 		// amount of coins the player owns
 		int coins[CoinStack::Count] { 0 };
+		Entity coinDisplay[CoinStack::Count];
 
-		void Update();
+		// find the entity IDs of the coin display text
+		void LinkCoinDisplays();
+		void SetCoinAmount(CoinStack::ColourType type, int amount);
 	};
 
 	// ----------------------------------------------------------------------

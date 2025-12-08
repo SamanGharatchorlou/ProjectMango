@@ -2,51 +2,51 @@
 
 class Renderer;
 
-class Font
+struct Font
 {
-public:
-	Font() : mTexture(nullptr), mFont(nullptr) { }
-	~Font();
+	Renderer* renderer;
+	SDL_Texture* texture;
 
-	bool loadFromFile(const BasicString& filePath, int ptSize);
+	TTF_Font* ttfFont;
+	StringBuffer64 fontName;
 
-	void render(const VectorF position) const;
-
-	//Creates image from font string
-	void setColour(SDL_Color textColor) { colour = textColor; }
-	void setText(const BasicString& text);
-
-	void setWrappedText(const BasicString& text, int width);
-
-	void resize(int ptSize);
-
-	int ptSize() const { return mPtSize; }
-	Vector2D<int> size() const { return mSize; }
-
-	TTF_Font* get() { return mFont; }
-
-	const char* name() const { return mFontName.c_str(); }
-
-private:
-	void renderTextSurface(SDL_Surface* textSurface);
-
-
-private:
-	Renderer* mRenderer;
-	SDL_Texture* mTexture;
-
-	StringBuffer64 mFontName;
-	TTF_Font* mFont;
+	BasicString text;
 
 	SDL_Color colour;
 
-	int mPtSize;
+	// for wrapped text only
+	int width = -1;
+	bool wrapped = false;
 
-	Vector2D<int> mSize;
+private:
+	// this is set by the size
+	Vector2D<int> size;
+
+	// use Resize()
+	int ptSize = 0;
+	
+
+public:
+	Font() : texture(nullptr), ttfFont(nullptr), renderer(nullptr) { }
+	~Font();
+
+	bool LoadFromFile(const char* filePath, int ptSize);
+	void Render(const VectorF position) const;
+
+	// Creates image from font string
+	void SetText(const char* _text, bool wrapped = false, int width = -1);
+	void Resize(int ptSize);
+
+	Font& operator =(const Font& font);
+
+private:
+	void RenderTextSurface(SDL_Surface* textSurface);
 
 	// Forbid copy to prevent shared ownership of gFont and
 	// it being destroyed by the destructor while still in use
-	Font(Font& font);
-	Font& operator = (const Font) { DebugPrint(Error, "Do not use!"); };
+	//Font(Font& font);
+	Font(const Font&);            // copy constructor
+	Font(Font&&) noexcept;        // move constructor
+	Font& operator=(Font&&) noexcept;  // move assignment
 };
  

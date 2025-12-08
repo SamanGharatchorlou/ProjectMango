@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "Input/Button.h"
+#include "UI/Text/Font.h"
 
 class Cursor;
 
@@ -10,9 +10,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(UICursor)
 
-		~UICursor();
-
 		Cursor* cursor;
+		
+		~UICursor();
 
 		static UICursor* Get();
 
@@ -30,7 +30,17 @@ namespace ECS
 
 	struct UIText
 	{
+		static constexpr int c_defaultFontSize = 10;
+		static constexpr const char* c_defaultFont = "default";
+
 		COMPONENT_TYPE(UIText);
 
+		BasicString UID;
+		//BasicString text;
+		Font font;
+		
+		void SetText(const char* text);
+		void SetColour(SColour::Enum colour);
+		void Render();
 	};
 }

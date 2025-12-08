@@ -34,8 +34,6 @@ namespace ECS
 			}			
 			if (Inventory* inventory = GetComponent(Inventory, entity))
 			{
-				//inventory->Update();
-
 				ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
 				for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
 				{
@@ -51,9 +49,18 @@ namespace ECS
 								coin_stack.remaining--;
 
 								// add to inventory
-								inventory->coins[coin_stack.colourType]++;
+								//inventory->coins[coin_stack.colourType]++;
+								inventory->SetCoinAmount(coin_stack.colourType, inventory->coins[coin_stack.colourType] + 1 );
 							}
 						}
+					}
+				}
+
+				for( u32 i = 0; i < CoinStack::Count; i++ )
+				{
+					if(inventory->coinDisplay[i] == EntityInvalid)
+					{
+
 					}
 				}
 			}

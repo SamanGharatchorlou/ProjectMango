@@ -7,6 +7,8 @@
 
 namespace ECS
 {
+	// UICursor
+	// ------------------------------------------------------------------
 	UICursor::UICursor() : cursor(nullptr) { }
 
 	UICursor::~UICursor() { }
@@ -27,7 +29,10 @@ namespace ECS
 	{
 		return cursor->position();
 	}
+	
 
+	// UIButton
+	// ------------------------------------------------------------------
 	UIButton::UIButton() : lastPressedFrameCount(-100) { }
 	
 	bool UIButton::IsPressed(int frame_buffer) const
@@ -36,5 +41,29 @@ namespace ECS
 		const int frame_count = frc.frameCount;
 
 		return (lastPressedFrameCount + frame_buffer) >= frame_count;
+	}
+	
+
+	// UIButton
+	// ------------------------------------------------------------------
+	UIText::UIText()
+	{
+		BasicString path = FileManager::Get()->findFile(FileManager::Font, c_defaultFont);
+		font.LoadFromFile(path.c_str(), c_defaultFontSize);
+
+		// default to white
+		SetColour(SColour::White);
+	}
+
+	void UIText::SetText(const char* _text) 
+	{ 
+		//text = _text;
+		font.SetText(_text); 
+	}
+	
+	void UIText::SetColour(SColour::Enum _colour) 
+	{ 
+		font.colour = SColour(_colour).toSDL();
+		SetText(font.text.c_str());
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 class STexture;
-class Text;
+struct Font;
 
 constexpr u32 c_RenderLayers = 10;
 
@@ -13,11 +13,16 @@ struct RenderPack
 		// override if required
 		flipPoint = box.Size() * 0.5f;
 	}
+	//RenderPack(Font* _font, RectF box, u32 renderLayer) : font(_font), rect(box), layer(renderLayer) 
+	//{
+	//	// override if required
+	//	flipPoint = box.Size() * 0.5f;
+	//}
 
 	ECS::Entity entity;
 
 	STexture* texture = nullptr;
-	Text* text = nullptr;
+	const Font* font = nullptr;
 
 	RectF rect;
 	RectF subRect = InvalidRectF;

@@ -147,7 +147,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
 
 	// Rendering
-	Signature renderSignature = ArcheBit(Transform) | ArcheBit(Sprite);
-	ecs->RegisterAndSystem<RenderSystem>(renderSignature);
+	Signature renderSignature = ArcheBit(Sprite) | ArcheBit(UIText);
+	ecs->RegisterOrSystem<RenderSystem>(renderSignature);
 }
 

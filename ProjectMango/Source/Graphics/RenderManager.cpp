@@ -2,7 +2,7 @@
 #include "Graphics/RenderManager.h"
 
 #include "STexture.h"
-#include "UI/Text/Text.h"
+#include "UI/Text/Font.h"
 #include "Renderer.h"
 #include "System/Window.h"
 #include "Game/Camera/Camera.h"
@@ -28,8 +28,6 @@ void RenderManager::AddDebugRenderPacker(const DebugRenderPack& renderPack)
 
 void RenderManager::AddRenderPacket(RenderPack renderPacket) 
 { 
-
-	ASSERT(renderPacket.texture != nullptr, "RenderPacket has no texture");
 	mRenderPackets[renderPacket.layer].push_back(renderPacket); 
 }
 
@@ -82,9 +80,9 @@ void RenderManager::render()
 				}
 			}
 
-			if(render_packs[i].text)
+			if(render_packs[i].font)
 			{
-				render_packs[i].text->render(render_packs[i].rect.TopLeft());
+				render_packs[i].font->Render(render_packs[i].rect.TopLeft());
 			}
 		}
 

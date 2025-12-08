@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
@@ -25,6 +26,18 @@ namespace ECS
 
 		pack.entity = sprite.entity;
 	}
+		
+	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
+	{
+		const Transform& transform = GetComponentRef(Transform, ui_text.entity);
+		const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+
+		pack.font = &ui_text.font;
+		pack.rect = render_rect;
+		pack.layer = (u32)RenderLayer::UI;
+
+		pack.entity = ui_text.entity;
+	}
 
 	void RenderSystem::Update(float dt)
 	{
@@ -43,19 +56,35 @@ namespace ECS
 			// debug break point
 			if (DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
-
-			const Sprite& sprite = GetComponentRef(Sprite, entity);
-			if(!sprite.texture || sprite.renderLayer == RenderLayer::None)
-				continue;
 			
-			const Transform& transform = GetComponentRef(Transform, entity);
-			const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
-
-			if(!camera_rect.Intersect(render_rect))
-				continue;
-
 			RenderPack pack;
-			GenerateRenderPack(sprite, pack);
+
+			const Transform& transform = GetComponentRef(Transform, entity);
+			
+			if(const Sprite* sprite = GetComponent(Sprite, entity))
+			{
+				if(!sprite->texture || sprite->renderLayer == RenderLayer::None)
+					continue;
+			
+				const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+
+				if(!camera_rect.Intersect(render_rect))
+					continue;
+
+				GenerateRenderPack(*sprite, pack);
+			}
+			else if(const UIText* ui_text = GetComponent(UIText, entity))
+			{
+				if(ui_text->font.text.empty())
+					continue;
+				
+				const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+								
+				if(!camera_rect.Intersect(render_rect))
+					continue;
+
+				GenerateRenderPack(*ui_text, pack);
+			}
 
 			renderer->AddRenderPacket(pack);
 		}

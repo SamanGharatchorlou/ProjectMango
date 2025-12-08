@@ -226,6 +226,23 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 	return entity;
 }
 
+Entity CreateText(const EntityMetaData& emd)
+{
+	Entity entity = CreateEntity(emd.id.c_str());
+
+	// Transform
+	Transform& transform = AddComponent(Transform, entity);
+	transform.size = emd.size;
+	transform.SetWorldPosition(emd.position);// - (emd.size * 0.5f));
+	
+	// UIText
+	UIText& ui_text = AddComponent(UIText, entity);
+	ui_text.UID = emd.uid;
+	ui_text.font.Resize(50);
+
+	return entity;
+}
+
 void CreateEntities(Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
@@ -242,6 +259,7 @@ void CreateEntities(Entity& biome_entity)
 	CreateEntitiyFunctions["Rune"] = CreateRune;
 	CreateEntitiyFunctions["Card"] = CreateCard;
 	CreateEntitiyFunctions["CoinStack"] = CreateCoinStack;
+	CreateEntitiyFunctions["Text"] = CreateText;
 
 	// UI entities
 	CreateUIEntities();

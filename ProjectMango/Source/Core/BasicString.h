@@ -35,7 +35,7 @@ public:
 	BasicString& operator = (const char* string);
 	BasicString& operator = (const BasicString& string);
 
-	const char* findSubString(const BasicString& subString) const;
+	const char* FindSubString(const char* subString) const;
 
 	void getInput(const BasicString& message);
 

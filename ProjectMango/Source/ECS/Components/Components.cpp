@@ -3,6 +3,7 @@
 
 #include "Animations/CharacterStates.h"
 #include "Core/Helpers.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
@@ -777,14 +778,62 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Inventory::Inventory()
 	{
-
+		for( u32 i = 0; i < CoinStack::Count; i++ )
+		{
+			coinDisplay[i] = EntityInvalid;
+		}
 	}
 
-	void Inventory::Update()
+	void Inventory::LinkCoinDisplays()
 	{
+		ComponentArray<UIText>& ui_texts =  GetAllComponents(UIText);
+		for( auto iter = ui_texts.entityToComponent.begin(); iter != ui_texts.entityToComponent.end(); iter++ )
+		{
+			UIText& ui_text = ui_texts.GetComponentByIndex(iter->second);
+			if( const char* string = ui_text.UID.FindSubString("InventoryCoins") )
+			{
+				int offset = (int)strlen("InventoryCoins_");
+				string = string + offset;
 
+				if(StringCompare(string, "White"))
+				{
+					coinDisplay[CoinStack::White] = ui_text.entity;
+				}
+				if(StringCompare(string, "Blue"))
+				{
+					coinDisplay[CoinStack::Blue] = ui_text.entity;
+				}
+				if(StringCompare(string, "Black"))
+				{
+					coinDisplay[CoinStack::Black] = ui_text.entity;
+				}
+				if(StringCompare(string, "Red"))
+				{
+					coinDisplay[CoinStack::Red] = ui_text.entity;
+				}
+				if(StringCompare(string, "Green"))
+				{
+					coinDisplay[CoinStack::Green] = ui_text.entity;
+				}
+			}
+		}
+
+		for( u32 i = 0; i < CoinStack::Count; i++ )
+		{
+			SetCoinAmount((CoinStack::ColourType)i, 0);
+		}
 	}
 
+	void Inventory::SetCoinAmount(CoinStack::ColourType type, int amount)
+	{
+		coins[type] = amount;
+		if(UIText* text = GetComponent(UIText, coinDisplay[type]))
+		{
+			StringBuffer32 buffer;
+			_itoa(amount, buffer.buffer(), 10);
+			text->SetText(buffer.c_str());
+		}
+	}
 
 	// CoinStack
 	// ------------------------------------------------------------------

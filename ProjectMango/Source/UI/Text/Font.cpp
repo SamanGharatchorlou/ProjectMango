@@ -5,119 +5,124 @@
 
 Font::~Font()
 {
-	if (mTexture)
-		SDL_DestroyTexture(mTexture);
+	if (texture)
+		SDL_DestroyTexture(texture);
 
-	if(mFont)
-		TTF_CloseFont(mFont);
+	if(ttfFont)
+		TTF_CloseFont(ttfFont);
 }
 
+Font& Font::operator =(const Font& font) 
+{ 
+	DebugPrint(Error, "Do not use!"); 
+		
+	// cant copy these over, generate new ones
+	renderer = nullptr;
+	texture = nullptr;
+	ttfFont = nullptr;
 
-bool Font::loadFromFile(const BasicString& filePath, int ptSize)
+	fontName = font.fontName;
+	colour = font.colour;
+	ptSize = font.ptSize;
+	text = font.text;
+
+	// we have to own the ttfFont since we clean it up ourselves
+	BasicString path = FileManager::Get()->findFile(FileManager::Font, fontName.c_str());
+	LoadFromFile(path.c_str(), ptSize);
+	SetText(text.c_str(), wrapped, width);
+
+	return *this;
+};
+
+bool Font::LoadFromFile(const char* filePath, int _ptSize)
 {
-	mRenderer = Renderer::Get();
+	renderer = Renderer::Get();
 
 	//Open the font
-	mFont = TTF_OpenFont(filePath.c_str(), ptSize);
-	if (mFont != nullptr)
+	ttfFont = TTF_OpenFont(filePath, ptSize);
+	if (ttfFont != nullptr)
 	{
-		mFontName = FileManager::Get()->getItemName(fs::path(filePath.c_str()));
-		mPtSize = ptSize;
+		fontName = FileManager::Get()->getItemName(fs::path(filePath));
+		ptSize = _ptSize;
 		return true;
 	}
 	else
 	{
-		DebugPrint(Warning, "Failed to load font at '%s'! SDL_ttf Error: %s", filePath.c_str(), TTF_GetError());
+		DebugPrint(Warning, "Failed to load font at '%s'! SDL_ttf Error: %s", filePath, TTF_GetError());
 		return false;
 	}
 }
 
-
-void Font::resize(int ptSize)
+void Font::Resize(int _ptSize)
 {
 	// Font must be closed and reloaded
-	TTF_CloseFont(mFont);
+	TTF_CloseFont(ttfFont);
 
-	mFont = TTF_OpenFont(FileManager::Get()->findFile(FileManager::Font, mFontName.c_str()).c_str(), ptSize);
-	mPtSize = ptSize;
+	BasicString font_file = FileManager::Get()->findFile(FileManager::Font, fontName.c_str());
+	ttfFont = TTF_OpenFont(font_file.c_str(), _ptSize);
+	ptSize = _ptSize;
 }
 
-
-void Font::setText(const BasicString& text)
+void Font::SetText(const char* _text, bool _wrapped, int _width)
 {
-	if (mFont != nullptr && !text.empty())
+	if(_text)
 	{
-		//Render text surface
-		SDL_Surface* textSurface = TTF_RenderText_Blended(mFont, text.c_str(), colour);
-		if (!textSurface)
+		text = _text;
+		wrapped = _wrapped;
+		width = _width;
+
+		if ( ttfFont != nullptr )
 		{
-			DebugPrint(Warning, "Unable to render text surface for text: %s! SDL_ttf Error: %s", text.c_str(), TTF_GetError());
+			// Render text surface
+			SDL_Surface* textSurface = nullptr;
+		
+			if(wrapped)
+				textSurface = TTF_RenderText_Blended_Wrapped(ttfFont, text.c_str(), colour, width);
+			else
+				textSurface = TTF_RenderText_Blended(ttfFont, text.c_str(), colour);
+
+			if ( textSurface )
+			{
+				RenderTextSurface(textSurface);
+			}
+			else
+			{
+				DebugPrint(Warning, "Unable to render text surface for text: %s! SDL_ttf Error: %s", text.c_str(), TTF_GetError());
+			}
 		}
 		else
 		{
-			renderTextSurface(textSurface);
+			if(ttfFont == nullptr)
+				DebugPrint(Error, "Font has not beed loaded for text: %s, Call Font::loadFromFile first", text);
 		}
-	}
-	else
-	{
-		if(mFont == nullptr)
-			DebugPrint(Error, "Font has not beed loaded for text: %s, Call Font::loadFromFile first", text);
 	}
 }
 
-
-
-
-
-void Font::setWrappedText(const BasicString& text, int width)
-{
-	if (mFont != nullptr && !text.empty())
-	{
-		SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(mFont, text.c_str(), colour, width);
-
-		if (!textSurface)
-		{
-			DebugPrint(Warning, "Unable to render wrapped text surface for text: %s! SDL_ttf Error: %s", text.c_str(), TTF_GetError());
-		}
-		else
-		{
-			renderTextSurface(textSurface);
-		}
-	}
-	else
-	{
-		if (mFont == nullptr)
-			DebugPrint(Error, "Font has not beed loaded for text: %s, Call Font::loadFromFile first", text);
-	}
-}
-
-
-
-void Font::render(const VectorF position) const
+void Font::Render(const VectorF position) const
 {
 	SDL_Rect renderQuad = { static_cast<int>(position.x),
 							static_cast<int>(position.y),
-							mSize.x, mSize.y };
+							size.x, size.y };
 
-	SDL_RenderCopyEx(mRenderer->sdlRenderer(), mTexture, nullptr, &renderQuad, 0.0, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer->sdlRenderer(), texture, nullptr, &renderQuad, 0.0, NULL, SDL_FLIP_NONE);
 }
 
 
 // -- Private Functions -- //
-void Font::renderTextSurface(SDL_Surface* textSurface)
+void Font::RenderTextSurface(SDL_Surface* textSurface)
 {
-	if (mTexture)
-		SDL_DestroyTexture(mTexture);
+	if (texture)
+		SDL_DestroyTexture(texture);
 
 	//Create texture from surface pixels
-	mRenderer->lock();
-	mTexture = SDL_CreateTextureFromSurface(mRenderer->sdlRenderer(), textSurface);
-	mRenderer->unlock();
+	renderer->lock();
+	texture = SDL_CreateTextureFromSurface(renderer->sdlRenderer(), textSurface);
+	renderer->unlock();
 
-	if (mTexture == nullptr)
+	if (texture == nullptr)
 		DebugPrint(Warning, "Unable to create texture from rendered text! SDL Error: %s", SDL_GetError());
 	else
-		mSize = Vector2D<int>(textSurface->w, textSurface->h);
+		size = Vector2D<int>(textSurface->w, textSurface->h);
 
 	// loaded surface no longer needed
 	SDL_FreeSurface(textSurface);

@@ -127,9 +127,12 @@ void BasicString::clear()
 	mLength = 0;
 }
 
-const char* BasicString::findSubString(const BasicString& subString) const
+const char* BasicString::FindSubString(const char* subString) const
 {
-	return strstr(mBuffer, subString.c_str());
+	if(mBuffer)
+		return strstr(mBuffer, subString);
+
+	return nullptr;
 }
 
 

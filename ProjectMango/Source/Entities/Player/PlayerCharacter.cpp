@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/GunComponents.h"
 #include "ECS/Components/Biome.h"
 #include "Game/Camera/Camera.h"
@@ -28,6 +29,7 @@ Entity Player::Spawn(const EntityMetaData& emd)
 	s_playerEntity = CreateEntity( "player" );
 
 	Inventory& inventory = AddComponent(Inventory, s_playerEntity);
+	inventory.LinkCoinDisplays();
 
 	//s_playerEntity = Character::CreateBasic(emd);
 	//const Config* config = GetConfig(s_playerEntity);
