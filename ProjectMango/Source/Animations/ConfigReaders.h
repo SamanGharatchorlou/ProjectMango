@@ -9,3 +9,9 @@ namespace AnimationReader
 {
 	void BuildAnimatior(ECS::Animator& animator, const char* file);
 };
+
+namespace CardReader
+{
+
+}
+

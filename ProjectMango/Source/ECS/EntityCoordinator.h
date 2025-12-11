@@ -89,7 +89,8 @@ namespace ECS
 
 		template<class T>
 		ComponentArray<T>& GetComponents(Component::Type type) { return *static_cast<ComponentArray<T>*>(components.componentArrays[type]); }
-
+		
+		void InitSystems();
 		void UpdateSystems(float dt);
 
 		void SetSystemPaused(Archetype type, bool is_paused);

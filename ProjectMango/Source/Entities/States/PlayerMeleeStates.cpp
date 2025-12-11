@@ -128,7 +128,7 @@ void JumpState::Init()
 	StartAnimation();
 	
 	Physics& physics = GetComponentRef(Physics, entity);
-	physics.speed.y = GetConfig(entity)->data.GetFloat("jump_impulse");
+	physics.speed.y = GetConfigFromEntity(entity)->data.GetFloat("jump_impulse");
 }
 
 void JumpState::Update(float dt)
@@ -222,7 +222,7 @@ void RollState::Init()
 	Physics& physics = GetComponentRef(Physics,entity);
 
 	const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = state.movementInput.toFloat() * GetConfig(entity)->data.GetFloat("roll_impulse");
+	physics.speed = state.movementInput.toFloat() * GetConfigFromEntity(entity)->data.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{
@@ -342,7 +342,7 @@ void BasicAttackState::Update(float dt)
 		if(attackCollider == EntityInvalid)
 		{					
 			const CharacterState& state = GetComponentRef(CharacterState, entity);
-			const Config* config = GetConfig(entity);
+			const Config* config = GetConfigFromEntity(entity);
 			attackCollider = CreateNewAttackCollider("player attack collider", config->data.GetFloat("basic_attack_damage"), config->data.GetFloat("basic_attack_force"));
 		}
 
@@ -391,7 +391,7 @@ void LungeAttackState::Update(float dt)
 	if(CanCreateAttackCollider(attackCollider))
 	{					
 		const CharacterState& state = GetComponentRef(CharacterState, entity);
-		const Config* config = GetConfig(entity);
+		const Config* config = GetConfigFromEntity(entity);
 		attackCollider = CreateNewAttackCollider("player lunge attack collider", config->data.GetFloat("jump_attack_damage"), config->data.GetFloat("jump_attack_force"));
 	}
 
@@ -502,7 +502,7 @@ void FloorSlamState::Update(float dt)
 
 			if( CanCreateAttackCollider(attackCollider))
 			{
-				const Config* config = GetConfig(entity);
+				const Config* config = GetConfigFromEntity(entity);
 				attackCollider = CreateNewAttackCollider( "player slam attack collider", config->data.GetFloat("slam_attack_damage"), config->data.GetFloat("slam_attack_force") );
 			}
 			

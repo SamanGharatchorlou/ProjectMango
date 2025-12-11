@@ -20,6 +20,7 @@ SColour::SColour(int hexValue)
 SColour::SColour(Enum colour)
 {
 	a = c_alphaMax;
+	type = colour;
 
 	switch (colour)
 	{
@@ -67,18 +68,18 @@ SColour::Enum SColour::GetColosestColour() const
 	//int r_diff;
 	//int g_diff;
 	//int b_diff;
-	int total_diff = INT_MAX;
+	double total_diff = INT_MAX;
 
 	for( u32 i = 1; i < Count; i++ )
 	{
 		Enum colour_type = (Enum)i;
 		SColour test_colour(colour_type);
 
-		int test_r_diff = r - test_colour.r;
-		int test_g_diff = g - test_colour.g;
-		int test_b_diff = b - test_colour.b;
+		double test_r_diff = r - test_colour.r;
+		double test_g_diff = g - test_colour.g;
+		double test_b_diff = b - test_colour.b;
 
-		int diff = sqrt( (test_r_diff*test_r_diff) + (test_g_diff*test_g_diff) + (test_b_diff*test_b_diff) );
+		double diff = sqrt( (test_r_diff*test_r_diff) + (test_g_diff*test_g_diff) + (test_b_diff*test_b_diff) );
 
 		if(diff < total_diff)
 		{

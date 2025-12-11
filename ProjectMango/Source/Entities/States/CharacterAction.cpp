@@ -101,7 +101,7 @@ Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 {
 	// adding everything something NEEDS to be an enemy... pretty much anyway
 	Entity entity = ECS::CreateEntity(emd);
-	const Config* config = ECS::GetConfig(entity);
+	const Config* config = ECS::GetConfigFromEntity(entity);
 	ASSERT(config != nullptr, "No characer congif for %s", emd.id.c_str());
 
 	AddComponent(Transform, entity);

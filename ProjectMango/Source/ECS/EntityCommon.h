@@ -45,6 +45,9 @@ namespace ECS
 			_entry( Arm ) \
 			_entry( Inventory ) \
 			_entry( CoinStack ) \
+			_entry( Card ) \
+			_entry( TurnState ) \
+			_entry( ActionRequest ) \
 
 	struct Component
 	{

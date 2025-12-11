@@ -19,7 +19,7 @@ namespace Magic
 		BasicString spell_id = id;
 		ECS::Entity entity = ECS::CreateEntity(spell_id.c_str(), true);
 
-		const Config* config = ECS::GetConfig(entity);
+		const Config* config = ECS::GetConfigFromEntity(entity);
 
 		// Transform
 		ECS::Transform& transform = AddComponent(Transform, entity);
@@ -62,7 +62,7 @@ namespace Magic
 	{
 		const char* id = "Fireball";
 		ECS::Entity entity = CreateBasicSpell(id, caster, target);
-		const Config* config = ECS::GetConfig(entity);
+		const Config* config = ECS::GetConfigFromEntity(entity);
 		
 		// direction
 		VectorF caster_position = ECS::Transform::GetObjectCenter(caster);

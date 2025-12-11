@@ -140,8 +140,10 @@ void DebugMenu::DoEntitySystemWindow()
             DoComponentDropdown(Biome);
             DoComponentDropdown(Arm);
             DoComponentDropdown(UIButton);
+            DoComponentDropdown(UIText);
             DoComponentDropdown(CoinStack);
             DoComponentDropdown(Inventory);
+            DoComponentDropdown(Card);
 
             ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
             for (u32 i = 0; i < ECS::Component::Count; i++) 

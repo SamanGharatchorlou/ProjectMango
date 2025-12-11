@@ -20,7 +20,7 @@ namespace ShockSweeper
 	{
 		Entity entity = Character::CreateBasicEnemy(emd);
 
-		const Config* config = ECS::GetConfig(entity);
+		const Config* config = ECS::GetConfigFromEntity(entity);
 
 		// CharacterState
 		CharacterState& character_state = AddComponent(CharacterState, entity);

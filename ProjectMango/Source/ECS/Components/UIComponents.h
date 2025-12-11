@@ -35,12 +35,21 @@ namespace ECS
 
 		COMPONENT_TYPE(UIText);
 
+		std::function<BasicString()> fn;
+
 		BasicString UID;
-		//BasicString text;
 		Font font;
+
+		// useful when part of another thing that has a sprite and we want to draw center to it
+		VectorF renderOffset;
+		bool center;
 		
 		void SetText(const char* text);
 		void SetColour(SColour::Enum colour);
+		void FitToSize(VectorF size);
+
+		void SetRenderOffsetToCenter();
+
 		void Render();
 	};
 }

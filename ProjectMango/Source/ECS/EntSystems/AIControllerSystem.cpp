@@ -77,7 +77,7 @@ namespace ECS
 				if (!ecs->IsAlive(aic.target))
 					continue;
 
-				const Config* config = GetConfig(entity);
+				const Config* config = GetConfigFromEntity(entity);
 				const float detect_range = config->data.GetFloat("alert_range");
 				const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
 				const float target_distance = distance.length();

@@ -233,7 +233,7 @@ namespace BlindingSpider
 				if(attackCollider == EntityInvalid)
 				{
 					const CharacterState& state = GetComponentRef(CharacterState, entity);
-					const Config* config = GetConfig(entity);
+					const Config* config = GetConfigFromEntity(entity);
 					attackCollider = CreateNewAttackCollider("player attack collider", config->data.GetFloat("basic_attack_damage"), config->data.GetFloat("basic_attack_force"));
 				}
 

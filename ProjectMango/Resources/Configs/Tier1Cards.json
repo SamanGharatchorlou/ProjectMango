@@ -1,0 +1,24 @@
+{
+	"Tier1Cards": [
+		{
+			"colour": "White",
+			"cost": [0,1,1,1,0]
+		},
+		{
+			"colour": "Black",
+			"cost": [0,0,0,2,1]
+		},
+		{
+			"colour": "Red",
+			"cost": [0,2,1,0,0]
+		},
+		{
+			"colour": "Green",
+			"cost": [1,1,1,0,0]
+		},
+		{
+			"colour": "Blue",
+			"cost": [0,0,0,0,3]
+		}
+	]
+}

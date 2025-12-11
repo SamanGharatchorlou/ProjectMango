@@ -6,12 +6,12 @@
 
 #include "Graphics/Raycast.h"
 #include "ECS/Components/Biome.h"
-#include "Scene/SceneParsing/EntityBuilder.h"
+#include "Entities/EntityBuilder.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Animator.h"
-#include "Animations/AnimationReader.h"
+#include "Animations/ConfigReaders.h"
 
 #include "ECS/Components/GunComponents.h"
 #include "Core/Helpers.h"
@@ -19,7 +19,7 @@
 
 using namespace ECS; 
 
-Entity CreateBasicBullet(Firearm& firearm)
+Entity CreateBasicBullet(ECS::Firearm& firearm)
 {
 	Entity handler = GetParent(firearm.entity);
 
@@ -28,7 +28,7 @@ Entity CreateBasicBullet(Firearm& firearm)
 	emd.position = GetPosition(firearm.entity);
 
 	Entity bullet_entity = CreateBasicObject(emd);
-	const Config* config = GetConfig(bullet_entity);
+	const Config* config = GetConfigFromEntity(bullet_entity);
 	
 	// direction
 	const Sprite& sprite = GetComponentRef(Sprite, firearm.entity);
@@ -42,7 +42,7 @@ Entity CreateBasicBullet(Firearm& firearm)
 
 	// start
 	const Transform& transform = GetComponentRef(Transform, firearm.entity);
-	const Config* firearm_config = GetConfig(firearm.entity);
+	const Config* firearm_config = GetConfigFromEntity(firearm.entity);
 	VectorF start_point = firearm_config->data.GetVectorF("barrel_end");
 
 	const Arm& arm = GetComponentRef(Arm, firearm.entity);
@@ -134,7 +134,7 @@ Entity EquipFirearm(Entity handler, const char* firearm_id)
 	Entity firearm_entity = CreateBasicObject(emd);
 	EntityData::SetParent(firearm_entity, handler);
 	
-	const Config* config = GetConfig(firearm_entity);
+	const Config* config = GetConfigFromEntity(firearm_entity);
 
 	// Firearm
 	Firearm& firearm = AddComponent(Firearm, firearm_entity);

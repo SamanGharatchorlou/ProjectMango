@@ -13,6 +13,8 @@ struct Config
 
 	//void Read(const char* path);
 
+	// dont want this settings data anymore
+	// just keep the Document around in stead, easier and i dont have to reimplement all the types
 	Settings data;
 
 	StringBuffer32 name;
@@ -43,3 +45,5 @@ public:
 
 	std::unordered_map<StringBuffer32, Config> mConfigs;
 };
+
+const Config* GetConfig(const char* config);

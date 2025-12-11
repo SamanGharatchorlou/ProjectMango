@@ -1,44 +1,52 @@
 #pragma once
 
-//#include "Map.h"
+//class XMLNode;
 
-class XMLNode;
+//class StringMap32 //: public Map<StringBuffer32, StringBuffer32>
+//{
+//public:
+//	StringMap32() { }
+//
+//	//void fillAtributes(const XMLNode& node);
+//	//void fillValues(const XMLNode& node);
+//
+//	StringBuffer32 at(const char* key) const { return mData.at(key); }
+//	bool contains(const char* key) const { return mData.count(key) > 0; }
+//
+//	const char* getString(const char* key) const;
+//	bool getBool(const char* key) const;
+//	float getFloat(const char* key) const;
+//	int getInt(const char* key) const;
+//	VectorF getVectorF(const char* x, const char* y) const;
+//	Vector2D<int> getVectorI(const char* x, const char* y) const;
+//
+//	std::unordered_map<StringBuffer32, StringBuffer32> mData;
+//};
 
-class StringMap32 //: public Map<StringBuffer32, StringBuffer32>
-{
-public:
-	StringMap32() { }
-
-	//void fillAtributes(const XMLNode& node);
-	//void fillValues(const XMLNode& node);
-
-	StringBuffer32 at(const char* key) const { return mData.at(key); }
-	bool contains(const char* key) const { return mData.count(key) > 0; }
-
-	const char* getString(const char* key) const;
-	bool getBool(const char* key) const;
-	float getFloat(const char* key) const;
-	int getInt(const char* key) const;
-	VectorF getVectorF(const char* x, const char* y) const;
-	Vector2D<int> getVectorI(const char* x, const char* y) const;
-
-	std::unordered_map<StringBuffer32, StringBuffer32> mData;
-};
-
+template<class T>
 struct SettingValues
 {
-	inline float operator [] (const char* label) const { return data.at(label); }
-	inline float& operator [] (const char* label) { return data[label]; }
+	inline T operator [] (const char* label) const { return data.at(label); }
+	inline T& operator [] (const char* label) { return data[label]; }
 
-	std::unordered_map<StringBuffer32, float> data;
+	std::unordered_map<StringBuffer32, T> data;
 };
 
-struct SettingStrings
-{
-	inline const char* operator [] (const char* label) const { return data.at(label).c_str(); }
-	inline BasicString& operator [] (const char* label) { return data[label]; }
+//struct SettingStrings
+//{
+//	inline const char* operator [] (const char* label) const { return data.at(label).c_str(); }
+//	inline BasicString& operator [] (const char* label) { return data[label]; }
+//
+//	std::unordered_map<StringBuffer32, BasicString> data;
+//};
 
-	std::unordered_map<StringBuffer32, BasicString> data;
+template<class T>
+struct SettingArrays
+{
+	inline std::vector<T> operator [] (const char* label) const { return data.at(label); }
+	inline std::vector<T>& operator [] (const char* label) { return data[label]; }
+
+	std::unordered_map<StringBuffer32, std::vector<T>> data;
 };
 
 struct Settings
@@ -80,6 +88,8 @@ struct Settings
 	
 	inline bool Contains(const char* key) const { return values.data.contains(key) || strings.data.contains(key); }
 
-	SettingStrings strings;
-	SettingValues values;
+	SettingValues<BasicString> strings;
+	SettingValues<float> values;
+
+	SettingArrays<float> floatArrays;
 };

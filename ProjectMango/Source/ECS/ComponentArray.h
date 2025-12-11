@@ -98,6 +98,10 @@ namespace ECS
 			u32 component_index = target_page->pageIndex * componentPageSize + target_page->size;
 
 			T* component = target_page->components + target_page->size;
+
+			// to make sure we have clean data call the desctructor to remove string buffers etc.
+			// then explicitally call the constructor here, to init any data before we use this
+			component->~T();
 			*component = T();
 			component->entity = entity;
 

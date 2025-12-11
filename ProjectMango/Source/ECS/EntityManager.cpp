@@ -16,14 +16,15 @@ namespace ECS
 		
 		if(EntityData* entity_data = GetComponent(EntityData, entity))
 		{
-			for( u32 i = 0; i < entity_data->children.size(); i++ )
+			for( int i = 0; i < entity_data->children.size(); i++ )
 			{
-				KillEntity(entity_data->children[i]);
+				KillEntity(entity_data->children[i--]);
 			}
 
 			if(EntityData* parent_entity_data = GetComponent(EntityData, entity_data->parent))
 			{
-				EraseSwap(parent_entity_data->children, entity);
+				std::vector<Entity>& vec = parent_entity_data->children;
+				vec.erase(std::remove(vec.begin(), vec.end(), entity), vec.end());
 			}
 		}
 

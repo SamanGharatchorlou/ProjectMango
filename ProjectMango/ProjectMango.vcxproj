@@ -149,18 +149,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Animations\AnimationReader.cpp" />
+    <ClCompile Include="Source\Animations\ConfigReaders.cpp" />
     <ClCompile Include="Source\Animations\CharacterStates.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
     <ClCompile Include="Source\Audio\SoundController.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp" />
+    <ClCompile Include="Source\ECS\Components\ComponentHelpers.cpp" />
     <ClCompile Include="Source\ECS\Components\GunComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\InputSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\SpellSystem.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\TurnActionSystem.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp" />
+    <ClCompile Include="Source\Entities\CardRegistry.cpp" />
     <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
     <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp" />
@@ -251,9 +255,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\EntityBuilder.cpp" />
     <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp" />
-    <ClCompile Include="Source\Scene\SceneParsing\UIEntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\UIEntityBuilder.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
@@ -266,6 +270,7 @@
     <ClCompile Include="Source\UI\Text\Font.cpp" />
     <ClCompile Include="Source\UI\Text\Text.cpp" />
     <ClCompile Include="Source\UI\UIManager.cpp" />
+    <ClCompile Include="Source\UI\UITextBindings.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
@@ -276,17 +281,21 @@
     <ClCompile Include="ThirdParty\imgui_sdl-master\imgui_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Animations\AnimationReader.h" />
+    <ClInclude Include="Source\Animations\ConfigReaders.h" />
     <ClInclude Include="Source\Animations\CharacterStates.h" />
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\Channel.h" />
     <ClInclude Include="Source\Audio\SoundController.h" />
+    <ClInclude Include="Source\ECS\Components\ComponentHelpers.h" />
     <ClInclude Include="Source\ECS\Components\GunComponents.h" />
     <ClInclude Include="Source\ECS\Components\SpellComponents.h" />
     <ClInclude Include="Source\ECS\Components\UIComponents.h" />
+    <ClInclude Include="Source\ECS\EntSystems\InputSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\SpellSystem.h" />
+    <ClInclude Include="Source\ECS\EntSystems\TurnActionSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h" />
+    <ClInclude Include="Source\Entities\CardRegistry.h" />
     <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
     <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h" />
     <ClInclude Include="Source\Entities\Player\PlayerCharacter.h" />
@@ -385,9 +394,9 @@
     <ClInclude Include="Source\Input\Cursor.h" />
     <ClInclude Include="Source\Input\InputManager.h" />
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h" />
+    <ClInclude Include="Source\Entities\EntityBuilder.h" />
     <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h" />
-    <ClInclude Include="Source\Scene\SceneParsing\UIEntityBuilder.h" />
+    <ClInclude Include="Source\Entities\UIEntityBuilder.h" />
     <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />

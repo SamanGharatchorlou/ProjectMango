@@ -12,8 +12,8 @@
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
 #include "Scene/SceneParsing/SceneReader.h"
-#include "Scene/SceneParsing/EntityBuilder.h"
-#include "Scene/SceneParsing/UIEntityBuilder.h"
+#include "Entities/EntityBuilder.h"
+#include "Entities/UIEntityBuilder.h"
 #include "Entities/Weapons/PickupCallbacks.h" 
 #include "System/Window.h"
 
@@ -23,6 +23,7 @@ void GameState::Init()
 {
 	ECS::RegisterAllComponents();
 	ECS::RegisterAllSystems();
+	ECS::ParseComponentData();
 
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
@@ -51,6 +52,9 @@ void GameState::Init()
 
 	// create cursor
 	CreateUIEntities();
+
+	// finally init all the systems
+	ecs->InitSystems();
 }
 
 void GameState::HandleInput()
@@ -93,8 +97,6 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
-
-
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);

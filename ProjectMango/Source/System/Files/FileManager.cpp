@@ -59,19 +59,23 @@ void FileManager::free()
 }
 
 
-FileManager::Folder FileManager::GetFolderFromPath(const char* directory)
+FileManager::Folder FileManager::GetFolderFromPath(const char* folder_path)
 {
 	for (int i = 0; i < Folder::Count; i++)
 	{
-		BasicString directory_path = directory;
+		BasicString directory_path = folder_path;
 		if (directory_path + "\\" == folderPaths[(Folder)i].path)
 			return static_cast<Folder>(i);
 	}
 
-	DebugPrint(Warning, "Folder path '%s' is not in the folder array", directory);
+	DebugPrint(Warning, "Folder path '%s' is not in the folder array", folder_path);
 	return Folder::None;
 }
 
+bool FileManager::IsFileInFolder(Folder folder, const char* full_path)
+{
+	return strstr(full_path, folderPaths[folder].path.c_str()) != nullptr;
+}
 
 BasicString FileManager::folderPath(const Folder folder) const
 {

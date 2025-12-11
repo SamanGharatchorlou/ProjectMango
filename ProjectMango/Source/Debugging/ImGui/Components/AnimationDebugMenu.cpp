@@ -84,7 +84,7 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			StringBuffer64 spriteName = TextureManager::Get()->getTextureName(sprite.texture);
 			if (spriteName.empty())
 				spriteName = "No sprite";
-			ImGui::Text("SpriteSheet: %s", spriteName.c_str());
+			ImGui::Text("Sprite: %s", spriteName.c_str());
 
 			ImGui::Text(sprite.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");
 

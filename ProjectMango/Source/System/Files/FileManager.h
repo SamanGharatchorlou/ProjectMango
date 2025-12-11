@@ -43,7 +43,8 @@ public:
 	void free();
 
 	BasicString folderPath(const Folder folder) const;
-	Folder GetFolderFromPath(const char* path) const;
+	Folder GetFolderFromPath(const char* folder_path) const;
+	bool IsFileInFolder(Folder folder, const char* full_path);
 
 	bool exists(const Folder folder, const char* name) const;
 	bool IsValidPath(const char* path) const;
@@ -60,6 +61,7 @@ public:
 	StringBuffer64 getItemName(const char* filePath) const;
 	StringBuffer64 getItemName(const fs::path& filePath) const;
 	StringBuffer64 getItemNameAndExt(const fs::path& filePath) const;
+
 
 	void GetFilesInFolder(const Folder folder, std::vector<BasicString>& out_files) const;
 	void GetFilesInFolder(const fs::path& directory, std::vector<BasicString>& out_files) const;

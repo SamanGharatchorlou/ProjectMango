@@ -161,7 +161,7 @@ void JumpState::Update(float dt)
 
 	if (input->isHeld(Button::Space))
 	{
-		if(cumulativeJump < GetConfig(entity)->data.GetFloat("jump_impulse"))
+		if(cumulativeJump < GetConfigFromEntity(entity)->data.GetFloat("jump_impulse"))
 		{
 			physics.speed.y += -200.0f;
 			cumulativeJump += 200.0f;
@@ -241,7 +241,7 @@ void RollState::Init()
 	Physics& physics = GetComponentRef(Physics,entity);
 
 	//const CharacterState& state = GetComponentRef(CharacterState, entity);
-	physics.speed = GetFacingDirectionVector(entity).toFloat() * GetConfig(entity)->data.GetFloat("roll_impulse");
+	physics.speed = GetFacingDirectionVector(entity).toFloat() * GetConfigFromEntity(entity)->data.GetFloat("roll_impulse");
 
 	if(Collider* collider = GetComponent(Collider, entity))
 	{

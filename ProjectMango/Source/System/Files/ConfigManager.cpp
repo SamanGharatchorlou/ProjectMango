@@ -13,25 +13,56 @@ ConfigManager* ConfigManager::Get()
 
 using namespace rapidjson;
 
+
 static void JSONReadData(const Value& doc_values, Settings& settings)
 {
 	for (Value::ConstMemberIterator itr = doc_values.MemberBegin(); itr != doc_values.MemberEnd(); ++itr)
 	{
-		if (itr->value.GetType() == kJsonType::Number)
-		{
-			settings.values[itr->name.GetString()] = itr->value.GetFloat();
-		}
-		else if (itr->value.GetType() == kJsonType::True)
-		{
-			settings.values[itr->name.GetString()] = true;
-		}
-		else if (itr->value.GetType() == kJsonType::False)
-		{
-			settings.values[itr->name.GetString()] = false;
-		}
-		else if (itr->value.GetType() == kJsonType::String)
-		{
-			settings.strings[itr->name.GetString()] = itr->value.GetString();
+		const char* id = itr->name.GetString();
+		switch( itr->value.GetType() )
+		{	
+			case kJsonType::Number:
+			{
+				settings.values[id] = itr->value.GetFloat();
+				break;
+			}
+			case kJsonType::True:
+			{
+				settings.values[id] = true;
+				break;
+			}
+			case kJsonType::False:
+			{
+				settings.values[id] = false;
+				break;
+			}
+			case kJsonType::String:
+			{
+				settings.strings[id] = itr->value.GetString();
+				break;
+			}
+			case kJsonType::Array:
+			{			
+				const rapidjson::Value& value = itr->value;
+
+				const Value::ConstArray& array = value.GetArray();
+			
+				if(array.Size() > 0)
+				{
+					if(array.begin()->GetType() == kJsonType::Number)
+					{
+						std::vector<float>& float_array = settings.floatArrays.data[id];
+						for( u32 i = 0; i < array.Size(); i++ )
+						{
+							float_array.push_back(array[i].GetFloat());
+						}
+					}
+
+				}
+				break;
+			}
+			default:
+				break;
 		}
 	}
 }
@@ -111,8 +142,13 @@ bool ConfigManager::Parse(const char* path)
 {
 	bool did_read = false;
 
-	if (FileManager::Get()->IsValidPath(path))
+	FileManager* fm = FileManager::Get();
+	if (fm->IsValidPath(path))
 	{
+		// if its an animation we read that somewhere else, no need to do it here
+		if(!fm->IsFileInFolder(FileManager::Config_Data, path))
+			return true;
+
 		// check ext then run xml or json?
 		JSONParser parser(path);
 
@@ -210,11 +246,18 @@ const Config* ConfigManager::GetConfig(const char* config)
 	}
 	else if(FileManager::Get()->exists(FileManager::Configs, config))
 	{
-		if(Parse(config))
+		BasicString full_path = (FileManager::Get()->findFile(FileManager::Configs, config));
+		if(Parse(full_path.c_str()))
 			return &mConfigs.at(config);
 		//return AddAndLoad(config);
 	}
 
 	DebugPrint(Warning, "No config in the config manager with name: %s", config);
 	return nullptr;
+}
+
+const Config* GetConfig(const char* config)
+{
+	//BasicString path = FileManager::Get()->findFile(FileManager::Configs, config);
+	return ConfigManager::Get()->GetConfig(config);
 }

@@ -2,6 +2,7 @@
 
 #include "Core/stack.h"
 #include "Entities/States/CharacterAction.h"
+#include "ComponentHelpers.h"
 
 class STexture;
 struct Config;
@@ -12,13 +13,6 @@ struct Config;
 namespace ECS
 {
 	struct Collider;
-
-	enum Direction { Up, Right, Down, Left, Count };
-
-	static const VectorI s_directions[Direction::Count] 
-	{ 
-		VectorI(0,-1), VectorI( 1, 0), VectorI(0, 1), VectorI(-1, 0)
-	};
 
 	struct EntityData
 	{
@@ -71,22 +65,11 @@ namespace ECS
 		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
 
-	enum class RenderLayer
-	{
-		None = -1,
-		Bottom = 0,
-		Scenery = 1,
-		Spell = 4,
-		Characters = 5,
-		BasicObject = 6,
-		UI = 8,
-		Top = 9,
-		Count = 10
-	};
-
 	struct Sprite
 	{
 		COMPONENT_TYPE(Sprite)
+
+		BasicString debug_id;
 
 		RectF subRect;
 		STexture* texture;
@@ -106,11 +89,12 @@ namespace ECS
 		void SetTexture(const char* label);
 	};
 	
-	static constexpr const char* c_noAudioId = "";
 
 	struct Audio
 	{
 		COMPONENT_TYPE(Audio)
+
+		static constexpr const char* c_noId = "";
 
 		struct Group
 		{
@@ -118,13 +102,13 @@ namespace ECS
 			int time;
 		};
 
-		std::unordered_map<const char*, Group> soundEffects;
+		std::unordered_map<BasicString, Group> soundEffects;
 
-		void Play(const char* sound_effect = c_noAudioId);
+		void Play(const char* sound_effect = c_noId);
 
 		// a group has a format like "GunShot 1", then each audio within that group will be
 		// GunShot 1-1, GunShot 1-2, etc. starting at 1 and ending until there is not another sequential number
-		void PopulateGroup(const char* group, int time = -1, const char* id = c_noAudioId);
+		void PopulateGroup(const char* group, int time = -1, const char* id = c_noId);
 	};
 
 	struct CharacterState
@@ -284,69 +268,120 @@ namespace ECS
 		VectorF GetPosition(VectorF relative_posision) const;
 	};
 
-	struct CoinStack
+	struct Coin
 	{
-		COMPONENT_TYPE(CoinStack)
-
-		enum ColourType
+		enum Type
 		{
 			White,
 			Blue,
 			Black,
 			Red,
 			Green,
-
 			Count
 		};
 
-		ColourType colourType;
+		inline static const std::unordered_map<StringBuffer32, Type> s_stringToType { 
+			{ "White",	White }, 
+			{ "Blue",	Blue }, 
+			{ "Black",	Black },
+			{ "Red",	Red },
+			{ "Green",	Green } 
+		};
+
+		inline static const std::unordered_map<Type, StringBuffer32> s_typeToString { 
+			{ White,	"White" }, 
+			{ Blue,		"Blue" }, 
+			{ Black,	"Black" },
+			{ Red,		"Red" },
+			{ Green,	"Green" } 
+		};
+				
+		inline static const std::unordered_map<Type, SColour> s_typeToColour { 
+			{ White,	SColour::White }, 
+			{ Blue,		SColour::Blue }, 
+			{ Black,	SColour::Black },
+			{ Red,		SColour::Red },
+			{ Green,	SColour::Green } 
+		};
+	};
+
+	struct CoinStack
+	{
+		COMPONENT_TYPE(CoinStack)
+
+		Coin::Type coinType;
 		SColour colour;
 
 		int remaining;
 		int capacity;
+
+		static CoinStack* GetCoinStack(Coin::Type type);
+	};
+
+	struct Card
+	{
+		static constexpr int c_tiers = 3;
+
+		COMPONENT_TYPE(Card)
+
+		Coin::Type colour;
+
+		// what to pay to aquire the card
+		int cost[Coin::Count] { 0 };
+
+		// how many coins it provides once owned
+		int power[Coin::Count] { 0 };
+
+		// points... for something, not sure yet
+		int points;
+
+		// tier 1,2,3
+		int tier;
 	};
 
 	struct Inventory
 	{
 		COMPONENT_TYPE(Inventory)
 
-		// amount of coins the player owns
-		int coins[CoinStack::Count] { 0 };
-		Entity coinDisplay[CoinStack::Count];
+		// amount of coins owned owns
+		int coins[Coin::Count] { 0 };
 
-		// find the entity IDs of the coin display text
-		void LinkCoinDisplays();
-		void SetCoinAmount(CoinStack::ColourType type, int amount);
+		// cards we own
+		std::vector<Card> cards;
+
+		void GetCardPower(int array[], int size) const;
+		void GetBuyingPower(int array[], int size) const; 
 	};
 
-	// ----------------------------------------------------------------------
-	// helpers
-	static u64 archetypeBit(ECS::Component::Type type)
+	struct TurnState
 	{
-		return (u64)1 << type;
-	}
+		COMPONENT_TYPE(TurnState)
 
-	Entity CreateEntity(const char* id, bool config_postfix = false);
-	//Entity CreateEntity(const char* id, const char* config);
-	Entity CreateEntity(const EntityMetaData& emd);
+		int turnIndex;
+		int initiative;
 
-	const char* GetName(Entity entity);
-	const Config* GetConfig(Entity entity);
-	//const Config* GetConfigFromID(const char* id);
+		int collectedCoins[Coin::Count] { 0 };
+		Entity collectedCard;
 
-	Entity GetParent(Entity child);
-	Entity GetFirstChild(Entity parent);
-	VectorF GetPosition(Entity entity);
-	RectF GetRect(Entity entity);
-	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
+		void ResetState();
+	};
 
-	// facing direction
-	SDL_RendererFlip GetFacingDirection(Entity entity);
-	VectorI GetFacingDirectionVector(Entity entity);
+	struct ActionRequest
+	{
+		COMPONENT_TYPE(ActionRequest)
 
-	void SetFacingDirection(Entity entity, SDL_RendererFlip direction);
-	void FlipFacingDirection(Entity entity);
-	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target);
+		enum Type
+		{
+			None,
+			CollectCoin,
+			AquireCard,
+			EndTurn,
+			UndoTurn
+		};
 
-	VectorI FacingDirectionToVector(SDL_RendererFlip facing);
+		Type request;
+
+		// coin stack to collect from, card to aquire
+		Entity target;
+	};
 }

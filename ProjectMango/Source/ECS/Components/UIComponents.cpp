@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 #include "Input/Cursor.h"
+#include "ECS/Components/Components.h"
 
 namespace ECS
 {
@@ -46,7 +47,7 @@ namespace ECS
 
 	// UIButton
 	// ------------------------------------------------------------------
-	UIText::UIText()
+	UIText::UIText() : center(false)
 	{
 		BasicString path = FileManager::Get()->findFile(FileManager::Font, c_defaultFont);
 		font.LoadFromFile(path.c_str(), c_defaultFontSize);
@@ -59,11 +60,54 @@ namespace ECS
 	{ 
 		//text = _text;
 		font.SetText(_text); 
+		if(center)
+			SetRenderOffsetToCenter();
 	}
 	
 	void UIText::SetColour(SColour::Enum _colour) 
 	{ 
 		font.colour = SColour(_colour).toSDL();
 		SetText(font.text.c_str());
+	}
+
+	void UIText::FitToSize(VectorF size)
+	{
+		int width = -1;
+		int height = -1;
+
+		int targetWidth = (int)size.x;
+		int targetHeight = (int)size.y;
+
+		int ptSize = font.GetPtSize();
+
+		TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
+
+		if (width > targetWidth || height > targetHeight)
+		{
+			while (width > targetWidth || height > targetHeight)
+			{
+				font.Resize(--ptSize);
+				TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
+			}
+		}
+		else
+		{
+			while (width < targetWidth && height < targetHeight)
+			{
+				font.Resize(++ptSize);
+				TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
+			}
+		}
+
+		font.SetText(font.text.c_str());
+	}
+
+	
+	void UIText::SetRenderOffsetToCenter()
+	{
+		const Transform& transform = GetComponentRef(Transform, entity);
+
+		renderOffset = VectorF(0,0);
+		renderOffset = transform.size * 0.5f - font.GetSize().toFloat() * 0.5f;
 	}
 }

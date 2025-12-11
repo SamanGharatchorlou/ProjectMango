@@ -6,4 +6,6 @@ namespace ECS
 	void RegisterAllSystems();
 
 	void RemoveAllComponents(Entity entity);
+
+	void ParseComponentData();
 }

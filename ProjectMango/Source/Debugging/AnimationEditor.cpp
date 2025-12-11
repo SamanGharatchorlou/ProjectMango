@@ -10,7 +10,7 @@
 #include "Input/InputManager.h"
 #include "Game/FrameRateController.h"
 #include "ECS/Components/Animator.h"
-#include "Animations/AnimationReader.h"
+#include "Animations/ConfigReaders.h"
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntSystems/AnimationSystem.h"

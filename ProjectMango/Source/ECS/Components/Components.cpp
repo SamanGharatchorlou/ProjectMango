@@ -15,91 +15,10 @@
 #include "Entities/Weapons/PickupCallbacks.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/ConfigManager.h"
-
-#include "Graphics/RenderManager.h"
-#include "ECS/EntSystems/RenderSystem.h"
 #include "Audio/AudioManager.h"
 
 namespace ECS
 {
-	Entity CreateEntity(const ECS::EntityMetaData& emd)
-	{
-		Entity entity = ecs->CreateNewEntity();
-		if (!emd.id.empty()) 
-		{ 
-			EntityData& ed = AddComponent(EntityData, entity); 
-			ed.id = emd.id; 
-			ed.subType = emd.type; 
-		}
-		return entity;
-	}
-
-	Entity CreateEntity(const char* id, bool config_postfix)
-	{
-		Entity entity = ecs->CreateNewEntity();
-		if (id)
-		{
-			EntityData& ed = AddComponent(EntityData, entity);
-			ed.id = id;
-			//if (config_postfix)
-			//{
-			//	char buffer[64];
-			//	snprintf(buffer, 64, "%sConfig", id);
-			//	ed.config = buffer;
-			//}
-		}
-
-		return entity;
-	}
-
-	//Entity CreateEntity(const EntityMetaData& emd)
-	//{
-	//	return CreateEntity(emd.id.c_str(), emd.idPostfix.c_str());
-	//}
-
-	const char* GetName(Entity entity)
-	{
-		if(EntityData* ed = GetComponent(EntityData, entity))
-			return ed->id.c_str();
-
-		return nullptr;
-	}
-
-	const Config* GetConfig(Entity entity)
-	{
-		const Config* config = nullptr;
-		if (const EntityData* ed = GetComponent(EntityData, entity))
-		{
-
-			config = ConfigManager::Get()->GetConfig(ed->id.c_str());
-
-			//if (ed->config.empty())
-			//{
-			//	DebugPrint(Warning, "Entity: '%s' has no config string in EntityData",
-			//		ed->id.empty() ? "No ID" : ed->id.c_str());
-
-			//	return nullptr;
-			//}
-
-			//config = ConfigManager::Get()->GetConfig(ed->config.c_str());
-			//if (!config)
-			//{
-			//	DebugPrint(Warning, "No config found for entity '%s' with config ID '%s'",
-			//		ed->id.empty() ? "No ID" : ed->id.c_str(), ed->config.c_str());
-			//}
-		}
-
-		return config;
-	}
-
-
-	//const Config* GetConfigFromID(const char* id)
-	//{
-	//	char buffer[64];
-	//	snprintf(buffer, 64, "%sConfig", id);
-	//	return ConfigManager::Get()->GetConfig(buffer);
-	//}
-
 	// EntityData
 	// ------------------------------------------------------------------
 	EntityData::EntityData() : 
@@ -291,6 +210,7 @@ namespace ECS
 	void Sprite::SetTexture(const char* label)
 	{
 		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
+		debug_id = label;
 	}
 
 	
@@ -776,179 +696,68 @@ namespace ECS
 
 	// Inventory
 	// ------------------------------------------------------------------
-	Inventory::Inventory()
+	Inventory::Inventory() { }
+	
+	void Inventory::GetCardPower(int array[], int size) const
 	{
-		for( u32 i = 0; i < CoinStack::Count; i++ )
+		memset(array, 0, sizeof(int) * size);
+		for( u32 i = 0; i < cards.size(); i++ )
 		{
-			coinDisplay[i] = EntityInvalid;
-		}
-	}
-
-	void Inventory::LinkCoinDisplays()
-	{
-		ComponentArray<UIText>& ui_texts =  GetAllComponents(UIText);
-		for( auto iter = ui_texts.entityToComponent.begin(); iter != ui_texts.entityToComponent.end(); iter++ )
-		{
-			UIText& ui_text = ui_texts.GetComponentByIndex(iter->second);
-			if( const char* string = ui_text.UID.FindSubString("InventoryCoins") )
+			for( int j = 0; j < size; j++ )
 			{
-				int offset = (int)strlen("InventoryCoins_");
-				string = string + offset;
-
-				if(StringCompare(string, "White"))
-				{
-					coinDisplay[CoinStack::White] = ui_text.entity;
-				}
-				if(StringCompare(string, "Blue"))
-				{
-					coinDisplay[CoinStack::Blue] = ui_text.entity;
-				}
-				if(StringCompare(string, "Black"))
-				{
-					coinDisplay[CoinStack::Black] = ui_text.entity;
-				}
-				if(StringCompare(string, "Red"))
-				{
-					coinDisplay[CoinStack::Red] = ui_text.entity;
-				}
-				if(StringCompare(string, "Green"))
-				{
-					coinDisplay[CoinStack::Green] = ui_text.entity;
-				}
+				array[j] += cards[i].power[j];
 			}
 		}
-
-		for( u32 i = 0; i < CoinStack::Count; i++ )
-		{
-			SetCoinAmount((CoinStack::ColourType)i, 0);
-		}
 	}
 
-	void Inventory::SetCoinAmount(CoinStack::ColourType type, int amount)
+	void Inventory::GetBuyingPower(int array[], int size) const
 	{
-		coins[type] = amount;
-		if(UIText* text = GetComponent(UIText, coinDisplay[type]))
+		memset(array, 0, sizeof(int) * size);
+
+		int card_power[Coin::Count] { 0 };
+		GetCardPower(card_power, size);
+
+		for( u32 i = 0; i < size; i++ )
 		{
-			StringBuffer32 buffer;
-			_itoa(amount, buffer.buffer(), 10);
-			text->SetText(buffer.c_str());
+			array[i] = coins[i] + card_power[i];
 		}
 	}
+
+	// Card
+	// ------------------------------------------------------------------
+	Card::Card() : colour(Coin::Count), points(0), tier(0) { }
+
 
 	// CoinStack
 	// ------------------------------------------------------------------
-	CoinStack::CoinStack() : capacity(0), remaining(0), colourType(Count), colour(SColour::None)
+	CoinStack::CoinStack() : capacity(0), remaining(0), coinType(Coin::Count), colour(SColour::None) { }
+	
+	CoinStack* CoinStack::GetCoinStack(Coin::Type type)
 	{
-
-	}
-
-
-	// helpers
-	// ------------------------------------------------------------------
-	Entity GetParent(Entity child)
-	{
-		if(EntityData* ed = GetComponent(EntityData, child))
+		ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
+		for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
 		{
-			return ed->parent;
-		}
-
-		return EntityInvalid;
-	}
-
-	Entity GetFirstChild(Entity parent)
-	{
-		if(EntityData* ed = GetComponent(EntityData, parent))
-		{
-			if(ed->children.size() > 0)
-				return ed->children.front();
-		}
-
-		return EntityInvalid;
-	}
-
-	VectorF GetPosition(Entity entity)
-	{	
-		if(Transform* transform = GetComponent(Transform, entity))
-		{
-			return transform->GetObjectCenter();
-		}
-
-		return VectorF::zero();
-	}
-
-	RectF GetRect(Entity entity)
-	{		
-		if(const Collider* collider = GetComponent(Collider, entity))
-		{
-			return collider->rect;
-		}
-		else if(Transform* transform = GetComponent(Transform, entity))
-		{
-			return transform->GetRect();
-		}
-
-		return RectF();
-	}
-
-	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation)
-	{
-		if (const Transform* transform = GetComponent(Transform, entity))
-		{
-			if (const ECS::Sprite* sprite = GetComponent(Sprite, entity))
+			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
+			if(coin_stack.coinType == type )
 			{
-				out_rotation = sprite->rotation;
-
-				RectF rect = transform->GetRect();
-				out_aboutPoint = rect.TopLeft() + (rect.Size() * sprite->flipPoint);
-				return true;
+				return &coin_stack;
 			}
 		}
 
-		return false;
+		return nullptr;
 	}
 
-	SDL_RendererFlip GetFacingDirection(Entity entity)
+	// Turn
+	// ------------------------------------------------------------------
+	TurnState::TurnState() : turnIndex(-1), collectedCard(EntityInvalid) { }
+
+	void TurnState::ResetState()
 	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
-		return sprite.flip;
+		memset(collectedCoins, 0, sizeof(int) * (int)Coin::Count);
+		collectedCard = EntityInvalid;
 	}
 
-	VectorI GetFacingDirectionVector(Entity entity)
-	{
-		return FacingDirectionToVector(GetFacingDirection(entity));
-	}
-
-	VectorI FacingDirectionToVector(SDL_RendererFlip facing)
-	{
-		int direction = (facing == SDL_FLIP_HORIZONTAL) ? -1 : 1;
-		return VectorI(direction, 0);
-	}
-
-	void SetFacingDirection(Entity entity, SDL_RendererFlip direction)
-	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
-
-		if (sprite.canFlip)
-			sprite.flip = direction;
-	}
-
-	void FlipFacingDirection(Entity entity)
-	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
-
-		if (sprite.canFlip)
-		{
-			if (sprite.flip == SDL_FLIP_HORIZONTAL)
-				sprite.flip = SDL_FLIP_NONE;
-			else
-				sprite.flip = SDL_FLIP_HORIZONTAL;
-		}
-	}
-
-	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target_entity)
-	{
-		VectorF self = GetPosition(entity);
-		VectorF target = GetPosition(target_entity);
-		return (target.x > self.x) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-	}
+	// ActionRequest
+	// ------------------------------------------------------------------
+	ActionRequest::ActionRequest() : request(None), target(EntityInvalid) { }
 }

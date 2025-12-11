@@ -4,12 +4,11 @@
 
 namespace ECS
 {
-	class UISystem : public EntitySystem
+	class TurnActionSystem : public EntitySystem
 	{
 	public:
-		UISystem(Archetype type) : EntitySystem(type) { }
+		TurnActionSystem(Archetype type) : EntitySystem(type) { }
 
-		void Init() override;
 		void Update(float dt) override;
 	};
 }

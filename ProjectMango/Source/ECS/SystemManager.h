@@ -8,13 +8,16 @@ namespace ECS
 	struct EntitySystem
 	{
 		EntitySystem(Signature sig) : signature(sig) { }
-
+		
+		virtual void Init() { };
 		virtual void Update(float dt) = 0;
 
 		std::vector<Entity> entities;
-		Signature signature;
+		Signature signature = 0;
 
-		int orderIndex;
+		const char* id = nullptr;
+
+		int orderIndex = -1;
 
 		// need to implement this below
 		// the signature can be an AND or OR match, defaults to OR
@@ -77,6 +80,24 @@ namespace ECS
 
 			entOrSystems.emplace_back(new T(type));
 			entOrSystems.back()->orderIndex = orderCounter++;
+		}
+
+		template<class T>
+		const T* GetSystem()
+		{
+			const char* id = typeid(T).name();
+			for (u32 i = 0; i < entAndSystems.size(); i++)
+			{
+				if( StringCompare(entAndSystems[i]->id, id) )
+					return &entAndSystems[i];
+			}
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{				
+				if( StringCompare(entOrSystems[i]->id, id) )
+					return &entOrSystems[i];
+			}
+
+			return nullptr;
 		}
 
 		void EntityAddType(Entity entity, Signature type)

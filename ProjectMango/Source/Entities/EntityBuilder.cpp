@@ -36,7 +36,7 @@ Entity CreateBasicObject(const char* id, VectorF size)
 Entity CreateBasicObject(const EntityMetaData& emd)
 {
 	Entity entity = CreateEntity(emd);
-	if (const Config* config = GetConfig(entity))
+	if (const Config* config = GetConfigFromEntity(entity))
 	{
 		// Transform
 		Transform& transform = AddComponent(Transform, entity);
@@ -77,7 +77,7 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 static Entity CreateAnimatedObject(const EntityMetaData& emd)
 {
 	Entity entity = CreateBasicObject(emd);
-	const Config* config = GetConfig(entity);
+	const Config* config = GetConfigFromEntity(entity);
 
 	// Animation
 	Animator& animator = AddComponent(Animator, entity);
@@ -173,11 +173,6 @@ Entity CreateRune(const EntityMetaData& emd)
 	return entity;
 }
 
-Entity CreateCard(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-	return entity;
-}
 
 Entity CreateCoinStack(const EntityMetaData& emd)
 {
@@ -190,27 +185,26 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 
 	// convert SColour into CoinStack colour
 	SColour::Enum colour_type = emd.colourMod.GetColosestColour();
-	CoinStack::ColourType type = CoinStack::ColourType::Count;
 	switch( colour_type )
 	{
 		case SColour::White:
-		coin_stack.colourType = CoinStack::ColourType::White;
+		coin_stack.coinType = Coin::White;
 		break;
 
 		case SColour::Blue:
-		coin_stack.colourType = CoinStack::ColourType::Blue;
+		coin_stack.coinType = Coin::Blue;
 		break;
 
 		case SColour::Black:
-		coin_stack.colourType = CoinStack::ColourType::Black;
+		coin_stack.coinType = Coin::Black;
 		break;	
 
 		case SColour::Red:
-		coin_stack.colourType = CoinStack::ColourType::Red;
+		coin_stack.coinType = Coin::Red;
 		break;
 		
 		case SColour::Green:
-		coin_stack.colourType = CoinStack::ColourType::Green;
+		coin_stack.coinType = Coin::Green;
 		break;
 
 		case SColour::Count:	
@@ -238,7 +232,9 @@ Entity CreateText(const EntityMetaData& emd)
 	// UIText
 	UIText& ui_text = AddComponent(UIText, entity);
 	ui_text.UID = emd.uid;
-	ui_text.font.Resize(50);
+	ui_text.font.Resize(emd.PtSize);
+	ui_text.center = emd.center;
+	
 
 	return entity;
 }
@@ -257,7 +253,7 @@ void CreateEntities(Entity& biome_entity)
 	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::Create;
 	CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
 	CreateEntitiyFunctions["Rune"] = CreateRune;
-	CreateEntitiyFunctions["Card"] = CreateCard;
+	CreateEntitiyFunctions["Card"] = CreateCardEntity;
 	CreateEntitiyFunctions["CoinStack"] = CreateCoinStack;
 	CreateEntitiyFunctions["Text"] = CreateText;
 

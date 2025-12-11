@@ -1,67 +1,73 @@
 #include "pch.h"
 #include "UISystem.h"
 
-#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/UIComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Input/InputManager.h"
-#include "Input/Cursor.h"
+#include "ECS/SystemManager.h"
+#include "Entities/Player/PlayerCharacter.h"
 #include "Game/Camera/Camera.h"
-#include "ECS/Components/Biome.h"
+#include "Game/States/GameState.h"
+#include "Game/SystemStateManager.h"
+#include "Input/Cursor.h"
 #include "System/Window.h"
-#include "Game/FrameRateController.h"
-#include "Core/Helpers.h"
+
+void SetupTextBindings(std::unordered_map<BasicString, std::function<BasicString()>>& text_bindings);
 
 namespace ECS
 {
+	std::unordered_map<BasicString, std::function<BasicString()>> s_textBindings;
+
+	// setup all text bindings
+	void UISystem::Init()
+	{
+		SetupTextBindings(s_textBindings);
+	}
+
 	void UISystem::Update(float dt)
 	{
-		const UICursor* cursor = UICursor::Get();
-		if(!cursor)
-			return;
+		// update cursor position
+		if(UICursor* cursor = UICursor::Get())
+		{
+			if (cursor->cursor)
+			{
+				Camera* camera = Camera::Get();
+				VectorF camera_offset = camera->GetRect().TopLeft();
+
+				// handle window scaling
+				int width = -1;
+				int height = -1;
+				SDL_GetWindowSize(GameData::Get().window->get(), &width, &height);
+				const VectorF real_window_size = VectorF((float)width, (float)height);
+				const VectorF fake_window_size = GameData::Get().window->size();
+				const float render_scale = real_window_size.x / fake_window_size.x;
+
+				Transform& transform = GetComponentRef(Transform, cursor->entity);
+				VectorF map_position = (cursor->cursor->position() / render_scale) + camera_offset;
+				transform.SetWorldPosition(map_position);
+			}
+		}
 
 		for (Entity entity : entities)
 		{
-			if(UICursor* ui_cursor = GetComponent(UICursor, entity))
+			UIText& text = GetComponentRef(UIText, entity);
+
+			if(!text.fn)
 			{
-				if (ui_cursor->cursor)
+				if(!text.UID.empty() && s_textBindings.contains(text.UID))
 				{
-					Camera* camera = Camera::Get();
-					VectorF camera_offset = camera->GetRect().TopLeft();
-
-					// handle window scaling
-					int width = -1;
-					int height = -1;
-					SDL_GetWindowSize(GameData::Get().window->get(), &width, &height);
-					const VectorF real_window_size = VectorF((float)width, (float)height);
-					const VectorF fake_window_size = GameData::Get().window->size();
-					const float render_scale = real_window_size.x / fake_window_size.x;
-
-					Transform& transform = GetComponentRef(Transform, entity);
-					VectorF map_position = (ui_cursor->cursor->position() / render_scale) + camera_offset;
-					transform.SetWorldPosition(map_position);
+					text.fn = s_textBindings.at(text.UID);
 				}
 			}
-			
-			InputManager* input = InputManager::Get();
-			const bool left_select = input->isCursorPressed(Cursor::ButtonType::Left);
-			
-			const FrameRateController& frc = FrameRateController::Get();
-			const int frame_count = frc.frameCount;
-
-			const UICursor* cursor = UICursor::Get();
-			VectorF cursor_pos = cursor->Position();
-
-			if(UIButton* ui_button = GetComponent(UIButton, entity))
+			else
 			{
-				if(left_select)
+				BasicString new_text = text.fn();
+				if( text.font.text != new_text )
 				{
-					Transform& transform = GetComponentRef(Transform, entity);
-					
-					if( Contains(transform.GetRect(), cursor_pos) )
-						ui_button->lastPressedFrameCount = frame_count;
+					text.SetText(new_text.c_str());
 				}
 			}
 		}
+
 	}
 }

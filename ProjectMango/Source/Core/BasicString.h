@@ -8,8 +8,11 @@ public:
 	BasicString(const char* string);
 	BasicString(const BasicString& string);
 	BasicString(const char* string, unsigned int length);
-	//BasicString(float number);
+	BasicString(int number);
 	//BasicString(float number, int precision);
+
+	// create a basic string without needing to allocate, can edit anything on it, since some one else owns it
+	static const BasicString Ref(const char* string);
 
 	~BasicString();
 
@@ -31,6 +34,7 @@ public:
 	void eliminate(); // Warning: does not delete buffer, but sets to nullptr
 
 	char*& buffer() { return mBuffer; }
+	const char* buffer() const { return mBuffer; }
 
 	BasicString& operator = (const char* string);
 	BasicString& operator = (const BasicString& string);
@@ -47,9 +51,11 @@ private:
 
 
 private:
-	char* mBuffer;
-	uint32_t mLength;
-	uint32_t mCap;
+	char* mBuffer = nullptr;
+	uint32_t mLength = 0;
+	uint32_t mCap = 0;
+
+	bool ownsBuffer = true;
 };
 
 

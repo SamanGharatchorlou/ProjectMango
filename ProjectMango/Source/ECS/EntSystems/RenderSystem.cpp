@@ -30,7 +30,7 @@ namespace ECS
 	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
 	{
 		const Transform& transform = GetComponentRef(Transform, ui_text.entity);
-		const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+		const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text.renderOffset, transform.size);
 
 		pack.font = &ui_text.font;
 		pack.rect = render_rect;
@@ -56,8 +56,6 @@ namespace ECS
 			// debug break point
 			if (DebugMenu::GetSelectedEntity() == entity)
 				int a = 4;
-			
-			RenderPack pack;
 
 			const Transform& transform = GetComponentRef(Transform, entity);
 			
@@ -70,23 +68,27 @@ namespace ECS
 
 				if(!camera_rect.Intersect(render_rect))
 					continue;
-
+				
+				RenderPack pack;
 				GenerateRenderPack(*sprite, pack);
+				renderer->AddRenderPacket(pack);
 			}
-			else if(const UIText* ui_text = GetComponent(UIText, entity))
+			
+			if(const UIText* ui_text = GetComponent(UIText, entity))
 			{
 				if(ui_text->font.text.empty())
 					continue;
 				
-				const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+				const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text->renderOffset, transform.size);
 								
 				if(!camera_rect.Intersect(render_rect))
 					continue;
-
+				
+				RenderPack pack;
 				GenerateRenderPack(*ui_text, pack);
+				renderer->AddRenderPacket(pack);
 			}
 
-			renderer->AddRenderPacket(pack);
 		}
 	}
 }

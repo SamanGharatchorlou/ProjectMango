@@ -20,41 +20,41 @@
 //	}
 //}
 
-const char* StringMap32::getString(const char* key) const
-{
-	return mData.at(key).c_str();
-}
-
-bool StringMap32::getBool(const char* key) const
-{
-	return toBool(mData.at(key).c_str());
-}
-
-float StringMap32::getFloat(const char* key) const
-{
-	return toFloat(mData.at(key).c_str());
-}
-
-int StringMap32::getInt(const char* key) const
-{
-	if (mData.contains(key))
-		return toInt(mData.at(key).c_str());
-	return 0;
-}
-
-VectorF StringMap32::getVectorF(const char* x, const char* y) const
-{
-	if( mData.contains(x) && mData.contains(y))
-		return toVectorF(mData.at(x).c_str(), mData.at(y).c_str());
-	return VectorF();
-}
-
-VectorI StringMap32::getVectorI(const char* x, const char* y) const
-{
-	if (mData.contains(x) && mData.contains(y))
-		return toVectorI(mData.at(x).c_str(), mData.at(y).c_str());
-	return VectorI();
-}
+//const char* StringMap32::getString(const char* key) const
+//{
+//	return mData.at(key).c_str();
+//}
+//
+//bool StringMap32::getBool(const char* key) const
+//{
+//	return toBool(mData.at(key).c_str());
+//}
+//
+//float StringMap32::getFloat(const char* key) const
+//{
+//	return toFloat(mData.at(key).c_str());
+//}
+//
+//int StringMap32::getInt(const char* key) const
+//{
+//	if (mData.contains(key))
+//		return toInt(mData.at(key).c_str());
+//	return 0;
+//}
+//
+//VectorF StringMap32::getVectorF(const char* x, const char* y) const
+//{
+//	if( mData.contains(x) && mData.contains(y))
+//		return toVectorF(mData.at(x).c_str(), mData.at(y).c_str());
+//	return VectorF();
+//}
+//
+//VectorI StringMap32::getVectorI(const char* x, const char* y) const
+//{
+//	if (mData.contains(x) && mData.contains(y))
+//		return toVectorI(mData.at(x).c_str(), mData.at(y).c_str());
+//	return VectorI();
+//}
 
 // Setttings
 VectorF Settings::GetVectorF(const char* x, const char* y) const

@@ -21,9 +21,13 @@
 #include "ECS/EntSystems/TileMapSystem.h"
 #include "ECS/EntSystems/TransformSystem.h"
 #include "ECS/EntSystems/UISystem.h"
+#include "ECS/EntSystems/InputSystem.h"
 #include "ECS/EntSystems/SpellSystem.h"
+#include "ECS/EntSystems/TurnActionSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 #include "ECS/Components/GunComponents.h"
+
+#include "Entities/CardRegistry.h"
 
 static constexpr u32 c_allEntities = 128;
 static constexpr u32 c_veryCommon = 64 ;
@@ -42,6 +46,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Animator, c_veryCommon);
 	DEFINE_COMPONENT(Health, c_veryCommon);
 	DEFINE_COMPONENT(Audio, c_veryCommon);
+	DEFINE_COMPONENT(Card, c_uncommon);
 
 	DEFINE_COMPONENT(EntityData, c_common)
 	DEFINE_COMPONENT(CharacterState, c_common);
@@ -57,7 +62,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Spawner, c_uncommon);
 	DEFINE_COMPONENT(UIButton, c_uncommon);
 	
-	DEFINE_COMPONENT(CoinStack, CoinStack::Count);
+	DEFINE_COMPONENT(CoinStack, Coin::Count);
 
 	DEFINE_COMPONENT(PlayerController, c_rare);
 	DEFINE_COMPONENT(Biome, c_rare);
@@ -65,6 +70,8 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Firearm, c_rare);
 	DEFINE_COMPONENT(Arm, c_rare);
 	DEFINE_COMPONENT(Inventory, c_rare);
+	DEFINE_COMPONENT(TurnState, c_rare);
+	DEFINE_COMPONENT(ActionRequest, c_rare);
 
 	DEFINE_COMPONENT(UICursor, 1);
 
@@ -78,15 +85,23 @@ void ECS::RemoveAllComponents(Entity entity)
 
 void ECS::RegisterAllSystems()
 {
-	// --------- input systems ---------
+	// --------- input/UI systems ---------
 	
 	// UI
-	Signature UISignature = ArcheBit(UICursor) | ArcheBit(UIButton);
+	Signature UISignature = ArcheBit(UIText);
 	ecs->RegisterOrSystem<UISystem>(UISignature);
+
+	// Input
+	Signature InputSignature = ArcheBit(UIButton);
+	ecs->RegisterOrSystem<InputSystem>(InputSignature);
 
 
 
 	// --------- higher-level systems ---------
+	
+	// TurnActionSystem
+	Signature turnActionSignature = ArcheBit(TurnState);
+	ecs->RegisterAndSystem<TurnActionSystem>(turnActionSignature); 
 
 	// Player Controller
 	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(CharacterState) | ArcheBit(Physics);
@@ -135,7 +150,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
 
 
-	
+
 	// --------- rendering systems ---------
 
 	// Animation
@@ -151,3 +166,9 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterOrSystem<RenderSystem>(renderSignature);
 }
 
+
+void ECS::ParseComponentData()
+{
+	// parse all the animation data here too, bank it, then read from it rather than parse it everytime
+	CardRegistry::Build("Tier1Cards");
+}

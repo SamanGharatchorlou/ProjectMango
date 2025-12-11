@@ -32,38 +32,40 @@ namespace ECS
 			{
 				arm->Update();
 			}			
-			if (Inventory* inventory = GetComponent(Inventory, entity))
-			{
-				ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
-				for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
-				{
-					CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
-					if(UIButton* button = GetComponent(UIButton, coin_stack.entity))
-					{
-						// take a coin from the coin stack
-						if(button->IsPressed())
-						{
-							if(coin_stack.remaining > 0)
-							{
-								// remove from stack
-								coin_stack.remaining--;
+			//if (Inventory* inventory = GetComponent(Inventory, entity))
+			//{
+			//	ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
+			//	for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
+			//	{
+			//		CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
+			//		if(UIButton* button = GetComponent(UIButton, coin_stack.entity))
+			//		{
+			//			// take a coin from the coin stack
+			//			if(button->IsPressed())
+			//			{
 
-								// add to inventory
-								//inventory->coins[coin_stack.colourType]++;
-								inventory->SetCoinAmount(coin_stack.colourType, inventory->coins[coin_stack.colourType] + 1 );
-							}
-						}
-					}
-				}
 
-				for( u32 i = 0; i < CoinStack::Count; i++ )
-				{
-					if(inventory->coinDisplay[i] == EntityInvalid)
-					{
+			//				if(coin_stack.remaining > 0)
+			//				{
+			//					// remove from stack
+			//					//coin_stack.remaining--;
 
-					}
-				}
-			}
+			//					// add to inventory
+			//					//inventory->coins[coin_stack.colourType]++;
+			//					//inventory->SetCoinAmount(coin_stack.colourType, inventory->coins[coin_stack.colourType] + 1 );
+			//				}
+			//			}
+			//		}
+			//	}
+
+			//	for( u32 i = 0; i < Coin::Count; i++ )
+			//	{
+			//		if(inventory->coinDisplay[i] == EntityInvalid)
+			//		{
+
+			//		}
+			//	}
+			//}
 		}
 	}
 }

@@ -47,6 +47,28 @@ namespace ECS
 		}
 	}
 
+	void EntityCoordinator::InitSystems()
+	{
+		for( u32 order = 0; order < systems.entAndSystems.size() + systems.entOrSystems.size(); order++ )
+		{
+			for (size_t i = 0; i < systems.entAndSystems.size(); i++)
+			{
+				if(systems.entAndSystems[i]->orderIndex != order)
+					continue;
+
+				systems.entAndSystems[i]->Init();
+			}
+
+			for (size_t i = 0; i < systems.entOrSystems.size(); i++)
+			{
+				if(systems.entOrSystems[i]->orderIndex != order)
+					continue;
+
+				systems.entOrSystems[i]->Init();
+			}
+		}
+	}
+
 	void EntityCoordinator::SetSystemPaused(Archetype type, bool is_paused)
 	{
 		for( u32 i = 0; i < systems.entAndSystems.size(); i++ )

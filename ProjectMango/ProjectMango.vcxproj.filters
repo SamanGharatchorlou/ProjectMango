@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Animations\AnimationReader.cpp">
+    <ClCompile Include="Source\Animations\ConfigReaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Audio\Audio.cpp">
@@ -330,7 +330,7 @@
     <ClCompile Include="Source\ECS\EntSystems\HealthSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneParsing\EntityBuilder.cpp">
+    <ClCompile Include="Source\Entities\EntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\EntSystems\ComponentUpdateSystem.cpp">
@@ -366,7 +366,7 @@
     <ClCompile Include="Source\Entities\Weapons\PickupCallbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneParsing\UIEntityBuilder.cpp">
+    <ClCompile Include="Source\Entities\UIEntityBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\UI\UIManager.cpp">
@@ -381,9 +381,24 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\CardRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\TurnActionSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Components\ComponentHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\InputSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UITextBindings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Animations\AnimationReader.h">
+    <ClInclude Include="Source\Animations\ConfigReaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Animations\CharacterStates.h">
@@ -1115,7 +1130,7 @@
     <ClInclude Include="Source\ECS\EntSystems\HealthSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneParsing\EntityBuilder.h">
+    <ClInclude Include="Source\Entities\EntityBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\ComponentUpdateSystem.h">
@@ -1151,7 +1166,7 @@
     <ClInclude Include="Source\Entities\Weapons\PickupCallbacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneParsing\UIEntityBuilder.h">
+    <ClInclude Include="Source\Entities\UIEntityBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\UI\UIManager.h">
@@ -1161,6 +1176,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\GunComponents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\CardRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\TurnActionSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\ComponentHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\InputSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include "Components.h"
 #include "Core/Helpers.h"
 #include "Animations/CharacterStates.h"
-#include "Animations/AnimationReader.h"
+#include "Animations/ConfigReaders.h"
 #include "System/Files/Config.h"
 
 namespace ECS

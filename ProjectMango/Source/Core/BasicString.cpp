@@ -26,6 +26,31 @@ BasicString::BasicString(const char* string, unsigned int length)
 	memcpy(mBuffer, string, mLength + 1);
 }
 
+
+const BasicString BasicString::Ref(const char* string)
+{
+	BasicString reference_string;
+	reference_string.mLength = (uint32_t)strlen(string);
+	reference_string.mCap = reference_string.mLength + 1;
+	reference_string.mBuffer = (char*)string;
+
+	reference_string.ownsBuffer = false;
+
+	return reference_string;
+}
+
+
+BasicString::BasicString(int number)
+{
+	char buf[32];
+    _itoa(number, buf, 10);
+
+	mLength = (uint32_t)strlen(buf);
+	mCap = mLength + 1;
+	mBuffer = new char[mCap];
+	assignTerminated(buf);
+}
+
 //BasicString::BasicString(float number)
 //{
 //	char tempBuffer[20];
@@ -58,7 +83,9 @@ BasicString::BasicString(const char* string, unsigned int length)
 
 BasicString::~BasicString()
 {
-	delete[] mBuffer;
+	if(ownsBuffer)
+		delete[] mBuffer;
+
 	eliminate();
 }
 
@@ -87,6 +114,9 @@ void BasicString::eliminate()
 
 void BasicString::SetLength(int length)
 {
+	if(!ownsBuffer)
+		return;
+
 	if (length >= mCap)
 	{
 		resizeBuffer(length);
@@ -107,6 +137,9 @@ BasicString BasicString::substr(int start, int length) const
 
 BasicString& BasicString::concat(const char* string)
 {
+	if(!ownsBuffer)
+		return *this;
+
 	const uint32_t str_len = (uint32_t)strlen(string);
 	if ((mLength + str_len) < mCap)
 	{
@@ -152,6 +185,9 @@ void BasicString::getInput(const BasicString& message)
 // --- Private Functions --- //
 void BasicString::assignTerminated(const char* string)
 {
+	if(!ownsBuffer)
+		return;
+
 	// i think i need this, copying an empty string breaks the code
 	if(string)
 	{
@@ -163,7 +199,11 @@ void BasicString::assignTerminated(const char* string)
 
 void BasicString::setNewBuffer(int size)
 {
+	if(!ownsBuffer)
+		return;
+
 	delete[] mBuffer;
+
 	eliminate();
 
 	if (size > 0)
@@ -176,6 +216,9 @@ void BasicString::setNewBuffer(int size)
 
 void BasicString::resizeBuffer(int size)
 {
+	if(!ownsBuffer)
+		return;
+
 	char* new_buffer = nullptr;
 
 	mCap = size;
@@ -231,6 +274,9 @@ bool operator == (const BasicString& basicString, const char* string)
 }
 bool operator == (const BasicString& basicStringA, const BasicString& basicStringB)
 {
+	if(basicStringA.buffer() == nullptr || basicStringB.buffer() == nullptr )
+		return basicStringA.buffer() == basicStringB.buffer();
+
 	return strncmp(basicStringA.c_str(), basicStringB.c_str(), basicStringA.length() + 1) == 0;
 }
 

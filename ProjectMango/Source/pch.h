@@ -36,6 +36,8 @@
 // Other
 #include <mutex>
 #include <Windows.h>
+#include <functional>
+
 // what dumb macros to define, it breaks using std::min/max
 #undef min  // Remove the macro definition from <Windows.h>
 #undef max  // Remove the macro definition from <Windows.h>

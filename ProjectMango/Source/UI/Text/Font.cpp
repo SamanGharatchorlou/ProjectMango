@@ -14,8 +14,6 @@ Font::~Font()
 
 Font& Font::operator =(const Font& font) 
 { 
-	DebugPrint(Error, "Do not use!"); 
-		
 	// cant copy these over, generate new ones
 	renderer = nullptr;
 	texture = nullptr;

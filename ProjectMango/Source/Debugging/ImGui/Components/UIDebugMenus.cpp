@@ -22,3 +22,21 @@ u32 DebugMenu::DoUIButtonDebugMenu(ECS::Entity& entity)
 
 	return (u32)type;
 }
+
+u32 DebugMenu::DoUITextDebugMenu(ECS::Entity& entity)
+{
+	ECS::Component::Type type = ECS::Component::UIText;
+
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	{
+		ECS::UIText& ui_text = GetComponentRef(UIText, entity);
+		ImGui::PushID(entity + (int)type);
+
+		const char* text = ui_text.font.text.c_str() ? ui_text.font.text.c_str() : "no text";
+		ImGui::Text("%s", ui_text.font.text.c_str() );
+
+		ImGui::PopID();
+	}
+
+	return (u32)type;
+}

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "AnimationReader.h"
+#include "ConfigReaders.h"
 
 #include "Animations/CharacterStates.h"
 #include "ECS/Components/Animator.h"

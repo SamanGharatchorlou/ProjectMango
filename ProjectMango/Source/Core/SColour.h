@@ -37,4 +37,6 @@ struct SColour
 	Uint8 g = c_rgbMax;
 	Uint8 b = c_rgbMax;
 	Uint8 a = c_alphaMax;
+
+	Enum type = Count;
 };

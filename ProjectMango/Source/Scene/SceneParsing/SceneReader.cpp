@@ -140,6 +140,20 @@ namespace Scene
 							data_out.uid = field_instance[i]["__value"].GetString();
 						}
 					}
+					if( StringCompare("Center", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsBool())
+						{
+							data_out.center = field_instance[i]["__value"].GetBool();
+						}
+					}
+					if( StringCompare("PtSize", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsInt())
+						{
+							data_out.PtSize = field_instance[i]["__value"].GetInt();
+						}
+					}
 				}
 			}
 		}
@@ -167,7 +181,6 @@ namespace Scene
 					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.id];
 					entity_data.push_back(emd);
 				}
-
 			}
 			else
 			{

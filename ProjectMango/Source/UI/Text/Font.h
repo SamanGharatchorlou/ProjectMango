@@ -37,6 +37,9 @@ public:
 	void SetText(const char* _text, bool wrapped = false, int width = -1);
 	void Resize(int ptSize);
 
+	int GetPtSize() const { return ptSize; }
+	VectorI GetSize() const { return size; }
+
 	Font& operator =(const Font& font);
 
 private:
