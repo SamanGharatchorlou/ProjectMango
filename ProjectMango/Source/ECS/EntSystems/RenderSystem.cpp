@@ -61,7 +61,7 @@ namespace ECS
 			
 			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
-				if(!sprite->texture || sprite->renderLayer == RenderLayer::None)
+				if(!sprite->texture || sprite->renderLayer == RenderLayer::None || sprite->disabled)
 					continue;
 			
 				const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);

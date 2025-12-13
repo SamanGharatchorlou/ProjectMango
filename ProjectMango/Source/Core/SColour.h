@@ -19,6 +19,7 @@ struct SColour
 		Black,
 		White,
 
+		Custom,
 		Count
 	};
 
@@ -30,6 +31,7 @@ struct SColour
 	void setOpacity(float opacity);
 
 	Enum GetColosestColour() const;
+	int GetHex() const { return (r << 16) | (g << 8) | b; }
 
 	SDL_Colour toSDL();
 

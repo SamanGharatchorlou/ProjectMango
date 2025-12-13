@@ -11,6 +11,7 @@
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/TileMap.h"

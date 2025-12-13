@@ -48,6 +48,7 @@ namespace ECS
 			_entry( Card ) \
 			_entry( TurnState ) \
 			_entry( ActionRequest ) \
+			_entry( UICheckbox ) \
 
 	struct Component
 	{

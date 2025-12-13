@@ -5,6 +5,7 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "ECS/Components/Physics.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 
 u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 {
@@ -58,9 +59,9 @@ u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 		ECS::CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
 		ImGui::PushID(entity + (int)type);
 		
-		SColour col = coin_stack.colour;
+		SColour col = ECS::Colour::s_typeToColour.at(coin_stack.colourType);
 		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(col.r, col.g, col.b, 255));
-		ImGui::Text("Type: %d", coin_stack.coinType);
+		//ImGui::Text("Type: %d", coin_stack.coinType);
 		ImGui::PopStyleColor();
 
 		ImGui::Text("Remaining: %d", coin_stack.remaining);
@@ -77,6 +78,35 @@ u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 	return (u32)type;
 }
 
+//u32 DebugMenu::DoColourDebugMenu(ECS::Entity& entity)
+//{
+//	ECS::Component::Type type = ECS::Component::Colour;
+//
+//	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+//	{
+//		//ECS::Colour& colour = GetComponentRef(Colour, entity);
+//		//ImGui::PushID(entity + (int)type);
+//		//
+//		////SColour col = coin_stack.colour;
+//		//ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(col.r, col.g, col.b, 255));
+//		//ImGui::Text("Type: %d", coin_stack.coinType);
+//		//ImGui::PopStyleColor();
+//
+//		//ImGui::Text("Remaining: %d", coin_stack.remaining);
+//		//ImGui::Text("Capacity: %d", coin_stack.capacity);
+//
+//		//if(ImGui::Button("Restock"))
+//		//{
+//		//	coin_stack.remaining = coin_stack.capacity;
+//		//}
+//
+//		ImGui::PopID();
+//	}
+//
+//	return (u32)type;
+//}
+
+
 u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 {
 	ECS::Component::Type type = ECS::Component::Inventory;
@@ -87,7 +117,7 @@ u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 		
 		ImGui::Text("Owned coins");
-		for( u32 i = 0; i < ECS::Coin::Count; i++ )
+		for( u32 i = 0; i < ECS::Colour::Count; i++ )
 		{
 			ImGui::Text("%d: %d", i, inventory.coins[i]);
 		}
@@ -108,9 +138,9 @@ u32 DebugMenu::DoCardDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 		
 		ImGui::Text("cost");
-		for( u32 i = 0; i < ECS::Coin::Count; i++ )
+		for( u32 i = 0; i < ECS::Colour::Count; i++ )
 		{
-			SColour colour = ECS::Coin::s_typeToColour.at((ECS::Coin::Type)i);
+			SColour colour = ECS::Colour::s_typeToColour.at((ECS::Colour::Type)i);
 			if(colour.type == SColour::Black)
 				colour = SColour(SColour::MidGrey);
 			

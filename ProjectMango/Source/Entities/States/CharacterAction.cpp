@@ -114,7 +114,7 @@ Entity Character::CreateBasic(const ECS::EntityMetaData& emd)
 	// Transform
 	Transform& transform = GetComponentRef(Transform, entity);
 	Collider& collider = GetComponentRef(Collider, entity);
-	transform.Init(config, emd.position, collider);
+	transform.Init(config, emd, collider);
 
 	// MovementPhysics
 	Physics& physics = GetComponentRef(Physics, entity);

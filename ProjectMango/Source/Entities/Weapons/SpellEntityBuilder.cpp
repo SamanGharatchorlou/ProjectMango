@@ -23,7 +23,8 @@ namespace Magic
 
 		// Transform
 		ECS::Transform& transform = AddComponent(Transform, entity);
-		transform.Init(config, VectorF());
+		transform.size = config->data.GetVectorF("size_x", "size_y");
+		transform.SetWorldPosition(VectorF());
 		
 		// Animation
 		ECS::Animator& animator = AddComponent(Animator, entity);

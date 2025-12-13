@@ -51,36 +51,6 @@ BasicString::BasicString(int number)
 	assignTerminated(buf);
 }
 
-//BasicString::BasicString(float number)
-//{
-//	char tempBuffer[20];
-//	sprintf_s(tempBuffer, "%.f", number);
-//
-//	mLength = (uint32_t)strlen(tempBuffer);
-//	mCap = mLength + 1;
-//
-//	mBuffer = new char[mCap];
-//	memcpy(mBuffer, tempBuffer, mCap);
-//}
-//
-//
-//BasicString::BasicString(float number, int precision)
-//{
-//	char tempBuffer[20];
-//
-//	char formatBuffer[5] = "%.";
-//	_itoa(precision, formatBuffer + 2, 10);
-//	strcat(formatBuffer, "f\0");
-//
-//	sprintf_s(tempBuffer, formatBuffer, number);
-//
-//	mLength = (uint32_t)strlen(tempBuffer);
-//	mCap = mLength + 1;
-//
-//	mBuffer = new char[mCap];
-//	memcpy(mBuffer, tempBuffer, mCap);
-//}
-
 BasicString::~BasicString()
 {
 	if(ownsBuffer)
@@ -95,22 +65,6 @@ void BasicString::eliminate()
 	mCap = 0;
 	mBuffer = nullptr;
 }
-
-//void BasicString::set(const char* string)
-//{
-//	uint32_t strLength = (uint32_t)strlen(string);
-//
-//	if (strLength < mCap)
-//	{
-//		assignTerminated(string);
-//		mBuffer[strLength + 1] = '\0';
-//	}
-//	else
-//	{
-//		resizeBuffer(strLength + 1);
-//		set(string);
-//	}
-//}
 
 void BasicString::SetLength(int length)
 {
@@ -206,7 +160,7 @@ void BasicString::setNewBuffer(int size)
 
 	eliminate();
 
-	if (size > 0)
+	//if (size > 0)
 	{
 		mCap = size + 1;
 		mBuffer = new char[mCap];
@@ -220,12 +174,17 @@ void BasicString::resizeBuffer(int size)
 		return;
 
 	char* new_buffer = nullptr;
-
+	
+	// recalculate the length if we need to
+	mLength = 0;
 	mCap = size;
+
 	if (mCap > 0)
 	{
 		new_buffer = new char[mCap];
-		mLength = Maths::Min(mCap - 1, mLength);
+
+		u32 length = (u32)strlen(mBuffer);
+		mLength = Maths::Min(mCap - 1, length);
 
 		if (mLength > 0)
 		{
@@ -242,9 +201,11 @@ void BasicString::resizeBuffer(int size)
 // Operator overloads
 BasicString& BasicString::operator = (const char* string)
 {
-	uint32_t length = (uint32_t)strlen(string);
-	if (length > 0)
+	if(!string)
+		resizeBuffer(0);
+	else
 	{
+		uint32_t length = (uint32_t)strlen(string);
 		if (length >= mCap)
 			setNewBuffer(length);
 
@@ -255,9 +216,11 @@ BasicString& BasicString::operator = (const char* string)
 
 BasicString& BasicString::operator = (const BasicString& basicString)
 {
-	unsigned int length = basicString.length();
-	if (length > 0)
+	if(basicString.buffer() == nullptr)
+		resizeBuffer(0);
+	else
 	{
+		uint32_t length = basicString.length();
 		if (length >= mCap)
 			setNewBuffer(length);
 

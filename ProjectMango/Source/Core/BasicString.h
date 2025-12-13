@@ -42,9 +42,10 @@ public:
 	const char* FindSubString(const char* subString) const;
 
 	void getInput(const BasicString& message);
+	
+	void setNewBuffer(int size);
 
 private:
-	void setNewBuffer(int size);
 	void resizeBuffer(int size);
 	
 	void assignTerminated(const char* string);

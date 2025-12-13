@@ -157,6 +157,7 @@
     <ClCompile Include="Source\Audio\SoundController.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp" />
     <ClCompile Include="Source\ECS\Components\ComponentHelpers.cpp" />
+    <ClCompile Include="Source\ECS\Components\GameComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\GunComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpellComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\UIComponents.cpp" />
@@ -269,6 +270,7 @@
     <ClCompile Include="Source\System\Window.cpp" />
     <ClCompile Include="Source\UI\Text\Font.cpp" />
     <ClCompile Include="Source\UI\Text\Text.cpp" />
+    <ClCompile Include="Source\UI\UIButtonBindings.cpp" />
     <ClCompile Include="Source\UI\UIManager.cpp" />
     <ClCompile Include="Source\UI\UITextBindings.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
@@ -288,6 +290,7 @@
     <ClInclude Include="Source\Audio\Channel.h" />
     <ClInclude Include="Source\Audio\SoundController.h" />
     <ClInclude Include="Source\ECS\Components\ComponentHelpers.h" />
+    <ClInclude Include="Source\ECS\Components\GameComponents.h" />
     <ClInclude Include="Source\ECS\Components\GunComponents.h" />
     <ClInclude Include="Source\ECS\Components\SpellComponents.h" />
     <ClInclude Include="Source\ECS\Components\UIComponents.h" />

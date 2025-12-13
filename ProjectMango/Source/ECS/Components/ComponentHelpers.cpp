@@ -72,6 +72,21 @@ namespace ECS
 		return EntityInvalid;
 	}
 
+	void DestroyChildren(Entity parent)
+	{
+		if(EntityData* ed = GetComponent(EntityData, parent))
+		{
+			// create a copy so the list doesnt change as we're looping it
+			std::vector<Entity> children = ed->children;
+			for( Entity child : children )
+			{
+				ecs->entities.KillEntity(child);
+			}
+
+			ed->children.clear();
+		}
+	}
+
 	VectorF GetPosition(Entity entity)
 	{	
 		if(Transform* transform = GetComponent(Transform, entity))

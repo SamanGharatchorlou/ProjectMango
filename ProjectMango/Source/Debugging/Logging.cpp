@@ -9,6 +9,8 @@ static constexpr PriorityLevel LogLevel = PriorityLevel::Log;
 
 #define TWEAK_ENABLE_LOGGING 1
 
+static std::unordered_map<BasicString, bool> s_loggings;
+
 static void PriorityLevelToText(PriorityLevel level, BasicString& out_text)
 {
 	switch (level)
@@ -49,6 +51,42 @@ void DebugPrint(PriorityLevel priority, const char* format, ...)
 		va_end(arg);
 
 		fprintf(stdout, "\n");
+	}
+#endif
+}
+
+void DebugPrintOnce(PriorityLevel priority, const char* format, ...)
+{
+#if TWEAK_ENABLE_LOGGING
+	if (priority <= LogLevel)
+	{
+		va_list arg;
+		va_start(arg, format);
+
+		va_list args_copy;
+		va_copy(args_copy, arg);
+
+		// use args_copy for size calculation
+        int len = vsnprintf(nullptr, 0, format, args_copy);
+        va_end(args_copy);
+
+		BasicString string;
+		string.setNewBuffer(len);
+
+		vsnprintf(string.buffer(), string.bufferLength(), format, arg);
+		va_end(arg);
+
+		if(s_loggings.contains(string))
+			return;
+
+		s_loggings[string] = true;
+
+		BasicString log_level;
+		PriorityLevelToText(priority, log_level);
+		if(!log_level.empty())
+			fprintf(stdout, "%s: ", log_level.c_str());
+
+		fprintf( stdout, "%s\n", string.c_str() );
 	}
 #endif
 }

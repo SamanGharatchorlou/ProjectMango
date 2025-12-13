@@ -34,7 +34,7 @@ namespace ECS
 
 	// UIButton
 	// ------------------------------------------------------------------
-	UIButton::UIButton() : lastPressedFrameCount(-100) { }
+	UIButton::UIButton() : lastPressedFrameCount(-100), toggle(false) { }
 	
 	bool UIButton::IsPressed(int frame_buffer) const
 	{
@@ -64,9 +64,9 @@ namespace ECS
 			SetRenderOffsetToCenter();
 	}
 	
-	void UIText::SetColour(SColour::Enum _colour) 
+	void UIText::SetColour(SColour scolour) 
 	{ 
-		font.colour = SColour(_colour).toSDL();
+		font.colour = scolour.toSDL();
 		SetText(font.text.c_str());
 	}
 
@@ -110,4 +110,10 @@ namespace ECS
 		renderOffset = VectorF(0,0);
 		renderOffset = transform.size * 0.5f - font.GetSize().toFloat() * 0.5f;
 	}
+
+
+	// UICheckbox
+	// ------------------------------------------------------------------
+	UICheckbox::UICheckbox() : isOn(false) { }
+
 }

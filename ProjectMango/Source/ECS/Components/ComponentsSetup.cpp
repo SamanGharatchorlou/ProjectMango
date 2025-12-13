@@ -6,6 +6,7 @@
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 #include "ECS/Components/SpellComponents.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Biome.h"
@@ -61,8 +62,9 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Pickup, c_uncommon);
 	DEFINE_COMPONENT(Spawner, c_uncommon);
 	DEFINE_COMPONENT(UIButton, c_uncommon);
+	DEFINE_COMPONENT(UICheckbox, c_uncommon);
 	
-	DEFINE_COMPONENT(CoinStack, Coin::Count);
+	DEFINE_COMPONENT(CoinStack, Colour::Count);
 
 	DEFINE_COMPONENT(PlayerController, c_rare);
 	DEFINE_COMPONENT(Biome, c_rare);
@@ -88,7 +90,7 @@ void ECS::RegisterAllSystems()
 	// --------- input/UI systems ---------
 	
 	// UI
-	Signature UISignature = ArcheBit(UIText);
+	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton) | ArcheBit(UICheckbox);
 	ecs->RegisterOrSystem<UISystem>(UISignature);
 
 	// Input
@@ -170,5 +172,7 @@ void ECS::RegisterAllSystems()
 void ECS::ParseComponentData()
 {
 	// parse all the animation data here too, bank it, then read from it rather than parse it everytime
-	CardRegistry::Build("Tier1Cards");
+	CardRegistry::Build("Tier1Cards", 0);
+	CardRegistry::Build("Tier2Cards", 1);
+	CardRegistry::Build("Tier3Cards", 2);
 }

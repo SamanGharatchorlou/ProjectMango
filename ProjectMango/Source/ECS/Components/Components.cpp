@@ -3,7 +3,6 @@
 
 #include "Animations/CharacterStates.h"
 #include "Core/Helpers.h"
-#include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
@@ -64,12 +63,12 @@ namespace ECS
 		center(0.5f, 0.5f)
 	{ }
 
-	void Transform::Init(const Config* config, VectorF pos)
+	void Transform::Init(const Config* config, const EntityMetaData& emd)
 	{
 		if(config)
 		{
 			size = config->data.GetVectorF("size_x", "size_y");
-			pos = pos - (size / 2.0f);
+			VectorF pos = emd.position - (size * emd.pivotPoint);
 
 			SetWorldPosition(pos);
 
@@ -93,9 +92,9 @@ namespace ECS
 		collider.InitFromTransform(*this);
 	}
 	
-	void Transform::Init(const Config* config, VectorF pos, Collider& collider)
+	void Transform::Init(const Config* config, const EntityMetaData& emd, Collider& collider)
 	{
-		Init(config, pos);
+		Init(config, emd);
 		InitCollider(collider);
 	}
 
@@ -194,7 +193,8 @@ namespace ECS
 		flip(SDL_FLIP_NONE),
 		canFlip(true),
 		rotation(0),
-		renderLayer(RenderLayer::None)
+		renderLayer(RenderLayer::None),
+		disabled(false)
 	{ }
 
 	void Sprite::Init(const Config* config)
@@ -692,72 +692,4 @@ namespace ECS
 
 		return c_invalidVector;
 	}
-
-
-	// Inventory
-	// ------------------------------------------------------------------
-	Inventory::Inventory() { }
-	
-	void Inventory::GetCardPower(int array[], int size) const
-	{
-		memset(array, 0, sizeof(int) * size);
-		for( u32 i = 0; i < cards.size(); i++ )
-		{
-			for( int j = 0; j < size; j++ )
-			{
-				array[j] += cards[i].power[j];
-			}
-		}
-	}
-
-	void Inventory::GetBuyingPower(int array[], int size) const
-	{
-		memset(array, 0, sizeof(int) * size);
-
-		int card_power[Coin::Count] { 0 };
-		GetCardPower(card_power, size);
-
-		for( u32 i = 0; i < size; i++ )
-		{
-			array[i] = coins[i] + card_power[i];
-		}
-	}
-
-	// Card
-	// ------------------------------------------------------------------
-	Card::Card() : colour(Coin::Count), points(0), tier(0) { }
-
-
-	// CoinStack
-	// ------------------------------------------------------------------
-	CoinStack::CoinStack() : capacity(0), remaining(0), coinType(Coin::Count), colour(SColour::None) { }
-	
-	CoinStack* CoinStack::GetCoinStack(Coin::Type type)
-	{
-		ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
-		for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
-		{
-			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
-			if(coin_stack.coinType == type )
-			{
-				return &coin_stack;
-			}
-		}
-
-		return nullptr;
-	}
-
-	// Turn
-	// ------------------------------------------------------------------
-	TurnState::TurnState() : turnIndex(-1), collectedCard(EntityInvalid) { }
-
-	void TurnState::ResetState()
-	{
-		memset(collectedCoins, 0, sizeof(int) * (int)Coin::Count);
-		collectedCard = EntityInvalid;
-	}
-
-	// ActionRequest
-	// ------------------------------------------------------------------
-	ActionRequest::ActionRequest() : request(None), target(EntityInvalid) { }
 }

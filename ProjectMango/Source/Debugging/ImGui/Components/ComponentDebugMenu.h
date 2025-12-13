@@ -22,6 +22,7 @@ namespace DebugMenu
 	u32 DoCoinStackDebugMenu(ECS::Entity& entity);
 	u32 DoInventoryDebugMenu(ECS::Entity& entity);
 	u32 DoCardDebugMenu(ECS::Entity& entity);
+	u32 DoColourDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 

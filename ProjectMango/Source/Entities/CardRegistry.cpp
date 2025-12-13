@@ -1,22 +1,21 @@
 #include "pch.h"
-
 #include "CardRegistry.h"
+
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
+#include "ECS/Components/UIComponents.h"
 #include "System/Files/JSONParser.h"
 #include "ECS/EntityCoordinator.h"
 #include "Entities/UIEntityBuilder.h"
 #include "Graphics/TextureManager.h"
 
+using namespace ECS;
+
 namespace CardRegistry
 {
-	struct CardTierGroup
-	{
-		std::vector<ECS::Card> cards;
-	};
+	std::vector<Card> s_cardRegistry;
 
-	CardTierGroup s_cardRegistry[ECS::Card::c_tiers];
-
-	void Build(const char* file)
+	void Build(const char* file, int tier_index)
 	{
 		using namespace rapidjson;
 
@@ -35,25 +34,27 @@ namespace CardRegistry
 			return;
 		}
 
-		//parser.Print();
-
-		if(parser.document.HasMember("Tier1Cards"))
+		if(parser.document.HasMember("Cards"))
 		{
-			if(parser.document["Tier1Cards"].IsArray())
+			if(parser.document["Cards"].IsArray())
 			{
-				const Value::Array& t1_cards = parser.document["Tier1Cards"].GetArray();
+				const Value::Array& cards = parser.document["Cards"].GetArray();
 
-				CardTierGroup& tier_1 = s_cardRegistry[0];
-				tier_1.cards.resize(t1_cards.Size());
+				int registry_size = s_cardRegistry.size();
+				s_cardRegistry.resize(registry_size + cards.Size());
 
-				for( u32 i = 0; i < t1_cards.Size(); i++ )
+				for( u32 i = 0; i < cards.Size(); i++ )
 				{
-					const Value& value = t1_cards[i];
-					ECS::Card& card = tier_1.cards[i];
+					const Value& value = cards[i];
+					const int registry_index = registry_size + i;
+					Card& card = s_cardRegistry[registry_index];
 
 					StringBuffer32 label = value["colour"].GetString();
-					card.colour = ECS::Coin::s_stringToType.at( label );
+					Colour::Type type = Colour::s_stringToType.at( label );
+					card.colour = type;
 					card.power[card.colour] = 1;
+					card.cardRegistryIndex = registry_index;
+					card.tier = tier_index;
 
 					const Value::ConstArray& cost = value["cost"].GetArray();
 					for( u32 c = 0; c < cost.Size(); c++ )
@@ -64,28 +65,69 @@ namespace CardRegistry
 			}
 		}
 	}
-
-	void GetRandomTier1Card(ECS::Card& card)
+	
+	const Card* LookupCard(int index)
 	{
-		// we need to keep this, wipe everything else
-		ECS::Entity entity = card.entity;
+		if(index < 0 || index >= s_cardRegistry.size())
+			return nullptr;
 
-		CardTierGroup& gp = s_cardRegistry[0];
-		int random_index = Maths::randomNumberBetween( 0, (int)gp.cards.size());
-		card = gp.cards[random_index];
-		card.entity = entity;
-		
-		// update the colour
-		ECS::Sprite& sprite = GetComponentRef(Sprite, card.entity);
-		sprite.colourMod = SColour( ECS::Coin::s_typeToColour.at(card.colour) );
+		return &s_cardRegistry[index];
 	}
 
-	
-	void ReplaceCard(ECS::Card& card)
-	{	
-		RecreateCardFromCard(card.entity);
+	void GetCard(Card& card, int index)
+	{
+		if(index >= 0 && index < s_cardRegistry.size())
+		{
+			CopyComponent(card, s_cardRegistry[index]);
+		
+			// update the colour
+			Sprite& sprite = GetComponentRef(Sprite, card.entity);
+			sprite.colourMod = SColour( Colour::s_typeToColour.at(card.colour) );
 
-		// destroy the old card (and its children)
-		ecs->entities.KillEntity(card.entity);
+			if(HasComponent(UIButton, card.entity ))
+				card.RegenerateChildDisplays();
+		}
+	}
+
+	int PickRandomIndex(int tier)
+	{
+		std::vector<int> indexes;
+		for( int i = 0; i < s_cardRegistry.size(); i++ )
+		{
+			if(s_cardRegistry[i].tier == tier)
+				indexes.push_back(i);
+		}
+
+		int random_index = Maths::randomNumberBetween( 0, (int)indexes.size());
+		return indexes[random_index];
+	}
+	
+	void RemoveCard(Entity entity)
+	{
+		if(Card* card = GetComponent(Card, entity))
+		{
+			RemoveComponent(Card, entity);
+		}
+		
+		// remove the child displays
+		DestroyChildren(entity);
+		
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+		sprite.disabled = true;
+	}
+
+	void DrawCard(Entity entity, int index)
+	{
+		if(entity != EntityInvalid)
+		{
+			if(!HasComponent(Card, entity))
+			{
+				Card& new_card = AddComponent(Card, entity);
+				CardRegistry::GetCard(new_card, index);
+
+				Sprite& sprite = GetComponentRef(Sprite, entity);
+				sprite.disabled = false;
+			}
+		}
 	}
 }

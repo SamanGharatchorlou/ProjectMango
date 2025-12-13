@@ -71,6 +71,12 @@ bool EraseSwap(std::vector<T>& vector, const T& item)
 	return false;
 }
 
+template<typename T>
+void Erase(std::vector<T>& vec, const T& item)
+{
+	vec.erase(std::remove(vec.begin(), vec.end(), item), vec.end());
+}
+
 static float DotProduct(VectorF a, VectorF b)
 {
 	return a.x * b.x + a.y * b.y;

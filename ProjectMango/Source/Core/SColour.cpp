@@ -8,6 +8,7 @@ SColour::SColour(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
 	g = green;
 	b = blue;
 	a = alpha;
+	type = Custom;
 }
 
 SColour::SColour(int hexValue)
@@ -15,6 +16,7 @@ SColour::SColour(int hexValue)
 	r = (Uint8)((hexValue >> 16) & 0xFF);
 	g = (Uint8)((hexValue >> 8) & 0xFF);
 	b = (Uint8)((hexValue) & 0xFF);
+	type = Custom;
 }
 
 SColour::SColour(Enum colour)
@@ -54,13 +56,13 @@ SColour::SColour(Enum colour)
 	case White:
 		r = 255; g = 255; b = 255;
 		break;
+	case Custom:
 	default:
 		r = 0; g = 0; b = 0;
 		DebugPrint(Warning, "Render colour has not been defined");
 		break;
 	}
 }
-
 
 SColour::Enum SColour::GetColosestColour() const
 {

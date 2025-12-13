@@ -10,6 +10,7 @@ struct Config;
 // when adding a component, define it in EntityCommon.h
 // then setup how its updated in ComponentsSetup
 
+// more generic components go here
 namespace ECS
 {
 	struct Collider;
@@ -47,8 +48,8 @@ namespace ECS
 
 		bool ignoreOutOfBounds;
 		
-		void Init(const Config* config, VectorF pos, Collider& collider);
-		void Init(const Config* config, VectorF pos);
+		void Init(const Config* config, const EntityMetaData& emd, Collider& collider);
+		void Init(const Config* config, const EntityMetaData& emd);
 		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
@@ -83,6 +84,8 @@ namespace ECS
 		// in degress (because of the render function input)
 		float rotation; 
 		RenderLayer renderLayer;
+
+		bool disabled;
 		
 		void Init(const Config* config);
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
@@ -266,122 +269,5 @@ namespace ECS
 
 		// pass in a relative position i.e. 0 - 1, and gives the position based on flip and rotaion
 		VectorF GetPosition(VectorF relative_posision) const;
-	};
-
-	struct Coin
-	{
-		enum Type
-		{
-			White,
-			Blue,
-			Black,
-			Red,
-			Green,
-			Count
-		};
-
-		inline static const std::unordered_map<StringBuffer32, Type> s_stringToType { 
-			{ "White",	White }, 
-			{ "Blue",	Blue }, 
-			{ "Black",	Black },
-			{ "Red",	Red },
-			{ "Green",	Green } 
-		};
-
-		inline static const std::unordered_map<Type, StringBuffer32> s_typeToString { 
-			{ White,	"White" }, 
-			{ Blue,		"Blue" }, 
-			{ Black,	"Black" },
-			{ Red,		"Red" },
-			{ Green,	"Green" } 
-		};
-				
-		inline static const std::unordered_map<Type, SColour> s_typeToColour { 
-			{ White,	SColour::White }, 
-			{ Blue,		SColour::Blue }, 
-			{ Black,	SColour::Black },
-			{ Red,		SColour::Red },
-			{ Green,	SColour::Green } 
-		};
-	};
-
-	struct CoinStack
-	{
-		COMPONENT_TYPE(CoinStack)
-
-		Coin::Type coinType;
-		SColour colour;
-
-		int remaining;
-		int capacity;
-
-		static CoinStack* GetCoinStack(Coin::Type type);
-	};
-
-	struct Card
-	{
-		static constexpr int c_tiers = 3;
-
-		COMPONENT_TYPE(Card)
-
-		Coin::Type colour;
-
-		// what to pay to aquire the card
-		int cost[Coin::Count] { 0 };
-
-		// how many coins it provides once owned
-		int power[Coin::Count] { 0 };
-
-		// points... for something, not sure yet
-		int points;
-
-		// tier 1,2,3
-		int tier;
-	};
-
-	struct Inventory
-	{
-		COMPONENT_TYPE(Inventory)
-
-		// amount of coins owned owns
-		int coins[Coin::Count] { 0 };
-
-		// cards we own
-		std::vector<Card> cards;
-
-		void GetCardPower(int array[], int size) const;
-		void GetBuyingPower(int array[], int size) const; 
-	};
-
-	struct TurnState
-	{
-		COMPONENT_TYPE(TurnState)
-
-		int turnIndex;
-		int initiative;
-
-		int collectedCoins[Coin::Count] { 0 };
-		Entity collectedCard;
-
-		void ResetState();
-	};
-
-	struct ActionRequest
-	{
-		COMPONENT_TYPE(ActionRequest)
-
-		enum Type
-		{
-			None,
-			CollectCoin,
-			AquireCard,
-			EndTurn,
-			UndoTurn
-		};
-
-		Type request;
-
-		// coin stack to collect from, card to aquire
-		Entity target;
 	};
 }

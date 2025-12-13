@@ -17,6 +17,7 @@ public:
 	ECS::Entity activeLevel = ECS::EntityInvalid;
 
 	int turnIndex = 0;
+	bool autoConfirmTurn = false;
 
 private:
 	void initCamera();

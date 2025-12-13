@@ -19,4 +19,5 @@ enum PriorityLevel
 
 
 void DebugPrint(PriorityLevel priority, const char* format, ...);
+void DebugPrintOnce(PriorityLevel priority, const char* format, ...);
 void DebugAssert(int lineNumber, const char* functionName, bool condition, const char* format, ...);

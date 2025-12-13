@@ -10,6 +10,9 @@ Font::~Font()
 
 	if(ttfFont)
 		TTF_CloseFont(ttfFont);
+
+	texture = nullptr;
+	ttfFont = nullptr;
 }
 
 Font& Font::operator =(const Font& font) 
@@ -68,6 +71,9 @@ void Font::SetText(const char* _text, bool _wrapped, int _width)
 		text = _text;
 		wrapped = _wrapped;
 		width = _width;
+
+		if(strlen(_text) == 0)
+			return;
 
 		if ( ttfFont != nullptr )
 		{

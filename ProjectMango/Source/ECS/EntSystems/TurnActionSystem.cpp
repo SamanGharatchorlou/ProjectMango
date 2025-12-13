@@ -3,6 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
@@ -11,38 +12,13 @@
 
 namespace ECS
 {
-	bool CanAquireMoreResources(TurnState& turn)
-	{
-		// already collect 2 of the same coins
-		for( u32 i = 0; i < Coin::Count; i++ )
-		{
-			if(turn.collectedCoins[i] >= 2)
-				return false;
-		}
-
-		// already collected 3 different coins
-		int coins_collected = 0;
-		for( u32 i = 0; i < Coin::Count; i++ )
-		{
-			coins_collected += turn.collectedCoins[i];
-		}
-		if(coins_collected >= 3)
-			return false;
-
-		// already collect a card
-		if(turn.collectedCard != EntityInvalid)
-			return false;
-
-		return true;
-	}
-
 	bool CanAffordCard(TurnState& turn, Card& card)
 	{
 		if(Inventory* inventory = GetComponent(Inventory, turn.entity))
 		{
-			int buying_power[Coin::Count];
-			inventory->GetBuyingPower(buying_power, Coin::Count);
-			for( u32 i = 0; i < Coin::Count; i++ )
+			int buying_power[Colour::Count];
+			inventory->GetBuyingPower(buying_power, Colour::Count);
+			for( u32 i = 0; i < Colour::Count; i++ )
 			{
 				if(buying_power[i] < card.cost[i])
 					return false;
@@ -60,23 +36,23 @@ namespace ECS
 		{
 			case ActionRequest::CollectCoin:
 			{
-				if(!CanAquireMoreResources(turn))
+				if(!turn.CanAquireMoreResources())
 					return false;
 
 				if(CoinStack* coin_stack = GetComponent(CoinStack, action_request.target))
 				{
-					Coin::Type coin_type = coin_stack->coinType;
+					Colour::Type coin_type = coin_stack->colourType;
 
 					// if we have collect 2 different coins, we cannot collect another of those of those
 					// it must be a different coin
-					std::vector<Coin::Type> types;
-					for( u32 i = 0; i < Coin::Count; i++ )
+					std::vector<Colour::Type> types;
+					for( u32 i = 0; i < Colour::Count; i++ )
 					{
-						if( turn.collectedCoins[i] > 0 && !Contains<Coin::Type>(types, (Coin::Type)i) )
-							types.push_back((Coin::Type)i);
+						if( turn.collectedCoins[i] > 0 && !Contains<Colour::Type>(types, (Colour::Type)i) )
+							types.push_back((Colour::Type)i);
 					}
 
-					if(types.size() >= 2 && Contains<Coin::Type>(types, coin_type))
+					if(types.size() >= 2 && Contains<Colour::Type>(types, coin_type))
 						return false;
 
 					if(coin_stack->remaining > 0)
@@ -98,11 +74,11 @@ namespace ECS
 			}
 			case ActionRequest::AquireCard:
 			{
-				if(!CanAquireMoreResources(turn))
+				if(!turn.CanAquireMoreResources())
 					return false;
 
 				// cannot get a card if you've already got some coins
-				for( u32 i = 0; i < Coin::Count; i++ )
+				for( u32 i = 0; i < Colour::Count; i++ )
 				{
 					if( turn.collectedCoins[i] > 0 )
 						return false;
@@ -112,31 +88,79 @@ namespace ECS
 				{
 					if( CanAffordCard(turn, *card) )
 					{
-						int card_cost[Coin::Count];
-						memcpy(card_cost, card->cost, sizeof(int) * (int)Coin::Count);
+						int card_cost[Colour::Count];
+						memcpy(card_cost, card->cost, sizeof(int) * (int)Colour::Count);
 
 						Inventory& inventory = GetComponentRef(Inventory, turn.entity);
-						int card_power[Coin::Count];
-						inventory.GetCardPower(card_power, Coin::Count);
+						int card_power[Colour::Count];
+						inventory.GetCardPower(card_power, Colour::Count);
 
 						// reduce cost of the card by the players card power
-						for( u32 i = 0; i < Coin::Count; i++ )
+						for( u32 i = 0; i < Colour::Count; i++ )
 						{
 							card_cost[i] = Maths::Max( 0, card_cost[i] - card_power[i]);
 							inventory.coins[i] -= card_cost[i];
 
 							// return coins to the stack
-							if( CoinStack* cs = CoinStack::GetCoinStack((Coin::Type)i) )
+							if( CoinStack* cs = CoinStack::GetCoinStack((Colour::Type)i) )
+							{
 								cs->remaining += card_cost[i];
+								
+								turn.collectedCoins[i] = -card_cost[i];
+							}
 
 							ASSERT(inventory.coins[i] >= 0, "the player has less than 0 coins, should be impossible");
 						}
 
-						inventory.cards.push_back(*card);
+						CopyComponent(turn.collectedCard, *card);
+						turn.collectedCardSource = card->entity;
 
-						CardRegistry::ReplaceCard( *card );
+						inventory.cards.push_back(card->cardRegistryIndex); 
+
+						CardRegistry::RemoveCard(card->entity);
 					}
 				}
+
+				break;
+			}
+			case ActionRequest::UndoTurn:
+			{
+				// return collected coins
+				for( u32 i = 0; i < Colour::Count; i++ )
+				{
+					Colour::Type type = (Colour::Type)i;
+
+					if( turn.collectedCoins[type] != 0 )
+					{
+						// return to coin stack
+						CoinStack* coin_stack = CoinStack::GetCoinStack(type);
+						coin_stack->remaining += turn.collectedCoins[type];
+
+						// remove from inventory
+						if(Inventory* inventory = GetComponent(Inventory, turn.entity))
+						{
+							inventory->coins[type] -= turn.collectedCoins[type];
+						}
+
+						turn.collectedCoins[i] = 0;
+					}
+				}
+
+				// return collected card
+				if(turn.collectedCardSource != EntityInvalid)
+				{
+					CardRegistry::DrawCard(turn.collectedCardSource, turn.collectedCard.cardRegistryIndex);
+
+					// remove from inventory
+					if(Inventory* inventory = GetComponent(Inventory, turn.entity))
+					{
+						Erase(inventory->cards, turn.collectedCard.cardRegistryIndex);
+					}
+				}
+					
+				turn.ResetState();
+
+				break;
 			}
 			default:
 			break;
@@ -194,8 +218,13 @@ namespace ECS
 					RemoveComponent(ActionRequest, entity);
 				}
 
-				if(!CanAquireMoreResources(turn))
+				// end turn
+				bool can_end_turn = turn.canEndTurn || game_state->autoConfirmTurn;
+				if(can_end_turn && !turn.CanAquireMoreResources())
 				{
+					int random_card_index = CardRegistry::PickRandomIndex(turn.collectedCard.tier);
+					CardRegistry::DrawCard( turn.collectedCardSource, random_card_index );
+
 					turn.ResetState();
 					turn.turnIndex++;
 				}

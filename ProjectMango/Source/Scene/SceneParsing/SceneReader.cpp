@@ -92,6 +92,11 @@ namespace Scene
 		data_out.position = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
 		data_out.size = (VectorF(width, height) * level_to_window);
 
+		Value& pivot = data_in["__pivot"];
+		float pivot_x = pivot[0].GetFloat();
+		float pivot_y = pivot[1].GetFloat();
+		data_out.pivotPoint = VectorF(pivot_x, pivot_y);
+
 		const Value::Array& tags = data_in["__tags"].GetArray();
 		for (u32 i = 0; i < tags.Size(); i++)
 		{
@@ -110,6 +115,7 @@ namespace Scene
 						// might be null, so need to check
 						if(field_instance[i]["__value"].IsString())
 							data_out.spriteId = field_instance[i]["__value"].GetString();
+						continue;
 					}
 					if( StringCompare("Color", field_instance[i]["__identifier"].GetString()) )
 					{
@@ -125,6 +131,7 @@ namespace Scene
 
 							data_out.colourMod = SColour(hex);
 						}
+						continue;
 					}
 					if( StringCompare("UIButton", field_instance[i]["__identifier"].GetString()) )
 					{
@@ -132,6 +139,7 @@ namespace Scene
 						{
 							data_out.isButton = field_instance[i]["__value"].GetBool();
 						}
+						continue;
 					}
 					if( StringCompare("UID", field_instance[i]["__identifier"].GetString()) )
 					{
@@ -139,6 +147,7 @@ namespace Scene
 						{
 							data_out.uid = field_instance[i]["__value"].GetString();
 						}
+						continue;
 					}
 					if( StringCompare("Center", field_instance[i]["__identifier"].GetString()) )
 					{
@@ -146,6 +155,7 @@ namespace Scene
 						{
 							data_out.center = field_instance[i]["__value"].GetBool();
 						}
+						continue;
 					}
 					if( StringCompare("PtSize", field_instance[i]["__identifier"].GetString()) )
 					{
@@ -153,6 +163,20 @@ namespace Scene
 						{
 							data_out.PtSize = field_instance[i]["__value"].GetInt();
 						}
+						continue;
+					}					
+					if( StringCompare("Random", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsBool())
+						{
+							data_out.random = field_instance[i]["__value"].GetBool();
+						}
+						continue;
+					}
+					if( StringCompare("Tier", field_instance[i]["__identifier"].GetString()) )
+					{
+						data_out.tier = field_instance[i]["__value"].GetInt();
+						continue;
 					}
 				}
 			}
@@ -181,12 +205,6 @@ namespace Scene
 					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.id];
 					entity_data.push_back(emd);
 				}
-			}
-			else
-			{
-				const Value::Array& entities = layer["entityInstances"].GetArray();
-				if (entities.Size() > 0)
-					DebugPrint(Warning, "Layer %s is not a UI layer, wrong level", layer_id);
 			}
 		}
 	}

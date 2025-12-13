@@ -1,24 +1,213 @@
 {
-	"Tier1Cards": [
+	"Cards": [
 		{
-			"colour": "White",
-			"cost": [0,1,1,1,0]
+			"colour": "White", 
+			"cost": [0,0,0,0,4],
+			"points" : 1
 		},
 		{
-			"colour": "Black",
-			"cost": [0,0,0,2,1]
+			"colour": "White", 
+			"cost": [0,3,0,0,0],
+			"points" : 0
 		},
 		{
-			"colour": "Red",
-			"cost": [0,2,1,0,0]
+			"colour": "White", 
+			"cost": [0,0,1,2,0],
+			"points" : 0
 		},
 		{
-			"colour": "Green",
-			"cost": [1,1,1,0,0]
+			"colour": "White", 
+			"cost": [0,2,2,0,0],
+			"points" : 0
 		},
 		{
-			"colour": "Blue",
-			"cost": [0,0,0,0,3]
+			"colour": "White", 
+			"cost": [0,1,1,1,1],
+			"points" : 0
+		},
+		{
+			"colour": "White", 
+			"cost": [0,2,1,0,2],
+			"points" : 0
+		},
+		{
+			"colour": "White", 
+			"cost": [3,1,1,0,0],
+			"points" : 0
+		},
+		{
+			"colour": "White", 
+			"cost": [0,1,1,1,2],
+			"points" : 0
+		},
+
+
+		{
+			"colour": "Blue", 
+			"cost": [0,0,0,4,0],
+			"points" : 1
+		},
+		{
+			"colour": "Blue", 
+			"cost": [0,0,3,0,0],
+			"points" : 0
+		},		
+		{
+			"colour": "Blue", 
+			"cost": [1,0,2,0,0],
+			"points" : 0
+		},
+		{
+			"colour": "Blue", 
+			"cost": [1,0,1,1,1],
+			"points" : 0
+		},
+		{
+			"colour": "Blue", 
+			"cost": [1,0,1,2,1],
+			"points" : 0
+		},
+		{
+			"colour": "Blue", 
+			"cost": [0,0,2,0,2],
+			"points" : 0
+		},
+		{
+			"colour": "Blue", 
+			"cost": [1,0,0,2,2],
+			"points" : 0
+		},
+		{
+			"colour": "Blue", 
+			"cost": [0,1,0,1,3],
+			"points" : 0
+		},
+
+
+		{
+			"colour": "Black", 
+			"cost": [1,1,0,1,1],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [1,2,0,1,1],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [2,2,0,1,0],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [0,4,0,0,0],
+			"points" : 1
+		},
+		{
+			"colour": "Black", 
+			"cost": [0,0,0,1,2],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [2,0,0,0,2],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [0,0,0,0,3],
+			"points" : 0
+		},
+		{
+			"colour": "Black", 
+			"cost": [0,0,1,3,1],
+			"points" : 0
+		},
+
+
+		{
+			"colour": "Red", 
+			"cost": [4,0,0,0,0],
+			"points" : 1
+		},
+		{
+			"colour": "Red", 
+			"cost": [3,0,0,0,0],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [0,2,0,0,1],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [1,1,1,0,1],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [2,1,1,0,1],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [2,0,2,0,1],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [2,0,0,2,0],
+			"points" : 0
+		},
+		{
+			"colour": "Red", 
+			"cost": [1,0,3,1,0],
+			"points" : 0
+		},
+
+
+
+		{
+			"colour": "Green", 
+			"cost": [0,0,4,0,0],
+			"points" : 1
+		},
+		{
+			"colour": "Green", 
+			"cost": [0,0,0,3,0],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [0,2,0,2,0],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [2,1,0,0,0],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [0,1,2,2,0],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [1,3,0,0,1],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [1,1,1,1,0],
+			"points" : 0
+		},
+		{
+			"colour": "Green", 
+			"cost": [1,1,1,0,2],
+			"points" : 0
 		}
 	]
 }

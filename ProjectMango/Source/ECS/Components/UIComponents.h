@@ -25,6 +25,11 @@ namespace ECS
 
 		int lastPressedFrameCount;
 
+		bool toggle;
+		//bool isActive;
+
+		BasicString UID;
+
 		bool IsPressed(int frame_buffer = 0) const;
 	};
 
@@ -35,8 +40,6 @@ namespace ECS
 
 		COMPONENT_TYPE(UIText);
 
-		std::function<BasicString()> fn;
-
 		BasicString UID;
 		Font font;
 
@@ -45,11 +48,22 @@ namespace ECS
 		bool center;
 		
 		void SetText(const char* text);
-		void SetColour(SColour::Enum colour);
+		void SetColour(SColour scolour);
 		void FitToSize(VectorF size);
 
 		void SetRenderOffsetToCenter();
 
 		void Render();
+	};
+
+	// ------------- unused -------------
+	// button already does the job
+	struct UICheckbox
+	{
+		COMPONENT_TYPE(UICheckbox);
+
+		BasicString check_mark;
+
+		bool isOn;
 	};
 }

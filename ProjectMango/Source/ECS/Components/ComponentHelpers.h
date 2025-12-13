@@ -44,17 +44,20 @@ namespace ECS
 
 		VectorF position;
 		VectorF size;
+		VectorF pivotPoint;
 
 		BasicString spriteId;
 		SColour colourMod;
 
 		int PtSize = -1;
+		int tier = -1;
 
 		// base indentifier i.e. 'button', 'player'
 		std::vector<BasicString> tags;
 
 		bool isButton = false;
 		bool center = false;
+		bool random = false;
 	};
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);
@@ -65,6 +68,8 @@ namespace ECS
 
 	Entity GetParent(Entity child);
 	Entity GetFirstChild(Entity parent);
+	void DestroyChildren(Entity parent);
+
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
@@ -82,8 +87,8 @@ namespace ECS
 	template<class T>
 	void CopyComponent( T& to, const T& from )
 	{
-		Entity entity = to.entity;
+		Entity to_entity = to.entity;
 		to = from;
-		to.entity = entity;
+		to.entity = to_entity;
 	}
 }

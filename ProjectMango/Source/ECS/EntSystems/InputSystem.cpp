@@ -13,8 +13,18 @@
 #include "Core/Helpers.h"
 #include "Entities/Player/PlayerCharacter.h"
 
+void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
+
 namespace ECS
 {
+	std::unordered_map<BasicString, std::function<void(Entity)>> s_buttonActionBindings;
+
+	// setup all text bindings
+	void InputSystem::Init()
+	{
+		SetupButtonActionBindings(s_buttonActionBindings);
+	}
+
 	void InputSystem::Update(float dt)
 	{
 		const UICursor* cursor = UICursor::Get();
@@ -37,41 +47,17 @@ namespace ECS
 					Transform& transform = GetComponentRef(Transform, entity);
 					
 					if( Contains(transform.GetRect(), cursor_pos) )
+					{
 						ui_button->lastPressedFrameCount = frame_count;
+						ui_button->toggle = !ui_button->toggle;
+					}
 				}
-			}
-		}
 
-		// handle coin stacks
-		ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
-		for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
-		{
-			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
-			if(UIButton* button = GetComponent(UIButton, coin_stack.entity))
-			{
-				// take a coin from the coin stack
-				if(button->IsPressed())
+				if( ui_button->IsPressed() && !ui_button->UID.empty() )
 				{
-					ActionRequest& action_request = AddComponent(ActionRequest, Player::Get());
-					action_request.request = ActionRequest::CollectCoin;
-					action_request.target = coin_stack.entity;
-				}
-			}
-		}
-
-		// handle cards
-		ComponentArray<Card>& cards =  GetAllComponents(Card);
-		for( auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++ )
-		{
-			Card& card = cards.GetComponentByIndex(iter->second);
-			if(UIButton* button = GetComponent(UIButton, card.entity))
-			{
-				// take a coin from the coin stack
-				if(button->IsPressed())
-				{
-					ActionRequest& action_request = AddComponent(ActionRequest, Player::Get());
-					action_request.request = ActionRequest::AquireCard;
-					action_request.target = card.entity;
+					auto iter = s_buttonActionBindings.find(ui_button->UID);
+					if(iter != s_buttonActionBindings.end())
+						iter->second(ui_button->entity);
 				}
 			}
 		}
