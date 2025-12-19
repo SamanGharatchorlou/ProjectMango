@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Components.h"
 
-#include "Animations/CharacterStates.h"
 #include "Core/Helpers.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
@@ -10,18 +9,19 @@
 #include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/TransformSystem.h"
-#include "Entities/Player/PlayerCharacter.h"
-#include "Entities/Weapons/PickupCallbacks.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/ConfigManager.h"
 #include "Audio/AudioManager.h"
+#include "Graphics/Raycast.h"
+
+#include "Game/SystemStateManager.h"
+#include "Game/States/GameState.h"
 
 namespace ECS
 {
 	// EntityData
 	// ------------------------------------------------------------------
-	EntityData::EntityData() : 
-		parent(EntityInvalid)
+	EntityData::EntityData() : parent(EntityInvalid)
 	{ }
 
 	void EntityData::SetParent(Entity entity, Entity parent)
@@ -63,22 +63,27 @@ namespace ECS
 		center(0.5f, 0.5f)
 	{ }
 
-	void Transform::Init(const Config* config, const EntityMetaData& emd)
+	void Transform::Init(const EntityMetaData* emd)
 	{
-		if(config)
+		if(const Config* config = GetConfigFromEntity(entity))
 		{
+			//size = emd.size;
 			size = config->data.GetVectorF("size_x", "size_y");
-			VectorF pos = emd.position - (size * emd.pivotPoint);
 
-			SetWorldPosition(pos);
-
-			if(config->data.GetBool("snap_to_floor"))
+			if(emd)
 			{
-				float distance = 0.0f;
-				if( RaycastToFloor(entity, distance) )
+				VectorF pos = emd->position - (size * emd->pivotPoint);
+
+				SetWorldPosition(pos);
+
+				if(config->data.GetBool("snap_to_floor"))
 				{
-					// shift up 1 just so we're not inside the floor collider
-					SetWorldPosition( pos + VectorF(0.0f, distance));
+					float distance = 0.0f;
+					if( RaycastToFloor(entity, distance) )
+					{
+						// shift up 1 just so we're not inside the floor collider
+						SetWorldPosition( pos + VectorF(0.0f, distance));
+					}
 				}
 			}
 		}
@@ -92,9 +97,9 @@ namespace ECS
 		collider.InitFromTransform(*this);
 	}
 	
-	void Transform::Init(const Config* config, const EntityMetaData& emd, Collider& collider)
+	void Transform::Init(const EntityMetaData* emd, Collider& collider)
 	{
-		Init(config, emd);
+		Init(emd);
 		InitCollider(collider);
 	}
 
@@ -126,15 +131,7 @@ namespace ECS
 		// update collider positions
 		if (Collider* collider = GetComponent(Collider, entity))
 		{
-			collider->UpdateFromTransform(this);
-		}
-	}
-
-	void Transform::SetWorldPosition(ECS::Entity entity, VectorF pos)
-	{
-		if(Transform* transform = GetComponent(Transform, entity))
-		{
-			transform->SetWorldPosition(pos);
+			collider->UpdateFromTransform(*this);
 		}
 	}
 
@@ -152,6 +149,19 @@ namespace ECS
 
 		VectorF center_position = pos - (object_size * center);
 		SetWorldPosition(center_position);
+	}
+
+	
+	RectF Transform::GetObjectRect() const
+	{
+		if(const Collider* collider = GetComponent(Collider, entity))
+		{
+			return collider->rect;
+		}
+		else
+		{
+			return GetRect();
+		}
 	}
 
 	VectorF Transform::GetObjectCenter() const
@@ -179,7 +189,6 @@ namespace ECS
 		return RectF(worldPosition, size);
 	}
 
-	
 	VectorF Transform::GetRelativePosition(VectorF relative) const
 	{
 		return worldPosition + (relative * size);
@@ -197,11 +206,13 @@ namespace ECS
 		disabled(false)
 	{ }
 
-	void Sprite::Init(const Config* config)
+	void Sprite::Init()
 	{
-		if(config)
+		if(const Config* config = GetConfigFromEntity(entity))
 		{
-			SetTexture(config->data.GetString("sprite"));
+			const char* id = config->data.GetString("sprite");
+			ID = id;
+			SetTexture(id);
 			canFlip = config->data.GetBool("can_flip", true);
 		}
 	}
@@ -210,14 +221,12 @@ namespace ECS
 	void Sprite::SetTexture(const char* label)
 	{
 		texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
-		debug_id = label;
+		debugID = label;
 	}
 
 	
 	// Audio
 	// ------------------------------------------------------------------
-	Audio::Audio() { }
-
 	void Audio::Play(const char* sound_effect)
 	{
 		const Group& group = soundEffects.at(sound_effect);
@@ -259,39 +268,45 @@ namespace ECS
 		}
 	}
 
-	// CharacterState
-	// ------------------------------------------------------------------
-	CharacterState::CharacterState() :
-		character(nullptr),
-		isRanged(true),
-		isMelee(false),
-		canEnterHover(false)
-	{ }
-
-	void CharacterState::Init(const Config* config)
-	{
-		if(config)
-		{
-			isRanged = config->data.GetBool("ranged", true);
-			isMelee = !isRanged;
-		}
-	}	
-
-	// PlayerController
-	// ------------------------------------------------------------------
-	PlayerController::PlayerController() { }
 	
-
-	// Pathing
+	// Target
 	// ------------------------------------------------------------------
-	Pathing::Pathing() /*: target(EntityInvalid)*/ { }
-
-	void Pathing::Init()
+	Entity Target::GetPlayer()
 	{
-		VectorF pos = GetPosition(entity);
-		const Level& level = Biome::GetLevel(pos);
-		levelIndex = level.index;
+		ComponentArray<PlayerController>& players =  GetAllComponents(PlayerController);
+		for( auto iter = players.entityToComponent.begin(); iter != players.entityToComponent.end(); iter++ )
+		{
+			return iter->first;
+		}
+
+		return EntityInvalid;
 	}
+	Entity Target::GetEnemy()
+	{
+		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
+		if(GameState* game_state = dynamic_cast<GameState*>(&state))
+			return game_state->enemy;
+
+		return EntityInvalid;
+	}
+	
+	Entity Target::GetValidTarget(Entity entity)
+	{
+		if(Target* target_component = GetComponent(Target, entity))
+		{
+			if (ecs->IsAlive(target_component->target))
+			{
+				return target_component->target;
+			}
+		}
+
+		return EntityInvalid;
+	}
+
+	// EntityState
+	// ------------------------------------------------------------------
+
+
 	
 	// Damage
 	// ------------------------------------------------------------------
@@ -299,9 +314,10 @@ namespace ECS
 	{ }
 
 	
-	void Damage::Init(const Config* config)
+	void Damage::Init()
 	{
-		value = config->data.GetFloat("damage");
+		if(const Config* config = GetConfigFromEntity(entity))
+			value = config->data.GetFloat("damage");
 	}
 
 	bool Damage::CanApplyTo(Entity _entity) const
@@ -321,7 +337,7 @@ namespace ECS
 		PushBackUnique(appliedTo, _entity);
 
 		if(Health* health = GetComponent(Health, _entity))
-			health->ApplyDamage(*this);
+			health->ApplyDamage(value);
 
 		if(Physics* physics = GetComponent(Physics, _entity))
 		{
@@ -340,74 +356,93 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Health::Health() : maxHealth(0), currentHealth(0), invulnerable(false) { }
 
-	void Health::Init(const Config* config)
+	void Health::Init()
 	{
-		maxHealth = config->data.GetFloat("max_health");
+		if(const Config* config = GetConfigFromEntity(entity))
+		{
+			maxHealth = config->data.GetFloat("max_health");
+		}
 		currentHealth = maxHealth;
 	}
 
-	void Health::ApplyDamage(const Damage& damage)
+	void Health::ApplyDamage(float damage)
 	{
 		if(invulnerable)
 			return;
 
-		currentHealth -= damage.value;
+		currentHealth -= damage;
 		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
 	}
 	
 
 	// Spawner
 	// ------------------------------------------------------------------
-	Spawner::Spawner() : entitySpawnFn(nullptr), spawnId(nullptr) { }
+	Spawner::Spawner() : spawnedEntity(EntityInvalid), spawnRequest(EntityInvalid) { }
 
-	bool Spawner::Spawn(const char* spawn_id, EntitySpawnFn spawnFn)
-	{
-		spawnId = spawn_id;
-		entitySpawnFn = spawnFn;
+	//bool Spawner::Spawn( Entity entity_to_spawn )
+	//{
+	//	// begin the animation
+	//	ECS::Animator& animator = GetComponentRef(Animator, entity);
+	//	animator.StartAnimation(Action::Active);
 
-		ECS::Animator& animator = GetComponentRef(Animator, entity);
-		animator.StartAnimation(ActionState::Active);
-		return true;
-	}
+	//	// hide it 
+	//	entityToSpawn = entity_to_spawn;
+	//	if(Sprite* sprite = GetComponent(Sprite, entityToSpawn))
+	//	{
+	//		sprite->colourMod.a = 0;
+	//	}
 
-	void Spawner::Update()
-	{
-		Animator& animator = GetComponentRef(Animator, entity);
+	//	Physics& physics = AddComponent(Physics, entityToSpawn);
+	//	physics.Init();
 
-		if(animator.GetActiveAnimation().action == ActionState::Active)
-		{
-			if(animator.frameIndex > 1 && entitySpawnFn)
-			{
-				VectorF spawner_center = GetPosition(entity);
+	//	//EntityState& character_state = GetComponentRef(EntityState, entityToSpawn);
+	//	//character_state.character->SpawnIn(entityToSpawn);
 
-				// move the object to the spawner center
-				ECS::EntityMetaData emd;
-				emd.id = spawnId;
+	//	// position it on the spawner
+	//	VectorF spawner_center = GetPosition(entity);
+	//			 
+	//	ECS::Transform& transform = GetComponentRef(Transform, entityToSpawn);
+	//	VectorF translation = spawner_center - transform.GetObjectCenter();
+	//	transform.SetWorldPosition(transform.worldPosition + translation);;
 
-				Entity spawned_entity = entitySpawnFn(emd);
-				ECS::Transform& transform = GetComponentRef(Transform, spawned_entity);
-				VectorF translation = spawner_center - transform.GetObjectCenter();
-				transform.SetWorldPosition(transform.worldPosition + translation);;
+	//	// ray cast this rect onto the floow
+	//	RectF rect = GetRect(entityToSpawn);
 
-				// ray cast this rect onto the floow
-				RectF rect = GetRect(spawned_entity);
+	//	float shift_y = 0.0f;
+	//	float distance = 0.0f;
+	//	if( RaycastToFloor(rect, distance) )
+	//		shift_y = distance;
 
-				float shift_y = 0.0f;
-				float distance = 0.0f;
-				if( RaycastToFloor(rect, distance) )
-					shift_y = distance;
+	//	transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, shift_y));
 
-				transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, shift_y));
+	//	return true;
+	//}
 
-				entitySpawnFn = nullptr;
-			}
+	//void Spawner::Update()
+	//{
+	//	Animator& animator = GetComponentRef(Animator, entity);
 
-			if(animator.loopCount > 0)
-			{
-				animator.StartAnimation(ActionState::Idle);
-			}
-		}
-	}
+	//	const Animation& animation = animator.GetActiveAnimation();
+	//	if(animation.action == Action::Active)
+	//	{
+	//		// fade it in
+	//		float alpha = (float)animator.frameIndex / (float)animation.frameCount;
+	//		if(Sprite* sprite = GetComponent(Sprite, entityToSpawn))
+	//		{
+	//			sprite->colourMod.a = (Uint8)(c_alphaMax * alpha);
+	//		}
+
+	//		if(animator.loopCount > 0)
+	//		{			
+	//			if(Sprite* sprite = GetComponent(Sprite, entityToSpawn))
+	//			{
+	//				sprite->colourMod.a = c_alphaMax;
+	//			}
+
+	//			animator.StartAnimation(Action::Idle);
+	//		}
+	//	}
+	//}
 	
 
 	// Door
@@ -420,138 +455,111 @@ namespace ECS
 
 	void Door::Init()
 	{
-		Animator& animator = GetComponentRef(Animator, entity);
-		animator.StartAnimation(ActionState::Close);
+		//Animator& animator = GetComponentRef(Animator, entity);
+		//animator.StartAnimation(ActionState::Close);
 	}
 
 	void Door::GenerateColliders(float width)
 	{
-		Entity top = CreateEntity("top door collider");
-		Entity bot = CreateEntity("bot door collider");
-		AddComponent(Transform, top);
-		AddComponent(Transform, bot);		
-		AddComponent(Collider, top);
-		AddComponent(Collider, bot);
-		colliders[0] = top;
-		colliders[1] = bot;
+		//Entity top = CreateEntity("top door collider");
+		//Entity bot = CreateEntity("bot door collider");
+		//AddComponent(Transform, top);
+		//AddComponent(Transform, bot);		
+		//AddComponent(Collider, top);
+		//AddComponent(Collider, bot);
+		//colliders[0] = top;
+		//colliders[1] = bot;
 
-		ECS::EntityData::SetParent(top, entity);
-		ECS::EntityData::SetParent(bot, entity);
+		//ECS::EntityData::SetParent(top, entity);
+		//ECS::EntityData::SetParent(bot, entity);
 
-		const Transform& door_transform = GetComponentRef(Transform, entity);
-		const VectorF size(door_transform.size.x * width, door_transform.size.y * 0.5f);
-		const float x_pos = door_transform.worldPosition.x + door_transform.size.x * 0.5f - size.x * 0.5f;
-		const VectorF pos(x_pos, door_transform.worldPosition.y);
-		
-		Transform& top_transform = GetComponentRef(Transform, top);
-		Transform& bot_transform = GetComponentRef(Transform, bot);
-		Collider& top_collider = GetComponentRef(Collider, top);
-		Collider& bot_collider = GetComponentRef(Collider, bot);
+		//const Transform& door_transform = GetComponentRef(Transform, entity);
+		//const VectorF size(door_transform.size.x * width, door_transform.size.y * 0.5f);
+		//const float x_pos = door_transform.worldPosition.x + door_transform.size.x * 0.5f - size.x * 0.5f;
+		//const VectorF pos(x_pos, door_transform.worldPosition.y);
+		//
+		//Transform& top_transform = GetComponentRef(Transform, top);
+		//Transform& bot_transform = GetComponentRef(Transform, bot);
+		//Collider& top_collider = GetComponentRef(Collider, top);
+		//Collider& bot_collider = GetComponentRef(Collider, bot);
 
-		VectorF door_part_size = VectorF(door_transform.size.x, door_transform.size.y * 0.5f);
+		//VectorF door_part_size = VectorF(door_transform.size.x, door_transform.size.y * 0.5f);
 
-		top_transform.size = door_part_size;
-		top_transform.SetLocalPosition(VectorF(0,0));
-		top_transform.InitCollider(top_collider);
-		
-		VectorF relative_size = VectorF(width, 1.0f);
-		VectorF top_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
-		top_collider.SetRelativeRect(top_relative_pos, relative_size);
+		//top_transform.size = door_part_size;
+		//top_transform.SetLocalPosition(VectorF(0,0));
+		//top_transform.InitCollider(top_collider);
+		//
+		//VectorF relative_size = VectorF(width, 1.0f);
+		//VectorF top_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
+		//top_collider.SetRelativeRect(top_relative_pos, relative_size);
 
-		bot_transform.size = door_part_size;
-		bot_transform.SetLocalPosition(VectorF(0, door_transform.size.y * 0.5f));
-		bot_transform.InitCollider(bot_collider);
+		//bot_transform.size = door_part_size;
+		//bot_transform.SetLocalPosition(VectorF(0, door_transform.size.y * 0.5f));
+		//bot_transform.InitCollider(bot_collider);
 
-		VectorF bot_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
-		bot_collider.SetRelativeRect(bot_relative_pos, relative_size);
+		//VectorF bot_relative_pos = VectorF(0.5f - width * 0.5f, 0.0f);
+		//bot_collider.SetRelativeRect(bot_relative_pos, relative_size);
 
-		//top_collider.SetFlag(ECS::Collider::PlayerOnly);
-		top_collider.SetFlag(ECS::Collider::IsTerrain);
-		//bot_collider.SetFlag(ECS::Collider::PlayerOnly);
-		bot_collider.SetFlag(ECS::Collider::IsTerrain);
+		////top_collider.SetFlag(ECS::Collider::PlayerOnly);
+		//top_collider.SetFlag(ECS::Collider::IsTerrain);
+		////bot_collider.SetFlag(ECS::Collider::PlayerOnly);
+		//bot_collider.SetFlag(ECS::Collider::IsTerrain);
 	}
 
 	void Door::Update()
 	{
-		Animator& animator = GetComponentRef(Animator, entity);
-		const Animation& animation = animator.GetActiveAnimation();
+		//Animator& animator = GetComponentRef(Animator, entity);
+		//const Animation& animation = animator.GetActiveAnimation();
 	
-		Entity player_entity = Player::Get();
-		const VectorF player_pos = GetPosition(Player::Get());
-		if(!ecs->IsAlive(player_entity))
-			return;
+		//Entity player_entity = Target::GetPlayer();
+		//const VectorF player_pos = GetPosition(Target::GetPlayer());
+		//if(!ecs->IsAlive(player_entity))
+		//	return;
 
-		const RectF door_rect = GetRect(entity);
-		VectorF door_pos = door_rect.Center();
+		//const RectF door_rect = GetRect(entity);
+		//VectorF door_pos = door_rect.Center();
 
-		const bool withing_range_x = std::abs(player_pos.x - door_pos.x) < triggerRange;
-		const bool withing_range_z = std::abs(player_pos.y - door_pos.y) < door_rect.Height();
-		if(withing_range_x && withing_range_z)
-		{
-			if(animation.action != ActionState::Open)
-			{
-				const int frame_index = animator.frameIndex;
-				animator.StartAnimation(ActionState::Open);
-				animator.frameIndex = animation.frameCount - frame_index;
-			}
-		}
-		else
-		{
-			if(animation.action != ActionState::Close)
-			{
-				const int frame_index = animator.frameIndex;
-				animator.StartAnimation(ActionState::Close);
-				animator.frameIndex = animation.frameCount - frame_index;
-			}
-		}
+		//const bool withing_range_x = std::abs(player_pos.x - door_pos.x) < triggerRange;
+		//const bool withing_range_z = std::abs(player_pos.y - door_pos.y) < door_rect.Height();
+		//if(withing_range_x && withing_range_z)
+		//{
+		//	if(animation.action != ActionState::Open)
+		//	{
+		//		const int frame_index = animator.frameIndex;
+		//		animator.StartAnimation(ActionState::Open);
+		//		animator.frameIndex = animation.frameCount - frame_index;
+		//	}
+		//}
+		//else
+		//{
+		//	if(animation.action != ActionState::Close)
+		//	{
+		//		const int frame_index = animator.frameIndex;
+		//		animator.StartAnimation(ActionState::Close);
+		//		animator.frameIndex = animation.frameCount - frame_index;
+		//	}
+		//}
 
-		float animation_progress = (float)animator.frameIndex / (float)(animation.frameCount - 1);
-		if(animation.action == ActionState::Close)
-		{
-			animation_progress = 1 - animation_progress;
-			if(animator.loopCount > 0)
-				animation_progress = 0.0f;
-		}
+		//float animation_progress = (float)animator.frameIndex / (float)(animation.frameCount - 1);
+		//if(animation.action == ActionState::Close)
+		//{
+		//	animation_progress = 1 - animation_progress;
+		//	if(animator.loopCount > 0)
+		//		animation_progress = 0.0f;
+		//}
 
-		const Transform& transform = GetComponentRef(Transform, entity);
-		float travel_distance = transform.size.y * 0.5f;
+		//const Transform& transform = GetComponentRef(Transform, entity);
+		//float travel_distance = transform.size.y * 0.5f;
 
-		Transform& top_transform = GetComponentRef(Transform, colliders[0]);
-		VectorF top_local_start_position = VectorF(top_transform.localPosition.x, 0.0f);
-		VectorF top_local_current_position = top_local_start_position - VectorF(0, travel_distance * animation_progress);
-		top_transform.SetLocalPosition(top_local_current_position);
-		
-		Transform& bot_transform = GetComponentRef(Transform, colliders[1]);
-		VectorF bot_local_start_position = VectorF(bot_transform.localPosition.x, transform.size.y * 0.5f);
-		VectorF bot_local_current_position = bot_local_start_position + VectorF(0, travel_distance * animation_progress);
-		bot_transform.SetLocalPosition(bot_local_current_position);
-	}
-
-
-	// Pickup
-	// ------------------------------------------------------------------
-	Pickup::Pickup() : pickedUp(false) { }
-
-	void Pickup::Update()
-	{
-		if (!pickedUp)
-		{
-			if (Collider* collider = GetComponent(Collider, entity))
-			{
-				if (collider->HasCollided())
-				{
-					Entity hit_entity = collider->collisions.front();
-
-					PickUps::OnPickupFn fn = PickUps::GetCallback(itemId.c_str());
-					if (fn && fn(entity, hit_entity))
-					{
-						// only trigger once
-						//onPickupFn = nullptr;
-						pickedUp = true;
-					}
-				}
-			}
-		}
+		//Transform& top_transform = GetComponentRef(Transform, colliders[0]);
+		//VectorF top_local_start_position = VectorF(top_transform.localPosition.x, 0.0f);
+		//VectorF top_local_current_position = top_local_start_position - VectorF(0, travel_distance * animation_progress);
+		//top_transform.SetLocalPosition(top_local_current_position);
+		//
+		//Transform& bot_transform = GetComponentRef(Transform, colliders[1]);
+		//VectorF bot_local_start_position = VectorF(bot_transform.localPosition.x, transform.size.y * 0.5f);
+		//VectorF bot_local_current_position = bot_local_start_position + VectorF(0, travel_distance * animation_progress);
+		//bot_transform.SetLocalPosition(bot_local_current_position);
 	}
 
 
@@ -597,10 +605,13 @@ namespace ECS
 		{
 			if(const Animator* animator = GetComponent(Animator, entity))
 			{
-				if(animator->loopCount >= deathLoops)
+				if(animator->GetActiveAnimation().action == Action::Death)
 				{
-					OnDeath();
-					return;
+					if(animator->loopCount >= deathLoops)
+					{
+						OnDeath();
+						return;
+					}
 				}
 			}
 		}
@@ -617,79 +628,7 @@ namespace ECS
 			animator.state = TimeState::Running;
 		}
 		
+		//canEnterDeathState = true;
 		ecs->entities.KillEntity(entity);
-	}
-
-	// Arm
-	// ------------------------------------------------------------------
-	Arm::Arm() : anchorPoint( VectorF(0.5f, 0.5f)), target(EntityInvalid) { }
-
-	void Arm::Update()
-	{
-		if(ecs->IsAlive(target))
-		{
-			// make sure we're all up to date with parent and child positions
-			TransformSystem::UpdateChildrenTransforms(GetParent(entity));
-
-			if(const Transform* transform = GetComponent(Transform, entity))
-			{
-				if(Sprite* sprite = GetComponent(Sprite, entity))
-				{
-					// direction
-					VectorF caster_position = transform->GetObjectCenter();
-					// could be center, but realistically its the cursor thats the target, and we want the top left
-					// hmmmm will this be a problem for when we dont was it to be the cursor and not the top left?
-					VectorF direction = GetRect(target).TopLeft() - caster_position;
-					direction = direction.normalise();
-					
-					if(sprite->IsFlipped())
-					{
-						sprite->flipPoint = (VectorF(1.0f,1.0f) - anchorPoint);
-						
-						direction = direction * -1;
-					}
-					else
-					{
-						sprite->flipPoint = anchorPoint;
-					}
-					
-					float rotation = direction.getRotation();
-
-					// handle cursor behind the player, mirror the rotation
-					if(!IsTargetInFrontOfSource(target, entity))
-					{
-						direction.y = -direction.y;
-						rotation = direction.getRotation();
-
-						rotation += 180.0f;
-					}
-								
-					// we live between
-					if(rotation > 180)
-						rotation -= 360;
-
-					rotation = Maths::clamp(rotation, -45.0f, 45.0f);
-					sprite->rotation = rotation;
-				}
-			}
-		}
-	}
-
-	VectorF Arm::GetPosition(VectorF relative_posision) const
-	{
-		Sprite* sprite = GetComponent(Sprite, entity);
-		Transform* transform = GetComponent(Transform, entity);
-
-		if(sprite && transform)
-		{
-			relative_posision = sprite->IsFlipped() ? VectorF(1.0f,1.0f) - relative_posision : relative_posision;
-
-			VectorF initial_position = transform->GetRelativePosition(relative_posision);
-			VectorF about_point = transform->GetRelativePosition(sprite->flipPoint);
-
-			return initial_position.rotateVector(sprite->rotation, about_point);
-		}
-
-		return c_invalidVector;
 	}
 }

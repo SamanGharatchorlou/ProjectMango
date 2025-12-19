@@ -14,10 +14,11 @@
 #include "Scene/SceneParsing/SceneReader.h"
 #include "Entities/EntityBuilder.h"
 #include "Entities/UIEntityBuilder.h"
-#include "Entities/Weapons/PickupCallbacks.h" 
 #include "System/Window.h"
 
 #include "ECS/Components/Physics.h"
+#include "ECS/Components/AIComponents.h"
+#include "Entities/CardRegistry.h"
 
 void GameState::Init()
 {
@@ -28,17 +29,27 @@ void GameState::Init()
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
 	AddComponent(Biome, biome_entity);
-	Scene::BuildBiome( "GemBiome", biome_entity );
+	Scene::BuildBiome( "GemBiome_old", biome_entity );
 	activeLevel = biome_entity;
 
+
+	ECS::EntityMetaData empty_data;
+	ECS::Entity player = Player::Spawn(empty_data);
+	
 	CreateEntities(biome_entity);
-	PickUps::SetCallbacks();
+	//ECS::Entity enemy = Character::CreateBasicEnemy(empty_data);
+
+	ECS::EntityState& player_state = GetComponentRef(EntityState, player);
+	//player_state.target = enemy;
+
+	//ECS::EntityState& enemy_state = GetComponentRef(EntityState, enemy);
+	//enemy_state.target = player;
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
 
 	camera->setViewport(window->size());
-	camera->targetEntity = Player::Get();
+	camera->targetEntity = Target::GetPlayer();
 
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
@@ -55,6 +66,8 @@ void GameState::Init()
 
 	// finally init all the systems
 	ecs->InitSystems();
+
+	//CardRegistry::SetupDrawPile();
 }
 
 void GameState::HandleInput()
@@ -97,6 +110,20 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
+	ECS::Entity ai = ECS::Target::GetEnemy();
+	if(ECS::Health* health = GetComponent(Health, ai))
+	{
+		if(health->currentHealth <= 0)
+			gameOver = true;
+	}
+
+	ECS::Entity player = Target::GetPlayer();
+	if(ECS::Health* health = GetComponent(Health, player))
+	{
+		if(health->currentHealth <= 0)
+			gameOver = true;
+	}
+
 	ecs->UpdateSystems(dt);
 
 	Camera::Get()->Update(dt);
@@ -135,7 +162,7 @@ void GameState::initCamera()
 	//Camera* camera = Camera::Get();
 
 	//camera->setViewport(VectorF(100.0f, 100.0f));
-	//camera->follow(Player::Get());
+	//camera->follow(Target::GetPlayer());
 
 	//VectorF cameraPosition = VectorF(0.0f, 0.0f);
 	//camera->SetPosition(cameraPosition);

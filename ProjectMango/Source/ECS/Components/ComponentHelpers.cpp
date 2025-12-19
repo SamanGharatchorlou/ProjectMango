@@ -13,8 +13,7 @@ namespace ECS
 		if (!emd.id.empty()) 
 		{ 
 			EntityData& ed = AddComponent(EntityData, entity); 
-			ed.id = emd.id; 
-			ed.subType = emd.type; 
+			ed.id = emd.id;
 		}
 		return entity;
 	}
@@ -41,14 +40,12 @@ namespace ECS
 
 	const Config* GetConfigFromEntity(Entity entity)
 	{
-		const Config* config = nullptr;
 		if (const EntityData* ed = GetComponent(EntityData, entity))
 		{
-
-			config = ConfigManager::Get()->GetConfig(ed->id.c_str());
+			return ConfigManager::Get()->GetConfig(ed->id.c_str());
 		}
 
-		return config;
+		return nullptr;
 	}
 
 	Entity GetParent(Entity child)
@@ -95,6 +92,14 @@ namespace ECS
 		}
 
 		return VectorF::zero();
+	}
+
+	void SetWorldPosition(ECS::Entity entity, VectorF pos)
+	{
+		if(Transform* transform = GetComponent(Transform, entity))
+		{
+			transform->SetWorldPosition(pos);
+		}
 	}
 
 	RectF GetRect(Entity entity)
@@ -172,4 +177,85 @@ namespace ECS
 		VectorF target = GetPosition(target_entity);
 		return (target.x > self.x) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 	}
+
+	bool IsInLevel(const Level& level, const Transform& transform)
+	{
+		const VectorF position = transform.worldPosition;
+		const VectorF world_pos = level.worldPos;
+
+		if (position.x > world_pos.x && position.y > world_pos.y)
+		{
+			const VectorF world_pos_end = world_pos + level.size;
+			return position.x < world_pos_end.x && position.y < world_pos_end.y;
+		}
+
+		return false;
+	}
+
+	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities)
+	{
+		for (auto iter = in_entities.begin(); iter != in_entities.end(); iter++)
+		{
+			ECS::Entity entity = iter->first;
+			if (const Transform* transform = GetComponent(Transform, entity))
+			{
+				if (IsInLevel(level, *transform))
+				{
+					out_entities.push_back(entity);
+				}
+			}
+		}
+	}
+
+		// todo: move this file somewhere better
+	static std::unordered_map<StringBuffer32, Action::Enum> s_stateMap;
+
+		static void initActionMap()
+		{
+			s_stateMap.reserve(Action::Count);
+
+			s_stateMap["None"] = Action::None;
+			s_stateMap["Active"] = Action::Active;
+			s_stateMap["Inactive"] = Action::Inactive;
+			s_stateMap["Open"] = Action::Open;
+			s_stateMap["Close"] = Action::Close;
+			s_stateMap["Idle"] = Action::Idle;
+			s_stateMap["Walk"] = Action::Walk;
+			s_stateMap["Run"] = Action::Run;
+			s_stateMap["Fall"] = Action::Fall;
+			s_stateMap["Jump"] = Action::Jump;
+			s_stateMap["Hover"] = Action::Hover;
+			s_stateMap["Roll"] = Action::Roll;
+			s_stateMap["Crouch"] = Action::Crouch;
+			s_stateMap["AttackWindUp"] = Action::AttackWindUp;
+			s_stateMap["BasicAttack"] = Action::BasicAttack;
+			s_stateMap["BasicAttackHold"] = Action::BasicAttackHold;
+			s_stateMap["LungeAttack"] = Action::LungeAttack;
+			s_stateMap["FloorSlam"] = Action::FloorSlam;
+			s_stateMap["TakeHit"] = Action::TakeHit;
+			s_stateMap["Death"] = Action::Death;
+			s_stateMap["Spawning"] = Action::Spawning;
+		}
+
+		Action::Enum StringToAction(const char* action)
+		{
+			if (s_stateMap.empty())
+				initActionMap();
+
+			return s_stateMap.at(action);
+		}
+
+		const char* ActionToString(Action::Enum action)
+		{
+			if (s_stateMap.empty())
+				initActionMap();
+
+			for (auto iter = s_stateMap.begin(); iter != s_stateMap.end(); iter++)
+			{
+				if (iter->second == action)
+					return iter->first.c_str();
+			}
+
+			return nullptr;
+		}
 }

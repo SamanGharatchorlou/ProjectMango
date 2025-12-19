@@ -7,7 +7,6 @@
 #include "Graphics/TextureManager.h"
 #include "Game/FrameRateController.h"
 #include "ECS/Components/Animator.h"
-#include "Animations/CharacterStates.h"
 #include "ECS/Components/Components.h"
 #include "Graphics/RenderManager.h"
 #include "ECS/EntSystems/RenderSystem.h"
@@ -22,7 +21,7 @@ struct RenderRects
 static RenderRects s_renderRects;
 static bool s_flipOverride = false;
 static SDL_RendererFlip s_spriteFlip = SDL_FLIP_NONE;
-static ActionState s_activeAction = ActionState::None;
+static Action::Enum s_activeAction = Action::None;
 
 std::vector<BasicString> s_animationLog;
 
@@ -38,7 +37,7 @@ u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 	{
 		const ECS::Animator& animator = GetComponentRef(Animator, entity);
 
-		ActionState active_animation = animator.GetActiveAnimation().action;
+		Action::Enum active_animation = animator.GetActiveAnimation().action;
 		if(active_animation != s_activeAction)
 		{
 			s_activeAction = active_animation;

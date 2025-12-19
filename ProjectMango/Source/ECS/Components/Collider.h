@@ -9,6 +9,7 @@ namespace ECS
 	struct Collider
 	{
 		COMPONENT_TYPE(Collider)
+		Collider();
 
 		enum Flags
 		{
@@ -62,7 +63,7 @@ namespace ECS
 
 		// assumes the rect size has been set
 		void InitFromTransform(const Transform& transform);
-		void UpdateFromTransform(const Transform* transform = nullptr);
+		void UpdateFromTransform(const Transform& transform);
 
 		void RollBackPosition();
 		void RollForwardPosition();

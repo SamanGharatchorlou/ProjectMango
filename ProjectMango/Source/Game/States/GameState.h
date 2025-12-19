@@ -18,6 +18,9 @@ public:
 
 	int turnIndex = 0;
 	bool autoConfirmTurn = false;
+	bool gameOver = false;
+
+	ECS::Entity enemy = ECS::EntityInvalid;
 
 private:
 	void initCamera();

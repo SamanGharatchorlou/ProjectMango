@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "BlindingSpiderEnemy.h"
 
-#include "ECS/Components/AIController.h"
+#include "ECS/Components/AIComponents.h"
 #include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/Physics.h"
 #include "ECS/EntityCoordinator.h"
 #include "System/Files/Config.h"
 #include "ECS/Components/Biome.h"
+#include "ECS/Components/Physics.h"
+#include "Entities/EntityBuilder.h"
 
 namespace BlindingSpider
 {
@@ -18,246 +18,245 @@ namespace BlindingSpider
 	// ---------------------------------------------------------
 	Entity Create(const ECS::EntityMetaData& emd)
 	{
-		Entity entity = Character::CreateBasicEnemy(emd);
+		Entity entity = CreateActor(emd);
 				
-		// CharacterState
-		CharacterState& character_state = AddComponent(CharacterState, entity);
-		character_state.character = new Enemy();
+		// EntityState
+		//EntityState& character_state = AddComponent(EntityState, entity);
+		//character_state.character = new Enemy();
 		
 		return entity;
 	}
 	
-	void Enemy::Begin(ECS::Entity entity)
-	{
-		CharacterState& state = GetComponentRef(CharacterState, entity);
+	//void Enemy::Begin(ECS::Entity entity)
+	//{
+	//	EntityState& state = GetComponentRef(EntityState, entity);
 
-		if(!state.actions.HasAction())
-			PushState(Idle);
-	}
+	//	PushState(Idle);
+	//}
 
-	bool Enemy::FinishedDying(ECS::Entity entity)
-	{
-		CharacterState& state = GetComponentRef(CharacterState, entity);
+	//bool Enemy::FinishedDying(ECS::Entity entity)
+	//{
+	//	EntityState& state = GetComponentRef(EntityState, entity);
 
-		if(DeathState* death_state = static_cast<DeathState*>(&(state.actions.Top())))
-			return death_state->can_kill;
+	//	if(DeathState* death_state = static_cast<DeathState*>(&(state.actions.Top())))
+	//		return death_state->can_kill;
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	void Enemy::StartDying(ECS::Entity entity)
-	{
-		CharacterState& state = GetComponentRef(CharacterState, entity);
+	//void Enemy::StartDying(ECS::Entity entity)
+	//{
+	//	EntityState& state = GetComponentRef(EntityState, entity);
 
-		state.actions.Pop();
-		state.actions.Push( new DeathState(entity) );
-		state.actions.Push( new TakeHitState(entity) );
-	}
+	//	state.actions.Pop();
+	//	state.actions.Push( new DeathState(entity) );
+	//	state.actions.Push( new TakeHitState(entity) );
+	//}
 
-	// Idle
-	// ---------------------------------------------------------
-	void IdleState::Init()
-	{
-		StartAnimation();
-	}
-	void IdleState::Resume()
-	{		
-		AIController& ai_controller = GetComponentRef(AIController, entity);
-		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
-		
-		StartAnimation(can_flip_sprite);
-	}
-	void IdleState::Update(float dt)
-	{
-		Physics& physics = GetComponentRef(Physics, entity);
-		physics.ApplyHorizontalDrag(0.05f);
+	//void Enemy::SpawnIn(ECS::Entity entity)
+	//{
+	//	EntityState& state = GetComponentRef(EntityState, entity);
 
-		if( CanEnterHitState() )
-		{
-			CharacterState& state = GetComponentRef(CharacterState, entity);
-			PushState(TakeHit);
-		}
-		
-		if( CoolingFromAttack() )
-			return;
+	//	while(state.actions.HasAction())
+	//		state.actions.Pop();
 
-		//if( CanMoveToTarget() )
-		{
-			CharacterState& state = GetComponentRef(CharacterState, entity);
-			PushState(Run);
-		}
-	}
+	//	// adds a pointer to the stack
+	//	state.actions.Push( new SpawningState(entity) );
+	//}
 
-	// Run -- This should be RunToTarget and then add a Partol state
-	// ---------------------------------------------------------
-	RunState::RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
+	//// Idle
+	//// ---------------------------------------------------------
+	//void IdleState::Init()
+	//{
+	//	StartAnimation();
+	//}
+	//void IdleState::Resume()
+	//{		
+	//	AIController& ai_controller = GetComponentRef(AIController, entity);
+	//	bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
+	//	
+	//	StartAnimation(can_flip_sprite);
+	//}
+	//void IdleState::Update(float dt)
+	//{
+	//	const AIController& ai_controller = GetComponentRef(AIController, entity);
+	//	if( ai_controller.canMoveToTarget )
+	//	{
+	//		EntityState& state = GetComponentRef(EntityState, entity);
+	//		PushState(Run);
+	//	}
+	//}
 
-	void RunState::Init()
-	{
-		StartAnimation();
-	}
-	void RunState::Resume()
-	{		
-		
-		AIController& ai_controller = GetComponentRef(AIController, entity);
-		bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
-		
-		StartAnimation(can_flip_sprite);
-	}
+	//// Spawning
+	//// ---------------------------------------------------------
+	//void SpawningState::Init()
+	//{
+	//	StartAnimation(ActionState::Idle);
+	//}
 
-	void RunState::Update(float dt)
-	{
-		Transform& transform = GetComponentRef(Transform, entity);
-		const AIController& ai_controller = GetComponentRef(AIController, entity);
-		
-		const int run_acceleration_factor = 1;
 
-		if(ai_controller.CanMoveForward(run_acceleration_factor, dt))
-		{
-			ApplyMovementEase(run_acceleration_factor, dt);
-		}
-		else
-		{		
-			//if(!ai_controller.isAlert)
-			{
-				// turn around
-				//ai_controller.
-				//CharacterState& state = GetComponentRef(CharacterState, entity);
-				//state.FlipFacingDirection();
-				return;
-			}
-		}
+	//// Run -- This should be RunToTarget and then add a Partol state
+	//// ---------------------------------------------------------
+	//RunState::RunState(ECS::Entity _entity) : CharacterAction(ActionState::Run, _entity) { }
 
-		if(ai_controller.target != EntityInvalid && ecs->IsAlive(ai_controller.target))
-		{
-			const Transform& target_transform = GetComponentRef(Transform, ai_controller.target);
-			const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
-			const float attack_range = GetAttackRange(ActionState::BasicAttack);
+	//void RunState::Init()
+	//{
+	//	StartAnimation();
+	//}
+	//void RunState::Resume()
+	//{		
+	//	AIController& ai_controller = GetComponentRef(AIController, entity);
+	//	bool can_flip_sprite = !ai_controller.cooldownTimer.IsRunning();
+	//	
+	//	StartAnimation(can_flip_sprite);
+	//}
 
-			if(attack_range > 0.0f && attack_range > distance_to_target)
-			{
-				CharacterState& state = GetComponentRef(CharacterState, entity);
-				ReplaceState(BasicAttack);
-			}
-		}
-	}
+	//void RunState::Update(float dt)
+	//{
+	//	Transform& transform = GetComponentRef(Transform, entity);
 
-	// TakeHitState
-	// ---------------------------------------------------------
-	void TakeHitState::Init()
-	{
-		StartAnimation();
-	}
+	//	Physics& physics = GetComponentRef(Physics, entity);
 
-	void TakeHitState::Update(float dt)
-	{	
-		const Animator& animator = GetComponentRef(Animator, entity);
+	//	const AIController& ai_controller = GetComponentRef(AIController, entity);
+	//	
+	//	const int run_acceleration_factor = 1;
+	//	const SDL_RendererFlip flip_direction = GetFacingDirection(entity);
+	//	const VectorI facing_direction = FacingDirectionToVector(flip_direction);
 
-		if(animator.loopCount > 0)
-		{
-			CharacterState& state = GetComponentRef(CharacterState, entity);
-			PopState();
-			return;
-		}
-	}
+	//	if(ai_controller.CanMoveForward(run_acceleration_factor, dt))
+	//	{
+	//		physics.ApplyMovementEase(facing_direction.toFloat(), dt, 0.1);
+	//	}
 
-	void TakeHitState::Exit()
-	{
-		if(Collider* collider = GetComponent(Collider, entity))
-		{
-			collider->lastHitFrame = -1;
-		}
-	}
 
-	// DeathState
-	// ---------------------------------------------------------
-	void DeathState::Init()
-	{
-		StartAnimation(false);
+	//	// this adds to is (not sure if correct but at least some what correct)
+	//	VectorF desired_movement = physics.speed;// physics.GetMovementEase(facing_direction.toFloat(), dt, 0.1);
 
-		can_kill = false;
+	//	VectorF position = GetPosition(entity);
+	//	Pathing& pathing = GetComponentRef(Pathing, entity);
+	//	pathing.targetLocation = position + desired_movement;
+	//	
+	//	const EntityState& state = GetComponentRef(EntityState, entity);
+	//	const Transform& target_transform = GetComponentRef(Transform, state.target);
+	//	const float distance_to_target = std::abs( transform.GetObjectCenter().x - target_transform.GetObjectCenter().x );
+	//	const float attack_range = GetAttackRange(ActionState::BasicAttack) * 0.8f;
 
-		InitDeathState();
-	}
+	//	if(attack_range > 0.0f && attack_range > distance_to_target)
+	//	{
+	//		EntityState& state = GetComponentRef(EntityState, entity);
+	//		ReplaceState(BasicAttack);
+	//	}
+	//}
 
-	void DeathState::Resume()
-	{
-		StartAnimation(false);
-	}
+	//// TakeHitState
+	//// ---------------------------------------------------------
+	//void TakeHitState::Init()
+	//{
+	//	StartAnimation();
+	//}
 
-	void DeathState::Update(float dt)
-	{	
-		const Animator& animation = GetComponentRef(Animator, entity);
+	//void TakeHitState::Update(float dt)
+	//{	
+	//	const Animator& animator = GetComponentRef(Animator, entity);
 
-		if(animation.loopCount > 0)
-			can_kill = true;
-	}
+	//	if(animator.loopCount > 0)
+	//	{
+	//		EntityState& state = GetComponentRef(EntityState, entity);
+	//		PopState();
+	//		return;
+	//	}
+	//}
 
-	// BasicAttack
-	// ---------------------------------------------------------
-	BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
+	//void TakeHitState::Exit()
+	//{
 
-	void BasicAttackState::Init()
-	{	
-		Animator& animator = GetComponentRef(Animator, entity);
-		if(animator.GetAnimation(ActionState::AttackWindUp))
-		{
-			StartAnimation(ActionState::AttackWindUp);
-		}
-		else
-		{	
-			StartAnimation();
-		}
-	}
+	//}
 
-	// THIS WHOLE THING IS FUCKED
-	void BasicAttackState::Update(float dt)
-	{
-		Animator& animator = GetComponentRef(Animator, entity);
-		
-		const Animation& animation = animator.GetActiveAnimation();
+	//// DeathState
+	//// ---------------------------------------------------------
+	//void DeathState::Init()
+	//{
+	//	StartAnimation(false);
 
-		//if(attackCollider == EntityInvalid)
-		//{					
-		//	const CharacterState& state = GetComponentRef(CharacterState, entity);
-		//	const Config* config = GetConfig(entity);
-		//	attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
-		//}
+	//	can_kill = false;
 
-		if(animator.loopCount > 0)
-		{
-			if(animation.action == ActionState::AttackWindUp)
-			{
-				StartAnimation();
+	//	InitDeathState();
+	//}
 
-				if(attackCollider == EntityInvalid)
-				{
-					const CharacterState& state = GetComponentRef(CharacterState, entity);
-					const Config* config = GetConfigFromEntity(entity);
-					attackCollider = CreateNewAttackCollider("player attack collider", config->data.GetFloat("basic_attack_damage"), config->data.GetFloat("basic_attack_force"));
-				}
+	//void DeathState::Resume()
+	//{
+	//	StartAnimation(false);
+	//}
 
-				return;
-			}
+	//void DeathState::Update(float dt)
+	//{	
+	//	const Animator& animation = GetComponentRef(Animator, entity);
 
-			AIController& ai_controller = GetComponentRef(AIController, entity);
-			ai_controller.cooldownTimer.Start();
-			
-			CharacterState& state = GetComponentRef(CharacterState, entity);
-			PopState();
-			return;
-		}
+	//	if(animation.loopCount > 0)
+	//		can_kill = true;
+	//}
 
-		if (ECS::Physics* physics = GetComponent(Physics, entity))
-		{
-			physics->ApplyHorizontalDrag(0.5f);
-		}
-	}
+	//// BasicAttack
+	//// ---------------------------------------------------------
+	//BasicAttackState::BasicAttackState(ECS::Entity _entity) : CharacterAction(ActionState::BasicAttack, _entity) { }
 
-	void BasicAttackState::Exit()
-	{
-		ecs->entities.KillEntity(attackCollider);
-	}
+	//void BasicAttackState::Init()
+	//{	
+	//	Animator& animator = GetComponentRef(Animator, entity);
+	//	if(animator.GetAnimation(ActionState::AttackWindUp))
+	//	{
+	//		StartAnimation(ActionState::AttackWindUp);
+	//	}
+	//	else
+	//	{	
+	//		StartAnimation();
+	//	}
+	//}
+
+	//// THIS WHOLE THING IS FUCKED
+	//void BasicAttackState::Update(float dt)
+	//{
+	//	Animator& animator = GetComponentRef(Animator, entity);
+	//	
+	//	const Animation& animation = animator.GetActiveAnimation();
+
+	//	//if(attackCollider == EntityInvalid)
+	//	//{					
+	//	//	const EntityState& state = GetComponentRef(EntityState, entity);
+	//	//	const Config* config = GetConfig(entity);
+	//	//	attackCollider = CreateNewAttackCollider("player attack collider", config->values.GetFloat("basic_attack_damage"), config->values.GetFloat("basic_attack_force"));
+	//	//}
+
+	//	if(animator.loopCount > 0)
+	//	{
+	//		if(animation.action == ActionState::AttackWindUp)
+	//		{
+	//			StartAnimation();
+
+	//			//if(attackCollider == EntityInvalid)
+	//			//{
+	//			//	const EntityState& state = GetComponentRef(EntityState, entity);
+	//			//	const Config* config = GetConfigFromEntity(entity);
+	//			//	attackCollider = CreateNewAttackCollider("player attack collider", config->data.GetFloat("basic_attack_damage"), config->data.GetFloat("basic_attack_force"));
+	//			//}
+
+	//			return;
+	//		}
+
+	//		AIController& ai_controller = GetComponentRef(AIController, entity);
+	//		ai_controller.cooldownTimer.Start();
+	//		
+	//		EntityState& state = GetComponentRef(EntityState, entity);
+	//		PopState();
+	//		return;
+	//	}
+
+	//}
+
+	//void BasicAttackState::Exit()
+	//{
+	//	ecs->entities.KillEntity(attackCollider);
+	//}
 }
 
 

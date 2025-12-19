@@ -7,7 +7,7 @@ namespace ECS
 	{
 		enum Type
 		{
-			White,
+			White, // #d1d1d1
 			Blue,
 			Black,
 			Red,
@@ -42,17 +42,29 @@ namespace ECS
 		static constexpr u32 s_defaultNoColour = 0xF1F1F1;
 
 		static Type SColourToType(SColour colour);
+
+		COMPONENT_TYPE(Colour)
+
+		// probably duplicate data in some cases, like coinstack already has it, but i also need this
+		Colour::Type colour;
 	};
 
 	struct CoinStack
 	{
 		COMPONENT_TYPE(CoinStack)
 
-		Colour::Type colourType;
-		//SColour colour;
+		Colour::Type colourType = Colour::Count;
+		
+		// sprite = spritePrefix + remaining
+		// e.g. spritePrefix = "BlueCoin" then we have sprite = "BlueCoin2"
+		BasicString spritePrefix;
 
-		int remaining;
-		int capacity;
+		int capacity = -1;
+		int remaining = -1;
+		
+		// special case, these are the inventory coin piles, there's probably a
+		// better way to do this, but i dont want to make a new component just for this
+		bool isInventory = false;
 
 		static CoinStack* GetCoinStack(Colour::Type type);
 	};
@@ -62,6 +74,7 @@ namespace ECS
 		static constexpr int c_tiers = 3;
 
 		COMPONENT_TYPE(Card)
+		Card();
 
 		Colour::Type colour;
 
@@ -80,11 +93,13 @@ namespace ECS
 		int cardRegistryIndex;
 
 		void RegenerateChildDisplays();
+		bool CanAfford(Entity entity) const;
 	};
 
 	struct Inventory
 	{
 		COMPONENT_TYPE(Inventory)
+		Inventory();
 
 		// amount of coins owned owns
 		int coins[Colour::Count] { 0 };
@@ -93,20 +108,26 @@ namespace ECS
 		std::vector<int> cards;
 
 		void GetCardPower(int array[], int size) const;
-		void GetBuyingPower(int array[], int size) const; 
+		void GetBuyingPower(int array[], int size) const;
+
+		int GetPoints() const;
 	};
 
 	struct TurnState
 	{
 		COMPONENT_TYPE(TurnState)
+		TurnState();
 
 		int turnIndex;
 		int initiative;
 		bool canEndTurn;
+		bool isActiveTurn;
+
+		Entity attackingMonster;
 
 		int collectedCoins[Colour::Count] { 0 };
 
-		Card collectedCard;
+		int collectedCardRegIndex;
 		Entity collectedCardSource;
 
 		void ResetState();
@@ -117,6 +138,7 @@ namespace ECS
 	struct ActionRequest
 	{
 		COMPONENT_TYPE(ActionRequest)
+		ActionRequest();
 
 		enum Type
 		{

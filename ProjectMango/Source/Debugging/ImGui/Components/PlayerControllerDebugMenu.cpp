@@ -17,7 +17,7 @@ u32 DebugMenu::DoPlayerControllerDebugMenu(ECS::Entity& entity)
 			if (ImGui::TreeNode("Component Data"))
 			{
 				//ECS::PlayerController& pc = GetComponentRef(PlayerController, entity);
-				ECS::CharacterState& state = GetComponentRef(CharacterState, entity);
+				ECS::EntityState& state = GetComponentRef(EntityState, entity);
 
 				//ImGui::VectorText("Movement Direction", state.movementDirection);
 				//ImGui::VectorText("Facing Direction", state.facingDirection);

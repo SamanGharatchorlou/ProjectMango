@@ -19,7 +19,7 @@ namespace ECS
 		// update children positions
 		if (EntityData* entity_data = GetComponent(EntityData, parent))
 		{
-			SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;;
+			SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;
 
 			VectorF flip_point;
 			if (ECS::Sprite* sprite = GetComponent(Sprite, parent))
@@ -71,8 +71,6 @@ namespace ECS
 
 	void TransformSystem::Update(float dt)
 	{
-		
-
 		std::vector<Entity> out_of_bounds_entities;
 
 		for (Entity entity : entities)
@@ -83,6 +81,7 @@ namespace ECS
 
 			Transform& transform = GetComponentRef(Transform, entity);
 
+			// 3.
 			// -- UPDATE POSITION
 			// only move to the allowed position, otherwise roll back
 			Collider* collider = GetComponent(Collider, entity);
@@ -93,10 +92,6 @@ namespace ECS
 					DebugPrint(Warning, "Collder on entity %s has not been initialised", ECS::GetName(entity));
 				}
 
-				u32 flags = Collider::Flags::Static;
-				if (HasFlag(collider->flags, flags))
-					continue;
-
 				transform.worldPosition = transform.worldPosition + collider->allowedMovement;
 			}
 			// no collider so move it to its target position
@@ -105,23 +100,8 @@ namespace ECS
 				transform.worldPosition = transform.targetWorldPosition;
 			}
 			
+			// 4.
 			UpdateChildrenTransforms(entity);
-
-			// update the target position based on physics
-			Physics* physics = GetComponent(Physics, entity);
-			if (physics)
-			{
-				transform.targetWorldPosition = transform.worldPosition + (physics->speed * dt);
-			}
-
-			// set collider paramters
-			if (collider)
-			{
-				//collider->back = transform.worldPosition;
-				//collider->forward = transform.targetWorldPosition;
-				//collider->RollForwardPosition();
-				collider->UpdateFromTransform(&transform);
-			}
 
 			// check out of bounds
 			const Biome& biome = Biome::GetActiveBiome();

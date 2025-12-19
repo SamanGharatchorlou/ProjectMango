@@ -3,11 +3,12 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/AIController.h"
+#include "ECS/Components/AIComponents.h"
 #include "Graphics/Raycast.h"
 #include "ECS/Components/Biome.h"
 #include "Core/Helpers.h"
 #include "ECS/Components/Physics.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 
 namespace ECS
 {
@@ -56,28 +57,42 @@ namespace ECS
 
 	void PathingSystem::Update(float dt)
 	{
+		const Level& active_level = Biome::GetVisibleLevel();
+		if(active_level.walkableTiles.rows() == 0 )
+			return;
+
  		for (Entity entity : entities)
 		{
+			// debug break point
+			if(DebugMenu::GetSelectedEntity() == entity)
+				int a = 4;
+
 			Pathing& pathing = GetComponentRef(Pathing, entity);
 			//AIController& aic = GetComponentRef(AIController, entity);
+
+
 
 			// reset this every frame
 			pathing.hasValidPath = false;
 
-			const ECS::Level* level = ECS::Biome::GetLevelFromIndex(pathing.levelIndex);
-			if (!level)
-			{
-				DebugPrint(Warning, "Entity %s pathin level index invalid", GetName(entity));
-				continue;
-			}
+			//VectorF pos = GetPosition(entity);
+			//const Level& level = Biome::GetLevel(pos);
+			//levelIndex = level.index;
+			//const ECS::Level* level = ECS::Biome::GetLevelFromIndex(pathing.levelIndex);
+			//if (!level)
+			//{
+			//	DebugPrint(Warning, "Entity %s pathin level index invalid", GetName(entity));
+			//	continue;
+			//}
 
-			if (!level->IsPointInBounds(pathing.targetLocation))
+			if (!active_level.IsPointInBounds(pathing.targetLocation))
 				continue;
 
 			VectorF target = pathing.targetLocation;
 			VectorF position = GetPosition(entity);
 
-			bool can_move_to_target_location = CanMoveDistance(entity, level, pathing.targetLocation);
+			// !!! this then fails !!!
+			bool can_move_to_target_location = CanMoveDistance(entity, &active_level, pathing.targetLocation);
 			if (!can_move_to_target_location)
 				continue;
 

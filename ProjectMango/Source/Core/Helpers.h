@@ -188,14 +188,6 @@ static bool Contains(const RectF& rect, VectorF point)
 
 
 //--------------------------------------------------------
-// Raycast helpers
-struct RaycastResult;
-
-bool RaycastToFloor(ECS::Entity entity, float& out_distance);
-bool RaycastToFloor(const RectF& rect, float& out_distance);
-bool RaycastToFloor(const VectorF& start, RaycastResult& result);
-bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance);
-
 // Identifiers
 bool IsPlayer(ECS::Entity entity);
 bool IsEnemy(ECS::Entity entity);

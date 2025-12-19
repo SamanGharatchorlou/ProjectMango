@@ -32,7 +32,7 @@ namespace ECS
 
 		void Init(u32 page_size, u32 page_index)
 		{
-			components = new T[page_size];
+			components = new T[page_size]();
 			pageSize = page_size;
 			size = 0; 
 			pageIndex = page_index;
@@ -101,8 +101,7 @@ namespace ECS
 
 			// to make sure we have clean data call the desctructor to remove string buffers etc.
 			// then explicitally call the constructor here, to init any data before we use this
-			component->~T();
-			*component = T();
+			new (component) T();
 			component->entity = entity;
 
 			// increment size
@@ -151,7 +150,22 @@ namespace ECS
 			// the back most component can replace the one we want to remove
 			// replace the item we're removing with the last item in the page
 			u32 page_entry_index = component_index % componentPageSize;
-			page.components[page_entry_index] = page.components[page.size - 1];
+
+			// call destructor on removed component
+			page.components[page_entry_index].~T();
+
+			if (page_entry_index != page.size - 1)
+			{
+				T* last_component = &page.components[page.size - 1];
+
+				// move last component into the freed slot
+				new (&page.components[page_entry_index]) T(std::move(*last_component));
+
+				// destroy the last component after moving
+				last_component->~T();
+			}
+
+			//page.components[page_entry_index] = std::move( page.components[page.size - 1] );
 
 			// mark it as dead just in case
 			page.components[page.size - 1].entity = EntityInvalid;
@@ -165,6 +179,7 @@ namespace ECS
 			// remove the now unused map entries
 			entityToComponent.erase(entity);
 			componentToEntity.erase(last_component_index);
+
 			page.size--;
 		}
 				

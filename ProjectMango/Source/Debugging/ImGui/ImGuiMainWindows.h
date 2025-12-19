@@ -6,14 +6,20 @@ namespace DebugMenu
 {
 	void DoEntitySystemWindow();
 	void DoInputWindow();
-	void DoColliderWindow();
+	void DoTransformWindow();
 	void DoGameStateWindow();
 	void DoTweakerWindow();
 
 	u32 GetSelectedEntity();
 	void SelectEntity(ECS::Entity entity);
 
-	bool DrawRaycasts();
+	struct TweakerState
+	{
+		bool drawRaycasts = false;
+		bool canBuyAnyCard = true;
+	};
+
+	TweakerState& GetState();
 
 	struct GamePlayerState
 	{

@@ -32,8 +32,11 @@ u32 DebugMenu::DoUITextDebugMenu(ECS::Entity& entity)
 		ECS::UIText& ui_text = GetComponentRef(UIText, entity);
 		ImGui::PushID(entity + (int)type);
 
-		const char* text = ui_text.font.text.c_str() ? ui_text.font.text.c_str() : "no text";
-		ImGui::Text("%s", ui_text.font.text.c_str() );
+		const char* text = ui_text.text.c_str() ? ui_text.text.c_str() : "no text";
+		ImGui::Text("%s", ui_text.text.c_str() );
+
+		ImGui::Text("Size: %d", ui_text.font.GetPtSize());
+		ImGui::Text("UID: %s", ui_text.UID.c_str());
 
 		ImGui::PopID();
 	}

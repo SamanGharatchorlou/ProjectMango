@@ -35,7 +35,8 @@ void RenderManager::render()
 {
 	DebugMenu::SendRenderLayerInfo(mRenderPackets);
 
-	SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
+	Renderer* renderer = Renderer::Get();
+	SDL_Renderer* sdl_renderer = renderer->sdlRenderer();
 
 	// handle window scaling
 	int width = -1;
@@ -44,13 +45,13 @@ void RenderManager::render()
 	const VectorF real_window_size = VectorF((float)width, (float)height);
 	const VectorF fake_window_size = GameData::Get().window->size();
 	const float render_scale = real_window_size.x / fake_window_size.x;
-	Renderer::Get()->setScale(render_scale);
+	renderer->setScale(render_scale);
 
 	VectorF camera_shift = Camera::Get()->GetRect().TopLeft() * -1.0f;
 
 	// clear screen
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(sdl_renderer);
 
 	// render all the packs we received in the layer order
 	for (u32 l = 0; l < c_RenderLayers; l++)
@@ -62,6 +63,13 @@ void RenderManager::render()
 			if (DebugMenu::GetSelectedEntity() == render_packs[i].entity)
 				int a = 4;
 			
+			if(render_packs[i].flip == SDL_FLIP_HORIZONTAL)
+			{
+				// same distance but flipped over to the other side, so x2 the diff between rect center and the flip point
+				VectorF diff = render_packs[i].rect.Size() - (render_packs[i].flipPoint * 2.0f);
+				render_packs[i].rect.Translate(diff * -1);
+			}
+
 			render_packs[i].rect.Translate(camera_shift);
 
 			if(render_packs[i].texture)
@@ -80,7 +88,7 @@ void RenderManager::render()
 
 			if(render_packs[i].font)
 			{
-				render_packs[i].font->Render(render_packs[i].rect.TopLeft());
+				render_packs[i].font->Render(renderer, render_packs[i].rect.TopLeft());
 			}
 		}
 
@@ -96,20 +104,20 @@ void RenderManager::render()
 		case DebugDrawType::Line:
 		{
 			SColour colour = mDebugRenders[i].colour;
-			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
+			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);
 
 			const RectF& rect = mDebugRenders[i].rect;
 			const Vector2D<int> A = (rect.TopLeft() + camera_shift).toInt();
 			const Vector2D<int> B = (rect.Size() + camera_shift).toInt();
 
-			SDL_RenderDrawLine(renderer, A.x, A.y, B.x, B.y);
+			SDL_RenderDrawLine(sdl_renderer, A.x, A.y, B.x, B.y);
 			break;
 		}
 		case DebugDrawType::RectOutline:
 		{
 			SColour colour = mDebugRenders[i].colour;
-			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
-			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);
+			SDL_SetRenderDrawBlendMode(sdl_renderer, SDL_BLENDMODE_BLEND);
 
 			RectF& rect = mDebugRenders[i].rect;
 			SDL_Rect renderQuadb = { static_cast<int>(rect.x1 + camera_shift.x),
@@ -117,14 +125,14 @@ void RenderManager::render()
 				static_cast<int>(rect.Width()),
 				static_cast<int>(rect.Height()) };
 
-			SDL_RenderDrawRect(renderer, &renderQuadb);
+			SDL_RenderDrawRect(sdl_renderer, &renderQuadb);
 			break;
 		}
 		case DebugDrawType::Point:
 		case DebugDrawType::RectFill:
 		{
 			SColour colour = mDebugRenders[i].colour;
-			SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
+			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);
 			
 			RectF& rect = mDebugRenders[i].rect;
 			SDL_Rect renderQuadb = {	static_cast<int>(rect.x1 + camera_shift.x),
@@ -132,7 +140,7 @@ void RenderManager::render()
 										static_cast<int>(rect.Width()),
 										static_cast<int>(rect.Height()) };
 
-			SDL_RenderFillRect(renderer, &renderQuadb);
+			SDL_RenderFillRect(sdl_renderer, &renderQuadb);
 			break;
 		}
 		default:
@@ -147,11 +155,11 @@ void RenderManager::render()
 	// all sizes and positions are relative to this and then i'm scaling to the real window size. but imgui is getting
 	// the real window size and THEN scaling so its all messed up, i dont know how to get it to think its drawing on a 
 	// 1024x1024 window size so just pretend its not scaling, then it at least draws to a 1024 screen and its useable
-	Renderer::Get()->setScale(1);
+	renderer->setScale(1);
 	DebugMenu::Draw();
-	Renderer::Get()->setScale(render_scale);
+	renderer->setScale(render_scale);
 #endif
 
 	// update window surface
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(sdl_renderer);
 }

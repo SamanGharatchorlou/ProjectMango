@@ -11,7 +11,6 @@
 #include "System/Window.h"
 #include "Game/FrameRateController.h"
 #include "Core/Helpers.h"
-#include "Entities/Player/PlayerCharacter.h"
 
 void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
 

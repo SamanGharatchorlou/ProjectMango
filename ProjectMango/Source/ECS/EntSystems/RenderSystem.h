@@ -13,6 +13,7 @@ namespace ECS
 	public:
 		RenderSystem(Archetype type) : EntitySystem(type) { }
 
+		void Init() override;
 		void Update(float dt) override;
 		
 	};

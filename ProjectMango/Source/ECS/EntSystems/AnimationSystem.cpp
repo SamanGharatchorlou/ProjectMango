@@ -35,6 +35,26 @@ namespace ECS
 		}
 	}
 
+	void StartAnimation(Animator& animator, Action::Enum action)
+	{
+		for( u32 i = 0; i < animator.animations.size(); i++ )
+		{
+			if(animator.animations[i].action == action)
+			{
+				animator.state = TimeState::Running;
+
+				animator.activeAnimation = i;
+				animator.frameIndex = 0;
+				animator.loopCount = 0;
+				animator.timer = 0;
+
+				return;
+			}
+		}
+
+		DebugPrint(Warning, "No animation found for action %s", ActionToString(action));
+	}
+
 	void AnimationSystem::Update(float dt)
 	{
 		for (Entity entity : entities)
@@ -49,6 +69,14 @@ namespace ECS
 
 			if(!animator.IsValid())
 				continue;
+			
+			Animation& active_animation = animator.animations[animator.activeAnimation];
+
+			EntityState& character_state = GetComponentRef(EntityState, entity);
+			if(character_state.current != active_animation.action)
+			{
+				StartAnimation(animator, character_state.current);
+			}
 
 			UpdateAnimator(animator, dt);
 			animator.SetActiveSpriteFrame(sprite);
@@ -57,43 +85,8 @@ namespace ECS
 			{
 				const Animation& animation = animator.GetActiveAnimation();
 
-				if(animation.entityColliderEndPos != c_invalidVector)
-				{
-					const VectorF relative_movement = animation.entityColliderEndPos - animation.entityColliderPos;
-					VectorF movement = relative_movement * transform.size;
-					if(sprite.IsFlipped())
-						movement = movement * -1.0f;
-					
-					const float animation_time = (float)animation.frameCount * animation.frameTime;
-					const float frames = animation_time / dt;
-					const VectorF movement_dt = movement / frames;
-									
-					collider->forward = collider->forward + movement_dt;
-					transform.renderOffset -= movement_dt;
-				}
-				//else if(animation.entityColliderPos.isPositive() && animation.entityColliderSize.isPositive())
-				{
-					//if (sprite.rotation != 0)
-					//{
-					//	VectorF actual_center = VectorF(0.5f, 0.5f);
-					//	VectorF real_to_visual_center = animation.entityColliderPos;// -actual_center;
-
-					//	real_to_visual_center.rotateVector(sprite.rotation, actual_center);
-
-					//	// looks like its doing the right thing but the rotation about point doesnt seem correct
-					//	// or something to do with the positioning doesn look right
-					//	collider->SetRelativeRect(real_to_visual_center, animation.entityColliderSize);
-					//}
-					//else
-					{
-						collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
-					}
-
-					//if(!animation.entityColliderPos.hasNegative())
-
-					//collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
-					transform.renderOffset = VectorF::zero();
-				}
+				collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
+				//transform.renderOffset = VectorF::zero();
 			}
 		}
 	}

@@ -252,7 +252,7 @@ const Config* ConfigManager::GetConfig(const char* config)
 		//return AddAndLoad(config);
 	}
 
-	DebugPrint(Warning, "No config in the config manager with name: %s", config);
+	//DebugPrint(Warning, "No config in the config manager with name: %s", config);
 	return nullptr;
 }
 

@@ -1,13 +1,9 @@
 #pragma once
 
-enum class ActionState;
-class STexture;
-struct Config;
+#include "ECS/Components/Components.h"
 
 namespace ECS
 {
-	struct Sprite;
-
 	struct SpriteSheet
 	{
 		BasicString ID;
@@ -18,15 +14,11 @@ namespace ECS
 
 	struct Animation
 	{
-		ActionState action = (ActionState)0;
-	
 		SpriteSheet spriteSheet;
 
 		// relative to the sprite
 		VectorF entityColliderPos = VectorF(-1,-1);
 		VectorF entityColliderSize = VectorF(-1,-1);
-
-		VectorF entityColliderEndPos = c_invalidVector;
 
 		// relative to the sprite
 		VectorF attackColliderPos = VectorF(-1, -1);
@@ -34,12 +26,11 @@ namespace ECS
 
 		// the about point of rotation
 		VectorF objectCenter = VectorF(0.5f, 0.5f);
+		
+		Action::Enum action = Action::None;
 
 		int startIndex = 0;
 		int frameCount = 0;
-
-		int attackColliderFrameStart = 0;
-		int attackColliderFrameEnd = 0;
 
 		float frameTime = 0.0f;
 
@@ -50,6 +41,7 @@ namespace ECS
 	struct Animator
 	{
 		COMPONENT_TYPE(Animator)
+		Animator();
 
 		std::vector<Animation> animations;
 
@@ -61,13 +53,14 @@ namespace ECS
 		int loopCount;
 		float timer;
 
-		void Init(const Config* config);
+		void Init();
 
+		// can remove
 		void SetActiveSpriteFrame(Sprite& sprite);
-		void StartAnimation(ActionState action);
+		void StartAnimation(Action::Enum action);
 
 		const Animation& GetActiveAnimation() const;
-		const Animation* GetAnimation(ActionState action) const;
+		const Animation* GetAnimation(Action::Enum action) const;
 
 		bool OnLastFrame() const;
 

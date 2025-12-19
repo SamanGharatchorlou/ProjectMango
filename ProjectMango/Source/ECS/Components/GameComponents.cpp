@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameComponents.h"
 
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
@@ -8,6 +9,7 @@
 #include "Entities/CardRegistry.h"
 #include "Entities/EntityBuilder.h"
 
+#include "Entities/Enemies/BlindingSpiderEnemy.h"
 
 namespace ECS
 {
@@ -41,9 +43,45 @@ namespace ECS
 		}
 	}
 
+	int Inventory::GetPoints() const
+	{
+		int total_points = 0;
+		for( int card_index : cards )
+		{
+			const Card* card = CardRegistry::LookupCard(card_index);
+			total_points += card->points;
+		}
+
+		return total_points;
+	}
+
 	// Card
 	// ------------------------------------------------------------------
 	Card::Card() : points(0), tier(0) { }
+
+	bool Card::CanAfford(Entity entity) const
+	{
+		if(Inventory* inventory = GetComponent(Inventory, entity))
+		{
+			if(DebugMenu::GetState().canBuyAnyCard)
+			{
+				if(Target::GetPlayer() == entity)
+					return true;
+			}
+
+			int buying_power[Colour::Count];
+			inventory->GetBuyingPower(buying_power, Colour::Count);
+			for( u32 i = 0; i < Colour::Count; i++ )
+			{
+				if(buying_power[i] < cost[i])
+					return false;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
 
 	void Card::RegenerateChildDisplays()
 	{
@@ -51,62 +89,101 @@ namespace ECS
 
 		const Transform& transform = GetComponentRef(Transform, entity);
 		const Sprite& sprite = GetComponentRef(Sprite, entity);
+		
+		VectorF child_size = VectorF(transform.size.x, transform.size.x) * 0.5f;
+
+		if(points > 0)
+		{
+			// build points
+			Entity points_entity = CreateEntity("card_points");
+			EntityData::SetParent(points_entity, entity);
+
+			// Transform
+			Transform& points_transform = AddComponent(Transform, points_entity);
+			points_transform.size = child_size * 0.5f;
+			points_transform.SetLocalPosition( VectorF(transform.size.x * 0.75f, 0.0f ) );
+			
+			// UIText
+			UIText& ui_text = AddComponent(UIText, points_entity);
+			ui_text.center = true;
+
+			if(colour == Colour::White)
+				ui_text.SetColour(SColour::Black);
+			else
+				ui_text.SetColour(SColour::White);
+
+			BasicString text = BasicString(points);
+			ui_text.SetSize(30);
+			ui_text.SetText(text.c_str());
+		}
+
+		// build cost
+		int total_count = 0;
+		for( u32 i = 0; i < Colour::Count; i++ )
+		{
+			if(cost[i] > 0)
+				total_count++;
+		}
 
 		int count = 0;
 		for( u32 i = 0; i < Colour::Count; i++ )
 		{
 			if(cost[i] > 0)
 			{
-				Entity child_entity = CreateBasicObject("card_icon", VectorF(64,64));
+				VectorF gem_size = VectorF(40,40);
+				Entity child_entity = CreateBasicObject("card_icon", gem_size);
 				EntityData::SetParent(child_entity, entity);
 
-				// where on the card is it placed
-				int use_count = 0;
-				if(count > 0)
-					use_count = 1;
-				if( count > 2)
-					use_count *= 2;
-				if(count % 2)
-					use_count = -use_count;
-			
 				Transform& child_transform = GetComponentRef(Transform, child_entity);
+				// where we want to set the text bounds
 				VectorF visible_size = child_transform.size * 0.8f;
-				VectorF position = (transform.size - child_transform.size) * 0.5f;
-				position += VectorF(0, child_transform.size.y * 0.8f) * (float)use_count;
+				VectorF position = (transform.size - child_transform.size) * VectorF(0.1f, 0.9f);
+				
+				// use a % of the height so they sit tighter together
+				float effective_height = child_transform.size.y * 1.0f;
+				position += VectorF( 0, effective_height * -(float)count ) ;
+
 				child_transform.SetLocalPosition( position );
 			
-				const StringBuffer32& colour_string = Colour::s_typeToString.at((Colour::Type)i);
-
 				char buffer[32];
-				snprintf(buffer, 32, "%s_gem", colour_string.c_str());
+				const StringBuffer32& colour_string = Colour::s_typeToString.at((Colour::Type)i);
+				snprintf(buffer, 32, "%sGem", colour_string.c_str());
 
 				Sprite& child_sprite = GetComponentRef(Sprite, child_entity);
 				child_sprite.SetTexture(buffer);
 				child_sprite.renderLayer = (RenderLayer)((int)sprite.renderLayer + 1);
 
-				UIText& child_text_display = AddComponent(UIText, child_entity);
-
 				BasicString text(cost[i]);
+
+				UIText& child_text_display = AddComponent(UIText, child_entity);
 				child_text_display.SetText( text.c_str() );
 				child_text_display.FitToSize(visible_size);
 				child_text_display.SetRenderOffsetToCenter();
+				child_text_display.renderOffset += VectorF(0,2);
+				if((Colour::Type)i == Colour::White)
+					child_text_display.SetColour(SColour::Black);
+				else
+					child_text_display.SetColour(SColour::White);
 
 				count++;
 			}
 		}
+
+		CreateCardActor("BlindingSpider", entity);
 	}
 
 
 	// CoinStack
 	// ------------------------------------------------------------------
-	CoinStack::CoinStack() : capacity(0), remaining(0)/*, colour(SColour::None)*/ { }
-	
 	CoinStack* CoinStack::GetCoinStack(Colour::Type type)
 	{
 		ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
 		for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
 		{
 			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
+			if(coin_stack.isInventory)
+				continue;
+
 			if(coin_stack.colourType == type )
 			{
 				return &coin_stack;
@@ -148,13 +225,22 @@ namespace ECS
 
 	// Turn
 	// ------------------------------------------------------------------
-	TurnState::TurnState() : turnIndex(-1), collectedCardSource(EntityInvalid),  canEndTurn(false), initiative(0) { }
+	TurnState::TurnState() : 
+		isActiveTurn(false),
+		turnIndex(0), 
+		collectedCardSource(EntityInvalid),  
+		collectedCardRegIndex(-1),
+		canEndTurn(false), 
+		initiative(0),
+		attackingMonster(EntityInvalid)
+	{ }
 
 	void TurnState::ResetState()
 	{
 		memset(collectedCoins, 0, sizeof(int) * (int)Colour::Count);
 		collectedCardSource = EntityInvalid;
 		canEndTurn = false;
+		collectedCardRegIndex = -1;
 	}
 	
 	bool TurnState::CanAquireMoreResources() const
@@ -175,9 +261,37 @@ namespace ECS
 		if(coins_collected >= 3)
 			return false;
 
-		// already collect a card
-		if(collectedCardSource != EntityInvalid)
+		// collected some coins, can it collect anymore (coin stacks might be empty)
+		if(coins_collected > 0)
+		{
+			std::vector<Colour::Type> available_coin_stacks;
+
+			for( u32 i = 0; i < Colour::Count; i++ )
+			{
+				if(CoinStack::GetCoinStack((Colour::Type)i)->remaining > 0)
+				{
+					available_coin_stacks.push_back((Colour::Type)i);
+				}
+			}
+			
+			// if there's any other available coin stack to pull from that has been already, then we can continue
+			bool has_available_coin_stack = false;
+			for( Colour::Type available_coin_stack : available_coin_stacks )
+			{
+				if(collectedCoins[available_coin_stack] == 0)
+				{
+					has_available_coin_stack = true;
+					break;
+				}
+			}
+
+			if(!has_available_coin_stack)
+				return false;
+		}
+		else if(collectedCardSource != EntityInvalid)
+		{
 			return false;
+		}
 
 		return true;
 	}
@@ -201,4 +315,5 @@ namespace ECS
 	// ActionRequest
 	// ------------------------------------------------------------------
 	ActionRequest::ActionRequest() : request(None), target(EntityInvalid) { }
+
 }

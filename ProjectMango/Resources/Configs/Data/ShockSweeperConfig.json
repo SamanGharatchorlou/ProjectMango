@@ -5,14 +5,8 @@
 	"size_y": 120,
 	"gravity": true,
 	"snap_to_floor": true,
-	"acceleration_x": 80,
-	"acceleration_y": 80,
-	"max_run_speed": 100,
-	"max_fall_speed": 1000,
-	"basic_attack_damage": 10,
-	"basic_attack_force": 150,
-	"basic_attack_cooldown": 1,
 	"max_health": 200,
-	"alert_range": 600,
-	"disable_pathing": true
+	"acceleration": 80,
+	"max_run_speed": 50,
+	"attack_cooldown_time_ms" : 500
 }

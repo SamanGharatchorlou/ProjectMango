@@ -23,6 +23,15 @@ AudioManager::AudioManager()
 AudioManager::~AudioManager()
 {
 	FreeAllSoundEffects();
+
+	for( auto iter = musicTracks.begin(); iter != musicTracks.end(); iter++ )
+	{
+		Mix_FreeMusic(iter->second);
+	}	
+	musicTracks.clear();
+
+	DebugPrint(Log, "Music Freed");
+
 	DebugPrint(Log, "Audio manager destroyed");
 }
 
@@ -81,7 +90,7 @@ void AudioManager::FreeAllSoundEffects()
 {
 	for( auto iter = soundEffects.begin(); iter != soundEffects.end(); iter++ )
 	{
-		delete iter->second;
+		Mix_FreeChunk(iter->second);
 	}	
 	soundEffects.clear();
 

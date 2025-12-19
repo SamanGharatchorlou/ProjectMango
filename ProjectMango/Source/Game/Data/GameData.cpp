@@ -13,6 +13,7 @@
 #include "System/Files/ConfigManager.h"
 #include "ECS/EntityCoordinator.h"
 #include "UI/UIManager.h"
+#include "Graphics/FontManager.h"
 
 #include "Debugging/ImGui/ImGuiMenu.h"
 
@@ -45,6 +46,12 @@ void GameData::init(Window* newWindow)
 	// Rendering
 	renderManager = new RenderManager;
 
+	// textures
+	textureManager = new TextureManager;
+	
+	// fonts
+	fontManager = new FontManager;
+
 	// game system state
 	systemStateManager = new SystemStateManager;
 
@@ -60,6 +67,7 @@ void GameData::init(Window* newWindow)
 	// Entity Component System
 	ecs = new ECS::EntityCoordinator;
 
+
 #if IMGUI
 	DebugMenu::Init();
 #endif
@@ -68,8 +76,8 @@ void GameData::init(Window* newWindow)
 
 void GameData::preLoad()
 {
-	TextureManager::Get()->preLoad();
-	AudioManager::Get()->preLoad();
+	textureManager->preLoad();
+	audioManager->preLoad();
 }
 
 bool GameData::endLoading()
@@ -94,7 +102,7 @@ void GameData::load()
 		return;
 
 	// Texture Manager
-	TextureManager::Get()->load();
+	textureManager->load();
 
 	if (endLoading())
 		return;
@@ -108,7 +116,7 @@ void GameData::load()
 	inputManager->setCursorSize(VectorF(25.0f, 25.0f));
 
 	// Audio
-	AudioManager::Get()->load();
+	audioManager->load();
 
 	DebugPrint(Log, "finish loading audio");
 
@@ -145,18 +153,13 @@ void GameData::setupObservers()
 
 void GameData::free()
 {
-	//SDL_JoystickClose()
-	//Close();
-
 	delete uiManager;
 	delete inputManager;
 	delete systemStateManager;
 	delete ecs;
-
-	//AudioManager::Get()->unload();
-	// todo: make this work the same as audio manager
-	TextureManager::Get()->unload();
-
+	delete audioManager;
+	delete fontManager;
+	delete textureManager;
 	delete renderManager;
 	delete window;
 	delete configs;

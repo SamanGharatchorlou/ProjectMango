@@ -5,19 +5,18 @@
 #include "ECS/Components/UIComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/SystemManager.h"
-#include "Entities/Player/PlayerCharacter.h"
 #include "Game/Camera/Camera.h"
 #include "Game/States/GameState.h"
 #include "Game/SystemStateManager.h"
 #include "Input/Cursor.h"
 #include "System/Window.h"
 
-void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicString()>>& text_bindings);
+void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicString(ECS::Entity)>>& text_bindings);
 void SetupButtonUIBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
 
 namespace ECS
 {
-	std::unordered_map<BasicString, std::function<BasicString()>> s_textBindings;
+	std::unordered_map<BasicString, std::function<BasicString(Entity entity)>> s_textBindings;
 	std::unordered_map<BasicString, std::function<void(ECS::Entity)>> s_buttonBindings;
 
 	// setup all text bindings
@@ -61,8 +60,12 @@ namespace ECS
 					auto iter = s_textBindings.find(text->UID);
 					if(iter != s_textBindings.end())
 					{
-						BasicString new_text = iter->second();
-						if( text->font.text != new_text )
+						const BasicString& new_text = iter->second(entity);
+
+						if(new_text.length() == 0 )
+							int a = 4;
+
+						if( text->text != new_text )
 						{
 							text->SetText(new_text.c_str());
 						}
@@ -82,15 +85,6 @@ namespace ECS
 					}
 				}
 			}
-			
-			// show/hide checkbox tick
-			if(UICheckbox* check_box = GetComponent(UICheckbox, entity))
-			{
-				Entity check = GetFirstChild(entity);
-				Sprite check_sprite = GetComponentRef(Sprite, check);
-				check_sprite.disabled = !check_box->isOn;
-			}
 		}
-
 	}
 }

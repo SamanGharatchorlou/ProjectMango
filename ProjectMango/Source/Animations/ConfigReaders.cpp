@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "ConfigReaders.h"
 
-#include "Animations/CharacterStates.h"
 #include "ECS/Components/Animator.h"
 #include "Graphics/STexture.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/JSONParser.h"
+#include "ECS/Components/Components.h"
 
 static std::unordered_map<BasicString, ECS::SpriteSheet> s_spriteSheets;
 
@@ -97,14 +97,12 @@ namespace AnimationReader
 
 				const Value& animation = anims[i];
 				anim.spriteSheet = s_spriteSheets[spriteSheet_id];
-				anim.action = animation.HasMember("action") ? StringToAction(animation["action"].GetString()) : ActionState::None;
+				anim.action = animation.HasMember("action") ? ECS::StringToAction(animation["action"].GetString()) : ECS::Action::None;
 				anim.startIndex = animation["startIndex"].GetInt();
 				anim.frameCount = animation["frameCount"].GetInt();
 				anim.frameTime = animation["frameTime"].GetFloat();
 				anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
 				anim.reversing = animation.HasMember("reverse") ? animation["reverse"].GetBool() : false;
-				anim.attackColliderFrameStart = animation.HasMember("attack_collider_frame_start") ? animation["attack_collider_frame_start"].GetInt() : 0;
-				anim.attackColliderFrameEnd = animation.HasMember("attack_collider_frame_end") ? animation["attack_collider_frame_end"].GetInt() : anim.frameCount;
 
 				// set object center
 				if(sprite_sheet.HasMember("object_center"))
@@ -123,8 +121,7 @@ namespace AnimationReader
 				anim.entityColliderSize = VectorF(1, 1);
 				PopulateColliderData("entity_collider", animation, &anim.entityColliderPos, &anim.entityColliderSize);
 				PopulateColliderData("attack_collider", animation, &anim.attackColliderPos, &anim.attackColliderSize);
-				PopulateColliderData("entity_collider_end", animation, &anim.entityColliderEndPos, nullptr);
-				
+
 				animator.animations.push_back(anim);
 			}
 		}

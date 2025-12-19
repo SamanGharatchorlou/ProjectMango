@@ -4,7 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Components.h"
 #include "Core/Helpers.h"
-#include "Animations/CharacterStates.h"
+//#include "Animations/CharacterStates.h"
 #include "Animations/ConfigReaders.h"
 #include "System/Files/Config.h"
 
@@ -18,8 +18,12 @@ namespace ECS
 		timer(0) 
 	{ }
 	
-	void Animator::Init(const Config* config)
+	void Animator::Init()
 	{
+		const Config* config = GetConfigFromEntity(entity);
+		if(!config)
+			return;
+
 		const char* animation = config->data.GetString("animation");
 		AnimationReader::BuildAnimatior( *this, animation);
 		activeAnimation = 0;
@@ -81,7 +85,7 @@ namespace ECS
 		sprite.flipPoint = animation.objectCenter;
 	}
 
-	void Animator::StartAnimation(ActionState action)
+	void Animator::StartAnimation(Action::Enum action)
 	{
 		for( u32 i = 0; i < animations.size(); i++ )
 		{
@@ -107,7 +111,7 @@ namespace ECS
 		return animations[activeAnimation];
 	}
 
-	const Animation* Animator::GetAnimation(ActionState action) const
+	const Animation* Animator::GetAnimation(Action::Enum action) const
 	{
 		for( u32 i = 0; i < animations.size(); i++ )
 		{

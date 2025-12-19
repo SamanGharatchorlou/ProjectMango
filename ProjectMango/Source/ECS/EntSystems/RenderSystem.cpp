@@ -8,19 +8,19 @@
 #include "Graphics/RenderManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
-
+void SetupSpriteUIBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
 
 namespace ECS
 {
+	std::unordered_map<BasicString, std::function<void(ECS::Entity)>> s_spriteBindings;
+
 	void GenerateRenderPack(const Sprite& sprite, RenderPack& pack)
 	{
-		const Transform& transform = GetComponentRef(Transform, sprite.entity);
-		const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
-
-		pack = RenderPack(sprite.texture, render_rect, (u32)sprite.renderLayer);
+		pack.texture = sprite.texture;
+		pack.layer = (u32)sprite.renderLayer;
 		pack.subRect = sprite.subRect;
 		pack.flip = sprite.flip;
-		pack.flipPoint = sprite.flipPoint * render_rect.Size();
+		pack.flipPoint = sprite.flipPoint * pack.rect.Size();
 		pack.rotation = sprite.rotation;
 		pack.colourMod = sprite.colourMod;
 
@@ -37,6 +37,11 @@ namespace ECS
 		pack.layer = (u32)RenderLayer::UI;
 
 		pack.entity = ui_text.entity;
+	}
+
+	void RenderSystem::Init()
+	{
+		SetupSpriteUIBindings(s_spriteBindings);
 	}
 
 	void RenderSystem::Update(float dt)
@@ -61,34 +66,71 @@ namespace ECS
 			
 			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
-				if(!sprite->texture || sprite->renderLayer == RenderLayer::None || sprite->disabled)
-					continue;
-			
-				const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+				//if( !sprite->UID.empty() )
+				//{
+				//	auto iter = s_spriteBindings.find(sprite->UID);
+				//	if(iter != s_spriteBindings.end())
+				//	{
+				//		iter->second(entity);
+				//	}
+				//}
 
-				if(!camera_rect.Intersect(render_rect))
-					continue;
-				
-				RenderPack pack;
-				GenerateRenderPack(*sprite, pack);
-				renderer->AddRenderPacket(pack);
+				if(sprite->texture && sprite->renderLayer != RenderLayer::None && !sprite->disabled)
+				{
+					const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+					if(camera_rect.Intersect(render_rect))
+					{
+						RenderPack pack;
+						pack.rect = render_rect;
+						GenerateRenderPack(*sprite, pack);
+
+						renderer->AddRenderPacket(pack);
+					}
+				}
 			}
 			
 			if(const UIText* ui_text = GetComponent(UIText, entity))
 			{
-				if(ui_text->font.text.empty())
-					continue;
-				
-				const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text->renderOffset, transform.size);
-								
-				if(!camera_rect.Intersect(render_rect))
-					continue;
-				
-				RenderPack pack;
-				GenerateRenderPack(*ui_text, pack);
-				renderer->AddRenderPacket(pack);
+				if(!ui_text->text.empty())
+				{
+					const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text->renderOffset, transform.size);				
+					if(camera_rect.Intersect(render_rect))
+					{
+						RenderPack pack;
+						pack.rect = render_rect;
+						pack.font = &ui_text->font;
+						pack.rect = render_rect;
+						pack.layer = (u32)RenderLayer::UI;
+						pack.entity = entity;
+
+						renderer->AddRenderPacket(pack);
+					}
+				}
 			}
 
+			if(const LayeredSprite* layered_sprite = GetComponent(LayeredSprite, entity))
+			{
+				for( const LayeredSprite::Layer& layer : layered_sprite->spriteLayers)
+				{
+					const Sprite& sprite = layer.sprite;
+					if(sprite.texture && sprite.renderLayer != RenderLayer::None && !sprite.disabled)
+					{
+						RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+						if(!layer.rect.IsZero())
+							render_rect = layer.rect;
+
+						if(camera_rect.Intersect(render_rect))
+						{
+							RenderPack pack;
+							pack.rect = render_rect;
+							GenerateRenderPack(sprite, pack);
+							pack.entity = entity;
+
+							renderer->AddRenderPacket(pack);
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -14,16 +14,7 @@ TextureManager::TextureManager()
 TextureManager::~TextureManager()
 {
 	DebugPrint(Log, "Texture manager destroyed");
-}
 
-TextureManager* TextureManager::Get()
-{
-	static TextureManager sInstance;
-	return &sInstance;
-}
-
-void TextureManager::unload()
-{
 	std::unordered_map<FileManager::Folder, TextureMap>::iterator iter;
 	for (iter = mTextures.begin(); iter != mTextures.end(); iter++)
 	{
@@ -32,9 +23,15 @@ void TextureManager::unload()
 	}
 
 	mTextures.clear();
-
-	DebugPrint(Log, "Texture manager unloaded");
 }
+
+TextureManager* TextureManager::Get()
+{
+	GameData& gd = GameData::Get();
+	ASSERT(gd.textureManager != nullptr, "Texture manager has no been set up yet");
+	return gd.textureManager;
+}
+
 
 void TextureManager::preLoad()
 {
@@ -178,7 +175,7 @@ STexture* TextureManager::getTexture(const char* label, const FileManager::Folde
 			return texture;
 	}
 
-		DebugPrint(Warning, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
+		//DebugPrint(Warning, "No item in folder map '%d' with label: '%s'", folder, buffer.c_str());
 	}
 	return nullptr;
 }

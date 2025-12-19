@@ -4,15 +4,15 @@
 
 class STexture;
 
-class TextureManager
+struct TextureManager
 {
+	static TextureManager* Get();	
 
-public:
-	static TextureManager* Get();
+	TextureManager();
+	~TextureManager();
 
 	void preLoad();
 	void load();
-	void unload();
 
 	STexture* getTexture(const char* label, const FileManager::Folder folders) const;
 	STexture* getTexture(StringBuffer64 label, const FileManager::Folder folders) const
@@ -28,9 +28,6 @@ private:
 
 	std::vector<const TextureMap* > FindTextureMaps(const FileManager::Folder folder) const;
 
-private:
-	TextureManager();
-	~TextureManager();
 
 	std::unordered_map<FileManager::Folder, TextureMap> mTextures; 
 };

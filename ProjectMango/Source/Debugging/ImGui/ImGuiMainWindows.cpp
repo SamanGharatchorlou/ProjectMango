@@ -6,7 +6,7 @@
 #include "imgui-master/imgui.h"
 
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
-#include "ECS/Components/AIController.h"
+#include "ECS/Components/AIComponents.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Biome.h"
 #include "ECS/Components/Collider.h"
@@ -14,10 +14,8 @@
 #include "ECS/Components/GameComponents.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/Physics.h"
-#include "ECS/Components/TileMap.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntityManager.h"
-#include "Entities/Player/PlayerCharacter.h"
 #include "Game/Camera/Camera.h"
 #include "Game/FrameRateController.h"
 #include "Game/States/GameState.h"
@@ -26,6 +24,15 @@
 #include "Input/InputManager.h"
 #include "System/Files/ConfigManager.h"
 #include "Audio/AudioManager.h"
+
+using namespace DebugMenu;
+
+static TweakerState s_state;
+
+TweakerState& DebugMenu::GetState()
+{
+    return s_state;
+}
 
 static ECS::Entity s_selectedEntity = 0;
 static StringBuffer64 filterBuffer;
@@ -61,6 +68,27 @@ void DebugMenu::DoEntitySystemWindow()
     ImGui::Text("Selected Entity: %d", (int)s_selectedEntity);
     ImGui::InputText("Entity Filter", filterBuffer.buffer(), filterBuffer.bufferLength());
 
+    bool is_number = filterBuffer.length() > 0;
+    for( u32 i = 0; i < filterBuffer.length(); i++ )
+    {
+        char* c = filterBuffer.buffer() + i;
+        int value = *c;
+        if(!std::isdigit(value))
+        {
+            is_number = false;
+            break;
+        }
+    }
+
+    if(is_number)
+    {
+        int number = std::atoi(filterBuffer.c_str());
+        if(ecs->IsAlive(number))
+        {
+            s_selectedEntity = number;
+        }
+    }
+
     const char* selected = ECS::GetName(s_selectedEntity);
     if (!selected)
         selected = "";
@@ -76,7 +104,7 @@ void DebugMenu::DoEntitySystemWindow()
             const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
             StringBuffer64 entity_name = StringBuffer64(ed.id.c_str()).to_lower();
 
-            if (filterBuffer.length() > 0)
+            if (filterBuffer.length() > 0 && !is_number)
             {
                 StringBuffer64 filter = filterBuffer.to_lower();
                 const char* value = strstr( entity_name.c_str(), filter.c_str() );
@@ -104,60 +132,61 @@ void DebugMenu::DoEntitySystemWindow()
 
         ImGui::EndCombo();
     }
-    
 
-    if (ecs->IsAlive(s_selectedEntity)) 
-    {
-        if (ecs->IsAlive(s_selectedEntity))
+    if (ecs->IsAlive(s_selectedEntity))
+    {		    
+        if(const ECS::Transform* transform = GetComponent(Transform, s_selectedEntity))
+        {      
+		    RectF rect(transform->worldPosition, transform->size);
+		    DebugDraw::RectOutline(rect, SColour::Blue);
+        }
+
+		ECS::Health* health = GetComponent(Health, s_selectedEntity);
+        if(ImGui::ActiveButton("Kill Entity", health != nullptr))
         {
-			ECS::Health* health = GetComponent(Health, s_selectedEntity);
-            if(ImGui::ActiveButton("Kill Entity", health != nullptr))
-            {
-                health->currentHealth = 0;
-            }
+            health->currentHealth = 0;
+        }
 
-            if(ImGui::Button("Destroy Entity"))
-            {
-                em.KillEntity(s_selectedEntity);
-                ImGui::End();
-                return;
-            }
+        if(ImGui::Button("Destroy Entity"))
+        {
+            em.KillEntity(s_selectedEntity);
+            ImGui::End();
+            return;
+        }
 
-            id_numb = 0;
-            ECS::Archetype type = 0;
-            bool do_dropdown = true;
+        id_numb = 0;
+        ECS::Archetype type = 0;
+        bool do_dropdown = true;
             
-            DoComponentDropdown(EntityData);
-            DoComponentDropdown(Animator);
-            DoComponentDropdown(Collider);
-            DoComponentDropdown(CharacterState);
-            DoComponentDropdown(Physics);
-            DoComponentDropdown(Sprite);
-            DoComponentDropdown(Transform);
-            DoComponentDropdown(Pathing);
-            DoComponentDropdown(AIController);
-            DoComponentDropdown(PlayerController);
-            DoComponentDropdown(Health);
-            DoComponentDropdown(Biome);
-            DoComponentDropdown(Arm);
-            DoComponentDropdown(UIButton);
-            DoComponentDropdown(UIText);
-            DoComponentDropdown(CoinStack);
-            DoComponentDropdown(Inventory);
-            DoComponentDropdown(Card);
+        DoComponentDropdown(EntityData);
+        DoComponentDropdown(Animator);
+        DoComponentDropdown(Collider);
+        DoComponentDropdown(EntityState);
+        DoComponentDropdown(Physics);
+        DoComponentDropdown(Sprite);
+        DoComponentDropdown(Transform);
+        DoComponentDropdown(Pathing);
+        DoComponentDropdown(AIController);
+        DoComponentDropdown(PlayerController);
+        DoComponentDropdown(Health);
+        DoComponentDropdown(Biome);
+        DoComponentDropdown(UIButton);
+        DoComponentDropdown(UIText);
+        DoComponentDropdown(CoinStack);
+        DoComponentDropdown(Inventory);
+        DoComponentDropdown(Card);
 
-            ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
-            for (u32 i = 0; i < ECS::Component::Count; i++) 
+        ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
+        for (u32 i = 0; i < ECS::Component::Count; i++) 
+        {
+            if(entity_type & ECS::archetypeBit((ECS::Component::Type)i))
             {
-                if(entity_type & ECS::archetypeBit((ECS::Component::Type)i))
-                {
-                    if(type & ECS::archetypeBit((ECS::Component::Type)i))
-                        continue;
+                if(type & ECS::archetypeBit((ECS::Component::Type)i))
+                    continue;
 
-                    ImGui::Button("-");
-                    ImGui::SameLine();
-		            ImGui::Text(ECS::ComponentNames[i]);
-                }
+                ImGui::Button("-");
+                ImGui::SameLine();
+		        ImGui::Text(ECS::ComponentNames[i]);
             }
         }
     }
@@ -248,18 +277,18 @@ void DebugMenu::DoInputWindow()
 
 static bool s_displayStatics = true;
 static bool s_displayDynamics = true;
-static bool s_displayRaycasts = true;
 static bool s_displayTransforms = true;
 static DebugDrawType s_drawType = DebugDrawType::RectOutline;
 
-void DebugMenu::DoColliderWindow() 
+
+void DebugMenu::DoTransformWindow() 
 {
     const ECS::ComponentArray<ECS::Collider>& colliders = GetAllComponents(Collider);
 	const u32 count = (u32)colliders.entityToComponent.size();
 
     ImGui::Checkbox("Display Statics", &s_displayStatics);
     ImGui::Checkbox("Display Dynamics", &s_displayDynamics);
-    ImGui::Checkbox("Display Raycasts", &s_displayRaycasts);
+    ImGui::Checkbox("Display Raycasts", &s_state.drawRaycasts);
     ImGui::Checkbox("Display Transforms", &s_displayTransforms);
 
     ImGui::DoDebugRenderTypeDropDown(s_drawType);
@@ -431,27 +460,23 @@ void DebugMenu::DoGameStateWindow()
 
 }
 
-static bool s_drawRaycasts = false;
 static bool s_debugCamera = false;
 
 static bool s_getRenderLayerData = false;
 std::vector<int> s_renderPacks;
 
-bool DebugMenu::DrawRaycasts()
-{
-    return s_drawRaycasts;
-}
+
 
 void DebugMenu::DoTweakerWindow() 
 {
-	ECS::Entity entity = Player::Get();
+	ECS::Entity entity = Target::GetPlayer();
 
     if(ECS::Health* health = GetComponent(Health, entity))
     {
         ImGui::Checkbox("Player Invulnerable", &health->invulnerable);
     }
 
-    ImGui::Checkbox("Draw Raycasts", &s_drawRaycasts);
+    ImGui::Checkbox("Can buy any card", &s_state.canBuyAnyCard);
 
     ImGui::Checkbox("Display Camera bits", &s_debugCamera);
     if (s_debugCamera)

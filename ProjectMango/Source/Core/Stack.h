@@ -54,6 +54,27 @@ public:
 
 		return nullptr;
 	}
+	
+	ActionStack() { }
+	ActionStack(const ActionStack&) = delete;
+	ActionStack& operator=(ActionStack&& as) noexcept
+	{
+		if (this != &as)
+		{
+			for (auto* p : stack) delete p;
+			stack = std::move(as.stack);
+			as.stack.clear();
+		}
+		return *this;
+	}
+
+	// move constructor
+    ActionStack(ActionStack&& other) noexcept
+        : stack(std::move(other.stack))
+    {
+        // leave other.stack empty
+        other.stack.clear();
+    }
 
 	std::vector<T*> stack;
 };

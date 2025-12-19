@@ -73,7 +73,8 @@
 					"startIndex": 0,
 					"frameCount": 6,
 					"frameTime": 0.15,
-					"flip_point_x": 0.22
+					"flip_point_x": 0.22,
+					"looping" : false
 				}
 			]
 		}

@@ -11,13 +11,14 @@
 #include "Game/FrameRateController.h"
 #include "ECS/Components/Animator.h"
 #include "Animations/ConfigReaders.h"
-#include "Animations/CharacterStates.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntSystems/AnimationSystem.h"
 #include "ECS/Components/Collider.h"
 
 #include "Core/Helpers.h"
 #include "imgui.h"
+
+using namespace ECS;
 
 namespace AnimationEditor
 {
@@ -120,7 +121,8 @@ namespace AnimationEditor
 			        RectF animation(draw_point_TL, texture_size);
                     draw_point_TL += VectorF(0, texture_size.y) + y_spacing;
 
-			        RenderPack pack(selected_tx, animation, 1);
+			        RenderPack pack(selected_tx, 1);
+                    pack.rect = animation;
 			        rm->AddRenderPacket(pack);
 
 			        DebugDraw::RectOutline(animation, SColour::Yellow);
@@ -252,7 +254,8 @@ namespace AnimationEditor
                         RectF renderRect( draw_point_TL, adjusted_frame_texture_size * s_state.screenSizeFactor );
                         draw_point_TL += VectorF(0, adjusted_frame_texture_size.y * s_state.screenSizeFactor) + y_spacing;
 
-			            RenderPack pack(selected_tx, renderRect, 1);
+			            RenderPack pack(selected_tx, 1);
+                        pack.rect = renderRect;
                         pack.subRect = subRect;
 			            rm->AddRenderPacket(pack);
 
@@ -296,7 +299,8 @@ namespace AnimationEditor
                         VectorF frame_top_left_pos = real_frame_size * frame_top_left_index.toFloat(); 
                         RectF frameSubRect(frame_top_left_pos, real_frame_size);
                             			            
-                        RenderPack frame_pack(selected_tx, renderFrameRect, 1);
+                        RenderPack frame_pack(selected_tx, 1);
+                        frame_pack.rect = renderFrameRect;
                         frame_pack.subRect = frameSubRect;
 			            rm->AddRenderPacket(frame_pack);
 
@@ -369,7 +373,7 @@ namespace AnimationEditor
 
                         if (ImGui::Selectable(action_string, is_selected))
                         {
-                            ActionState action = StringToAction(action_string);
+                            Action::Enum action = StringToAction(action_string);
                             c.animator.StartAnimation(action);
                         }
 
@@ -474,7 +478,8 @@ namespace AnimationEditor
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(c.sprite.texture, renderFrameRect, 1);
+                RenderPack frame_pack(c.sprite.texture, 1);
+                frame_pack.rect = renderFrameRect;
                 frame_pack.subRect = c.sprite.subRect;
                 frame_pack.flip = c.sprite.flip;
 
@@ -494,18 +499,6 @@ namespace AnimationEditor
 
                 DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);
                 relative_selection_top_left = renderFrameRect.TopLeft();
-
-                // COLLIDERS
-                ImGui::Checkbox("Display Collider", &s_state.displayCollider);
-               
-                if(s_state.displayCollider)
-                {
-                    RectF collider;
-                    collider.SetSize(selected_animation.entityColliderSize * renderFrameRect.Size());
-                    collider.SetTopLeft(renderFrameRect.TopLeft() + selected_animation.entityColliderPos * renderFrameRect.Size());
-
-                    DebugDraw::RectOutline(collider, SColour::Blue);
-                }
             
                 ImGui::PopID();
             }
@@ -617,7 +610,8 @@ namespace AnimationEditor
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
 	    STexture* black_bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
 	    STexture* white_bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
-	    RenderPack pack(white_bg, screen, 0);
+	    RenderPack pack(white_bg, 0);
+        pack.rect = screen;
 	    rm->AddRenderPacket(pack);
     }
 }

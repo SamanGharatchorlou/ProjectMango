@@ -7,6 +7,8 @@
 #include "Core/Helpers.h"
 
 #include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "ECS/Components/Biome.h"
+#include "ECS/Components/Components.h"
 
 void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {
@@ -79,15 +81,100 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 				result.hitPosition = ray_point;
 				result.hasHit = true;
 
-				if(DebugMenu::DrawRaycasts())
+				if(DebugMenu::GetState().drawRaycasts)
 					DebugDraw::Line(from, ray_point, SColour::Red);
 				return;
 			}
 		}
 
-		ray_distance += 1.0f;
+		ray_distance += 2.0f;
 	}
 	
-	if(DebugMenu::DrawRaycasts())
+	if(DebugMenu::GetState().drawRaycasts)
 		DebugDraw::Line(from, from + ray_direction * distance, SColour::Green);
+}
+
+
+bool RaycastToFloor(const RectF& rect, float& out_distance)
+{
+	ASSERT(!rect.Size().isZero(), "cant raycast to floor if the size hasnt been set");
+
+	// raycast from the top down, in case we're already in the floor
+	VectorF top = rect.TopCenter();
+			
+	std::vector<u32> collider_flags;
+	collider_flags.push_back(ECS::Collider::IsFloor);
+			
+	const ECS::Level& level = ECS::Biome::GetLevel(top);
+
+	RaycastResult result;
+	Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, nullptr, &collider_flags);
+
+	out_distance = result.distance - rect.Height();
+	// bump it up a little
+	out_distance -= 1.0f;
+	return result.hasHit;
+}
+
+bool RaycastToFloor(const VectorF& start, RaycastResult& result)
+{
+	std::vector<u32> collider_flags;
+	collider_flags.push_back(ECS::Collider::IsFloor);
+			
+	const ECS::Level& level = ECS::Biome::GetLevel(start);
+
+	Raycast(start, VectorF(0.0f, 1.0f), level.size.y, result, nullptr, &collider_flags);
+	return result.hasHit;
+}
+
+bool RaycastToFloor(ECS::Entity entity, float& out_distance)
+{
+	if(const ECS::Transform* transform = GetComponent(Transform, entity))
+	{
+		RectF rect = transform->GetRect();
+		ASSERT(!rect.Size().isZero(), "cant raycast to floor if the size hasnt been set");
+
+		// raycast from the top down, in case we're already in the floor
+		VectorF top = VectorF(transform->GetObjectCenter().x, rect.TopPoint());
+
+		std::vector<ECS::Entity> self;
+		self.push_back(entity);
+
+		std::vector<u32> collider_flags;
+		collider_flags.push_back(ECS::Collider::IsFloor);
+			
+		const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+		RaycastResult result;
+		Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
+
+		out_distance = result.distance - rect.Height();
+		return result.hasHit;
+	}
+
+	return false;
+}
+
+bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance)
+{
+	if(const ECS::Transform* transform = GetComponent(Transform, entity))
+	{
+		VectorF bot = transform->GetRect().BotCenter();
+			
+		std::vector<ECS::Entity> self;
+		self.push_back(entity);
+
+		std::vector<u32> collider_flags;
+		collider_flags.push_back(ECS::Collider::IsWall);
+			
+		const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+		RaycastResult result;
+		Raycast(bot, direction, level.size.y, result, &self, &collider_flags);
+
+		out_distance = result.distance;
+		return result.hasHit;
+	}
+
+	return false;
 }

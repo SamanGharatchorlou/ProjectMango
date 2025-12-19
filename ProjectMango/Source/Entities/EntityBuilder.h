@@ -1,10 +1,16 @@
 #pragma once
 
+using namespace ECS;
+
 namespace ECS { struct EntityMetaData; }
 
-typedef ECS::Entity(*CreateEntityFn)(const ECS::EntityMetaData& emd);
+typedef Entity(*CreateEntityFn)(const EntityMetaData& emd);
 
 void CreateEntities(ECS::Entity& biome);
 
-ECS::Entity CreateBasicObject(const ECS::EntityMetaData& emd, bool has_config = true);
-ECS::Entity CreateBasicObject(const char* id, VectorF size);
+Entity CreateBasicObject(const EntityMetaData& emd);
+Entity CreateBasicObject(const char* id, VectorF size);
+
+Entity CreateActor(const EntityMetaData& emd);
+Entity CreateCardActor(const char* monster, Entity card_entity);
+Entity CreateMonster(const EntityMetaData& emd);

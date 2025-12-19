@@ -22,7 +22,7 @@ namespace ECS
 			_entry( Transform ) \
 			_entry( Sprite ) \
 			_entry( Audio ) \
-			_entry( CharacterState ) \
+			_entry( EntityState ) \
 			_entry( PlayerController ) \
 			_entry( Physics ) \
 			_entry( Animator ) \
@@ -33,22 +33,25 @@ namespace ECS
 			_entry( Health ) \
 			_entry( Biome ) \
 			_entry( Spawner ) \
+			_entry( SpawnRequest ) \
 			_entry( Door ) \
 			_entry( UICursor ) \
 			_entry( UIButton ) \
 			_entry( UIText ) \
-			_entry( SpellBook ) \
-			_entry( Spell ) \
-			_entry( Pickup ) \
 			_entry( DeathScentence ) \
-			_entry( Firearm ) \
-			_entry( Arm ) \
 			_entry( Inventory ) \
 			_entry( CoinStack ) \
 			_entry( Card ) \
 			_entry( TurnState ) \
 			_entry( ActionRequest ) \
-			_entry( UICheckbox ) \
+			_entry( LayeredSprite ) \
+			_entry( Callback ) \
+			_entry( Colour ) \
+			_entry( SpriteCycle ) \
+			_entry( AIIntent ) \
+			_entry( Target ) \
+			_entry( BehaviourMap ) \
+			_entry( BehaviourState ) \
 
 	struct Component
 	{
@@ -65,8 +68,7 @@ namespace ECS
 	};
 
 #define COMPONENT_TYPE(comp) static Component::Type type() { return Component::comp; } \
-							 Entity entity = EntityInvalid; \
-							 comp();
+							 Entity entity = EntityInvalid;
 
 #define DEFINE_COMPONENT( component, size ) \
 	struct component##initialiser : public ComponentInitialiser { \

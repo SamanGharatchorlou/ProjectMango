@@ -29,7 +29,7 @@ Entity CreateUICursor()
 	Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.renderLayer = RenderLayer::Top;
 	sprite.canFlip = false;
-	sprite.Init(config);
+	sprite.Init();
 
 	UICursor& cursor = AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();
@@ -50,37 +50,23 @@ Entity CreateUIText(const EntityMetaData& emd)
 	// UIText
 	UIText& ui_text = AddComponent(UIText, entity);
 	ui_text.UID = emd.uid;
-	ui_text.font.Resize(emd.PtSize);
 	ui_text.center = emd.center;
+	ui_text.SetSize(emd.PtSize);
 	ui_text.SetColour(emd.colourMod);
 
-	return entity;
-}
+	if(emd.colourType != -1)
+	{
+		Colour& colour = AddComponent(Colour, entity);
+		colour.colour = (Colour::Type)emd.colourType;
+	}
 
-Entity CreateUIButton(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject(emd, false);
 	return entity;
 }
 
 Entity CreateCardEntity(const EntityMetaData& emd)
 {
-	Entity entity = CreateBasicObject( emd, false );
-
-	Card& card = AddComponent(Card, entity);
-
-	if(emd.colourMod.GetHex() != Colour::s_defaultNoColour )
-	{
-		// build an empty card (figure out a better way to do this) or just not at all
-		// in fact it doesnt need to actually be a card at all, just a sprite
-		Sprite& sprite = GetComponentRef(Sprite, card.entity);
-		sprite.colourMod = emd.colourMod;
-	}
-	else
-	{
-		int index = CardRegistry::PickRandomIndex(emd.tier);
-		CardRegistry::GetCard(card, index);
-	}
+	Entity entity = CreateBasicObject( emd );
+	CardRegistry::DrawRandomCard(entity, emd.tier);
 
 	return entity;
 }

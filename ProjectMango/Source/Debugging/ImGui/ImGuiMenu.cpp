@@ -93,7 +93,7 @@ namespace DebugMenu
 
 		if(s_colliderWindow) 
 		{
-			DoColliderWindow();
+			DoTransformWindow();
 		}
 
 		if(s_gameStateWindow)

@@ -26,15 +26,17 @@ namespace ECS
 
 	bool Collider::Intersects(const RectF& rect_a, const RectF& rect_b)
 	{
-		//bool a = rect_a.LeftPoint()  > rect_b.RightPoint();
-		//bool b = rect_a.RightPoint() < rect_b.LeftPoint();
-		//bool c = rect_a.TopPoint()   > rect_b.BotPoint();
-		//bool d = rect_a.BotPoint()   < rect_b.TopPoint();
+		// strict
+		bool a = rect_a.LeftPoint()  < rect_b.RightPoint();
+		bool b = rect_a.RightPoint() > rect_b.LeftPoint();
+		bool c = rect_a.TopPoint()   < rect_b.BotPoint();
+		bool d = rect_a.BotPoint()   > rect_b.TopPoint();
+		return a && b && c && d;
 
-		return !(	rect_a.LeftPoint()  > rect_b.RightPoint() || 
-					rect_a.RightPoint() < rect_b.LeftPoint()  || 
-					rect_a.TopPoint()   > rect_b.BotPoint()   || 
-					rect_a.BotPoint()   < rect_b.TopPoint());
+		//return !(	rect_a.LeftPoint()  > rect_b.RightPoint() || 
+		//			rect_a.RightPoint() < rect_b.LeftPoint()  || 
+		//			rect_a.TopPoint()   > rect_b.BotPoint()   || 
+		//			rect_a.BotPoint()   < rect_b.TopPoint());
 	}
 
 	bool Collider::Intersects(const RectF& _rect) const
@@ -121,21 +123,15 @@ namespace ECS
 	void Collider::InitFromTransform(const Transform& transform)
 	{
 		SetBaseRect(RectF(transform.worldPosition, transform.size));
-		UpdateFromTransform(&transform);
+		UpdateFromTransform(transform);
 
 		initialised = true;
 	}
 
-	void Collider::UpdateFromTransform(const Transform* transform)
+	void Collider::UpdateFromTransform(const Transform& transform)
 	{
-		if(!transform)
-		{
-			
-			transform = GetComponent(Transform, entity);
-		}
-
-		back = transform->worldPosition;
-		forward = transform->targetWorldPosition;
+		back = transform.worldPosition;
+		forward = transform.targetWorldPosition;
 
 		RollForwardPosition();
 	}

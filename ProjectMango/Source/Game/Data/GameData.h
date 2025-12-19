@@ -7,6 +7,9 @@ class ConfigManager;
 class AudioManager;
 struct SystemStateManager;
 struct UIManager;
+struct FontManager;
+struct TextureManager;
+
 namespace ECS { struct EntityCoordinator; }
 
 // special case, since we use it everywhere
@@ -33,5 +36,7 @@ struct GameData
 	AudioManager* audioManager = nullptr;
 	SystemStateManager* systemStateManager = nullptr;
 	UIManager* uiManager = nullptr;
+	FontManager* fontManager = nullptr;
+	TextureManager* textureManager = nullptr;
 };
 

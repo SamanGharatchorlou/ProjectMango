@@ -8,10 +8,10 @@ constexpr u32 c_RenderLayers = 10;
 struct RenderPack
 {
 	RenderPack() { }
-	RenderPack(STexture* tex, RectF box, u32 renderLayer) : texture(tex), rect(box), layer(renderLayer) 
+	RenderPack(STexture* tex, u32 renderLayer) : texture(tex), layer(renderLayer) 
 	{
 		// override if required
-		flipPoint = box.Size() * 0.5f;
+		//flipPoint = box.Size() * 0.5f;
 	}
 	//RenderPack(Font* _font, RectF box, u32 renderLayer) : font(_font), rect(box), layer(renderLayer) 
 	//{

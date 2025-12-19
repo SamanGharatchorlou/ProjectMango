@@ -12,8 +12,6 @@ namespace ECS
 	// ------------------------------------------------------------------
 	UICursor::UICursor() : cursor(nullptr) { }
 
-	UICursor::~UICursor() { }
-
 	UICursor* UICursor::Get()
 	{
 		ComponentArray<UICursor>& cursors = GetAllComponents(UICursor);
@@ -49,60 +47,45 @@ namespace ECS
 	// ------------------------------------------------------------------
 	UIText::UIText() : center(false)
 	{
-		BasicString path = FileManager::Get()->findFile(FileManager::Font, c_defaultFont);
-		font.LoadFromFile(path.c_str(), c_defaultFontSize);
-
 		// default to white
 		SetColour(SColour::White);
 	}
 
 	void UIText::SetText(const char* _text) 
 	{ 
-		//text = _text;
-		font.SetText(_text); 
+		text = _text;
+
+		font.SetText(text.c_str()); 
+
 		if(center)
 			SetRenderOffsetToCenter();
 	}
 	
 	void UIText::SetColour(SColour scolour) 
 	{ 
-		font.colour = scolour.toSDL();
-		SetText(font.text.c_str());
+		font.SetColour(text.c_str(), scolour.toSDL());
+	}
+
+		
+	void UIText::SetSize(int ptSize) 
+	{ 
+		font.SetSize(text.c_str(), ptSize);
+
+		if(center)
+			SetRenderOffsetToCenter();
 	}
 
 	void UIText::FitToSize(VectorF size)
 	{
-		int width = -1;
-		int height = -1;
+		int pt_size = 0;
+		font.GetPtSizeForArea(text.c_str(), size, pt_size);
 
-		int targetWidth = (int)size.x;
-		int targetHeight = (int)size.y;
-
-		int ptSize = font.GetPtSize();
-
-		TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
-
-		if (width > targetWidth || height > targetHeight)
+		if(pt_size != 0)
 		{
-			while (width > targetWidth || height > targetHeight)
-			{
-				font.Resize(--ptSize);
-				TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
-			}
+			SetSize(pt_size);
 		}
-		else
-		{
-			while (width < targetWidth && height < targetHeight)
-			{
-				font.Resize(++ptSize);
-				TTF_SizeText(font.ttfFont, font.text.c_str(), &width, &height);
-			}
-		}
-
-		font.SetText(font.text.c_str());
 	}
 
-	
 	void UIText::SetRenderOffsetToCenter()
 	{
 		const Transform& transform = GetComponentRef(Transform, entity);
@@ -110,10 +93,5 @@ namespace ECS
 		renderOffset = VectorF(0,0);
 		renderOffset = transform.size * 0.5f - font.GetSize().toFloat() * 0.5f;
 	}
-
-
-	// UICheckbox
-	// ------------------------------------------------------------------
-	UICheckbox::UICheckbox() : isOn(false) { }
 
 }

@@ -1,107 +1,125 @@
 #include "pch.h"
 #include "AIControllerSystem.h"
 
-#include "Debugging/ImGui/ImGuiMainWindows.h"
-#include "ECS/Components/AIController.h"
+#include "ECS/Components/AIComponents.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/Physics.h"
+#include "ECS/Components/GameComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Game/FrameRateController.h"
-
-#include "Animations/CharacterStates.h"
-#include "Entities/States/CharacterAction.h"
-#include "Entities/Player/PlayerCharacter.h"
-#include "System/Files/ConfigManager.h"
+#include "ECS/Components/Animator.h"
 
 namespace ECS
 {
-	void AIControllerSystem::Update(float dt)
+	float GetAttackRange(Entity entity)
 	{
-		//
-		const FrameRateController& frc = FrameRateController::Get();
-
-		std::vector<Entity> dead_entities;
-
- 		for (Entity entity : entities)
+		const Animator& animator = GetComponentRef(Animator, entity);
+		if(const Animation* animation = animator.GetAnimation(Action::BasicAttack))
 		{
-			AIController& aic = GetComponentRef(AIController, entity);
-			CharacterState& state = GetComponentRef(CharacterState, entity);
-
-			if(state.actions.HasAction())
+			if(animation->attackColliderSize.x > 0.0f && animation->attackColliderSize.y > 0.0f)
 			{
-				CharacterAction* character_state = &state.actions.Top();
-				character_state->Update(dt);
+				const Transform& transform = GetComponentRef(Transform, entity);
 
-				// so we dont add another death state when we already have one
-				bool is_dying = false;
-				for( u32 i = 0; i < state.actions.stack.size(); i++ )
-				{
-					if(state.actions.stack[i]->action == ActionState::Death)
-						is_dying = true;
-				}
+				const VectorF pos =  transform.worldPosition + transform.size * animation->attackColliderPos;
+				const VectorF size = transform.size * animation->attackColliderSize;
+				const RectF collider_rect(pos, size);
 
-				if( is_dying )
-				{
-					if(character_state->action == ActionState::Death)
-					{
-						if(state.character->FinishedDying(entity))
-						{
-							dead_entities.push_back(entity);
-							continue;
-						}
-					}
-				}
-				else
-				{
-					if(Health* health = GetComponent(Health, entity))
-					{
-						if(health->currentHealth <= 0.0f)
-						{
-							state.character->StartDying(entity);
-						}
-					}
-				}
-			}
-			else
-			{
-				state.character->Begin(entity);
-			}
+				const VectorF position = transform.GetObjectCenter();
 
-			aic.target = Player::Get();
+				const float distance = Maths::Max( std::abs(position.x - collider_rect.RightCenter().x), std::abs(position.x - collider_rect.LeftCenter().x) );
 
-			// reset every frame
-			aic.canMoveToTarget = false;
-
-			if (HasComponent(Pathing, entity))
-			{
-				if (!ecs->IsAlive(aic.target))
-					continue;
-
-				const Config* config = GetConfigFromEntity(entity);
-				const float detect_range = config->data.GetFloat("alert_range");
-				const VectorF distance = GetPosition(entity) - GetPosition(aic.target);
-				const float target_distance = distance.length();
-
-				if (target_distance < detect_range)
-				{
-					// try to flip to face the target direction
-					SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, aic.target);
-					SetFacingDirection(entity, desired_flip);
-
-					bool is_facing_target = GetDesiredFacingDirection(entity, aic.target) == GetFacingDirection(entity);
-
-					// if we're facing the correct direction
-					if (is_facing_target)
-					{
-						aic.canMoveToTarget = true;
-					}
-				}
+				return distance;
 			}
 		}
 
-		for( u32 i = 0; i < dead_entities.size(); i++ )
+		return -1.0f;
+	}
+
+	void AIControllerSystem::Update(float dt)
+	{
+ 		for (Entity entity : entities)
 		{
-			ecs->entities.KillEntity(dead_entities[i]);
+			AIController& aic = GetComponentRef(AIController, entity);
+
+			if(AIIntent* intent = GetComponent(AIIntent, entity))
+			{
+				// reset intent
+				*intent = AIIntent();
+
+				// grab the target if it has one
+				Entity target = Target::GetValidTarget(entity);
+
+				if(target != EntityInvalid)
+				{
+					intent->wantsToFaceTarget = true;
+
+					const RectF target_rect = GetRect(target);
+					const VectorF position = GetPosition(entity);
+
+					// distance to the target is from the center of the entity 
+					// to whichever side of the target is closer
+					float distance_a = target_rect.LeftPoint() - position.x;
+					float distance_b = target_rect.RightPoint() - position.x;
+					float target_distance = Maths::Min( std::abs(distance_a), std::abs(distance_b) );
+
+					if( target_distance < (GetAttackRange(entity) * 0.8f) )
+					{
+						intent->wantsToAttack = true;
+					}
+					
+					if(!intent->wantsToAttack)
+					{
+						intent->wantsToMove = true;
+					}
+				}
+			}
+
+			if(TurnState* turn = GetComponent(TurnState, entity))
+			{
+				if(turn->isActiveTurn)
+				{
+					turn->canEndTurn = true;
+					if(HasComponent(ActionRequest, entity))
+						continue;
+
+					int random_action = Maths::randomNumberBetween(0,2);
+
+					if(random_action == 0)
+					{
+						ActionRequest& action_request = AddComponent(ActionRequest, entity);
+						action_request.request = ActionRequest::CollectCoin;
+
+						int random_colur = Maths::randomNumberBetween(0, Colour::Count);
+						CoinStack* cs = CoinStack::GetCoinStack((Colour::Type)random_colur);
+						action_request.target = cs->entity; 
+					}
+					else
+					{
+						std::vector<Card*> sorted_cards_by_tier;
+
+						ComponentArray<Card>& cards =  GetAllComponents(Card);
+						for( auto iter = cards.entityToComponent.begin(); iter != cards .entityToComponent.end(); iter++ )
+						{ 
+							Card& card = cards.GetComponentByIndex(iter->second);
+							sorted_cards_by_tier.push_back(&card);
+						}
+
+						std::sort(sorted_cards_by_tier.begin(), sorted_cards_by_tier.end(), [](const Card* a, const Card* b) { 
+							return a->tier > b->tier;
+						});
+
+						for( Card* card : sorted_cards_by_tier )
+						{
+							if(card->CanAfford(entity))
+							{
+								ActionRequest& action_request = AddComponent(ActionRequest, entity);
+								action_request.request = ActionRequest::AquireCard;
+								action_request.target = card->entity;
+
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

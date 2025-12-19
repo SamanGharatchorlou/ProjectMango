@@ -23,6 +23,7 @@ public:
 
 
 private:
+	// remove renderer - replace with passing in parameter
 	SDL_Renderer* renderer;
 	SDL_Texture* texture;
 };

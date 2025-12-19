@@ -7,6 +7,7 @@
 #include "System/Window.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 #include "ECS/Components/Collider.h"
 
 namespace Scene
@@ -117,7 +118,7 @@ namespace Scene
 							data_out.spriteId = field_instance[i]["__value"].GetString();
 						continue;
 					}
-					if( StringCompare("Color", field_instance[i]["__identifier"].GetString()) )
+					if( StringCompare("Colour", field_instance[i]["__identifier"].GetString()) )
 					{
 						// might be null, so need to check
 						if(field_instance[i]["__value"].IsString())
@@ -138,6 +139,14 @@ namespace Scene
 						if(field_instance[i]["__value"].IsBool())
 						{
 							data_out.isButton = field_instance[i]["__value"].GetBool();
+						}
+						continue;
+					}
+					if( StringCompare("Callback", field_instance[i]["__identifier"].GetString()) )
+					{
+						if(field_instance[i]["__value"].IsString())
+						{
+							data_out.callback = field_instance[i]["__value"].GetString();
 						}
 						continue;
 					}
@@ -176,6 +185,26 @@ namespace Scene
 					if( StringCompare("Tier", field_instance[i]["__identifier"].GetString()) )
 					{
 						data_out.tier = field_instance[i]["__value"].GetInt();
+						continue;
+					}
+					if( StringCompare("SizeOverride", field_instance[i]["__identifier"].GetString()) )
+					{
+						const Value::Array& array = field_instance[i]["__value"].GetArray();
+						if(array.Size() == 2)
+						{
+							if(array[0].GetFloat() > 0)
+								data_out.size.x = array[0].GetFloat() * level_to_window.x;
+							if(array[1].GetFloat() > 0)
+								data_out.size.y = array[1].GetFloat() * level_to_window.y;
+						}
+						continue;
+					}
+					if( StringCompare("ColourType", field_instance[i]["__identifier"].GetString()) )
+					{
+						rapidjson::Type ty = field_instance[i]["__value"].GetType();
+						StringBuffer32 type_string = StringBuffer32(field_instance[i]["__value"].GetString());
+						if(ECS::Colour::s_stringToType.contains(type_string))
+							data_out.colourType = (u32)ECS::Colour::s_stringToType.at( type_string );
 						continue;
 					}
 				}
@@ -427,6 +456,17 @@ namespace Scene
 							{
 								collider.SetFlag(ECS::Collider::IsWall);
 							}
+						}
+					}
+
+					level.walkableTiles = Grid<int>(level_width, level_height, 0);
+					for( u32 ent_x = 0; ent_x < level_width; ent_x++ )
+					{
+						for( u32 ent_y = 0; ent_y < level_height; ent_y++ )
+						{
+							int index = ent_y * level_width + ent_x;
+							int value = entities[index].GetInt();
+							level.walkableTiles.get(ent_x, ent_y) = value;
 						}
 					}
 				}

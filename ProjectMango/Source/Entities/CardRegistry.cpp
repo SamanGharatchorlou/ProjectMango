@@ -9,11 +9,18 @@
 #include "Entities/UIEntityBuilder.h"
 #include "Graphics/TextureManager.h"
 
+// random
+#include "Core/Helpers.h"
+
+
 using namespace ECS;
 
 namespace CardRegistry
 {
 	std::vector<Card> s_cardRegistry;
+
+	std::vector<int> s_cardRegistryDrawPile[3];
+	std::vector<int> s_cardRegistryDiscard[3];
 
 	void Build(const char* file, int tier_index)
 	{
@@ -40,7 +47,7 @@ namespace CardRegistry
 			{
 				const Value::Array& cards = parser.document["Cards"].GetArray();
 
-				int registry_size = s_cardRegistry.size();
+				int registry_size = (int)s_cardRegistry.size();
 				s_cardRegistry.resize(registry_size + cards.Size());
 
 				for( u32 i = 0; i < cards.Size(); i++ )
@@ -55,17 +62,20 @@ namespace CardRegistry
 					card.power[card.colour] = 1;
 					card.cardRegistryIndex = registry_index;
 					card.tier = tier_index;
+					card.points = value["points"].GetInt();
 
 					const Value::ConstArray& cost = value["cost"].GetArray();
 					for( u32 c = 0; c < cost.Size(); c++ )
 					{
 						card.cost[c] = cost[c].GetInt();
 					}
+
+					s_cardRegistryDrawPile[tier_index].push_back(registry_index);
 				}
 			}
 		}
 	}
-	
+
 	const Card* LookupCard(int index)
 	{
 		if(index < 0 || index >= s_cardRegistry.size())
@@ -74,7 +84,7 @@ namespace CardRegistry
 		return &s_cardRegistry[index];
 	}
 
-	void GetCard(Card& card, int index)
+	static void GetCard(Card& card, int index)
 	{
 		if(index >= 0 && index < s_cardRegistry.size())
 		{
@@ -89,7 +99,7 @@ namespace CardRegistry
 		}
 	}
 
-	int PickRandomIndex(int tier)
+	static int PickRandomIndex(int tier)
 	{
 		std::vector<int> indexes;
 		for( int i = 0; i < s_cardRegistry.size(); i++ )
@@ -102,8 +112,14 @@ namespace CardRegistry
 		return indexes[random_index];
 	}
 	
-	void RemoveCard(Entity entity)
+	void DiscardCard(Entity entity)
 	{
+		const Card& card = GetComponentRef(Card, entity);
+		
+		// place into discard pile
+		std::vector<int>& discard_pile = s_cardRegistryDiscard[card.tier];
+		discard_pile.push_back(card.cardRegistryIndex);
+
 		if(Card* card = GetComponent(Card, entity))
 		{
 			RemoveComponent(Card, entity);
@@ -114,6 +130,41 @@ namespace CardRegistry
 		
 		Sprite& sprite = GetComponentRef(Sprite, entity);
 		sprite.disabled = true;
+	}
+
+	
+	void DrawRandomCard(Entity entity, int tier)
+	{
+		//if(s_cardRegistryDrawPile.size() == 0)
+		//{
+		//	SetupDrawPile();
+		//}
+
+		
+		std::vector<int>& draw_pile = s_cardRegistryDrawPile[tier];
+		if(draw_pile.size() > 0)
+		{
+			int random_index = Maths::randomNumberBetween( 0, (int)draw_pile.size());
+			int random_registry_index = draw_pile[random_index];
+
+			DrawCard(entity, random_registry_index);
+		}
+
+		//std::vector<int> indexes;
+		//for( int i = 0; i < s_cardRegistryDrawPile.size(); i++ )
+		//{
+		//	int registry_index = s_cardRegistryDrawPile[i];
+		//	if(s_cardRegistry[registry_index].tier == tier)
+		//		indexes.push_back(i);
+		//}
+
+		//if(indexes.size() > 0)
+		//{
+		//	int random_index = Maths::randomNumberBetween( 0, (int)indexes.size());
+		//	int random_registry_index = s_cardRegistryDrawPile[random_index];
+
+		//	DrawCard(entity, random_registry_index);
+		//}
 	}
 
 	void DrawCard(Entity entity, int index)
@@ -127,6 +178,16 @@ namespace CardRegistry
 
 				Sprite& sprite = GetComponentRef(Sprite, entity);
 				sprite.disabled = false;
+
+				std::vector<int>& draw_pile = s_cardRegistryDrawPile[new_card.tier];
+				for( auto iter = draw_pile.begin(); iter != draw_pile.end(); iter++ )
+				{
+					if(*iter == new_card.cardRegistryIndex)
+					{
+						draw_pile.erase(iter);
+						break;
+					}
+				}
 			}
 		}
 	}

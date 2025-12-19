@@ -37,7 +37,7 @@ namespace ECS
 			counter++;
 			bump_accum += bump;
 
-			bump_rect = colliderA.rect.MoveCopy(bump);
+			bump_rect = colliderA.rect.MoveCopy(bump_accum);
 			bump_still_collides = colliderB.Intersects(bump_rect);
 		}
 
@@ -88,6 +88,20 @@ namespace ECS
 		for (u32 i = 0; i < entitiesToDestroy.size(); i++)
 		{
 			ecs->entities.KillEntity(entitiesToDestroy[i]);
+		}
+
+		for (Entity entity : entities)
+		{
+			// debug break point
+			if(DebugMenu::GetSelectedEntity() == entity)
+				int a = 4;
+
+			Collider& collider = GetComponentRef(Collider, entity);
+			Transform& transform = GetComponentRef(Transform, entity);
+
+			collider.back = transform.worldPosition;
+			collider.forward = transform.targetWorldPosition;
+			collider.RollForwardPosition();
 		}
 
 		for (Entity entity : entities)
@@ -166,17 +180,6 @@ namespace ECS
 
 				if(A_collider.Intersects(B_collider.rect)) 
 				{
-					if(ECS::Pickup* pick_up = GetComponent(Pickup, B_collider.entity))
-					{
-						bool a = A_collider.HasFlag(Collider::PlayerOnly);
-						bool b = B_collider.HasFlag(Collider::IsPlayer);
-
-						// player only
-						if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
-							continue;
-
-					}
-
 					ECS::Entity B_entity = B_collider.entity;
 					PushBackUnique(A_collider.collisions, B_entity);
 					PushBackUnique(B_collider.collisions, entity);
@@ -197,16 +200,6 @@ namespace ECS
 					if (A_collider.destroyOnContact)
 					{
 						entitiesToDestroy.push_back(A_collider.entity);
-					}
-
-					// apply damage
-					if (!B_collider.HasFlag(Collider::IgnoreDamage))
-					{
-						if (A_damage && A_damage->CanApplyTo(B_entity))
-						{
-							B_collider.lastHitFrame = frame_count;
-							A_damage->ApplyTo(B_entity);
-						}
 					}
 
 					// damage and ghost colliders just check for collisions and have no effect so dont compute anything below

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Game/States/State.h"
-#include "Animations/CharacterStates.h"
-#include "Entities/States/CharacterAction.h"
+//#include "Game/States/State.h"
+//#include "Animations/CharacterStates.h"
+//#include "Entities/States/CharacterAction.h"
 
 namespace ECS { struct EntityMetaData; }
 
@@ -10,55 +10,62 @@ namespace BlindingSpider
 {
 	ECS::Entity Create(const ECS::EntityMetaData& emd);
 
-	struct Enemy : public Character
-	{
-		void Begin(ECS::Entity entity);
-		bool FinishedDying(ECS::Entity entity) override;
-		void StartDying(ECS::Entity entity) override;
-	};
+	//struct Enemy : public Character
+	//{
+	//	void Begin(ECS::Entity entity);
+	//	bool FinishedDying(ECS::Entity entity) override;
+	//	void StartDying(ECS::Entity entity) override;
+	//	void SpawnIn(ECS::Entity entity) override;
+	//};
 
-	struct IdleState : public CharacterAction
-	{
-		IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
-		void Init() override;
-		void Update(float dt) override;
-		void Resume() override;
-	};
+	//struct IdleState : public CharacterAction
+	//{
+	//	IdleState(ECS::Entity _entity) : CharacterAction(ActionState::Idle, _entity) { }
+	//	void Init() override;
+	//	void Update(float dt) override;
+	//	void Resume() override;
+	//};
 
-	struct RunState : public CharacterAction
-	{		
-		RunState(ECS::Entity _entity);
-		void Init() override;
-		void Update(float dt) override;
-		void Resume() override;
-	};
+	//struct SpawningState : public CharacterAction
+	//{
+	//	SpawningState(ECS::Entity _entity) : CharacterAction(ActionState::Spawning, _entity) { }
+	//	void Init() override;
+	//};
 
-	struct TakeHitState : public CharacterAction
-	{
-		TakeHitState(ECS::Entity _entity) : CharacterAction(ActionState::TakeHit, _entity) { }
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-	};
+	//struct RunState : public CharacterAction
+	//{		
+	//	RunState(ECS::Entity _entity);
+	//	void Init() override;
+	//	void Update(float dt) override;
+	//	void Resume() override;
+	//};
 
-	struct DeathState : public CharacterAction
-	{
-		DeathState(ECS::Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
-		void Init() override;
-		void Update(float dt) override;
-		void Resume() override;
-		
-		bool can_kill = false;
-	};
-	
-	struct BasicAttackState : public CharacterAction
-	{
-		BasicAttackState(ECS::Entity _entity);
+	//struct TakeHitState : public CharacterAction
+	//{
+	//	TakeHitState(ECS::Entity _entity) : CharacterAction(ActionState::TakeHit, _entity) { }
+	//	void Init() override;
+	//	void Update(float dt) override;
+	//	void Exit() override;
+	//};
 
-		void Init() override;
-		void Update(float dt) override;
-		void Exit() override;
-		
-		ECS::Entity attackCollider = ECS::EntityInvalid;
-	};
+	//struct DeathState : public CharacterAction
+	//{
+	//	DeathState(ECS::Entity _entity) : CharacterAction(ActionState::Death, _entity) { }
+	//	void Init() override;
+	//	void Update(float dt) override;
+	//	void Resume() override;
+	//	
+	//	bool can_kill = false;
+	//};
+	//
+	//struct BasicAttackState : public CharacterAction
+	//{
+	//	BasicAttackState(ECS::Entity _entity);
+
+	//	void Init() override;
+	//	void Update(float dt) override;
+	//	void Exit() override;
+	//	
+	//	ECS::Entity attackCollider = ECS::EntityInvalid;
+	//};
 }

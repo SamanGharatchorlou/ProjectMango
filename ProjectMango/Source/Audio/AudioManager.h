@@ -2,33 +2,6 @@
 
 #include "SoundController.h"
 
-//struct AudioEvent
-//{
-//	enum Action
-//	{
-//		Play,
-//		Loop,
-//		Pause,
-//		Resume,
-//		Stop,
-//		FadeIn,
-//		FadeInMusic,
-//		FadeOut,
-//	};
-//
-//	AudioEvent(Action _action, const char* _label, const void* _id)								: action(_action), label(_label), id(reinterpret_cast<const uintptr_t>(_id)), source(VectorF(-1.0f, -1.0f)), time(-1) { }
-//	AudioEvent(Action _action, const char* _label, const void* _id, VectorF _source)			: action(_action), label(_label), id(reinterpret_cast<const uintptr_t>(_id)), source(_source),				 time(-1) { }
-//	AudioEvent(Action _action, const char* _label, const void* _id, int _time)					: action(_action), label(_label), id(reinterpret_cast<const uintptr_t>(_id)), source(VectorF(-1.0f, -1.0f)), time(_time) { }
-//	AudioEvent(Action _action, const char* _label, const void* _id, VectorF _source, int _time)	: action(_action), label(_label), id(reinterpret_cast<const uintptr_t>(_id)), source(_source),				 time(_time) { }
-//
-//	const Action action;
-//	const StringBuffer64 label;
-//	const uintptr_t id;
-//	const VectorF source;
-//	const int time;
-//};
-
-
 
 class AudioManager
 {

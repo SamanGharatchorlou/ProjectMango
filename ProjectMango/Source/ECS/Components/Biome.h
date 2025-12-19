@@ -56,6 +56,7 @@ namespace ECS
 	struct Biome
 	{
 		COMPONENT_TYPE(Biome)
+		Biome();
 
 		std::vector<Level> levels;
 

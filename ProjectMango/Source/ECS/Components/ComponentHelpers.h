@@ -29,7 +29,48 @@ namespace ECS
 		Top = 9,
 		Count = 10
 	};
+
+	struct Action
+	{
+		enum Enum
+		{
+			None,
+
+			Active,
+			Inactive,
+
+			Open,
+			Close,
+
+			Idle,
+			Walk,
+			Run,
 	
+			Fall,
+			Jump,
+			Hover,
+
+			Roll,
+			Crouch,
+
+			AttackWindUp,
+			BasicAttack,
+			BasicAttackHold,
+			LungeAttack,
+			FloorSlam,
+
+			TakeHit,
+			Death,
+
+			Spawning,
+
+			Count
+		};
+	};
+
+	Action::Enum StringToAction(const char* action);
+	const char* ActionToString(Action::Enum action);
+
 	struct EntityMetaData
 	{
 		// the base name e.g. text, card etc.
@@ -37,6 +78,7 @@ namespace ECS
 
 		// unique name e.g. InventoryCoins_White, used to lookup a specific thing
 		BasicString uid;
+		BasicString callback;
 
 		// generic type e.g. Rune_Rebound, this would be Rune
 		// then id would be RuneRebound
@@ -48,6 +90,7 @@ namespace ECS
 
 		BasicString spriteId;
 		SColour colourMod;
+		u32 colourType = -1;
 
 		int PtSize = -1;
 		int tier = -1;
@@ -67,9 +110,11 @@ namespace ECS
 	const Config* GetConfigFromEntity(Entity entity);
 
 	Entity GetParent(Entity child);
+	//void GetChildren(Entity parent, std::vector<Entity>& children);
 	Entity GetFirstChild(Entity parent);
 	void DestroyChildren(Entity parent);
-
+	
+	void SetWorldPosition(ECS::Entity entity, VectorF pos);
 	VectorF GetPosition(Entity entity);
 	RectF GetRect(Entity entity);
 	bool GetRotationParams(Entity entity, VectorF& out_aboutPoint, float& out_rotation);
@@ -91,4 +136,10 @@ namespace ECS
 		to = from;
 		to.entity = to_entity;
 	}
+
+	struct Level;
+	struct Transform;
+
+	bool IsInLevel(const Level& level, const Transform& transform);
+	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities);
 }

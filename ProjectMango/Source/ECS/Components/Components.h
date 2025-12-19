@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Core/stack.h"
-#include "Entities/States/CharacterAction.h"
+//#include "Core/stack.h"
 #include "ComponentHelpers.h"
 
 class STexture;
-struct Config;
 
 // when adding a component, define it in EntityCommon.h
 // then setup how its updated in ComponentsSetup
@@ -18,11 +16,10 @@ namespace ECS
 	struct EntityData
 	{
 		COMPONENT_TYPE(EntityData)
+		
+		EntityData();
 
 		BasicString id;
-
-		// might be a general name like, "Rune" then use the id to get
-		BasicString subType;
 
 		ECS::Entity parent;
 		std::vector<Entity> children;
@@ -33,6 +30,8 @@ namespace ECS
 	struct Transform
 	{
 		COMPONENT_TYPE(Transform)
+
+		Transform();
 
 		// top left
 		VectorF targetWorldPosition;
@@ -48,16 +47,17 @@ namespace ECS
 
 		bool ignoreOutOfBounds;
 		
-		void Init(const Config* config, const EntityMetaData& emd, Collider& collider);
-		void Init(const Config* config, const EntityMetaData& emd);
+		void Init(const EntityMetaData* emd, Collider& collider);
+		void Init(const EntityMetaData* emd);
 		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
-		static void SetWorldPosition(ECS::Entity entity, VectorF pos);
 		void SetWorldRect(const VectorF& pos, const VectorF& size);
 
 		void SetObjectCenter(VectorF pos);
+		RectF GetObjectRect() const;
+
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
 
@@ -70,7 +70,10 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Sprite)
 
-		BasicString debug_id;
+		Sprite();
+
+		BasicString ID;
+		BasicString debugID;
 
 		RectF subRect;
 		STexture* texture;
@@ -79,19 +82,41 @@ namespace ECS
 
 		VectorF flipPoint;
 		SDL_RendererFlip flip;
-		bool canFlip;
 		
 		// in degress (because of the render function input)
 		float rotation; 
 		RenderLayer renderLayer;
 
 		bool disabled;
+		bool canFlip;
 		
-		void Init(const Config* config);
+		void Init();
 		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
+
 		void SetTexture(const char* label);
 	};
+
 	
+	struct LayeredSprite
+	{
+		COMPONENT_TYPE(LayeredSprite)
+
+		struct Layer
+		{
+			Sprite sprite;
+			RectF rect;
+		};
+
+		std::vector<Layer> spriteLayers;
+	};
+
+	struct SpriteCycle
+	{
+		COMPONENT_TYPE(SpriteCycle)
+
+		BasicString spritePrefix;
+		int index = 0;
+	};
 
 	struct Audio
 	{
@@ -114,24 +139,30 @@ namespace ECS
 		void PopulateGroup(const char* group, int time = -1, const char* id = c_noId);
 	};
 
-	struct CharacterState
+	struct EntityState
 	{
-		COMPONENT_TYPE(CharacterState)
+		COMPONENT_TYPE(EntityState)
 
-		ActionStack<CharacterAction> actions;
+		Action::Enum next = Action::None;
+		Action::Enum current = Action::None;
+		std::vector<Action::Enum> backlog;
 
-		// overload common functions
-		Character* character;
+		bool justChanged;
+		//float timeInState;
 
-		VectorI movementInput;
+		bool mustFinishAnimation = false;;
+	};
 
-		bool isRanged;
-		bool isMelee;
+	struct Target
+	{
+		COMPONENT_TYPE(Target)
 
-		// melee only (split this into differnt state parts?)
-		bool canEnterHover;
-		
-		void Init(const Config* config);
+		Entity target = EntityInvalid;
+
+		static Entity GetPlayer();
+		static Entity GetEnemy();
+
+		static Entity GetValidTarget(Entity entity);
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -139,28 +170,12 @@ namespace ECS
 		COMPONENT_TYPE(PlayerController)
 	};
 
-	struct Pathing
-	{
-		COMPONENT_TYPE(Pathing)
-
-		//Entity target;
-
-		// the incremental next position to move to: pos + speed
-		// probably set by the AIController
-		//VectorF currentLocation;
-		VectorF targetLocation;
-
-		// sets the bounds
-		u32 levelIndex = -1;
-
-		bool hasValidPath = false;
-
-		void Init();
-	};
 
 	struct Damage
 	{
 		COMPONENT_TYPE(Damage)
+
+		Damage();
 
 		// which entity we've already applied to, dont apply again
 		std::vector<Entity> appliedTo;
@@ -172,7 +187,7 @@ namespace ECS
 		// the damage
 		float value;
 
-		void Init(const Config* config);
+		void Init();
 		bool CanApplyTo(Entity entity) const;
 		void ApplyTo(Entity entity);
 	};
@@ -181,18 +196,23 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Health)
 
+		Health();
+
 		float maxHealth;
 		float currentHealth;
 
 		bool invulnerable;
 		
-		void Init(const Config* config);
-		void ApplyDamage(const Damage& damage);
+		void Init();
+		void ApplyDamage(float damage);
 	};
+
 
 	struct DeathScentence
 	{
 		COMPONENT_TYPE(DeathScentence)
+
+		DeathScentence();
 
 		// begin this animator entity on death
 		Entity startAnimatiorOnDeath;
@@ -204,28 +224,49 @@ namespace ECS
 		// kill once in area
 		RectF deathZone;
 		
+		bool canDie = false;
+
 		void Update(float dt);
 		void OnDeath();
 	};
+
+	struct Callback
+	{
+		COMPONENT_TYPE(Callback)
+
+		BasicString callback;
+	};
 	
-	typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );
+	//typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );
 
 	struct Spawner
 	{
 		COMPONENT_TYPE(Spawner)
 
-		EntitySpawnFn entitySpawnFn;
-		const char* spawnId;
+		Spawner();
 
-		bool IsSpawning() { return entitySpawnFn != nullptr; }
+		Entity spawnedEntity;
+		Entity spawnRequest;
 
-		bool Spawn(const char* spawn_id, EntitySpawnFn spawnFn);
-		void Update();
+		//bool IsSpawning() { return entityToSpawn != EntityInvalid; }
+
+		//bool Spawn( Entity entity );
+		//void Update();
+	};
+
+	struct SpawnRequest
+	{
+		COMPONENT_TYPE(SpawnRequest)
+
+		ECS::EntityMetaData emd;
+		int frameTime;
 	};
 
 	struct Door
 	{
 		COMPONENT_TYPE(Door)
+
+		Door();
 			
 		// top and bottom
 		Entity colliders[2];
@@ -236,38 +277,5 @@ namespace ECS
 		void Update();
 
 		void GenerateColliders(float width);
-	};
-
-	struct Pickup
-	{
-		COMPONENT_TYPE(Pickup)
-
-		BasicString itemId;
-		// not just IdConfig, since Id is probably just Rune
-		// but the config would be ReboundRuneConfig
-		BasicString config;
-		//OnPickupFn onPickupFn;
-
-		bool pickedUp;
-
-		void Update();
-	};
-
-	// should be attached to a character, will rotate with the cursor
-	struct Arm
-	{
-		COMPONENT_TYPE(Arm)
-			
-		Entity target;
-		VectorF anchorPoint;
-
-		// taking the x axis as 0, how much we can rotate above and below it
-		float rotationAnlgeAbove;
-		float rotationAnlgeBelow;
-
-		void Update();
-
-		// pass in a relative position i.e. 0 - 1, and gives the position based on flip and rotaion
-		VectorF GetPosition(VectorF relative_posision) const;
 	};
 }
