@@ -11,4 +11,3 @@ namespace ECS
 
 void PopulateDefaultBehaviours(ECS::BehaviourMap& map, std::vector<ECS::Action::Enum> actions);
 void PopulateMonsterBehaviours(ECS::BehaviourMap& map, std::vector<ECS::Action::Enum> actions);
-//void PopulateMonsterBehaviours(ECS::BehaviourMap& map);

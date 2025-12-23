@@ -111,19 +111,28 @@ namespace ECS
 	{
 		baseRect.SetTopLeft(back);
 		UpdateRectFromBase();
-		//rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
 	void Collider::RollForwardPosition()
 	{
 		baseRect.SetTopLeft(forward);
 		UpdateRectFromBase();
-		//rect.SetTopLeft(baseRect.TopLeft() + (baseRect.Size() * relative_position));
 	}
 	
-	void Collider::InitFromTransform(const Transform& transform)
+	void Collider::Init()
 	{
+		const Transform& transform = GetComponentRef(Transform, entity);
+		ASSERT(!transform.size.isZero(), "cannot init collider when transform has no size");
 		SetBaseRect(RectF(transform.worldPosition, transform.size));
 		UpdateFromTransform(transform);
+
+		VectorF object_position = VectorF::zero();
+		VectorF object_size = VectorF(1, 1);
+		if(const Config* config = GetConfigFromEntity(entity))
+		{
+			object_position = config->data.GetVector("object_pos", VectorF(0,0) );
+			object_size = config->data.GetVector("object_size", VectorF(1, 1) );
+		}
+		SetRelativeRect(object_position, object_size);
 
 		initialised = true;
 	}
@@ -186,4 +195,9 @@ namespace ECS
 		return true;
 	}
 
+	
+	RectF Collider::GetRelativeRect() const
+	{
+		return RectF(relative_position, relative_size);
+	}
 }

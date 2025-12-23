@@ -67,6 +67,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 	VectorF ray_direction = direction.normalise();
 
 	float ray_distance = 0.0f;
+	const float ray_increment = 2.0f;
 
 	while( ray_distance < distance )
 	{
@@ -77,7 +78,8 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 			if(target_colliders[i]->Contains(ray_point))
 			{
 				result.entity = target_colliders[i]->entity;
-				result.distance = ray_distance;
+				// bump it back up to just before it colided, otherwise we're likely just side causing thing to get stuck
+				result.distance = ray_distance - ray_increment;
 				result.hitPosition = ray_point;
 				result.hasHit = true;
 
@@ -87,7 +89,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 			}
 		}
 
-		ray_distance += 2.0f;
+		ray_distance += ray_increment;
 	}
 	
 	if(DebugMenu::GetState().drawRaycasts)

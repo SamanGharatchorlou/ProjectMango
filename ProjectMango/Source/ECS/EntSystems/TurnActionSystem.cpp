@@ -9,10 +9,7 @@
 #include "Game/States/GameState.h"
 #include "Core/Helpers.h"
 #include "Entities/CardRegistry.h"
-#include "ECS/Components/Animator.h"
-
-#include "Animations/ConfigReaders.h"
-#include "ECS/Components/AIComponents.h"
+#include "Entities/MonsterRegistry.h"
 #include "Game/FrameRateController.h"
 
 namespace ECS
@@ -64,21 +61,21 @@ namespace ECS
 		}
 
 		TurnState& turn = GetComponentRef(TurnState, entity);
-		turn.collectedCardRegIndex = card.cardRegistryIndex;
+		turn.collectedCardRegIndex = card.registryIndex;
 		turn.collectedCardSource = card.entity;
 
-		inventory.cards.push_back(card.cardRegistryIndex); 
+		inventory.cards.push_back(card.registryIndex); 
 
-		// spawn
-		Entity spawn_requst = CreateEntity("SpawnRequest");
-		SpawnRequest& sr = AddComponent(SpawnRequest, spawn_requst);
-				
-		const FrameRateController& frc = FrameRateController::Get();
-		sr.frameTime = frc.frameCount;
-		if(card.points > 1)
-			sr.emd.id = "ShockSweeper";
-		else
-			sr.emd.id = "BlindingSpider";
+		if(card.monsterRegistryIndex != -1)
+		{
+			// spawn
+			Entity spawn_requst = CreateEntity("SpawnRequest");
+			SpawnRequest& sr = AddComponent(SpawnRequest, spawn_requst);
+			sr.frameTime = FrameRateController::Get().frameCount;
+			sr.emd.id = MonsterRegistry::GetMonster(card.monsterRegistryIndex);
+			sr.owner = turn.entity;
+			sr.cardRegistryIndex = card.registryIndex;
+		}
 
 		// destroys all children
 		CardRegistry::DiscardCard(card.entity);
@@ -226,32 +223,6 @@ namespace ECS
 
 			Entity entity = turn->entity;
 
-			//if(turn->attackingMonster != EntityInvalid)
-			//{
-			//	if(EntityState* state = GetComponent(EntityState, turn->attackingMonster))
-			//	{
-			//		state->target = game_state->enemy;
-
-			//		// spawn to target
-
-			//		VectorF spawn_pos = GetPosition(state->target);
-
-			//		//FindEnt
-			//		SetWorldPosition(turn->attackingMonster, spawn_pos);
-
-			//		ComponentArray<Spawner>& spawners =  GetAllComponents(Spawner);
-			//		Entity spawner_entity = spawners.entityToComponent.begin()->first;
-			//		Spawner& spawner = GetComponentRef(Spawner, spawner_entity);
-			//		spawner.Spawn(turn->attackingMonster);
-
-			//		//EntityState& scharacter_state = GetComponentRef(EntityState, spawner.entityToSpawn);
-			//		//state->character->SpawnIn(turn->attackingMonster);
-
-			//		// need to keep this around somewhere?
-			//		turn->attackingMonster = EntityInvalid;
-			//	}
-			//}
-
 			if(ActionRequest* action_request = GetComponent(ActionRequest, entity))
 			{
 				ExecuteAction(*action_request, *turn);
@@ -267,17 +238,6 @@ namespace ECS
 					// redraw any cards we removed 
 					//int random_card_index = CardRegistry::PickRandomIndex(collected_card->tier);
 					CardRegistry::DrawRandomCard( turn->collectedCardSource, collected_card->tier );
-
-					// apply card damage
-					if(collected_card->points > 0)
-					{
-						Entity target = Target::GetValidTarget(entity);
-						if(target != EntityInvalid)
-						{
-							if(Health* health = GetComponent(Health, target))
-								health->ApplyDamage((float)collected_card->points);
-						}
-					}
 				}
 
 				// return coins when over limit (10)

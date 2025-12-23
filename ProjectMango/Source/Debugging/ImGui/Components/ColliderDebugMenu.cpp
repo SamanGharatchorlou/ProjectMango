@@ -103,6 +103,16 @@ u32 DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ImGui::Text("Allowed Movement: %f, %f", collider.allowedMovement.x, collider.allowedMovement.y);
 		ImGui::Text("Desired Movement: %f, %f", collider.desiredMovement.x, collider.desiredMovement.y);
 
+		if(collider.collisions.size() > 0)
+		{
+			ImGui::Text("Collides with");
+		}
+		for( u32 i = 0; i < collider.collisions.size(); i++ )
+		{
+			const char* name = GetName(collider.collisions[i]);
+			ImGui::Text("%d: %s", i, name);
+		}
+
 		DrawCollider(collider);
 
 		ImGui::PopID();

@@ -16,6 +16,7 @@
 #include "ECS/EntSystems/AnimationSystem.h"
 #include "ECS/EntSystems/CollisionSystem.h"
 #include "ECS/EntSystems/PathingSystem.h"
+#include "ECS/EntSystems/CardSystem.h"
 #include "ECS/EntSystems/PhysicsSystem.h"
 #include "ECS/EntSystems/SpawnSystem.h"
 #include "ECS/EntSystems/StateResolutionSystem.h"
@@ -32,6 +33,7 @@
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 #include "Entities/CardRegistry.h"
+#include "Entities/MonsterRegistry.h"
 #include "Entities/States/Behaviours.h"
 
 static constexpr u32 c_allEntities = 128;
@@ -67,11 +69,11 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Callback, c_uncommon);
 	DEFINE_COMPONENT(Colour, c_uncommon);
 
-	DEFINE_COMPONENT(Door, c_uncommon);
 	DEFINE_COMPONENT(SpawnRequest, c_uncommon);
 	DEFINE_COMPONENT(UIButton, c_uncommon);
 	DEFINE_COMPONENT(LayeredSprite, c_uncommon);
 	DEFINE_COMPONENT(SpriteCycle, c_uncommon);
+	DEFINE_COMPONENT(SpriteSheet, c_uncommon);
 	
 	DEFINE_COMPONENT(CoinStack, Colour::Count);
 	
@@ -97,7 +99,7 @@ void ECS::RegisterAllSystems()
 	// --------- input/UI systems ---------
 	
 	// UI
-	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton);
+	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton) | ArcheBit(Card);
 	ecs->RegisterOrSystem<UISystem>(UISignature);
 
 	// Input
@@ -132,11 +134,15 @@ void ECS::RegisterAllSystems()
 	Signature SpawnSignature = ArcheBit(Spawner);
 	ecs->RegisterAndSystem<SpawnSystem>(SpawnSignature);
 
-	// Compoenent Updates - runs all basic object component update function (replace with having EITHER door, spawner etc....
-	Signature ComponentsSignature = 
-		ArcheBit(Door) |
-		ArcheBit(DeathScentence);
-	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
+	// Spawn
+	Signature cardSignature = ArcheBit(Card);
+	ecs->RegisterAndSystem<CardSystem>(cardSignature);
+
+	// todo: can remove this now?
+	// Compoenent Updates - runs all basic object component update function
+	//Signature ComponentsSignature =
+	//	ArcheBit(DeathScentence);
+	//ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 	
 	// --------- state systems ---------
@@ -146,7 +152,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
 
 	// State Resolution
-	Signature StateResolutionSignature = ArcheBit(EntityState) | ArcheBit(AIIntent);
+	Signature StateResolutionSignature = ArcheBit(EntityState) | ArcheBit(AIIntent) | ArcheBit(BehaviourState);
 	ecs->RegisterAndSystem<StateResolutionSystem>(StateResolutionSignature);
 
 	// State Transision
@@ -158,7 +164,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
 
 	// Behaviour
-	Signature BehaviourSignature = ArcheBit(BehaviourMap) | ArcheBit(EntityState);
+	Signature BehaviourSignature = ArcheBit(BehaviourMap) | ArcheBit(EntityState) | ArcheBit(BehaviourState);
 	ecs->RegisterAndSystem<BehaviourSystem>(BehaviourSignature);
 
 	// Pathing
@@ -188,7 +194,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
 
 	// Rendering
-	Signature renderSignature = ArcheBit(Sprite) | ArcheBit(UIText) | ArcheBit(LayeredSprite);
+	Signature renderSignature = ArcheBit(Sprite) | ArcheBit(UIText) | ArcheBit(LayeredSprite) | ArcheBit(SpriteSheet);
 	ecs->RegisterOrSystem<RenderSystem>(renderSignature);
 }
 
@@ -200,5 +206,5 @@ void ECS::ParseComponentData()
 	CardRegistry::Build("Tier2Cards", 1);
 	CardRegistry::Build("Tier3Cards", 2);
 
-	//BuildBehaviourMap();
+	MonsterRegistry::Build( "Monsters" );
 }

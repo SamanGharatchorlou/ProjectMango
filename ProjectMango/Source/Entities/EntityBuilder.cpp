@@ -42,37 +42,69 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 
 	const Config* config = GetConfigFromEntity(entity);
 
+	Transform& transform = AddComponent(Transform, entity);
+
 	// change this, does need this if here should be the same with the correct fallbacks
 	if (config)
 	{
 		// Transform
-		Transform& transform = AddComponent(Transform, entity);
 		transform.Init(&emd);
-
-		// Sprite
-		Sprite& sprite = AddComponent(Sprite, entity);
-		sprite.renderLayer = RenderLayer::BasicObject;
-		sprite.canFlip = false;
-		sprite.Init();
-		sprite.colourMod = emd.colourMod;
-
-		if(sprite.texture && transform.size.isZero())
-			DebugPrint(Warning, "CreateBasicObject - Have Sprite, but has no size");
 	}
 	else
 	{
 		// Transform
-		Transform& transform = AddComponent(Transform, entity);
 		transform.size = emd.size;
 		transform.SetWorldPosition(emd.position - (emd.size * emd.pivotPoint));
-
-		// Sprite
+	}
+	
+	// Sprite
+	bool requires_sprite = config || !emd.spriteId.empty();
+	if(requires_sprite)
+	{
 		Sprite& sprite = AddComponent(Sprite, entity);
-		sprite.ID = emd.spriteId.c_str();
+		if (config)
+		{
+			sprite.Init();
+			if(sprite.texture && transform.size.isZero())
+				DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
+		}
+		else
+		{
+			sprite.Id = emd.spriteId.c_str();
+			sprite.SetTexture(emd.spriteId.c_str());
+		}
+			
 		sprite.renderLayer = RenderLayer::BasicObject;
 		sprite.canFlip = false;
-		sprite.SetTexture(emd.spriteId.c_str());
 		sprite.colourMod = emd.colourMod;
+
+		// no sprite yet, try get a coloured version
+		if(!sprite.texture && emd.colourType != -1)
+		{
+			StringBuffer64 coloured_sprite;
+			AddColourPostfix(emd.spriteId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+			sprite.Id = coloured_sprite.c_str();
+			sprite.SetTexture(coloured_sprite.c_str());
+		}
+	}
+
+	// Sprite Sheet
+	if(!emd.spriteSheetId.empty())
+	{
+		ASSERT(emd.spriteSheetCount > 0, "Sprite sheet %d has count 0 entity %s", emd.spriteSheetId.c_str(), emd.id.c_str());
+
+		SpriteSheet& ss = AddComponent(SpriteSheet, entity);
+		ss.Init(emd.spriteSheetId.c_str(), emd.spriteSheetCount );
+
+		if(!ss.texture && emd.colourType != -1)
+		{
+			StringBuffer64 coloured_sprite;
+			AddColourPostfix(emd.spriteSheetId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+			ss.Init(coloured_sprite.c_str(), emd.spriteSheetCount);
+		}
+		
+		ss.colourMod = emd.colourMod;
+		ss.renderLayer = RenderLayer::BasicObject;
 	}
 
 	if(emd.isButton)
@@ -112,7 +144,11 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 	coin_stack.isInventory = false;
 	coin_stack.capacity = 5;
 	coin_stack.colourType = Colour::Type(emd.colourType);
-	coin_stack.spritePrefix = emd.spriteId;
+
+	//StringBuffer64 coloured_string;
+	//GetColouredSpriteId(emd, coloured_string);
+	//coin_stack.spritePrefix = coloured_string.c_str();
+
 	coin_stack.remaining = coin_stack.capacity;
 
 	return entity;
@@ -122,15 +158,18 @@ Entity CreateCoinPile(const EntityMetaData& emd)
 {
 	Entity entity = CreateBasicObject( emd );
 
-	SpriteCycle& cycle = AddComponent(SpriteCycle, entity);
-	cycle.spritePrefix = emd.spriteId;
-	cycle.index = 0;
+	//SpriteCycle& cycle = AddComponent(SpriteCycle, entity);
+
+	//StringBuffer64 coloured_string;
+	//GetColouredSpriteId(emd, coloured_string);
+	//cycle.spritePrefix = coloured_string.c_str();
+	//cycle.index = 0;
 
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = true;
 	coin_stack.capacity = 100;
 	coin_stack.colourType = Colour::Type(emd.colourType);
-	coin_stack.spritePrefix = emd.spriteId;
+	//coin_stack.spritePrefix = emd.spriteId;
 	coin_stack.remaining = 0;
 
 	return entity;
@@ -173,6 +212,11 @@ static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 	// Spawner
 	AddComponent(Spawner, entity);
 
+	Collider& collider = AddComponent(Collider, entity);
+	collider.Init();
+	collider.SetFlag(Collider::GhostCollider);
+	collider.SetFlag(Collider::IgnoreTerrain);
+
 	return entity;
 }
 
@@ -181,9 +225,15 @@ Entity CreateMonster(const ECS::EntityMetaData& emd)
 {
 	Entity entity = CreateActor(emd);
 
-	AddComponent(AIController, entity);
+	AIController& ai = AddComponent(AIController, entity);
 	AddComponent(AIIntent, entity);
 	AddComponent(Pathing, entity);
+
+	Collider& collider = GetComponentRef(Collider, entity);
+	collider.Init();
+	collider.SetFlag(Collider::IsEnemy);
+	
+	//ai.isDisabled = true;
 
 	BehaviourState& state = AddComponent(BehaviourState, entity);
 	state.Init();
@@ -196,9 +246,6 @@ Entity CreateMonster(const ECS::EntityMetaData& emd)
 	states.push_back(Action::Death);
 
 	PopulateMonsterBehaviours(map, states);
-
-	Target& target = AddComponent(Target, entity);
-	target.target = Target::GetEnemy();
 
 	return entity;
 }
@@ -215,11 +262,6 @@ Entity CreateActor(const ECS::EntityMetaData& emd)
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
 	transform.Init(&emd, collider);
-
-	// TODO:: I need to set the collider relative rect here, i need it for raycasts etc
-	// and really it shouldnt be setup by the animator, thats weird, it should be a fixed value
-	// and setup and this point and then never change
-	collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
 
 	// MovementPhysics
 	Physics& physics = AddComponent(Physics, entity);
@@ -255,14 +297,18 @@ Entity CreateCardActor(const char* monster, Entity parent)
 
 	EntityMetaData meta_data;
 	meta_data.id = monster;
-
+	
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
 	transform.Init(nullptr);
+
+	Collider& collider = AddComponent(Collider, entity);
+	collider.Init();
+	collider.SetFlag(Collider::IgnoreAll);
 	
 	Transform& parent_transform = GetComponentRef(Transform, parent);
-	VectorF child_position = parent_transform.size * 0.5f;// - spider_transform.size * 0.5f;
-	transform.SetLocalPosition( child_position );
+	VectorF anchor = parent_transform.worldPosition + parent_transform.size * 0.7f;
+	transform.SetObjectCenter(anchor);
 
 	// Animator
 	Animator& animation = AddComponent(Animator, entity);
@@ -276,7 +322,7 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	sprite.renderLayer = (RenderLayer)((int)parent_sprite.renderLayer + 1);
 
 	// EntityState
-	EntityState& character_state = AddComponent(EntityState, entity);
+	AddComponent(EntityState, entity);
 
 	return entity;
 }

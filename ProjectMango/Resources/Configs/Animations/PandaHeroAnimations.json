@@ -8,68 +8,53 @@
 			"spriteSheet": "Tiny Panda Good Version 103x33",
 			"animations": [
 				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.1
+				},
+				{
 					"action": "Idle",
 					"startIndex": 0,
 					"frameCount": 9,
-					"frameTime": 0.1,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.1
 				},
 				{
 					"action": "Run",
 					"startIndex": 17,
 					"frameCount": 8,
-					"frameTime": 0.1,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.1
 				},
 				{
 					"action": "Death",
 					"startIndex": 221,
 					"frameCount": 10,
 					"frameTime": 0.1,
-					"looping": false,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"looping": false
 				},
 				{
 					"action": "Jump",
 					"startIndex": 68,
 					"frameCount": 4,
-					"frameTime": 0.1,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.1
 				},
 				{
 					"action": "Fall",
 					"startIndex": 85,
 					"frameCount": 4,
-					"frameTime": 0.1,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.1
 				},
 				{
 					"action": "Hover",
 					"startIndex": 102,
 					"frameCount": 4,
-					"frameTime": 0.1,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.1
 				},
 				{
 					"action": "Roll",
 					"startIndex": 34,
 					"frameCount": 4,
-					"frameTime": 0.05,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ]
+					"frameTime": 0.05
 				},
 				{
 					"action": "BasicAttack",
@@ -77,18 +62,15 @@
 					"frameCount": 9,
 					"frameTime": 0.05,
 					"looping": false,
-					"flip_point_x": 0.426,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ],
-					"attack_collider_pos": [ 0.481, 0.581 ],
-					"attack_collider_size": [ 0.363, 0.305 ]
+					"hit_frame" : 4,
+					"hitbox_pos": [ 0.481, 0.581 ],
+					"hitbox_size": [ 0.363, 0.305 ]
 				},
 				{
 					"action": "BasicAttackHold",
 					"startIndex": 187,
 					"frameCount": 4,
 					"frameTime": 0.04,
-					"flip_point_x": 0.426,
 					"entity_collider_pos": [ 0.38, 0.42 ],
 					"entity_collider_size": [ 0.0889, 0.457 ],
 					"attack_collider_pos": [ 0.481, 0.581 ],
@@ -100,7 +82,6 @@
 					"frameCount": 17,
 					"frameTime": 0.04,
 					"looping": false,
-					"flip_point_x": 0.426,
 					"attack_collider_frame_start" : 9,
 					"attack_collider_frame_end" : 11,
 					"entity_collider_pos": [ 0.38, 0.42 ],
@@ -115,7 +96,6 @@
 					"frameCount": 9,
 					"frameTime": 0.1,
 					"looping": false,
-					"flip_point_x": 0.426,
 					"attack_collider_frame_start" : 2,
 					"attack_collider_frame_end" : 5,
 					"entity_collider_pos": [ 0.38, 0.42 ],

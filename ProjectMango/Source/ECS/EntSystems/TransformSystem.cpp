@@ -13,8 +13,7 @@ namespace ECS
 {
 	void TransformSystem::UpdateChildrenTransforms(Entity parent)
 	{
-		
-		Transform& parent_transform = GetComponentRef(Transform, parent);
+		const Transform& parent_transform = GetComponentRef(Transform, parent);
 
 		// update children positions
 		if (EntityData* entity_data = GetComponent(EntityData, parent))
@@ -22,12 +21,12 @@ namespace ECS
 			SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;
 
 			VectorF flip_point;
-			if (ECS::Sprite* sprite = GetComponent(Sprite, parent))
+			if (ECS::Sprite* parent_sprite = GetComponent(Sprite, parent))
 			{
-				if (sprite->IsFlipped())
+				if (parent_sprite->IsFlipped())
 				{
-					flip_point = sprite->flipPoint * parent_transform.size;
-					sprite_flip = sprite->flip;
+					flip_point = parent_transform.GetHorizontalFlipPoint();
+					sprite_flip = parent_sprite->flip;
 				}
 			}
 

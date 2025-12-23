@@ -5,7 +5,7 @@
 #include "Graphics/FontManager.h"
 
 static constexpr int c_defaultSize = 10;
-static constexpr const char* c_defaultFont = "default";
+static constexpr const char* c_defaultFont = "convent";
 
 
 Font::~Font()
@@ -15,7 +15,7 @@ Font::~Font()
 
 	texture = nullptr;
 }
-
+ 
 void Font::SetSize(const char* text, int _ptSize)
 {
 	ptSize = _ptSize;

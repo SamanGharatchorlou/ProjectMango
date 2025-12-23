@@ -49,10 +49,6 @@ namespace ECS
 					physics.onFloor = true;
 					break;
 				}
-				//physics.onFloor |= result.entity != EntityInvalid;
-
-				//if(physics.onFloor)
-				//	break;
 			}
 			 
 			if(physics.applyGravity)
@@ -73,10 +69,10 @@ namespace ECS
 				}
 			}
 
-			physics.speed += physics.acceleration * dt;
-			physics.speed.x = Maths::clamp(physics.speed.x, -physics.maxSpeed.x, physics.maxSpeed.x);
+			physics.speed.x += physics.acceleration * dt;
+			physics.speed.x = Maths::clamp(physics.speed.x, -physics.maxSpeed, physics.maxSpeed);
 			
-			if( physics.acceleration.x == 0.0f)
+			if( physics.acceleration == 0.0f)
 			{
 				physics.speed.x = physics.speed.x * (1 - physics.drag * dt);
 

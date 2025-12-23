@@ -149,7 +149,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Animations\ConfigReaders.cpp" />
+    <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp" />
+    <ClCompile Include="Source\Entities\MonsterRegistry.cpp" />
+    <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Audio\Channel.cpp" />
@@ -189,7 +191,6 @@
     <ClCompile Include="Source\Debugging\DebugDraw.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AIControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\CharacterStateDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\ColliderDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\PlayerControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp" />
@@ -252,7 +253,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Entities\EntityBuilder.cpp" />
-    <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp" />
+    <ClCompile Include="Source\Game\Readers\SceneReader.cpp" />
     <ClCompile Include="Source\Entities\UIEntityBuilder.cpp" />
     <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
@@ -279,7 +280,9 @@
     <ClCompile Include="ThirdParty\imgui_sdl-master\imgui_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Animations\ConfigReaders.h" />
+    <ClInclude Include="Source\ECS\EntSystems\CardSystem.h" />
+    <ClInclude Include="Source\Entities\MonsterRegistry.h" />
+    <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />
     <ClInclude Include="Source\Audio\Channel.h" />
@@ -389,7 +392,7 @@
     <ClInclude Include="Source\Input\InputManager.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Entities\EntityBuilder.h" />
-    <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h" />
+    <ClInclude Include="Source\Game\Readers\SceneReader.h" />
     <ClInclude Include="Source\Entities\UIEntityBuilder.h" />
     <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />

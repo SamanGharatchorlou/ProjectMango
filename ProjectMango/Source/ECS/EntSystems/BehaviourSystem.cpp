@@ -16,46 +16,56 @@ namespace ECS
 	{
  		for (Entity entity : entities)
 		{
-			//AIController& aic = GetComponentRef(AIController, entity);
 			EntityState& state = GetComponentRef(EntityState, entity);
 			BehaviourMap& behaviours = GetComponentRef(BehaviourMap, entity);
+			BehaviourState& b_state = GetComponentRef(BehaviourState, entity);
 
 			if(behaviours.updates.size() == 0)
 			{
 				DebugPrintOnce(Warning, "behaviour map for entity is empty");
 			}
 
-			bool did_run = false;
+			// exit
 			if(state.justChanged)
 			{
+				behaviours.attemptEnterFunction = true;
+
 				Action::Enum previous_state = state.backlog.back();
 				if(behaviours.exits.contains(previous_state))
 				{
 					behaviours.exits.at(previous_state)(entity);
-					did_run = true;
+					continue;
 				}
 			}
 
-			if(!did_run)
+
+			// enter
+			if(behaviours.attemptEnterFunction)
 			{
-				if(behaviours.updates.contains(state.current))
+				behaviours.attemptEnterFunction = false;
+
+				if(behaviours.enters.contains(state.current))
 				{
-					behaviours.updates.at(state.current)(entity);
-					did_run = true;
+					behaviours.enters.at(state.current)(entity);
+					continue;
 				}
+			}
+
+			// update
+			if(behaviours.updates.contains(state.current))
+			{
+				behaviours.updates.at(state.current)(entity);
+				continue;
 			}
 			
 			// attempt to execute a default behaviour
-			if(!did_run)
+			if(behaviours.updates.contains(Action::Idle))
 			{
-				if(behaviours.updates.contains(Action::Idle))
-				{
-					behaviours.updates.at(Action::Idle)(entity);
-				}
-				else if(behaviours.updates.contains(Action::Inactive))
-				{
-					behaviours.updates.at(Action::Inactive)(entity);
-				}
+				behaviours.updates.at(Action::Idle)(entity);
+			}
+			else if(behaviours.updates.contains(Action::Inactive))
+			{
+				behaviours.updates.at(Action::Inactive)(entity);
 			}
 		}
 	}

@@ -22,13 +22,12 @@ namespace ECS
 	struct UIButton
 	{
 		COMPONENT_TYPE(UIButton);
+		
+		BasicString UID;
 
 		int lastPressedFrameCount;
 
 		bool toggle;
-		//bool isActive;
-
-		BasicString UID;
 		
 		UIButton();
 		bool IsPressed(int frame_buffer = 0) const;

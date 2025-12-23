@@ -14,8 +14,8 @@ namespace ECS
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			applyGravity = config->data.GetBool("gravity");	
-			acceleration = config->data.GetVectorF("acceleration_x", "acceleration_y");
-			maxSpeed = config->data.GetVectorF("max_run_speed", "max_fall_speed");
+			//acceleration = config->data.GetFloat("acceleration");
+			maxSpeed = config->data.GetFloat("max_run_speed");
 		}
 
 		drag = 5.0f;

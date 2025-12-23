@@ -7,7 +7,9 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/UIComponents.h"
 #include "Entities/CardRegistry.h"
+#include "Entities/MonsterRegistry.h"
 #include "Entities/EntityBuilder.h"
+#include "ECS/Components/Animator.h"
 
 #include "Entities/Enemies/BlindingSpiderEnemy.h"
 
@@ -57,8 +59,6 @@ namespace ECS
 
 	// Card
 	// ------------------------------------------------------------------
-	Card::Card() : points(0), tier(0) { }
-
 	bool Card::CanAfford(Entity entity) const
 	{
 		if(Inventory* inventory = GetComponent(Inventory, entity))
@@ -82,6 +82,22 @@ namespace ECS
 
 		return false;
 	}
+	
+	Entity Card::GetMonster() const
+	{
+		std::vector<Entity> children;
+		GetChildren(entity, children);
+		for( u32 i = 0; i < children.size(); i++ )
+		{
+			// a bit random to get the animator, but it works...
+			if(HasComponent(Animator, children[i]))
+			{
+				return children[i];
+			}
+		}
+
+		return EntityInvalid;
+	}
 
 	void Card::RegenerateChildDisplays()
 	{
@@ -101,20 +117,16 @@ namespace ECS
 			// Transform
 			Transform& points_transform = AddComponent(Transform, points_entity);
 			points_transform.size = child_size * 0.5f;
-			points_transform.SetLocalPosition( VectorF(transform.size.x * 0.75f, 0.0f ) );
+			points_transform.SetLocalPosition( transform.size * (VectorF(0.025f, 0.03f) ) );
 			
 			// UIText
 			UIText& ui_text = AddComponent(UIText, points_entity);
 			ui_text.center = true;
+			ui_text.SetColour(SColour::Black);
+			ui_text.SetSize(27);
 
-			if(colour == Colour::White)
-				ui_text.SetColour(SColour::Black);
-			else
-				ui_text.SetColour(SColour::White);
-
-			BasicString text = BasicString(points);
-			ui_text.SetSize(30);
-			ui_text.SetText(text.c_str());
+			BasicString number_to_text = BasicString(points);
+			ui_text.SetText(number_to_text.c_str());
 		}
 
 		// build cost
@@ -130,7 +142,7 @@ namespace ECS
 		{
 			if(cost[i] > 0)
 			{
-				VectorF gem_size = VectorF(40,40);
+				VectorF gem_size = VectorF(32,32);
 				Entity child_entity = CreateBasicObject("card_icon", gem_size);
 				EntityData::SetParent(child_entity, entity);
 
@@ -147,7 +159,7 @@ namespace ECS
 			
 				char buffer[32];
 				const StringBuffer32& colour_string = Colour::s_typeToString.at((Colour::Type)i);
-				snprintf(buffer, 32, "%sGem", colour_string.c_str());
+				snprintf(buffer, 32, "gem_%s", colour_string.c_str());
 
 				Sprite& child_sprite = GetComponentRef(Sprite, child_entity);
 				child_sprite.SetTexture(buffer);
@@ -169,7 +181,11 @@ namespace ECS
 			}
 		}
 
-		CreateCardActor("BlindingSpider", entity);
+		if(monsterRegistryIndex != -1)
+		{
+			const char* monster = MonsterRegistry::GetMonster(monsterRegistryIndex);
+			CreateCardActor(monster, entity);
+		}
 	}
 
 
@@ -191,35 +207,6 @@ namespace ECS
 		}
 
 		return nullptr;
-	}
-
-	Colour::Type Colour::SColourToType(SColour colour)
-	{
-		// convert SColour into CoinStack colour
-		SColour::Enum colour_type = colour.GetColosestColour();
-		switch( colour_type )
-		{
-			case SColour::White:
-				return Colour::White;
-			case SColour::Blue:
-				return Colour::Blue;
-			case SColour::Black:
-				return Colour::Black;
-			case SColour::Red:
-				return Colour::Red;
-			case SColour::Green:
-				return Colour::Green;
-			case SColour::Count:	
-			case SColour::None:
-			case SColour::Purple:
-			case SColour::Yellow:
-			case SColour::LightGrey:
-			case SColour::MidGrey:
-			default:
-			break;
-		}
-
-		return Colour::Type::Count;
 	}
 
 
@@ -315,5 +302,46 @@ namespace ECS
 	// ActionRequest
 	// ------------------------------------------------------------------
 	ActionRequest::ActionRequest() : request(None), target(EntityInvalid) { }
+
+
+	// Colour
+	// ------------------------------------------------------------------
+	Colour::Type Colour::SColourToType(SColour colour)
+	{
+		// convert SColour into CoinStack colour
+		SColour::Enum colour_type = colour.GetColosestColour();
+		switch( colour_type )
+		{
+			case SColour::White:
+				return Colour::White;
+			case SColour::Blue:
+				return Colour::Blue;
+			case SColour::Black:
+				return Colour::Black;
+			case SColour::Red:
+				return Colour::Red;
+			case SColour::Green:
+				return Colour::Green;
+			case SColour::Count:	
+			case SColour::None:
+			case SColour::Purple:
+			case SColour::Yellow:
+			case SColour::LightGrey:
+			case SColour::MidGrey:
+			default:
+			break;
+		}
+
+		return Colour::Type::Count;
+	}
+		
+	void AddColourPostfix(const char* postfix, Colour::Type colour, StringBuffer64& out_string)
+	{
+		if(colour != -1)
+		{
+			const StringBuffer32& colour_string = Colour::s_typeToString.at(colour);
+			snprintf(out_string.buffer(), out_string.bufferLength(), "%s_%s", postfix, colour_string.c_str() );
+		}
+	}
 
 }

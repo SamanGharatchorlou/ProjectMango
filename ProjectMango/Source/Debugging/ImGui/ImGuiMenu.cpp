@@ -47,7 +47,7 @@ namespace DebugMenu
 
 	static bool s_entitySystemWindow = false;
 	static bool s_inputWindow = false;
-	static bool s_colliderWindow = false;
+	static bool s_transformWindow = false;
 	static bool s_gameStateWindow = false;
 	static bool s_tweakerWindow = false;
 	static bool s_editorWindow = false;
@@ -69,7 +69,7 @@ namespace DebugMenu
 		ImGui::SameLine();
 		ImGui::Checkbox("Input", &s_inputWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Colliders", &s_colliderWindow);
+		ImGui::Checkbox("Transforms", &s_transformWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("GameState", &s_gameStateWindow);
 		ImGui::SameLine();
@@ -91,7 +91,7 @@ namespace DebugMenu
 			DoInputWindow();
 		}
 
-		if(s_colliderWindow) 
+		if(s_transformWindow) 
 		{
 			DoTransformWindow();
 		}

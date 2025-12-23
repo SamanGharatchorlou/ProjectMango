@@ -32,7 +32,7 @@ namespace ECS
 
 		void Init(u32 page_size, u32 page_index)
 		{
-			components = new T[page_size]();
+			components = new T[page_size];
 			pageSize = page_size;
 			size = 0; 
 			pageIndex = page_index;
@@ -95,20 +95,19 @@ namespace ECS
 
 			ASSERT(target_page, "Run out of page space, either increase page size or allow more than %d pages", c_pageLimit);
 
-			u32 component_index = target_page->pageIndex * componentPageSize + target_page->size;
-
 			T* component = target_page->components + target_page->size;
 
-			// to make sure we have clean data call the desctructor to remove string buffers etc.
-			// then explicitally call the constructor here, to init any data before we use this
-			new (component) T();
+			// make sure we have 'clean' data
+			*component = T{ };
 			component->entity = entity;
 
-			// increment size
-			target_page->size++;
-
+			// setup the mappings for the component and its entity
+			u32 component_index = target_page->pageIndex * componentPageSize + target_page->size;
 			entityToComponent[entity] = component_index;
 			componentToEntity[component_index] = entity;
+						
+			// increment size
+			target_page->size++;
 
 			return *component;
 		}
@@ -121,13 +120,6 @@ namespace ECS
 
 			int page_index = component_index / componentPageSize;
 			int page_entry_index = component_index % componentPageSize;
-
-			Page<T>& page = componentPages[page_index];
-			for (u32 i = 0; i < page.size; i++)
-			{
-				T* comp = page.components + i;
-				int a = 4;
-			}
 
 			return componentPages[page_index].components[page_entry_index];
 		}
@@ -150,27 +142,14 @@ namespace ECS
 			// the back most component can replace the one we want to remove
 			// replace the item we're removing with the last item in the page
 			u32 page_entry_index = component_index % componentPageSize;
-
-			// call destructor on removed component
-			page.components[page_entry_index].~T();
-
-			if (page_entry_index != page.size - 1)
-			{
-				T* last_component = &page.components[page.size - 1];
-
-				// move last component into the freed slot
-				new (&page.components[page_entry_index]) T(std::move(*last_component));
-
-				// destroy the last component after moving
-				last_component->~T();
-			}
-
-			//page.components[page_entry_index] = std::move( page.components[page.size - 1] );
+			
+			// move last component into the freed slot
+			page.components[page_entry_index] = std::move( page.components[page.size - 1] );
 
 			// mark it as dead just in case
 			page.components[page.size - 1].entity = EntityInvalid;
 
-			// update the entity and component indexes
+			// update the entity and component mappings
 			u32 last_component_index = page_index * componentPageSize + page.size - 1;
 			Entity moving_entity = componentToEntity[last_component_index];
 			componentToEntity[component_index] = moving_entity;

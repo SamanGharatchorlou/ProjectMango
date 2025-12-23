@@ -2,7 +2,6 @@
 #include "CollisionSystem.h"
 
 #include "Core/Helpers.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "ECS/ComponentArray.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Physics.h"
@@ -93,7 +92,7 @@ namespace ECS
 		for (Entity entity : entities)
 		{
 			// debug break point
-			if(DebugMenu::GetSelectedEntity() == entity)
+			if(IsSelectedDebugEntity(entity))
 				int a = 4;
 
 			Collider& collider = GetComponentRef(Collider, entity);
@@ -107,32 +106,19 @@ namespace ECS
 		for (Entity entity : entities)
 		{
 			// debug break point
-			if(DebugMenu::GetSelectedEntity() == entity)
+			const char* debug_collider_a_name = ECS::GetName(entity);
+			if(IsSelectedDebugEntity(entity))
 				int a = 4;
 
 			Collider& A_collider = GetComponentRef(Collider, entity);
-
-			const char* debug_collider_a_name = ECS::GetName(entity);
-
-			for( u32 i = 0; i < A_collider.collisions.size(); i++ )
-			{
-				// remove one dead entry at a time, we reorder and change the size of this list 
-				// so this just keeps things simple and it doesnt matter if things hang around for a bit
-				if(!ecs->IsAlive(A_collider.collisions[i]))
-				{
-					EraseSwap(A_collider.collisions, A_collider.collisions[i]);
-					break;
-				}
-			}
-
+			A_collider.collisions.clear();
 			A_collider.allowedMovement = A_collider.forward - A_collider.back;
 			A_collider.desiredMovement = A_collider.allowedMovement;
+			memset(A_collider.collisionSide, false, sizeof(bool) * 4);
 			
 			// debug break point
-			if(DebugMenu::GetSelectedEntity() == entity && !A_collider.allowedMovement.isZero())
+			if(IsSelectedDebugEntity(entity) && !A_collider.allowedMovement.isZero())
 				int a = 4;
-
-			memset(A_collider.collisionSide, false, sizeof(bool) * 4);
 
 			// ignore static colliders, we check against them, but not from them (or if we're ignoring all)
 			if (A_collider.HasFlag(Collider::Static) || A_collider.HasFlag(Collider::IgnoreAll))
@@ -153,7 +139,7 @@ namespace ECS
 			{
 				ASSERT(debug_counter == 0, "Not rolling forward and back correctly! early exit where there shouldnt be?");
 
-				Collider& B_collider = colliders.GetComponentByIndex(iter->second);
+				const Collider& B_collider = colliders.GetComponentByIndex(iter->second);
 				const char* debug_collider_b_name = ECS::GetName(B_collider.entity);
 				if(B_collider.entity == entity)
 					continue;
@@ -165,33 +151,33 @@ namespace ECS
 				if(B_collider.HasFlag(Collider::IgnoreAll) || B_collider.HasFlag(Collider::IsDamage) )
 					continue; 
 
-				// ignore terrain
+				// terrain
 				if( A_collider.HasFlag(Collider::TerrainOnly) && !B_collider.HasFlag(Collider::IsTerrain) )
 					continue;
+				if( A_collider.HasFlag(Collider::IgnoreTerrain) && B_collider.HasFlag(Collider::IsTerrain) )
+					continue;
+				if( A_collider.HasFlag(Collider::IsTerrain) && B_collider.HasFlag(Collider::IgnoreTerrain) )
+					continue;
 
-				// player only
+				// player
 				if( A_collider.HasFlag(Collider::PlayerOnly) && !B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
 				if( !A_collider.HasFlag(Collider::IsPlayer) && B_collider.HasFlag(Collider::PlayerOnly) )
 					continue;
-
 				if( A_collider.HasFlag(Collider::IgnorePlayer) && B_collider.HasFlag(Collider::IsPlayer) )
 					continue;
+
 
 				if(A_collider.Intersects(B_collider.rect)) 
 				{
 					ECS::Entity B_entity = B_collider.entity;
-					PushBackUnique(A_collider.collisions, B_entity);
-					PushBackUnique(B_collider.collisions, entity);
+					A_collider.collisions.push_back(B_entity);
 					const char* debug_collider_b_name_2 = ECS::GetName(B_entity);
 
 					if( !B_collider.HasFlag(Collider::IgnoreDamage) )
 					{
 						if(A_damage && A_damage->CanApplyTo(B_entity))
-						{
-							B_collider.lastHitFrame = frame_count;
  							A_damage->ApplyTo(B_entity);
-						}
 					}
 
 					bool debug_test = A_collider.Intersects(B_collider.rect);

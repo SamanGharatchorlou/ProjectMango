@@ -88,9 +88,12 @@ namespace ECS
 		VectorF size;
 		VectorF pivotPoint;
 
+		BasicString spriteSheetId;
+		int spriteSheetCount;
+
 		BasicString spriteId;
 		SColour colourMod;
-		u32 colourType = -1;
+		int colourType = -1;
 
 		int PtSize = -1;
 		int tier = -1;
@@ -110,7 +113,7 @@ namespace ECS
 	const Config* GetConfigFromEntity(Entity entity);
 
 	Entity GetParent(Entity child);
-	//void GetChildren(Entity parent, std::vector<Entity>& children);
+	void GetChildren(Entity parent, std::vector<Entity>& children);
 	Entity GetFirstChild(Entity parent);
 	void DestroyChildren(Entity parent);
 	

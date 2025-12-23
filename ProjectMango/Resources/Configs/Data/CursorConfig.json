@@ -1,6 +1,5 @@
 {
 	"id" : "Cursor",
 	"sprite": "cursor",
-	"size_x": 24,
-	"size_y": 24
+	"size": [24, 24]
 }

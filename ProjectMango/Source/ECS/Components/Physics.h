@@ -9,8 +9,8 @@ namespace ECS
 		Physics();
 
 		VectorF speed;
-		VectorF maxSpeed;	
-		VectorF acceleration;
+		float maxSpeed;	
+		float acceleration;
 
 		float drag;
 		float mass;

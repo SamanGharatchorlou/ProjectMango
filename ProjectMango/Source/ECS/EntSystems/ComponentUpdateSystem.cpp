@@ -9,19 +9,11 @@ namespace ECS
 	void ComponentUpdateSystem::Update(float dt)
 	{
 		for (Entity entity : entities)
-		{
-			//if(Spawner* spawner = GetComponent(Spawner, entity))
+		{		
+			//if (DeathScentence* ds = GetComponent(DeathScentence, entity))
 			//{
-			//	spawner->Update();
+			//	ds->Update(dt);
 			//}
-			if(Door* door = GetComponent(Door, entity))
-			{
-				door->Update();
-			}			
-			if (DeathScentence* ds = GetComponent(DeathScentence, entity))
-			{
-				ds->Update(dt);
-			}
 		}
 	}
 }

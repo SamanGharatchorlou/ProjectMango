@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ComponentHelpers.h"
+
 #include "Components.h"
+#include "GameComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Collider.h"
 #include "Biome.h"
@@ -84,6 +86,15 @@ namespace ECS
 		}
 	}
 
+	void GetChildren(Entity parent, std::vector<Entity>& children)
+	{
+		if(EntityData* ed = GetComponent(EntityData, parent))
+		{
+			// create a copy so the list doesnt change as we're looping it
+			children = ed->children;
+		}
+	}
+
 	VectorF GetPosition(Entity entity)
 	{	
 		if(Transform* transform = GetComponent(Transform, entity))
@@ -125,7 +136,7 @@ namespace ECS
 				out_rotation = sprite->rotation;
 
 				RectF rect = transform->GetRect();
-				out_aboutPoint = rect.TopLeft() + (rect.Size() * sprite->flipPoint);
+				out_aboutPoint = rect.TopLeft() + transform->GetHorizontalFlipPoint();
 				return true;
 			}
 		}
@@ -210,52 +221,52 @@ namespace ECS
 		// todo: move this file somewhere better
 	static std::unordered_map<StringBuffer32, Action::Enum> s_stateMap;
 
-		static void initActionMap()
-		{
-			s_stateMap.reserve(Action::Count);
+	static void initActionMap()
+	{
+		s_stateMap.reserve(Action::Count);
 
-			s_stateMap["None"] = Action::None;
-			s_stateMap["Active"] = Action::Active;
-			s_stateMap["Inactive"] = Action::Inactive;
-			s_stateMap["Open"] = Action::Open;
-			s_stateMap["Close"] = Action::Close;
-			s_stateMap["Idle"] = Action::Idle;
-			s_stateMap["Walk"] = Action::Walk;
-			s_stateMap["Run"] = Action::Run;
-			s_stateMap["Fall"] = Action::Fall;
-			s_stateMap["Jump"] = Action::Jump;
-			s_stateMap["Hover"] = Action::Hover;
-			s_stateMap["Roll"] = Action::Roll;
-			s_stateMap["Crouch"] = Action::Crouch;
-			s_stateMap["AttackWindUp"] = Action::AttackWindUp;
-			s_stateMap["BasicAttack"] = Action::BasicAttack;
-			s_stateMap["BasicAttackHold"] = Action::BasicAttackHold;
-			s_stateMap["LungeAttack"] = Action::LungeAttack;
-			s_stateMap["FloorSlam"] = Action::FloorSlam;
-			s_stateMap["TakeHit"] = Action::TakeHit;
-			s_stateMap["Death"] = Action::Death;
-			s_stateMap["Spawning"] = Action::Spawning;
+		s_stateMap["None"] = Action::None;
+		s_stateMap["Active"] = Action::Active;
+		s_stateMap["Inactive"] = Action::Inactive;
+		s_stateMap["Open"] = Action::Open;
+		s_stateMap["Close"] = Action::Close;
+		s_stateMap["Idle"] = Action::Idle;
+		s_stateMap["Walk"] = Action::Walk;
+		s_stateMap["Run"] = Action::Run;
+		s_stateMap["Fall"] = Action::Fall;
+		s_stateMap["Jump"] = Action::Jump;
+		s_stateMap["Hover"] = Action::Hover;
+		s_stateMap["Roll"] = Action::Roll;
+		s_stateMap["Crouch"] = Action::Crouch;
+		s_stateMap["AttackWindUp"] = Action::AttackWindUp;
+		s_stateMap["BasicAttack"] = Action::BasicAttack;
+		s_stateMap["BasicAttackHold"] = Action::BasicAttackHold;
+		s_stateMap["LungeAttack"] = Action::LungeAttack;
+		s_stateMap["FloorSlam"] = Action::FloorSlam;
+		s_stateMap["TakeHit"] = Action::TakeHit;
+		s_stateMap["Death"] = Action::Death;
+		s_stateMap["Spawning"] = Action::Spawning;
+	}
+
+	Action::Enum StringToAction(const char* action)
+	{
+		if (s_stateMap.empty())
+			initActionMap();
+
+		return s_stateMap.at(action);
+	}
+
+	const char* ActionToString(Action::Enum action)
+	{
+		if (s_stateMap.empty())
+			initActionMap();
+
+		for (auto iter = s_stateMap.begin(); iter != s_stateMap.end(); iter++)
+		{
+			if (iter->second == action)
+				return iter->first.c_str();
 		}
 
-		Action::Enum StringToAction(const char* action)
-		{
-			if (s_stateMap.empty())
-				initActionMap();
-
-			return s_stateMap.at(action);
-		}
-
-		const char* ActionToString(Action::Enum action)
-		{
-			if (s_stateMap.empty())
-				initActionMap();
-
-			for (auto iter = s_stateMap.begin(); iter != s_stateMap.end(); iter++)
-			{
-				if (iter->second == action)
-					return iter->first.c_str();
-			}
-
-			return nullptr;
-		}
+		return nullptr;
+	}
 }

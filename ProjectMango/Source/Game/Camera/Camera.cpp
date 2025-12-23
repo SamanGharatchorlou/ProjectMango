@@ -13,13 +13,6 @@ Camera* Camera::Get()
 	return &sInstance;
 }
 
-void Camera::clear()
-{
-	shakeyCam.clear();
-}
-
-Camera::Camera() : mScale(1.0f) { }
-
 void Camera::setScale(float scale)
 {
 	mScale = scale;
@@ -73,18 +66,57 @@ void Camera::Update(float dt)
 	
 	rect.Translate(bounds_translation);
 
-	if (shakeyCam.hasTrauma())
-	{
-		//mActiveRect = shakeyCam.rect();
+	shakeyCam.Update(dt);
+}
 
-#if PRINT_SHAKEYCAM_VALUES
-		DebugPrint(Log, "Trauma %.3f | Offset = %.3f, %.3f",
-			shakeyCam.trauma(),
-			shakeyCam.offset().x, shakeyCam.offset().y);
-#endif
+
+void Camera::InitShakeyCam(float speed, VectorF magnitude) 
+{ 
+	shakeyCam.speed = speed;
+	shakeyCam.maxTrauma = magnitude;
+
+	shakeyCam.x = 1.0f;
+	shakeyCam.trauma = VectorF::zero();
+}
+
+RectF Camera::GetRect() const 
+{ 
+	RectF new_rect = rect;
+	new_rect.Translate(shakeyCam.trauma);
+	return new_rect;
+}
+
+void Camera::SetRect(const RectF& _rect)
+{
+	rect = _rect;
+}
+
+// shaky cam stuff
+void Camera::AddShake(float magnitude)
+{
+	shakeyCam.x = 0.0f;
+	
+	shakeyCam.magnitude += magnitude;
+	shakeyCam.magnitude = Maths::clamp(shakeyCam.magnitude, 0.0f , 1.0f);
+}
+
+void Camera::AddShake(float magnitude, VectorF source)
+{
+	shakeyCam.x = 0.0f;
+
+	shakeyCam.magnitude += magnitude;
+	shakeyCam.magnitude = Maths::clamp(shakeyCam.magnitude, 0.0f , 1.0f);
+	
+	const ECS::Level& level = ECS::Biome::GetLevel(targetEntity);
+	VectorF center;
+	center.x = (level.GetBounds().x1 + level.GetBounds().x2) * 0.5f;
+	center.y = (level.GetBounds().y1 + level.GetBounds().y2) * 0.5f;
+	if(source.x > center.x)
+	{
+		shakeyCam.direction.x = -1.0f;
 	}
 	else
 	{
-		//mActiveRect = &mRect;
+		shakeyCam.direction.x = 1.0f;
 	}
 }

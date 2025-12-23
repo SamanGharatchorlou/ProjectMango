@@ -1,0 +1,60 @@
+{
+	"types": [
+		{
+			"id" :  "BlindingSpider",
+			"animation": "BlindingSpiderAnimations",
+			"object_pos": [ 0.05, 0.75 ],
+			"object_size": [ 0.33, 0.25 ],
+			"size": [64, 64],
+			"snap_to_floor": true,
+			"gravity": true,
+			"acceleration": 80,
+			"max_run_speed": 80,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		},
+		{
+			"id": "ShockSweeper",
+			"animation": "ShockSweeperAnimations",
+			"object_pos": [ 0.239, 0.417 ],
+			"object_size": [ 0.137, 0.492 ],
+			"size": [352, 120],
+			"gravity": true,
+			"snap_to_floor": true,
+			"acceleration": 80,
+			"max_run_speed": 80,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		},
+		{
+			"id": "PandaHero",
+			"animation": "PandaHeroAnimations",
+			"object_pos": [ 0.38, 0.42 ],
+			"object_size": [ 0.0889, 0.457 ],
+			"size": [309, 99],
+			"gravity": true,
+			"snap_to_floor": true,
+			"acceleration": 80,
+			"max_run_speed": 80,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		},
+		{
+			"id": "GunSlinger",
+			"animation": "GunSlingerAnimations",
+			"object_pos": [ 0.415, 0.455 ],
+			"object_size": [ 0.169, 0.545 ],
+			"size": [96, 96],
+			"gravity": true,
+			"snap_to_floor": true,
+			"acceleration": 80,
+			"max_run_speed": 80,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		}
+	]
+}

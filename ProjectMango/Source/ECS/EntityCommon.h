@@ -21,6 +21,7 @@ namespace ECS
 			_entry( EntityData ) \
 			_entry( Transform ) \
 			_entry( Sprite ) \
+			_entry( SpriteSheet ) \
 			_entry( Audio ) \
 			_entry( EntityState ) \
 			_entry( PlayerController ) \
@@ -34,7 +35,6 @@ namespace ECS
 			_entry( Biome ) \
 			_entry( Spawner ) \
 			_entry( SpawnRequest ) \
-			_entry( Door ) \
 			_entry( UICursor ) \
 			_entry( UIButton ) \
 			_entry( UIText ) \

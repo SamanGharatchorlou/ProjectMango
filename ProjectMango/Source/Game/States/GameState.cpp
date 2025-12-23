@@ -11,14 +11,11 @@
 #include "Game/States/AnimationEditorState.h"
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
-#include "Scene/SceneParsing/SceneReader.h"
+#include "Game/Readers/SceneReader.h"
 #include "Entities/EntityBuilder.h"
 #include "Entities/UIEntityBuilder.h"
 #include "System/Window.h"
-
 #include "ECS/Components/Physics.h"
-#include "ECS/Components/AIComponents.h"
-#include "Entities/CardRegistry.h"
 
 void GameState::Init()
 {
@@ -32,24 +29,19 @@ void GameState::Init()
 	Scene::BuildBiome( "GemBiome_old", biome_entity );
 	activeLevel = biome_entity;
 
-
 	ECS::EntityMetaData empty_data;
 	ECS::Entity player = Player::Spawn(empty_data);
 	
 	CreateEntities(biome_entity);
-	//ECS::Entity enemy = Character::CreateBasicEnemy(empty_data);
 
 	ECS::EntityState& player_state = GetComponentRef(EntityState, player);
-	//player_state.target = enemy;
-
-	//ECS::EntityState& enemy_state = GetComponentRef(EntityState, enemy);
-	//enemy_state.target = player;
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
 
 	camera->setViewport(window->size());
 	camera->targetEntity = Target::GetPlayer();
+	camera->InitShakeyCam(5.0f, VectorF(12.0,0));
 
 	// Start Audio
 	AudioManager* audio = AudioManager::Get();
@@ -66,8 +58,6 @@ void GameState::Init()
 
 	// finally init all the systems
 	ecs->InitSystems();
-
-	//CardRegistry::SetupDrawPile();
 }
 
 void GameState::HandleInput()

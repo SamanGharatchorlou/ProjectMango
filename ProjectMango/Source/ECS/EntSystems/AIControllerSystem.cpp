@@ -5,27 +5,25 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GameComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Animator.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
-	float GetAttackRange(Entity entity)
+	float GetAttackRange(Entity entity, Action::Enum attack)
 	{
-		const Animator& animator = GetComponentRef(Animator, entity);
-		if(const Animation* animation = animator.GetAnimation(Action::BasicAttack))
+		if(const BehaviourState* b_state = GetComponent(BehaviourState, entity))
 		{
-			if(animation->attackColliderSize.x > 0.0f && animation->attackColliderSize.y > 0.0f)
+			if(b_state->attackData.contains(attack))
 			{
-				const Transform& transform = GetComponentRef(Transform, entity);
+				const AttackStateData& asd = b_state->attackData.at(attack);
 
-				const VectorF pos =  transform.worldPosition + transform.size * animation->attackColliderPos;
-				const VectorF size = transform.size * animation->attackColliderSize;
+				const Transform& transform = GetComponentRef(Transform, entity);
+				const VectorF pos =  transform.worldPosition + transform.size * asd.hitBoxPos;
+				const VectorF size = transform.size * asd.hitBoxSize;
 				const RectF collider_rect(pos, size);
 
 				const VectorF position = transform.GetObjectCenter();
-
 				const float distance = Maths::Max( std::abs(position.x - collider_rect.RightCenter().x), std::abs(position.x - collider_rect.LeftCenter().x) );
-
 				return distance;
 			}
 		}
@@ -37,6 +35,10 @@ namespace ECS
 	{
  		for (Entity entity : entities)
 		{
+			// debug break point
+			if(IsSelectedDebugEntity(entity))
+				int a = 4;
+
 			AIController& aic = GetComponentRef(AIController, entity);
 
 			if(AIIntent* intent = GetComponent(AIIntent, entity))
@@ -45,7 +47,7 @@ namespace ECS
 				*intent = AIIntent();
 
 				// grab the target if it has one
-				Entity target = Target::GetValidTarget(entity);
+				Entity target = Target::GetTarget(entity);
 
 				if(target != EntityInvalid)
 				{
@@ -60,7 +62,7 @@ namespace ECS
 					float distance_b = target_rect.RightPoint() - position.x;
 					float target_distance = Maths::Min( std::abs(distance_a), std::abs(distance_b) );
 
-					if( target_distance < (GetAttackRange(entity) * 0.8f) )
+					if( target_distance < (GetAttackRange(entity, Action::BasicAttack) * 0.8f) )
 					{
 						intent->wantsToAttack = true;
 					}

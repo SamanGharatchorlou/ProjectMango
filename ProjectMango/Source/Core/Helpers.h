@@ -194,3 +194,5 @@ bool IsEnemy(ECS::Entity entity);
 bool IsTerrain(ECS::Entity entity);
 
 bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity);
+
+bool IsSelectedDebugEntity(ECS::Entity entity);

@@ -6,6 +6,7 @@
 #include "ECS/Components/GameComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Animator.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -14,25 +15,22 @@ namespace ECS
 	{
  		for (Entity entity : entities)
 		{
+			// debug break point
+			if(IsSelectedDebugEntity(entity))
+				int a = 4;
+
 			EntityState& state = GetComponentRef(EntityState, entity);
 
 			// default
 			if(state.current == Action::None && state.next == Action::None)
 			{
-				state.next = Action::Idle;
+				state.next = Action::Inactive;
 			}
 
-			// death
-			if(DeathScentence* death = GetComponent(DeathScentence, entity))
-			{
+			bool must_finish_anim = state.current == Action::AttackWindUp || state.current == Action::BasicAttack;
 
-				state.next = Action::Death;
-			}
-						
-			state.mustFinishAnimation = (state.current == Action::BasicAttack);
-
-			bool can_change_state = !state.mustFinishAnimation;
-			if(state.mustFinishAnimation)
+			bool can_change_state = !must_finish_anim;
+			if(must_finish_anim)
 			{
 				if(Animator* animator = GetComponent(Animator, entity))
 				{

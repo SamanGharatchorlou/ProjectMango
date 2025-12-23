@@ -15,6 +15,8 @@
 #include "Game/States/GameState.h"
 #include "Entities/EntityBuilder.h"
 
+#include "Debugging/ImGui/ImGuiMainWindows.h"
+
 namespace ShockSweeper
 {
 	using namespace ECS;
@@ -54,8 +56,8 @@ namespace ShockSweeper
 			game_state->enemy = entity;
 		}
 
-		Target& target = AddComponent(Target, entity);
-		target.target = Target::GetPlayer();
+		//Target& target = AddComponent(Target, entity);
+		//target.target = Target::GetPlayer();
 		
 		return entity;
 	}

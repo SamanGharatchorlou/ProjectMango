@@ -3,6 +3,8 @@
 // all the more game speicifc components in here
 namespace ECS
 {
+	struct EntityMetaData;
+	 
 	struct Colour
 	{
 		enum Type
@@ -16,19 +18,19 @@ namespace ECS
 		};
 
 		inline static const std::unordered_map<StringBuffer32, Type> s_stringToType { 
-			{ "White",	White }, 
-			{ "Blue",	Blue }, 
-			{ "Black",	Black },
-			{ "Red",	Red },
-			{ "Green",	Green } 
+			{ "white",	White }, 
+			{ "blue",	Blue }, 
+			{ "black",	Black },
+			{ "red",	Red },
+			{ "green",	Green } 
 		};
 
 		inline static const std::unordered_map<Type, StringBuffer32> s_typeToString { 
-			{ White,	"White" }, 
-			{ Blue,		"Blue" }, 
-			{ Black,	"Black" },
-			{ Red,		"Red" },
-			{ Green,	"Green" } 
+			{ White,	"white" }, 
+			{ Blue,		"blue" }, 
+			{ Black,	"black" },
+			{ Red,		"red" },
+			{ Green,	"green" } 
 		};
 				
 		inline static const std::unordered_map<Type, SColour> s_typeToColour { 
@@ -48,6 +50,8 @@ namespace ECS
 		// probably duplicate data in some cases, like coinstack already has it, but i also need this
 		Colour::Type colour;
 	};
+	
+	void AddColourPostfix(const char* postfix, Colour::Type colour, StringBuffer64& out_string);
 
 	struct CoinStack
 	{
@@ -57,7 +61,7 @@ namespace ECS
 		
 		// sprite = spritePrefix + remaining
 		// e.g. spritePrefix = "BlueCoin" then we have sprite = "BlueCoin2"
-		BasicString spritePrefix;
+		//BasicString spritePrefix;
 
 		int capacity = -1;
 		int remaining = -1;
@@ -74,7 +78,6 @@ namespace ECS
 		static constexpr int c_tiers = 3;
 
 		COMPONENT_TYPE(Card)
-		Card();
 
 		Colour::Type colour;
 
@@ -85,15 +88,18 @@ namespace ECS
 		int power[Colour::Count] { 0 };
 
 		// points... for something, not sure yet
-		int points;
+		int points = 0;
 
 		// tier 1,2,3
-		int tier;
+		int tier = 0;
 
-		int cardRegistryIndex;
+		int registryIndex = 0;
+
+		int monsterRegistryIndex = -1;
 
 		void RegenerateChildDisplays();
 		bool CanAfford(Entity entity) const;
+		Entity GetMonster() const;
 	};
 
 	struct Inventory
@@ -154,4 +160,6 @@ namespace ECS
 		// coin stack to collect from, card to aquire
 		Entity target;
 	};
+
+
 }

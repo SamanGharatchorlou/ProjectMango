@@ -21,7 +21,7 @@ Entity CreateUICursor()
 
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
-	transform.size = config->data.GetVectorF("size_x", "size_y");
+	transform.size = config->data.GetVector("size");
 	transform.SetWorldPosition(VectorF());
 	transform.renderOffset = transform.size * -0.5;
 

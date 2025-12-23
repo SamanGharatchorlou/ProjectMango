@@ -6,12 +6,7 @@
 #include "ECS/Components/UIComponents.h"
 #include "System/Files/JSONParser.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/UIEntityBuilder.h"
-#include "Graphics/TextureManager.h"
-
-// random
-#include "Core/Helpers.h"
-
+#include "MonsterRegistry.h"
 
 using namespace ECS;
 
@@ -19,8 +14,8 @@ namespace CardRegistry
 {
 	std::vector<Card> s_cardRegistry;
 
-	std::vector<int> s_cardRegistryDrawPile[3];
-	std::vector<int> s_cardRegistryDiscard[3];
+	std::vector<int> s_cardRegistryDrawPile[Card::c_tiers];
+	std::vector<int> s_cardRegistryDiscard[Card::c_tiers];
 
 	void Build(const char* file, int tier_index)
 	{
@@ -29,7 +24,7 @@ namespace CardRegistry
 		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
 		if(full_path.length() == 0)
 		{
-			DebugPrint(PriorityLevel::Log, "Animation file does not exist: '%s'", file);
+			DebugPrint(PriorityLevel::Log, "Registry file does not exist: '%s'", file);
 			return;
 		}
 
@@ -37,7 +32,7 @@ namespace CardRegistry
 		
 		if(!parser.document.IsObject())
 		{
-			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
+			DebugPrint(PriorityLevel::Warning, "Invalid registry document: %s", full_path.c_str());
 			return;
 		}
 
@@ -60,7 +55,7 @@ namespace CardRegistry
 					Colour::Type type = Colour::s_stringToType.at( label );
 					card.colour = type;
 					card.power[card.colour] = 1;
-					card.cardRegistryIndex = registry_index;
+					card.registryIndex = registry_index;
 					card.tier = tier_index;
 					card.points = value["points"].GetInt();
 
@@ -90,9 +85,15 @@ namespace CardRegistry
 		{
 			CopyComponent(card, s_cardRegistry[index]);
 		
-			// update the colour
+			// update the card base... based on the colour
 			Sprite& sprite = GetComponentRef(Sprite, card.entity);
-			sprite.colourMod = SColour( Colour::s_typeToColour.at(card.colour) );
+
+			StringBuffer64 coloured_sprite;
+			AddColourPostfix(sprite.Id.c_str(), card.colour, coloured_sprite);
+			sprite.SetTexture(coloured_sprite.c_str());
+
+			int monster_index = MonsterRegistry::GetRandomMonsterIndex(card.points);
+			card.monsterRegistryIndex = monster_index;
 
 			if(HasComponent(UIButton, card.entity ))
 				card.RegenerateChildDisplays();
@@ -118,29 +119,21 @@ namespace CardRegistry
 		
 		// place into discard pile
 		std::vector<int>& discard_pile = s_cardRegistryDiscard[card.tier];
-		discard_pile.push_back(card.cardRegistryIndex);
-
-		if(Card* card = GetComponent(Card, entity))
-		{
-			RemoveComponent(Card, entity);
-		}
+		discard_pile.push_back(card.registryIndex);
 		
 		// remove the child displays
 		DestroyChildren(entity);
 		
 		Sprite& sprite = GetComponentRef(Sprite, entity);
 		sprite.disabled = true;
+
+		// remove the component
+		RemoveComponent(Card, entity);
 	}
 
 	
 	void DrawRandomCard(Entity entity, int tier)
 	{
-		//if(s_cardRegistryDrawPile.size() == 0)
-		//{
-		//	SetupDrawPile();
-		//}
-
-		
 		std::vector<int>& draw_pile = s_cardRegistryDrawPile[tier];
 		if(draw_pile.size() > 0)
 		{
@@ -149,22 +142,6 @@ namespace CardRegistry
 
 			DrawCard(entity, random_registry_index);
 		}
-
-		//std::vector<int> indexes;
-		//for( int i = 0; i < s_cardRegistryDrawPile.size(); i++ )
-		//{
-		//	int registry_index = s_cardRegistryDrawPile[i];
-		//	if(s_cardRegistry[registry_index].tier == tier)
-		//		indexes.push_back(i);
-		//}
-
-		//if(indexes.size() > 0)
-		//{
-		//	int random_index = Maths::randomNumberBetween( 0, (int)indexes.size());
-		//	int random_registry_index = s_cardRegistryDrawPile[random_index];
-
-		//	DrawCard(entity, random_registry_index);
-		//}
 	}
 
 	void DrawCard(Entity entity, int index)
@@ -182,7 +159,7 @@ namespace CardRegistry
 				std::vector<int>& draw_pile = s_cardRegistryDrawPile[new_card.tier];
 				for( auto iter = draw_pile.begin(); iter != draw_pile.end(); iter++ )
 				{
-					if(*iter == new_card.cardRegistryIndex)
+					if(*iter == new_card.registryIndex)
 					{
 						draw_pile.erase(iter);
 						break;

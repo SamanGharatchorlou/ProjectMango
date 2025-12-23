@@ -4,7 +4,8 @@
 
 namespace ECS
 {
-	struct SpriteSheet
+	// todo: can i integrate this into the sprite sheet component?
+	struct AnimationSpriteSheet
 	{
 		BasicString ID;
 		STexture* texture;
@@ -14,19 +15,8 @@ namespace ECS
 
 	struct Animation
 	{
-		SpriteSheet spriteSheet;
+		AnimationSpriteSheet spriteSheet;
 
-		// relative to the sprite
-		VectorF entityColliderPos = VectorF(-1,-1);
-		VectorF entityColliderSize = VectorF(-1,-1);
-
-		// relative to the sprite
-		VectorF attackColliderPos = VectorF(-1, -1);
-		VectorF attackColliderSize = VectorF(-1, -1);
-
-		// the about point of rotation
-		VectorF objectCenter = VectorF(0.5f, 0.5f);
-		
 		Action::Enum action = Action::None;
 
 		int startIndex = 0;

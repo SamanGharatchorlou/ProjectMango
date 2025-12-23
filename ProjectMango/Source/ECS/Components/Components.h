@@ -49,7 +49,6 @@ namespace ECS
 		
 		void Init(const EntityMetaData* emd, Collider& collider);
 		void Init(const EntityMetaData* emd);
-		void InitCollider(Collider& collider);
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
@@ -58,6 +57,8 @@ namespace ECS
 		void SetObjectCenter(VectorF pos);
 		RectF GetObjectRect() const;
 
+		VectorF GetHorizontalFlipPoint() const;
+		//VectorF GetRelativeObjectCenter() const;
 		VectorF GetObjectCenter() const;
 		RectF GetRect() const;
 
@@ -72,15 +73,13 @@ namespace ECS
 
 		Sprite();
 
-		BasicString ID;
+		BasicString Id;
 		BasicString debugID;
 
 		RectF subRect;
 		STexture* texture;
 		
 		SColour colourMod;
-
-		VectorF flipPoint;
 		SDL_RendererFlip flip;
 		
 		// in degress (because of the render function input)
@@ -96,6 +95,23 @@ namespace ECS
 		void SetTexture(const char* label);
 	};
 
+	// simple sprite sheet, 1 row
+	struct SpriteSheet
+	{
+		COMPONENT_TYPE(SpriteSheet)
+
+		BasicString Id;
+		STexture* texture;
+
+		int count = 0;
+		int index = 0;
+
+		VectorF frameSize;
+		RenderLayer renderLayer;
+		SColour colourMod;
+
+		void Init(const char* sprite_sheet, int count);
+	};
 	
 	struct LayeredSprite
 	{
@@ -150,19 +166,22 @@ namespace ECS
 		bool justChanged;
 		//float timeInState;
 
-		bool mustFinishAnimation = false;;
+		//bool mustFinishAnimation = false;;
 	};
 
 	struct Target
 	{
 		COMPONENT_TYPE(Target)
 
-		Entity target = EntityInvalid;
+		Entity targetEntity = EntityInvalid;
+		bool isEnemy = false;
+		bool isPlayer = false;
+
+		Entity GetTarget() const;
+		static Entity GetTarget(Entity entity);
 
 		static Entity GetPlayer();
 		static Entity GetEnemy();
-
-		static Entity GetValidTarget(Entity entity);
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -212,22 +231,14 @@ namespace ECS
 	{
 		COMPONENT_TYPE(DeathScentence)
 
-		DeathScentence();
-
-		// begin this animator entity on death
-		Entity startAnimatiorOnDeath;
-
 		// kill at animator loop count
-		int deathLoops;
-		// kill on timer
-		float deathTimer;
-		// kill once in area
-		RectF deathZone;
-		
-		bool canDie = false;
+		int deathLoops = -1;
 
+		// kill on timer
+		float deathTimer = -FLT_MAX;
+		
 		void Update(float dt);
-		void OnDeath();
+		bool CanDie();
 	};
 
 	struct Callback
@@ -237,45 +248,22 @@ namespace ECS
 		BasicString callback;
 	};
 	
-	//typedef Entity (*EntitySpawnFn)( const ECS::EntityMetaData& );
-
 	struct Spawner
 	{
 		COMPONENT_TYPE(Spawner)
 
-		Spawner();
-
-		Entity spawnedEntity;
-		Entity spawnRequest;
-
-		//bool IsSpawning() { return entityToSpawn != EntityInvalid; }
-
-		//bool Spawn( Entity entity );
-		//void Update();
+		Entity spawnedEntity = EntityInvalid;
+		Entity spawnRequest = EntityInvalid;
 	};
 
 	struct SpawnRequest
 	{
 		COMPONENT_TYPE(SpawnRequest)
 
-		ECS::EntityMetaData emd;
-		int frameTime;
+		EntityMetaData emd;
+		Entity owner = EntityInvalid;
+		int frameTime = 0;
+		int cardRegistryIndex = -1;
 	};
 
-	struct Door
-	{
-		COMPONENT_TYPE(Door)
-
-		Door();
-			
-		// top and bottom
-		Entity colliders[2];
-
-		float triggerRange;
-
-		void Init();
-		void Update();
-
-		void GenerateColliders(float width);
-	};
 }

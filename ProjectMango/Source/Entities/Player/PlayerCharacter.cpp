@@ -19,16 +19,17 @@ Entity Player::Spawn(const EntityMetaData& emd)
 	ecs->entities.KillEntity(Target::GetPlayer());
 
 	Entity player = CreateEntity( "player" );
-
+	
+	AddComponent(Transform, player);
 	AddComponent(PlayerController, player);
 
 	Inventory& inventory = AddComponent(Inventory, player);
 
 	// debug
-	for( u32 i = 0; i < Colour::Count; i++ )
-	{
-		inventory.coins[i] = 2;
-	}
+	//for( u32 i = 0; i < Colour::Count; i++ )
+	//{
+	//	inventory.coins[i] = 2;
+	//}
 
 	TurnState& turn = AddComponent(TurnState, player);
 

@@ -52,9 +52,22 @@ namespace ECS
 	struct BehaviourMap
 	{
 		COMPONENT_TYPE(BehaviourMap)
-
+			
+		std::unordered_map<Action::Enum, BehaviourFunction> enters;
 		std::unordered_map<Action::Enum, BehaviourFunction> updates;
 		std::unordered_map<Action::Enum, BehaviourFunction> exits;
+
+		bool attemptEnterFunction = true;
+	};
+
+	struct AttackStateData
+	{
+		// size of the attack collider, relative to the transform
+		VectorF hitBoxPos = VectorF(0, 0);
+		VectorF hitBoxSize = VectorF(1.0f, 1.0f);
+		int hitFrame = 0;
+		bool didHit = false;
+
 	};
 
 	// pass/get this data when running behaviours from the behaviour map
@@ -62,10 +75,13 @@ namespace ECS
 	{
 		COMPONENT_TYPE(BehaviourState)
 
-		float acceleration;
+		float accelleration;
 
-		u64 attackCooldownTimeMS;
-		u64 attackFinishedTimeMS;
+		// time the last attack finished and the cooldown begins
+		u64 attackCooldownTimeMS = 0;
+		u64 attackFinishedTimeMS = 0;
+
+		std::unordered_map<Action::Enum, AttackStateData> attackData;
 
 		void Init();
 	};

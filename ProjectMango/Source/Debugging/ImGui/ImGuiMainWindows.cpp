@@ -24,6 +24,7 @@
 #include "Input/InputManager.h"
 #include "System/Files/ConfigManager.h"
 #include "Audio/AudioManager.h"
+#include "Game/Camera/Camera.h"
 
 using namespace DebugMenu;
 
@@ -87,6 +88,14 @@ void DebugMenu::DoEntitySystemWindow()
         {
             s_selectedEntity = number;
         }
+        else
+        {
+        }
+    }
+
+    if(!ecs->IsAlive(s_selectedEntity))
+    {
+        ImGui::Text("Entity %d is dead", s_selectedEntity);
     }
 
     const char* selected = ECS::GetName(s_selectedEntity);
@@ -175,6 +184,8 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(CoinStack);
         DoComponentDropdown(Inventory);
         DoComponentDropdown(Card);
+        DoComponentDropdown(BehaviourState);
+        DoComponentDropdown(EntityState);
 
         ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
         for (u32 i = 0; i < ECS::Component::Count; i++) 
@@ -275,9 +286,11 @@ void DebugMenu::DoInputWindow()
     ImGui::End();
 }
 
-static bool s_displayStatics = true;
-static bool s_displayDynamics = true;
+static bool s_displayStatics = false;
+static bool s_displayDynamics = false;
 static bool s_displayTransforms = true;
+static bool s_displayObjectCenter = true;
+static bool s_displayObjectRect = true;
 static DebugDrawType s_drawType = DebugDrawType::RectOutline;
 
 
@@ -289,7 +302,9 @@ void DebugMenu::DoTransformWindow()
     ImGui::Checkbox("Display Statics", &s_displayStatics);
     ImGui::Checkbox("Display Dynamics", &s_displayDynamics);
     ImGui::Checkbox("Display Raycasts", &s_state.drawRaycasts);
-    ImGui::Checkbox("Display Transforms", &s_displayTransforms);
+    ImGui::Checkbox("Display Transform Rect", &s_displayTransforms);
+    ImGui::Checkbox("Display Object Rect", &s_displayObjectRect);
+    ImGui::Checkbox("Display Object Center", &s_displayObjectCenter);
 
     ImGui::DoDebugRenderTypeDropDown(s_drawType);
 
@@ -319,7 +334,36 @@ void DebugMenu::DoTransformWindow()
 		    const ECS::Transform& transform = transforms.GetComponentByIndex(component_index);
             
 			RectF rect(transform.worldPosition, transform.size);
-			DebugDraw::RectOutline(rect, SColour::Blue);
+			DebugDraw::RectOutline(rect, SColour::Green);
+	    }
+    }
+
+    if(s_displayObjectRect)
+    {
+        const ECS::ComponentArray<ECS::Transform>& transforms = GetAllComponents(Transform);
+	    const u32 count = (u32)transforms.entityToComponent.size();
+
+        for( auto iter = transforms.entityToComponent.begin(); iter != transforms.entityToComponent.end(); iter++ )
+	    {
+		    u32 component_index = iter->second;
+		    const ECS::Transform& transform = transforms.GetComponentByIndex(component_index);
+            
+			DebugDraw::RectOutline(transform.GetObjectRect(), SColour::Blue);
+	    }
+    }
+
+    if(s_displayObjectCenter)
+    {
+         const ECS::ComponentArray<ECS::Transform>& transforms = GetAllComponents(Transform);
+	    const u32 count = (u32)transforms.entityToComponent.size();
+
+        for( auto iter = transforms.entityToComponent.begin(); iter != transforms.entityToComponent.end(); iter++ )
+	    {
+		    u32 component_index = iter->second;
+		    const ECS::Transform& transform = transforms.GetComponentByIndex(component_index);
+     
+            VectorF object_center = transform.GetObjectCenter();
+			DebugDraw::Point(object_center, SColour::Green);
 	    }
     }
 }
@@ -333,6 +377,7 @@ DebugMenu::GamePlayerState& DebugMenu::GetGamePlayerState()
 
 static bool s_gamePlayer = false;
 static bool s_nextFrame = false;
+static bool s_selectingShakeSource = false;
 
 struct FrameData
 {
@@ -455,6 +500,43 @@ void DebugMenu::DoGameStateWindow()
             ImGui::PopID();
         }
     
+        ImGui::TreePop();
+    }
+
+    if( ImGui::TreeNode("Camera"))
+    {
+        CameraShake& shakey = Camera::Get()->shakeyCam;
+        ImGui::InputFloat("speed", &shakey.speed);
+
+        float trauma[2] { shakey.maxTrauma.x, shakey.maxTrauma.y };
+        if(ImGui::InputFloat2("magnitude", trauma ))
+        {
+            shakey.maxTrauma.x = trauma[0];
+            shakey.maxTrauma.y = trauma[1];
+        }
+
+        if(ImGui::Button("Shake Camera"))
+        {
+			Camera::Get()->AddShake(10);
+        }
+
+        const char* text = s_selectingShakeSource ? "Select source" : "Shake camera from next click source";
+        if(ImGui::Button(text))
+        {
+            s_selectingShakeSource = !s_selectingShakeSource;
+        }
+        
+        if(s_selectingShakeSource)
+        {
+            InputManager* im = GameData::Get().inputManager;
+            if(im->isCursorPressed(Cursor::Left))
+            {
+			    Camera::Get()->AddShake(10, im->cursorWorldPosition());
+            }
+        }
+
+        ImGui::Text("progress: %f%", shakey.x * 100.0f);
+
         ImGui::TreePop();
     }
 

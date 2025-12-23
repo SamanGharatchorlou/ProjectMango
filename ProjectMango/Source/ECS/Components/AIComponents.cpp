@@ -69,8 +69,9 @@ namespace ECS
 	{
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
-			acceleration = config->data.GetFloat("acceleration");
+			accelleration = config->data.GetFloat("acceleration");
 			attackCooldownTimeMS = (u64)config->data.GetInt("attack_cooldown_time_ms");
+			//actionCooldownTimeMS = (u64)config->data.GetInt("action_cooldown_time_ms");
 		}
 	}
 }

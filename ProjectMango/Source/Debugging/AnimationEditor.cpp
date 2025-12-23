@@ -10,7 +10,7 @@
 #include "Input/InputManager.h"
 #include "Game/FrameRateController.h"
 #include "ECS/Components/Animator.h"
-#include "Animations/ConfigReaders.h"
+#include "Game/Readers/AnimationReader.h"
 #include "ECS/Components/Components.h"
 #include "ECS/EntSystems/AnimationSystem.h"
 #include "ECS/Components/Collider.h"
@@ -36,10 +36,7 @@ namespace AnimationEditor
         struct Config
         {
             StringBuffer64 selected;
-
             ECS::Entity entity = ECS::EntityInvalid;
-            ECS::Animator animator;
-            ECS::Sprite sprite;
 
             TimeState state;
             int pausedFrame;
@@ -59,6 +56,7 @@ namespace AnimationEditor
         CursorSelection cursorSelection;
 
         Config configAnim;
+        //Entity entity;
 
 		int targetFrame = 0;
 		float frameTime = 0.1f;
@@ -72,6 +70,13 @@ namespace AnimationEditor
 
 	void DoEditor()
 	{
+        if(!ecs->IsAlive(s_state.configAnim.entity))
+        {
+            s_state.configAnim.entity = CreateEntity("Editor");
+            AddComponent(Animator, s_state.configAnim.entity);
+            AddComponent(Sprite, s_state.configAnim.entity);
+        }
+
         s_targetWindowSize = GameData::Get().window->size() * 1.0f;
 
 		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
@@ -345,8 +350,11 @@ namespace AnimationEditor
                     if (ImGui::Selectable(file_names[i].c_str(), is_selected))
                     {
                         c.selected = file_names[i].c_str();
-                        c.animator = ECS::Animator();
-                        AnimationReader::BuildAnimatior(c.animator, c.selected.c_str());
+
+                        RemoveComponent(Animator, s_state.configAnim.entity);
+                        AddComponent(Animator, s_state.configAnim.entity);
+
+                        AnimationReader::BuildAnimatior(s_state.configAnim.entity, c.selected.c_str());
                     }
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -358,23 +366,24 @@ namespace AnimationEditor
             }
 
             // animation player/reader
-            if( c.animator.animations.size() > 0 )
+            Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
+            if( anim && anim->animations.size() > 0 )
             {
                 ImGui::PushID("config selector");
 
-                const char* select_animation_string = ActionToString(c.animator.GetActiveAnimation().action);
+                const char* select_animation_string = ActionToString(anim->GetActiveAnimation().action);
                 if (ImGui::BeginCombo("Select Animation", select_animation_string))
                 {
-                    for( u32 i = 0; i < c.animator.animations.size(); i++ )
+                    for( u32 i = 0; i < anim->animations.size(); i++ )
                     {
-                        const char* action_string = ActionToString(c.animator.animations[i].action);
+                        const char* action_string = ActionToString(anim->animations[i].action);
 
                         const bool is_selected =  StringCompare(action_string, select_animation_string);
 
                         if (ImGui::Selectable(action_string, is_selected))
                         {
                             Action::Enum action = StringToAction(action_string);
-                            c.animator.StartAnimation(action);
+                            anim->StartAnimation(action);
                         }
 
                         // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -387,18 +396,18 @@ namespace AnimationEditor
 
                 if (ImGui::Button("<- Previous Frame"))
 			    {
-                    c.animator.state = TimeState::Paused;
+                    anim->state = TimeState::Paused;
 
-                    c.animator.frameIndex--;
-                    if(c.animator.frameIndex == (u32)-1)
+                    anim->frameIndex--;
+                    if(anim->frameIndex == (u32)-1)
                     {
-                        const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
-                        c.animator.frameIndex = active_animation.frameCount - 1;
+                        const ECS::Animation& active_animation = anim->GetActiveAnimation();
+                        anim->frameIndex = active_animation.frameCount - 1;
                     }
 			    }
 
-                bool is_playing = c.animator.state == TimeState::Running;
-                bool requires_restart = !c.animator.GetActiveAnimation().looping && c.animator.OnLastFrame();
+                bool is_playing = anim->state == TimeState::Running;
+                bool requires_restart = !anim->GetActiveAnimation().looping && anim->OnLastFrame();
 
                 StringBuffer32 play_pause_button_text;
                 if(is_playing)
@@ -422,16 +431,16 @@ namespace AnimationEditor
                 {
                     if(is_playing)
                     {
-                        c.animator.state = TimeState::Paused;
+                        anim->state = TimeState::Paused;
                     }
                     else
                     {
-                        c.animator.state = TimeState::Running;
+                        anim->state = TimeState::Running;
 
                         // restart for looping animations
                         if(requires_restart)
                         {
-                            c.animator.StartAnimation(c.animator.GetActiveAnimation().action);
+                            anim->StartAnimation(anim->GetActiveAnimation().action);
                         }
                     }
                 }
@@ -439,32 +448,32 @@ namespace AnimationEditor
                 ImGui::SameLine();
 			    if (ImGui::Button("Next Frame ->"))
 			    {
-                    c.animator.state = TimeState::Paused;
+                    anim->state = TimeState::Paused;
 
-                    c.animator.frameIndex++;
-                    const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
-                    c.animator.frameIndex = c.animator.frameIndex % active_animation.frameCount;
+                    anim->frameIndex++;
+                    const ECS::Animation& active_animation = anim->GetActiveAnimation();
+                    anim->frameIndex = anim->frameIndex % active_animation.frameCount;
 			    }
 
-                ECS::AnimationSystem::UpdateAnimator(c.animator, fc.delta()); 	
+                ECS::AnimationSystem::UpdateAnimator(*anim, fc.delta()); 	
                 
-                const ECS::Animation& active_animation = c.animator.GetActiveAnimation();
-                ImGui::Text("Frame %d / %d", c.animator.frameIndex + 1, active_animation.frameCount );
+                const ECS::Animation& active_animation = anim->GetActiveAnimation();
+                ImGui::Text("Frame %d / %d", anim->frameIndex + 1, active_animation.frameCount );
 	
-
-                c.animator.SetActiveSpriteFrame(c.sprite);
+                Sprite& sprite = GetComponentRef(Sprite, s_state.configAnim.entity);
+                anim->SetActiveSpriteFrame(sprite);
 
                 // FLIP
                 if(ImGui::Button("Flip Sprite"))
                 {
-                    SDL_RendererFlip flip = c.sprite.flip;
+                    SDL_RendererFlip flip = sprite.flip;
                     if(flip == SDL_FLIP_HORIZONTAL)
-                        c.sprite.flip = SDL_FLIP_NONE;
+                        sprite.flip = SDL_FLIP_NONE;
                     else
-                        c.sprite.flip = SDL_FLIP_HORIZONTAL;
+                        sprite.flip = SDL_FLIP_HORIZONTAL;
                 }
 
-                const ECS::Animation& selected_animation = c.animator.GetActiveAnimation();
+                const ECS::Animation& selected_animation = anim->GetActiveAnimation();
 
 			    VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat();
@@ -478,10 +487,10 @@ namespace AnimationEditor
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(c.sprite.texture, 1);
+                RenderPack frame_pack(sprite.texture, 1);
                 frame_pack.rect = renderFrameRect;
-                frame_pack.subRect = c.sprite.subRect;
-                frame_pack.flip = c.sprite.flip;
+                frame_pack.subRect = sprite.subRect;
+                frame_pack.flip =sprite.flip;
 
                 const RectF& selection_rect = s_state.cursorSelection.selectionRect;
                 if(!selection_rect.Size().isZero())
@@ -489,11 +498,12 @@ namespace AnimationEditor
                     float flip_x = selection_rect.Center().x - draw_point_TL.x;
                     frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
                 }
-                else
-                {
-                    float flip_x = selected_animation.objectCenter.x * frame_texture_size.x - draw_point_TL.x;
-                    frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
-                }
+                // todo: remove object center from here, moved it to collider using relative rect
+                //else
+                //{
+                //    float flip_x = selected_animation.objectCenter.x * frame_texture_size.x - draw_point_TL.x;
+                //    frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
+                //}
 
 			    rm->AddRenderPacket(frame_pack);
 
@@ -572,9 +582,10 @@ namespace AnimationEditor
             ImGui::VectorText("Absolute Size", selection_rect.Size());
 
             // display relative position to the whole sprite
-            if( c.animator.animations.size() > 0 )
+            Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
+            if( anim && anim->animations.size() > 0 )
             {
-                const ECS::Animation& selected_animation = s_state.configAnim.animator.GetActiveAnimation();
+                const ECS::Animation& selected_animation = anim->GetActiveAnimation();
                 const VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat(); 
 
@@ -582,8 +593,6 @@ namespace AnimationEditor
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
                 frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
                 frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
-
-                //const VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
 
                 VectorF relative_pos = (selection_rect.TopLeft() - relative_selection_top_left) / frame_texture_size;
                 VectorF relative_size = selection_rect.Size() / frame_texture_size;
@@ -593,7 +602,7 @@ namespace AnimationEditor
                             
                 float x_center = selection_rect.Center().x - draw_point_TL.x;
                 float y_center = selection_rect.Center().y - draw_point_TL.y;
-                VectorF relaive_center = relative_pos + relative_size * 0.5;// (selection_rect.Center() - draw_point_TL) / frame_texture_size;
+                VectorF relaive_center = relative_pos + relative_size * 0.5;
 
                 ImGui::VectorText("Relative Center", relaive_center );
             }
@@ -613,5 +622,14 @@ namespace AnimationEditor
 	    RenderPack pack(white_bg, 0);
         pack.rect = screen;
 	    rm->AddRenderPacket(pack);
+    }
+
+    
+	void Exit()
+    {
+        if(ecs->IsAlive(s_state.configAnim.entity))
+        {
+            ecs->entities.KillEntity(s_state.configAnim.entity);
+        }
     }
 }

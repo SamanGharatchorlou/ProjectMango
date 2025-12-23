@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "Animator.h"
 
-#include "ECS/EntityCoordinator.h"
 #include "Components.h"
 #include "Core/Helpers.h"
-//#include "Animations/CharacterStates.h"
-#include "Animations/ConfigReaders.h"
-#include "System/Files/Config.h"
+#include "Game/Readers/AnimationReader.h"
 
 namespace ECS
 {
@@ -25,7 +22,7 @@ namespace ECS
 			return;
 
 		const char* animation = config->data.GetString("animation");
-		AnimationReader::BuildAnimatior( *this, animation);
+		AnimationReader::BuildAnimatior( entity, animation );
 		activeAnimation = 0;
 		state = TimeState::Running;
 
@@ -81,8 +78,6 @@ namespace ECS
 		const VectorF frame_size = animation.spriteSheet.frameSize;
 		VectorF top_left = frame_size * index.toFloat();
 		sprite.subRect = RectF( top_left, frame_size);
-
-		sprite.flipPoint = animation.objectCenter;
 	}
 
 	void Animator::StartAnimation(Action::Enum action)

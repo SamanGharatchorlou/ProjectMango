@@ -13,8 +13,6 @@
 #include "Core/Timer.h"
 #include "Game/Camera/Camera.h"
 
-TimerF s_timer;
-
 void AnimationEditorState::Init()
 {	
 	SDL_ShowCursor(true);
@@ -22,9 +20,11 @@ void AnimationEditorState::Init()
 
 	DebugMenu::OpenEditorWindow();
 
-	s_timer.Start();
+	timer.Start();
 
-	Camera::Get()->rect.SetTopLeft(VectorF::zero());
+	RectF rect = Camera::Get()->GetRect();
+	rect.SetTopLeft(VectorF::zero());
+	Camera::Get()->SetRect(rect);
 }
 
 void AnimationEditorState::HandleInput()
@@ -39,16 +39,15 @@ void AnimationEditorState::Update(float dt)
 	{
 		bool f11 = im->isPressed(Button::F11);
 		bool zero = im->isPressed(Button::Zero);
-		if ( (f11 || zero) && s_timer.GetSeconds() > 1.0f )
+		if ( (f11 || zero) && timer.GetSeconds() > 1.0f )
 		{
 			GameData::Get().systemStateManager->mStates.popState();
 			return;
 		}
 	}
-
+	
+	//AnimationEditor::DoEditor();
 	AnimationEditor::Render();
-
-
 }
 
 void AnimationEditorState::Exit()
@@ -56,5 +55,8 @@ void AnimationEditorState::Exit()
 	SDL_ShowCursor(false);
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 
-	s_timer.Stop();
+	
+	AnimationEditor::Exit();
+
+	timer.Stop();
 }

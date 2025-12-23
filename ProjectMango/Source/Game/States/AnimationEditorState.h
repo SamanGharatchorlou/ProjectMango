@@ -11,4 +11,6 @@ public:
 	void Exit() override;
 
 	void Resume() { };
+	
+	TimerF timer;
 };

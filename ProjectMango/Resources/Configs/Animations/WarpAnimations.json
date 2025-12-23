@@ -8,7 +8,7 @@
 			"spriteSheet": "idle 28x41",
 			"animations": [
 				{
-					"action": "Idle",
+					"action": "Inactive",
 					"startIndex": 0,
 					"frameCount": 9,
 					"frameTime": 0.1

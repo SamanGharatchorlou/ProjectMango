@@ -9,7 +9,6 @@ namespace DebugMenu
 	u32 DoEntityDataDebugMenu(ECS::Entity& entity);
 	u32 DoTransformDebugMenu(ECS::Entity& entity);
 	u32 DoSpriteDebugMenu(ECS::Entity& entity);
-	u32 DoEntityStateDebugMenu(ECS::Entity& entity);
 	u32 DoPhysicsDebugMenu(ECS::Entity& entity);
 	u32 DoAnimatorDebugMenu(ECS::Entity& entity);
 	u32 DoColliderDebugMenu(ECS::Entity& entity);
@@ -23,6 +22,8 @@ namespace DebugMenu
 	u32 DoCoinStackDebugMenu(ECS::Entity& entity);
 	u32 DoInventoryDebugMenu(ECS::Entity& entity);
 	u32 DoCardDebugMenu(ECS::Entity& entity);
+	u32 DoBehaviourStateDebugMenu(ECS::Entity& entity);
+	u32 DoEntityStateDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 

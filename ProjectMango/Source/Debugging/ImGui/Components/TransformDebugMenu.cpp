@@ -40,7 +40,10 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 		{
 			VectorF flip_point = transform.worldPosition + transform.size / 2.0f;
 			if(ECS::Sprite* sprite = GetComponent(Sprite, entity))
-				flip_point = (sprite->flipPoint * transform.size) + transform.worldPosition;
+			{
+				//VectorF trans_flip_point = transform.GetHorizontalFlipPoint();
+				flip_point = transform.GetHorizontalFlipPoint() + transform.worldPosition;
+			}
 
 			DebugDraw::Point(flip_point, SColour::Red);
 		}

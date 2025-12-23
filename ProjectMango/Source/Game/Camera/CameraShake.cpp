@@ -1,85 +1,39 @@
 #include "pch.h"
 #include "CameraShake.h"
 
-// Camera
-#define TWEAK_CAMERA_IGNORE_BOUNDARIES 0
-
-CameraShake::CameraShake() :
-	mTrauma(0), 
-	mMaxTrauma(0), 
-	mTraumaReduction(0)
+// doesnt work, ends at an offset, need to come back to x = 0
+static float easeInOutBack(float x)
 {
+	const float c1 = 1.70158;
+	const float c2 = c1 * 1.525;
 
+	return x < 0.5
+	  ? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+	  : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 }
 
-void CameraShake::clear()
+static float sine(float x)
 {
-	mTrauma = 0;
-	mMaxTrauma = 0;
-	mTraumaReduction = 0;
+	return sin((double)x);
 }
 
-void CameraShake::init(float maxTrauma, float traumaReduction)
+void CameraShake::Update(float dt)
 {
-	mMaxTrauma = maxTrauma;
-	mTraumaReduction = traumaReduction;
-}
-
-void CameraShake::enable(RectF cameraRect, RectF boundaries)
-{
-	mCameraRect = cameraRect;
-	mBoundaries = boundaries;
-}
-
-
-void CameraShake::fastUpdate(float dt)
-{
-	VectorF translation = offset();
-
-#if !TWEAK_CAMERA_IGNORE_BOUNDARIES
-	if (mCameraRect.LeftPoint() + translation.x >= mBoundaries.x1 &&
-		mCameraRect.RightPoint() + translation.x <= mBoundaries.x2)
-#endif
+	if(x < 1.0f)
 	{
-		mCameraRect.Translate(VectorF(translation.x, 0.0f));
+		float sdirection = direction.x >= 0 ? 1 : -1;
+		float progress = sine(x * M_PI * 2.0f ) * sdirection;
+		float damping = 1 - (x * 0.5f);
+		VectorF amplitude = maxTrauma * magnitude;
+		trauma = amplitude * progress * damping;
+
+		x += dt * speed;
+	}
+	else
+	{
+		trauma = VectorF::zero();
+		magnitude = 0;
 	}
 
-
-#if !TWEAK_CAMERA_IGNORE_BOUNDARIES
-	if (mCameraRect.TopPoint() + translation.y >= mBoundaries.y1 &&
-		mCameraRect.BotPoint() + translation.y <= mBoundaries.y2)
-#endif
-	{
-		mCameraRect.Translate(VectorF(0.0f, translation.y));
-	}
-
-	// dampen trauma;
-	mTrauma -= mTraumaReduction * dt;
-	mTrauma = Maths::Max(0.0f, mTrauma);
-}
-
-
-void CameraShake::handleEvent(EventData& data)
-{
-	if (data.eventType == Event::Trauma)
-	{
-		TraumaEvent eventData = static_cast<TraumaEvent&>(data);
-
-		mTrauma += eventData.mTrauma * 0.75f ;
-		mTrauma = Maths::clamp(mTrauma, 0.0f, mMaxTrauma);
-	}
-}
-
-void CameraShake::addTrauma(float trauma)
-{
-	mTrauma = Maths::clamp(mTrauma + trauma, 0.0f, mMaxTrauma);
-}
-
-
-VectorF CameraShake::offset()
-{
-	float xRandom = (float)Maths::randomNumberBetween(-100, 101) / 100;
-	float yRandom = (float)Maths::randomNumberBetween(-100, 101) / 100;
-
-	return (VectorF(xRandom, yRandom) / 2000) * (mTrauma * mTrauma);
+	return;
 }

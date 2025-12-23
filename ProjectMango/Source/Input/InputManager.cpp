@@ -185,7 +185,7 @@ void InputManager::processMouseMovementEvent()
 	int x, y;
 	SDL_GetMouseState(&x, &y);
 
-	float scale = Camera::Get()->scale();
+	float scale = Camera::Get()->getScale();
 	VectorF cursorPostion = VectorF((float)x, (float)y) / scale;
 
 	mCursor.setPosition(cursorPostion);

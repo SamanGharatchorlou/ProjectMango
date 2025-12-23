@@ -31,6 +31,7 @@ namespace ECS
 			IgnoreAll,
 			IgnoreDamage,
 			IgnorePlayer,
+			IgnoreTerrain,
 
 			// only collider with terrain
 			TerrainOnly,
@@ -60,9 +61,10 @@ namespace ECS
 		void SetRelativeRect(VectorF position, VectorF size);
 
 		VectorF GetRealPosition(VectorF relative_pos) const;
+		RectF GetRelativeRect() const;
 
 		// assumes the rect size has been set
-		void InitFromTransform(const Transform& transform);
+		void Init();
 		void UpdateFromTransform(const Transform& transform);
 
 		void RollBackPosition();

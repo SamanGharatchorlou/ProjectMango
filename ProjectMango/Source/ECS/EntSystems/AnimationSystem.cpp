@@ -3,7 +3,7 @@
 
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/Collider.h"
 
@@ -16,21 +16,23 @@ namespace ECS
 			animator.timer += dt;
 
 		Animation& active_animation = animator.animations[animator.activeAnimation];
+
+		int next_frame = animator.frameIndex;
 		if(animator.timer > active_animation.frameTime)
 		{
-			animator.frameIndex++;
+			next_frame++;
 
-			if(animator.frameIndex >= active_animation.frameCount)
+			if(next_frame >= active_animation.frameCount)
 			{
 				animator.loopCount++;
 
 				if(active_animation.looping)
-					animator.frameIndex = 0;
+					next_frame = 0;
 				else
 					animator.state = TimeState::Paused; // Stopped?
 			}
 
-			animator.frameIndex = Maths::clamp(animator.frameIndex, (u32)0, (u32)active_animation.frameCount - 1);
+			animator.frameIndex = (u32)Maths::clamp(next_frame, 0, active_animation.frameCount - 1);;
 			animator.timer = 0;
 		}
 	}
@@ -60,7 +62,7 @@ namespace ECS
 		for (Entity entity : entities)
 		{
 			// debug break point
-			if(DebugMenu::GetSelectedEntity() == entity)
+			if(IsSelectedDebugEntity(entity))
 				int a = 4;
 
 			Transform& transform = GetComponentRef(Transform, entity);
@@ -74,20 +76,11 @@ namespace ECS
 
 			EntityState& character_state = GetComponentRef(EntityState, entity);
 			if(character_state.current != active_animation.action)
-			{
 				StartAnimation(animator, character_state.current);
-			}
+			else
+				UpdateAnimator(animator, dt);
 
-			UpdateAnimator(animator, dt);
 			animator.SetActiveSpriteFrame(sprite);
-
-			if( Collider* collider = GetComponent(Collider, entity) )
-			{
-				const Animation& animation = animator.GetActiveAnimation();
-
-				collider->SetRelativeRect(animation.entityColliderPos, animation.entityColliderSize);
-				//transform.renderOffset = VectorF::zero();
-			}
 		}
 	}
 }

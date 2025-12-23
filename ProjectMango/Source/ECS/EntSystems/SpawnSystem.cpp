@@ -3,39 +3,28 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/GameComponents.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/Collider.h"
 #include "Entities/EntityBuilder.h"
 #include "Graphics/Raycast.h"
+#include "Core/Helpers.h"
+#include "Entities/CardRegistry.h"
 
 namespace ECS
 {
 	void SetSpawnPosition( const Spawner& spawner, Entity entity_to_spawn )
 	{
 		// position it on the spawner
-		VectorF spawner_center = GetPosition(spawner.entity);
 		RectF spawner_rect = GetRect(spawner.entity);
-				 
-		// ray cast this rect onto the floor
-		//RectF rect = GetRect(entity_to_spawn);
-
-		ECS::Transform& transform = GetComponentRef(Transform, entity_to_spawn);
 
 		// center it, but move to the top, we will raycast down to find the correct y pos
+		ECS::Transform& transform = GetComponentRef(Transform, entity_to_spawn);
 		transform.SetObjectCenter(spawner_rect.TopCenter());
 
-		RectF rect = transform.GetObjectRect();
-		//VectorF translation = spawner_center - transform.GetObjectCenter();
-		//rect.Translate(translation);
-
-		//float shift_y = 0.0f;
 		float distance = 0.0f;
-		if( RaycastToFloor(rect, distance) )
+		if( RaycastToFloor(transform.GetObjectRect(), distance) )
 			transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
-
-		//transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance))
-
-		//rect.Translate(VectorF(0.0f, shift_y));
-		//return rect;
 	}
 
 	void SpawnSystem::Update(float dt)
@@ -57,9 +46,34 @@ namespace ECS
 
 					spawner.spawnedEntity = CreateMonster(request.emd);
 
+					if(const Card* card = CardRegistry::LookupCard(request.cardRegistryIndex))
+					{
+						// apply card damage
+						if(card->points > 0)
+						{
+							Damage& damage = AddComponent(Damage, spawner.spawnedEntity);
+							damage.value = (float)card->points;
+
+							Entity target = Target::GetTarget(entity);
+							if(target != EntityInvalid)
+							{
+								if(Health* health = GetComponent(Health, target))
+									health->ApplyDamage((float)card->points);
+							}
+						}
+					}
+					
+					if(request.owner != EntityInvalid)
+					{
+						Target& target = AddComponent(Target, spawner.spawnedEntity);
+						if(Target::GetPlayer() == request.owner)
+							target.isEnemy = true;
+						else if(Target::GetEnemy() == request.owner)
+							target.isPlayer = true;
+					}
+
 					// update the position once we have created the object
 					SetSpawnPosition(spawner, spawner.spawnedEntity);
-					//SetWorldPosition(spawner.spawnedEntity, spawn_rect.TopLeft());
 				}
 
 				bool finished_spawning = false;
@@ -100,11 +114,19 @@ namespace ECS
 					spawner.spawnRequest = EntityInvalid;
 
 					// move back to idle
-					state.next = Action::Idle;
+					state.next = Action::Inactive;
 				}
 			}
 			else
 			{
+				// wait until the collider is clear
+				if(Collider* collider = GetComponent(Collider, entity))
+				{
+					if(collider->collisions.size() > 0)
+						continue;
+				}
+
+
 				const ComponentArray<SpawnRequest>& requests = GetAllComponents(SpawnRequest);
 
 				Entity next_to_spawn = EntityInvalid;

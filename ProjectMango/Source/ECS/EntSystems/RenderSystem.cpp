@@ -20,13 +20,28 @@ namespace ECS
 		pack.layer = (u32)sprite.renderLayer;
 		pack.subRect = sprite.subRect;
 		pack.flip = sprite.flip;
-		pack.flipPoint = sprite.flipPoint * pack.rect.Size();
 		pack.rotation = sprite.rotation;
 		pack.colourMod = sprite.colourMod;
 
 		pack.entity = sprite.entity;
 	}
 		
+	void GenerateRenderPack(const SpriteSheet& sprite_sheet, RenderPack& pack)
+	{
+		pack.texture = sprite_sheet.texture;
+		pack.layer = (u32)sprite_sheet.renderLayer;
+
+		VectorF top_left = sprite_sheet.frameSize * VectorF((float)sprite_sheet.index, 0);
+
+		pack.subRect = RectF( top_left, sprite_sheet.frameSize);
+		pack.colourMod = sprite_sheet.colourMod;
+		//pack.flip = sprite.flip;
+		//pack.rotation = sprite.rotation;
+		//pack.colourMod = sprite.colourMod;
+
+		pack.entity = sprite_sheet.entity;
+	}
+
 	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
 	{
 		const Transform& transform = GetComponentRef(Transform, ui_text.entity);
@@ -64,17 +79,26 @@ namespace ECS
 
 			const Transform& transform = GetComponentRef(Transform, entity);
 			
-			if(const Sprite* sprite = GetComponent(Sprite, entity))
+			if(const SpriteSheet* sprite_sheet = GetComponent(SpriteSheet, entity))
 			{
-				//if( !sprite->UID.empty() )
-				//{
-				//	auto iter = s_spriteBindings.find(sprite->UID);
-				//	if(iter != s_spriteBindings.end())
-				//	{
-				//		iter->second(entity);
-				//	}
-				//}
+				if( sprite_sheet->texture && sprite_sheet->renderLayer != RenderLayer::None && 
+					sprite_sheet->index < sprite_sheet->count && sprite_sheet->index >= 0 )
+				{
+					const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+					if(camera_rect.Intersect(render_rect))
+					{
+						RenderPack pack;
+						pack.rect = render_rect;
+						pack.flipPoint = transform.GetHorizontalFlipPoint();
 
+						GenerateRenderPack(*sprite_sheet, pack);
+
+						renderer->AddRenderPacket(pack);
+					}
+				}
+			}
+			else if(const Sprite* sprite = GetComponent(Sprite, entity))
+			{
 				if(sprite->texture && sprite->renderLayer != RenderLayer::None && !sprite->disabled)
 				{
 					const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
@@ -82,6 +106,8 @@ namespace ECS
 					{
 						RenderPack pack;
 						pack.rect = render_rect;
+						pack.flipPoint = transform.GetHorizontalFlipPoint();
+
 						GenerateRenderPack(*sprite, pack);
 
 						renderer->AddRenderPacket(pack);
@@ -98,8 +124,9 @@ namespace ECS
 					{
 						RenderPack pack;
 						pack.rect = render_rect;
+						pack.flipPoint = transform.GetHorizontalFlipPoint();
+
 						pack.font = &ui_text->font;
-						pack.rect = render_rect;
 						pack.layer = (u32)RenderLayer::UI;
 						pack.entity = entity;
 
@@ -123,6 +150,8 @@ namespace ECS
 						{
 							RenderPack pack;
 							pack.rect = render_rect;
+							pack.flipPoint = transform.GetHorizontalFlipPoint();
+
 							GenerateRenderPack(sprite, pack);
 							pack.entity = entity;
 

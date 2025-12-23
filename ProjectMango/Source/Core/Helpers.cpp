@@ -6,15 +6,13 @@
 #include "Graphics/Raycast.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Biome.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
 
 
 float EaseOut(float value, int easing_factor)
 {
 	return 1.0f - Power<float>(1.0f - value, easing_factor);
 }
-
-
-
 
 
 bool IsPlayer(ECS::Entity entity)
@@ -38,6 +36,15 @@ bool IsTerrain(ECS::Entity entity)
 
 	return false;
 }
+//
+//bool ContainsPoint(const RectF& rect, VectorF point)
+//{
+//	return !(	point.x > rect.RightPoint() || 
+//			point.x < rect.LeftPoint()  || 
+//			point.y > rect.BotPoint()   || 
+//			point.y < rect.TopPoint());
+//}
+
 
 
 bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity source)
@@ -57,4 +64,9 @@ bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity source)
 	{
 		return target_pos.x < 0;
 	}
+}
+
+bool IsSelectedDebugEntity(ECS::Entity entity)
+{
+	return DebugMenu::GetSelectedEntity() == entity;
 }

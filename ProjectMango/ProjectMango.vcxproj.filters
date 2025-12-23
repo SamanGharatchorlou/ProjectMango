@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Animations\ConfigReaders.cpp">
+    <ClCompile Include="Source\Game\Readers\AnimationReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Audio\Audio.cpp">
@@ -79,9 +79,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\CharacterStateDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\ColliderDebugMenu.cpp">
@@ -291,7 +288,7 @@
     <ClCompile Include="Source\System\Files\JSONParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\SceneParsing\SceneReader.cpp">
+    <ClCompile Include="Source\Game\Readers\SceneReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Components\Biome.cpp">
@@ -390,9 +387,15 @@
     <ClCompile Include="Source\Graphics\FontManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\MonsterRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Animations\ConfigReaders.h">
+    <ClInclude Include="Source\Game\Readers\AnimationReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Audio\Audio.h">
@@ -1091,7 +1094,7 @@
     <ClInclude Include="Source\System\Files\JSONParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\SceneParsing\SceneReader.h">
+    <ClInclude Include="Source\Game\Readers\SceneReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Biome.h">
@@ -1170,6 +1173,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\FontManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\MonsterRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\EntSystems\CardSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

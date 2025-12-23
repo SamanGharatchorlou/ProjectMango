@@ -14,16 +14,19 @@ static void UpdateCoinPile(Entity coin_pile, Entity owner)
 		CoinStack& coin_stack = GetComponentRef(CoinStack, coin_pile);
 		coin_stack.remaining = inventory->coins[coin_stack.colourType];
 
-		int buying_power[Colour::Count];
-		inventory->GetBuyingPower(buying_power, Colour::Count);
-//		int sprite_index = buying_power[coin_stack.colourType];
-		int sprite_index = coin_stack.remaining;
+		//int buying_power[Colour::Count];
+		//inventory->GetBuyingPower(buying_power, Colour::Count);
 
-		Sprite& sprite = GetComponentRef(Sprite, coin_pile);
+		//int sprite_index = coin_stack.remaining;
 
-		char buffer[32];
-		snprintf(buffer, 32, "%s%d", sprite.ID.c_str(), sprite_index);
-		sprite.SetTexture(buffer);
+		//Sprite& sprite = GetComponentRef(Sprite, coin_pile);
+		SpriteSheet& sprite_sheet = GetComponentRef(SpriteSheet, coin_pile);
+		sprite_sheet.index = coin_stack.remaining;
+
+
+		//char buffer[32];
+		//snprintf(buffer, 32, "%s_%d", sprite.Id.c_str(), sprite_index);
+		//sprite.SetTexture(buffer);
 	}
 }
 
@@ -67,45 +70,25 @@ void SetupCallbackBindings(std::unordered_map<BasicString, std::function<void(EC
 		} };
 
 	callback_bindings[ "InventoryCoinPile" ] =  [](ECS::Entity entity) {
-
 		UpdateCoinPile(entity, Target::GetPlayer());
-
-		//if(Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
-		//{
-		//	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-		//	coin_stack.SetRemaining(inventory->coins[coin_stack.colourType]);
-
-		//	int buying_power[Colour::Count];
-		//	inventory->GetBuyingPower(buying_power, Colour::Count);
-
-		//	Sprite& sprite = GetComponentRef(Sprite, entity);
-
-		//	char buffer[32];
-		//	snprintf(buffer, 32, "%s%d", sprite.ID.c_str(), buying_power[coin_stack.colourType]);
-		//	sprite.SetTexture(buffer);
-		//}
 	};
 
 	callback_bindings[ "CoinStack" ] =  [](ECS::Entity entity) {
 		CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-		int remaining = coin_stack.remaining;
+		//int remaining = coin_stack.remaining;
 
-		Sprite& sprite = GetComponentRef(Sprite, entity);
+		//Sprite& sprite = GetComponentRef(Sprite, entity);
 
-		char buffer[32];
-		snprintf(buffer, 32, "%s%d", sprite.ID.c_str(), remaining);
-		sprite.SetTexture(buffer);
+		SpriteSheet& sprite_sheet = GetComponentRef(SpriteSheet, entity);
+		sprite_sheet.index = coin_stack.remaining-1;
+
+		//char buffer[32];
+		//snprintf(buffer, 32, "%s_%d", sprite.Id.c_str(), remaining);
+		//sprite.SetTexture(buffer);
 	};
 		
 	callback_bindings[ "EnemyCoinPile" ] =  [](ECS::Entity entity) {
 		Entity ai = Target::GetEnemy();
-
-		
-		UpdateCoinPile(entity, ai);
-		//if(Inventory* inventory = GetComponent(Inventory, ai))
-		//{
-		//	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-		//	coin_stack.SetRemaining(inventory->coins[coin_stack.colourType]);
-		//}
+		//UpdateCoinPile(entity, ai);
 	};
 }

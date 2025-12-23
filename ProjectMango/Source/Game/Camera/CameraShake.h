@@ -1,37 +1,18 @@
 #pragma once
 
-#include "Core/Events/Observer.h"
-
-class CameraShake : public Observer
+struct CameraShake
 {
-public:
-	CameraShake();
+	float x = 0;
+	float speed = 2.0f;
+	float magnitude = 0.5f;
+	
+	VectorF direction;
+	
+	VectorF maxTrauma;
+	VectorF trauma;
 
-	void clear();
-
-	void init(float maxTrauma, float traumaReduction);
-	void fastUpdate(float dt);
-
-	void enable(RectF cameraRect, RectF boundaires);
-
-	void addTrauma(float trauma);
-	void handleEvent(EventData& data) override;
-
-	VectorF offset();
-
-	RectF* rect() { return &mCameraRect; }
-
-	float trauma() const { return mTrauma; }
-	bool hasTrauma() const { return mTrauma != 0; }
-
-	float reductionRate() const { return mTraumaReduction; }
-
-
-private:
-	float mTrauma;
-	float mMaxTrauma;
-	float mTraumaReduction;
-
-	RectF mBoundaries;
-	RectF mCameraRect;
+	void Update(float dt);
 };
+
+// see different types here
+// https://www.davetech.co.uk/gamedevscreenshake

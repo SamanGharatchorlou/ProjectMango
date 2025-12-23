@@ -3,6 +3,8 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/AIComponents.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -11,15 +13,19 @@ namespace ECS
 	{
  		for (Entity entity : entities)
 		{
+			// debug break point
+			if(IsSelectedDebugEntity(entity))
+				int a = 4;
+
 			EntityState& state = GetComponentRef(EntityState, entity);
 			const AIIntent& intent = GetComponentRef(AIIntent, entity);
-			BehaviourState* behaviour_state = GetComponent(BehaviourState, entity);
+			const BehaviourState& b_state = GetComponentRef(BehaviourState, entity);
 			
 			if(intent.wantsToFaceTarget)
 			{
 				// try to flip to face the target direction
 				
-				Entity target = Target::GetValidTarget(entity);
+				Entity target = Target::GetTarget(entity);
 				if(target != EntityInvalid)
 				{
 					SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, target);
@@ -38,21 +44,42 @@ namespace ECS
 				}
 			}
 
-			if(behaviour_state)
+			bool coolingdown_from_attack = (b_state.attackFinishedTimeMS + b_state.attackCooldownTimeMS) > GetTicksMS();
+			if(coolingdown_from_attack)
 			{
-				bool coolingdown_from_attack = (behaviour_state->attackFinishedTimeMS + behaviour_state->attackCooldownTimeMS) > GetTicksMS();
-				if(coolingdown_from_attack)
-				{
-					can_attack = false;
-					can_move = false;
-				}
+				can_attack = false;
+				can_move = false;
 			}
 
 			state.next = Action::Idle;
 
+
+			if(Health* health = GetComponent(Health, entity))
+			{
+				if(health->currentHealth <= 0)
+					state.next = Action::Death;
+			}
+			
+			// death
+			if(DeathScentence* death = GetComponent(DeathScentence, entity))
+			{
+				if(death->CanDie())
+					state.next = Action::Death;
+				
+				// else waiting to die
+				continue;
+			}
+
 			if(intent.wantsToAttack && can_attack)
 			{
-				state.next = Action::BasicAttack;
+				if(state.current != Action::AttackWindUp && b_state.attackData.contains(Action::AttackWindUp))
+				{
+					state.next = Action::AttackWindUp;
+				}
+				else
+				{
+					state.next = Action::BasicAttack;
+				}
 			}
 			else if(intent.wantsToMove && can_move)
 			{

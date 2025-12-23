@@ -41,6 +41,17 @@ public:
 	bool empty() const { return strlen(mBuffer) == 0; }
 	void clear() { memset(mBuffer, 0, bufferLength()); }
 
+	StringBuffer32 to_lower() const
+	{
+		StringBuffer32 out_string;
+		for (uint32_t i = 0; i < length(); i++)
+		{
+			out_string.buffer()[i] = tolower(mBuffer[i]);
+		}
+
+		return out_string;
+	}
+
 	StringBuffer32 operator + (const StringBuffer32& string) const
 	{
 		StringBuffer32 new_string;

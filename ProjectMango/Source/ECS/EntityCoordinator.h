@@ -15,6 +15,7 @@ namespace ECS
 			Close();
 		}
 
+
 		void Close()
 		{
 			entities.Close();
@@ -88,6 +89,15 @@ namespace ECS
 		}
 
 		template<class T>
+		T& GetOrAddComponent(Entity entity, Component::Type type) 
+		{
+			if(entity != EntityInvalid && entities.HasComponent(entity, type))
+				return components.GetComponent<T>(entity, type);
+
+			return AddComponent<T>(entity, type);
+		}
+
+		template<class T>
 		ComponentArray<T>& GetComponents(Component::Type type) { return *static_cast<ComponentArray<T>*>(components.componentArrays[type]); }
 		
 		void InitSystems();
@@ -109,6 +119,7 @@ namespace ECS
 #define HasComponent(compType, entity) ecs->HasComponent(entity, ECS::compType::type())
 #define GetComponent(compType, entity) ecs->GetComponent<ECS::compType>(entity, ECS::compType::type())
 #define GetComponentRef(compType, entity) ecs->GetComponentRef<ECS::compType>(entity, ECS::compType::type())
+#define GetOrAddComponent(compType, entity) ecs->GetOrAddComponent<ECS::compType>(entity, ECS::compType::type())
 
 #define GetAllComponents(compType) ecs->GetComponents<ECS::compType>(ECS::compType::type())
 }
