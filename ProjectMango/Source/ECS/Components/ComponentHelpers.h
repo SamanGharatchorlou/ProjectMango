@@ -89,7 +89,7 @@ namespace ECS
 		VectorF pivotPoint;
 
 		BasicString spriteSheetId;
-		int spriteSheetCount;
+		VectorI spriteSheetFrameCounts = VectorI(1,1);
 
 		BasicString spriteId;
 		SColour colourMod;

@@ -252,7 +252,7 @@ void InputManager::processButtonEvent(SDL_Event& event)
 				}
 			}
 
-			if(event.type = SDL_JOYBUTTONDOWN)
+			if(event.type == SDL_JOYBUTTONDOWN)
 			{
 				event.jbutton.button;
 				int a = 4;

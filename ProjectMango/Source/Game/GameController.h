@@ -12,7 +12,7 @@ public:
 	void run();
 	void free();
 
-	ImGuiContext* ctx;
+	ImGuiContext* ctx = nullptr;
 
 private:
 	void handleInput(SDL_Event& event);

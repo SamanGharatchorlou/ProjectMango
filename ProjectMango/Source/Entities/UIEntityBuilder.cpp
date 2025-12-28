@@ -1,12 +1,9 @@
 #include "UIEntityBuilder.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "Input/InputManager.h"
 #include "EntityBuilder.h"
-
 #include "Entities/CardRegistry.h"
 
 using namespace ECS;
@@ -27,9 +24,9 @@ Entity CreateUICursor()
 
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.renderLayer = RenderLayer::Top;
-	sprite.canFlip = false;
-	sprite.Init();
+	sprite.params.renderLayer = RenderLayer::Top;
+	sprite.params.canFlip = false;
+	sprite.Init(nullptr);
 
 	UICursor& cursor = AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();

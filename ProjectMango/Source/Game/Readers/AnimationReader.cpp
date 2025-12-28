@@ -2,14 +2,13 @@
 #include "AnimationReader.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/GraphicComponents.h"
 #include "Graphics/STexture.h"
 #include "Graphics/TextureManager.h"
 #include "System/Files/JSONParser.h"
 #include "ECS/Components/AIComponents.h"
 
-static std::unordered_map<BasicString, ECS::AnimationSpriteSheet> s_spriteSheets;
+static std::unordered_map<BasicString, ECS::Animation> s_spriteSheets;
 
 namespace AnimationReader
 {	
@@ -68,16 +67,6 @@ namespace AnimationReader
 		float frame_size_x = parser.document["frameSize_x"].GetFloat();
 		float frame_size_y = parser.document["frameSize_y"].GetFloat();
 
-		//if(ECS::Collider* collider = GetComponent(Collider, entity))
-		//{
-		//	VectorF object_position = VectorF::zero();
-		//	VectorF object_size = VectorF(1, 1);
-		//	if(PopulateColliderData("object", parser.document, &object_position, &object_size))
-		//	{
-		//		collider->SetRelativeRect(object_position, object_size);
-		//	}
-		//}
-
 		const Value::Array& sprite_sheets = parser.document["spriteSheets"].GetArray();
 		for( u32 i = 0; i < sprite_sheets.Size(); i++ )
 		{
@@ -92,14 +81,14 @@ namespace AnimationReader
 
 			if(!s_spriteSheets.contains(spriteSheet_id))
 			{
-				ECS::AnimationSpriteSheet spriteSheet;
-				spriteSheet.ID = spriteSheet_id;
-				spriteSheet.texture = texture;
-				spriteSheet.frameSize.x = frame_size_x;
-				spriteSheet.frameSize.y = frame_size_y;
-				spriteSheet.sheetSize = (texture->originalDimentions / spriteSheet.frameSize).toInt();
+				ECS::Animation animation;
+				animation.image.id = spriteSheet_id;
+				animation.image.texture = texture;
+				animation.frame.size.x = frame_size_x;
+				animation.frame.size.y = frame_size_y;
+				animation.frame.counts = (texture->originalDimentions / animation.frame.size).toInt();
 				
-				s_spriteSheets[spriteSheet_id] = spriteSheet;
+				s_spriteSheets[spriteSheet_id] = animation;
 			}
 
 			VectorF object_center;
@@ -115,7 +104,7 @@ namespace AnimationReader
 				ECS::Animation anim;
 
 				const Value& animation = anims[i];
-				anim.spriteSheet = s_spriteSheets[spriteSheet_id];
+				anim = s_spriteSheets[spriteSheet_id];
 				anim.action = animation.HasMember("action") ? ECS::StringToAction(animation["action"].GetString()) : ECS::Action::None;
 				anim.startIndex = animation["startIndex"].GetInt();
 				anim.frameCount = animation["frameCount"].GetInt();

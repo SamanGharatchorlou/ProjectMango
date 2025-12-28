@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "TileMapSystem.h"
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/Biome.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"

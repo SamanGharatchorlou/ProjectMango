@@ -2,12 +2,9 @@
 #include "PathingSystem.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/Components/AIComponents.h"
 #include "Graphics/Raycast.h"
-#include "ECS/Components/Biome.h"
-#include "Core/Helpers.h"
-#include "ECS/Components/Physics.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
 namespace ECS

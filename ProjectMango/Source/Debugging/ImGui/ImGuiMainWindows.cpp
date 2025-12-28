@@ -6,14 +6,7 @@
 #include "imgui-master/imgui.h"
 
 #include "Debugging/ImGui/Components/ComponentDebugMenu.h"
-#include "ECS/Components/AIComponents.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
-#include "ECS/Components/Physics.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntityManager.h"
 #include "Game/Camera/Camera.h"
@@ -24,7 +17,6 @@
 #include "Input/InputManager.h"
 #include "System/Files/ConfigManager.h"
 #include "Audio/AudioManager.h"
-#include "Game/Camera/Camera.h"
 
 using namespace DebugMenu;
 
@@ -291,7 +283,7 @@ static bool s_displayDynamics = false;
 static bool s_displayTransforms = true;
 static bool s_displayObjectCenter = true;
 static bool s_displayObjectRect = true;
-static DebugDrawType s_drawType = DebugDrawType::RectOutline;
+static DebugRender::DrawType s_drawType = DebugRender::DrawType::RectOutline;
 
 
 void DebugMenu::DoTransformWindow() 
@@ -306,7 +298,8 @@ void DebugMenu::DoTransformWindow()
     ImGui::Checkbox("Display Object Rect", &s_displayObjectRect);
     ImGui::Checkbox("Display Object Center", &s_displayObjectCenter);
 
-    ImGui::DoDebugRenderTypeDropDown(s_drawType);
+    const char* arrayDebugDrawType[4] = { "Point", "Line", "RectOutline", "RectFill"};
+    ImGui::Combo("Draw Types", (int*)&s_drawType, arrayDebugDrawType, 4);
 
     for( auto iter = colliders.entityToComponent.begin(); iter != colliders.entityToComponent.end(); iter++ )
 	{

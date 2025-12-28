@@ -2,10 +2,8 @@
 #include "pch.h"
 #include "PhysicsSystem.h"
 
-#include "ECS/Components/Physics.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Collider.h"
 #include "Graphics/Raycast.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 

@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "AIControllerSystem.h"
 
-#include "ECS/Components/AIComponents.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Core/Helpers.h"
 

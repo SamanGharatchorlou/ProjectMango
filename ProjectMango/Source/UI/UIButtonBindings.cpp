@@ -1,7 +1,6 @@
 #include "pch.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
+
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
@@ -66,17 +65,17 @@ void SetupButtonUIBindings(std::unordered_map<BasicString, std::function<void(EC
 		{
 			Sprite& sprite = GetComponentRef(Sprite, entity);
 			if(turn_state->CanAquireMoreResources())
-				sprite.colourMod = SColour::White;
+				sprite.params.colourMod = SColour::White;
 			else
-				sprite.colourMod = SColour::Green;
+				sprite.params.colourMod = SColour::Green;
 		} };
 	button_bindings[ "UndoTurnButton" ] =  [](ECS::Entity entity) {
 		if(const TurnState* turn_state = GetComponent(TurnState, Target::GetPlayer()))
 		{
 			Sprite& sprite = GetComponentRef(Sprite, entity);
 			if(turn_state->HasAquiredResources())
-				sprite.colourMod = SColour::Green;
+				sprite.params.colourMod = SColour::Green;
 			else
-				sprite.colourMod = SColour::White;
+				sprite.params.colourMod = SColour::White;
 		} };
 }

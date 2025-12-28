@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "CardRegistry.h"
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "System/Files/JSONParser.h"
 #include "ECS/EntityCoordinator.h"
 #include "MonsterRegistry.h"
@@ -89,7 +87,7 @@ namespace CardRegistry
 			Sprite& sprite = GetComponentRef(Sprite, card.entity);
 
 			StringBuffer64 coloured_sprite;
-			AddColourPostfix(sprite.Id.c_str(), card.colour, coloured_sprite);
+			AddColourPostfix(sprite.image.id.c_str(), card.colour, coloured_sprite);
 			sprite.SetTexture(coloured_sprite.c_str());
 
 			int monster_index = MonsterRegistry::GetRandomMonsterIndex(card.points);
@@ -125,7 +123,7 @@ namespace CardRegistry
 		DestroyChildren(entity);
 		
 		Sprite& sprite = GetComponentRef(Sprite, entity);
-		sprite.disabled = true;
+		sprite.params.disabled = true;
 
 		// remove the component
 		RemoveComponent(Card, entity);
@@ -154,7 +152,7 @@ namespace CardRegistry
 				CardRegistry::GetCard(new_card, index);
 
 				Sprite& sprite = GetComponentRef(Sprite, entity);
-				sprite.disabled = false;
+				sprite.params.disabled = false;
 
 				std::vector<int>& draw_pile = s_cardRegistryDrawPile[new_card.tier];
 				for( auto iter = draw_pile.begin(); iter != draw_pile.end(); iter++ )

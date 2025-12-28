@@ -3,7 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
-#include "ECS/Components/Physics.h"
+#include "ECS/Components/SpacialComponents.h"
 
 u32 DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
 {

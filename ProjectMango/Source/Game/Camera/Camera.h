@@ -23,7 +23,7 @@ struct Camera
 	void AddShake(float magnitude, VectorF source);
 	CameraShake* getShake() { return &shakeyCam; }
 	
-	ECS::Entity targetEntity;
+	ECS::Entity targetEntity = ECS::EntityInvalid;
 	CameraShake shakeyCam;
 	
 

@@ -55,7 +55,7 @@ private:
 	bool HandleReleaseButton(const Button& button, int frame_buffer);
 
 public:
-	SDL_Joystick* mJoyStick;
+	SDL_Joystick* mJoyStick = nullptr;
 
 	// turn me into an array
 	std::vector<Button> mButtons;

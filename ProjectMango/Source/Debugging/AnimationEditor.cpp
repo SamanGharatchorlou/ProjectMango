@@ -9,11 +9,10 @@
 #include "Graphics/RenderManager.h"
 #include "Input/InputManager.h"
 #include "Game/FrameRateController.h"
-#include "ECS/Components/Animator.h"
 #include "Game/Readers/AnimationReader.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
+#include "ECS/Components/GraphicComponents.h"
 #include "ECS/EntSystems/AnimationSystem.h"
-#include "ECS/Components/Collider.h"
 
 #include "Core/Helpers.h"
 #include "imgui.h"
@@ -461,22 +460,22 @@ namespace AnimationEditor
                 ImGui::Text("Frame %d / %d", anim->frameIndex + 1, active_animation.frameCount );
 	
                 Sprite& sprite = GetComponentRef(Sprite, s_state.configAnim.entity);
-                anim->SetActiveSpriteFrame(sprite);
+                //anim->SetActiveSpriteFrame(sprite);
 
                 // FLIP
                 if(ImGui::Button("Flip Sprite"))
                 {
-                    SDL_RendererFlip flip = sprite.flip;
+                    SDL_RendererFlip flip = sprite.params.flip;
                     if(flip == SDL_FLIP_HORIZONTAL)
-                        sprite.flip = SDL_FLIP_NONE;
+                        sprite.params.flip = SDL_FLIP_NONE;
                     else
-                        sprite.flip = SDL_FLIP_HORIZONTAL;
+                        sprite.params.flip = SDL_FLIP_HORIZONTAL;
                 }
 
                 const ECS::Animation& selected_animation = anim->GetActiveAnimation();
 
-			    VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat();
+			    VectorF dim = selected_animation.image.texture->originalDimentions;
+                const VectorF real_frame_size = dim / selected_animation.frame.counts.toFloat();
             
                 // the visible size of the frame you're looking at, probably the yellow box
                 float x_spacing = y_spacing.y;
@@ -487,10 +486,10 @@ namespace AnimationEditor
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(sprite.texture, 1);
+                RenderPack frame_pack(sprite.image.texture, 1);
                 frame_pack.rect = renderFrameRect;
-                frame_pack.subRect = sprite.subRect;
-                frame_pack.flip =sprite.flip;
+                frame_pack.subRect = selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
+                frame_pack.flip =sprite.params.flip;
 
                 const RectF& selection_rect = s_state.cursorSelection.selectionRect;
                 if(!selection_rect.Size().isZero())
@@ -586,8 +585,8 @@ namespace AnimationEditor
             if( anim && anim->animations.size() > 0 )
             {
                 const ECS::Animation& selected_animation = anim->GetActiveAnimation();
-                const VectorF dim = selected_animation.spriteSheet.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.spriteSheet.sheetSize.toFloat(); 
+                const VectorF dim = selected_animation.image.texture->originalDimentions;
+                const VectorF real_frame_size = dim / selected_animation.frame.counts.toFloat(); 
 
                 float x_spacing = y_spacing.y;
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);

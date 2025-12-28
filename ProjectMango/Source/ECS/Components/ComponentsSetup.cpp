@@ -2,14 +2,7 @@
 #include "ComponentsSetup.h"
 
 #include "Game/Initialiser.h"
-#include "ECS/Components/AIComponents.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/Physics.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/AIControllerSystem.h"
 #include "ECS/EntSystems/BehaviourSystem.h"
@@ -194,7 +187,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<TileMapSystem>(biomeSignature);
 
 	// Rendering
-	Signature renderSignature = ArcheBit(Sprite) | ArcheBit(UIText) | ArcheBit(LayeredSprite) | ArcheBit(SpriteSheet);
+	Signature renderSignature = ArcheBit(Sprite) | ArcheBit(UIText) | ArcheBit(LayeredSprite);
 	ecs->RegisterOrSystem<RenderSystem>(renderSignature);
 }
 

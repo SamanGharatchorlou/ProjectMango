@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "RenderSystem.h"
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
@@ -16,31 +15,19 @@ namespace ECS
 
 	void GenerateRenderPack(const Sprite& sprite, RenderPack& pack)
 	{
-		pack.texture = sprite.texture;
-		pack.layer = (u32)sprite.renderLayer;
-		pack.subRect = sprite.subRect;
-		pack.flip = sprite.flip;
-		pack.rotation = sprite.rotation;
-		pack.colourMod = sprite.colourMod;
-
-		pack.entity = sprite.entity;
+		pack.texture = sprite.image.texture;
+		pack.layer = (u32)sprite.params.renderLayer;
+		//pack.subRect = sprite.params.subRect;
+		pack.flip = sprite.params.flip;
+		pack.rotation = sprite.params.rotation;
+		pack.colourMod = sprite.params.colourMod;
 	}
 		
-	void GenerateRenderPack(const SpriteSheet& sprite_sheet, RenderPack& pack)
-	{
-		pack.texture = sprite_sheet.texture;
-		pack.layer = (u32)sprite_sheet.renderLayer;
-
-		VectorF top_left = sprite_sheet.frameSize * VectorF((float)sprite_sheet.index, 0);
-
-		pack.subRect = RectF( top_left, sprite_sheet.frameSize);
-		pack.colourMod = sprite_sheet.colourMod;
-		//pack.flip = sprite.flip;
-		//pack.rotation = sprite.rotation;
-		//pack.colourMod = sprite.colourMod;
-
-		pack.entity = sprite_sheet.entity;
-	}
+	//void GenerateRenderPack(const SpriteSheet& sprite_sheet, RenderPack& pack)
+	//{
+	//	GenerateRenderPack(sprite_sheet.sprite, pack);
+	//	pack.subRect = sprite_sheet.frame.GetFrameRect(sprite_sheet.index);
+	//}
 
 	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
 	{
@@ -50,8 +37,11 @@ namespace ECS
 		pack.font = &ui_text.font;
 		pack.rect = render_rect;
 		pack.layer = (u32)RenderLayer::UI;
+	}
 
-		pack.entity = ui_text.entity;
+	bool IsValid(const RenderPack& pack)
+	{
+		return (pack.texture || pack.font) && pack.layer > 0;
 	}
 
 	void RenderSystem::Init()
@@ -78,83 +68,78 @@ namespace ECS
 				int a = 4;
 
 			const Transform& transform = GetComponentRef(Transform, entity);
+			RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
 			
-			if(const SpriteSheet* sprite_sheet = GetComponent(SpriteSheet, entity))
+			RenderPack pack;
+			pack.entity = entity;
+			
+			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
-				if( sprite_sheet->texture && sprite_sheet->renderLayer != RenderLayer::None && 
-					sprite_sheet->index < sprite_sheet->count && sprite_sheet->index >= 0 )
+				if(camera_rect.Intersect(render_rect))
 				{
-					const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
-					if(camera_rect.Intersect(render_rect))
+					pack.rect = render_rect;
+					pack.flipPoint = transform.GetHorizontalFlipPoint();
+					GenerateRenderPack(*sprite, pack);
+
+					if(const SpriteSheet* sprite_sheet = GetComponent(SpriteSheet, entity))
 					{
-						RenderPack pack;
-						pack.rect = render_rect;
-						pack.flipPoint = transform.GetHorizontalFlipPoint();
-
-						GenerateRenderPack(*sprite_sheet, pack);
-
-						renderer->AddRenderPacket(pack);
+						if(sprite_sheet->HasValidFrameIndex())
+						{
+							pack.subRect = sprite_sheet->frame.GetFrameRect(sprite_sheet->index);
+						}
 					}
-				}
-			}
-			else if(const Sprite* sprite = GetComponent(Sprite, entity))
-			{
-				if(sprite->texture && sprite->renderLayer != RenderLayer::None && !sprite->disabled)
-				{
-					const RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
-					if(camera_rect.Intersect(render_rect))
+					else if(const Animator* animator = GetComponent(Animator, entity))
 					{
-						RenderPack pack;
-						pack.rect = render_rect;
-						pack.flipPoint = transform.GetHorizontalFlipPoint();
-
-						GenerateRenderPack(*sprite, pack);
-
-						renderer->AddRenderPacket(pack);
+						if(animator->IsValid())
+						{
+							const Animation& animation = animator->GetActiveAnimation();
+							pack.texture = animation.image.texture;
+							pack.subRect = animator->GetActiveSubRect();
+						}
 					}
 				}
 			}
 			
+			// can have a UIText in addition to the other types
 			if(const UIText* ui_text = GetComponent(UIText, entity))
 			{
 				if(!ui_text->text.empty())
 				{
-					const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text->renderOffset, transform.size);				
+					render_rect = render_rect.MoveCopy(ui_text->renderOffset);				
 					if(camera_rect.Intersect(render_rect))
 					{
-						RenderPack pack;
 						pack.rect = render_rect;
 						pack.flipPoint = transform.GetHorizontalFlipPoint();
-
 						pack.font = &ui_text->font;
 						pack.layer = (u32)RenderLayer::UI;
-						pack.entity = entity;
-
-						renderer->AddRenderPacket(pack);
 					}
 				}
 			}
 
+			
+			if(IsValid(pack))
+			{
+				renderer->AddRenderPacket(pack);
+			}
+			
+			// can have a LayeredSprite in addition to the other types
 			if(const LayeredSprite* layered_sprite = GetComponent(LayeredSprite, entity))
 			{
 				for( const LayeredSprite::Layer& layer : layered_sprite->spriteLayers)
 				{
-					const Sprite& sprite = layer.sprite;
-					if(sprite.texture && sprite.renderLayer != RenderLayer::None && !sprite.disabled)
+					if(layer.sprite.IsValid())
 					{
-						RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
 						if(!layer.rect.IsZero())
 							render_rect = layer.rect;
 
 						if(camera_rect.Intersect(render_rect))
 						{
-							RenderPack pack;
 							pack.rect = render_rect;
 							pack.flipPoint = transform.GetHorizontalFlipPoint();
 
-							GenerateRenderPack(sprite, pack);
-							pack.entity = entity;
+							GenerateRenderPack(layer.sprite, pack);
 
+							// we add multiple packs
 							renderer->AddRenderPacket(pack);
 						}
 					}

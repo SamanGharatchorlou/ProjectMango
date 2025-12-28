@@ -21,13 +21,13 @@ RenderManager* RenderManager::Get()
 	return gd.renderManager;
 }
 
-void RenderManager::AddDebugRenderPacker(const DebugRenderPack& renderPack)
+void RenderManager::AddDebugRenderPacker(const DebugRender::RenderPack& renderPack)
 {
 	mDebugRenders.push_back(renderPack);
 }
 
 void RenderManager::AddRenderPacket(RenderPack renderPacket) 
-{ 
+{
 	mRenderPackets[renderPacket.layer].push_back(renderPacket); 
 }
 
@@ -101,7 +101,7 @@ void RenderManager::render()
 	{
 		switch (mDebugRenders[i].type)
 		{
-		case DebugDrawType::Line:
+		case DebugRender::DrawType::Line:
 		{
 			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);
@@ -113,7 +113,7 @@ void RenderManager::render()
 			SDL_RenderDrawLine(sdl_renderer, A.x, A.y, B.x, B.y);
 			break;
 		}
-		case DebugDrawType::RectOutline:
+		case DebugRender::DrawType::RectOutline:
 		{
 			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);
@@ -128,8 +128,8 @@ void RenderManager::render()
 			SDL_RenderDrawRect(sdl_renderer, &renderQuadb);
 			break;
 		}
-		case DebugDrawType::Point:
-		case DebugDrawType::RectFill:
+		case DebugRender::DrawType::Point:
+		case DebugRender::DrawType::RectFill:
 		{
 			SColour colour = mDebugRenders[i].colour;
 			SDL_SetRenderDrawColor(sdl_renderer, colour.r, colour.g, colour.b, colour.a);

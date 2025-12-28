@@ -3,7 +3,6 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
-#include "ECS/Components/Physics.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GameComponents.h"
 

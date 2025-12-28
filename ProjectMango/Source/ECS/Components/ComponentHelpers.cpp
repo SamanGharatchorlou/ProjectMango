@@ -3,9 +3,9 @@
 
 #include "Components.h"
 #include "GameComponents.h"
+#include "GraphicComponents.h"
+#include "SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Collider.h"
-#include "Biome.h"
 
 namespace ECS
 {
@@ -133,7 +133,7 @@ namespace ECS
 		{
 			if (const ECS::Sprite* sprite = GetComponent(Sprite, entity))
 			{
-				out_rotation = sprite->rotation;
+				out_rotation = sprite->params.rotation;
 
 				RectF rect = transform->GetRect();
 				out_aboutPoint = rect.TopLeft() + transform->GetHorizontalFlipPoint();
@@ -147,7 +147,7 @@ namespace ECS
 	SDL_RendererFlip GetFacingDirection(Entity entity)
 	{
 		Sprite& sprite = GetComponentRef(Sprite, entity);
-		return sprite.flip;
+		return sprite.params.flip;
 	}
 
 	VectorI GetFacingDirectionVector(Entity entity)
@@ -165,20 +165,20 @@ namespace ECS
 	{
 		Sprite& sprite = GetComponentRef(Sprite, entity);
 
-		if (sprite.canFlip)
-			sprite.flip = direction;
+		if (sprite.params.canFlip)
+			sprite.params.flip = direction;
 	}
 
 	void FlipFacingDirection(Entity entity)
 	{
 		Sprite& sprite = GetComponentRef(Sprite, entity);
 
-		if (sprite.canFlip)
+		if (sprite.params.canFlip)
 		{
-			if (sprite.flip == SDL_FLIP_HORIZONTAL)
-				sprite.flip = SDL_FLIP_NONE;
+			if (sprite.params.flip == SDL_FLIP_HORIZONTAL)
+				sprite.params.flip = SDL_FLIP_NONE;
 			else
-				sprite.flip = SDL_FLIP_HORIZONTAL;
+				sprite.params.flip = SDL_FLIP_HORIZONTAL;
 		}
 	}
 

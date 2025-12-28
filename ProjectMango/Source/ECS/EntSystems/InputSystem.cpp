@@ -1,14 +1,10 @@
 #include "pch.h"
 #include "InputSystem.h"
 
-#include "ECS/Components/UIComponents.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
 #include "Input/Cursor.h"
-#include "Game/Camera/Camera.h"
-#include "ECS/Components/Biome.h"
-#include "System/Window.h"
 #include "Game/FrameRateController.h"
 #include "Core/Helpers.h"
 

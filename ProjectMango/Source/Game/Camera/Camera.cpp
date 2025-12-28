@@ -3,7 +3,7 @@
 
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Biome.h"
+#include "ECS/Components/SpacialComponents.h"
 
 #define PRINT_SHAKEYCAM_VALUES 0
 

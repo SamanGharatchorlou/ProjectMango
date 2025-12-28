@@ -3,9 +3,8 @@
 
 #include "Core/Helpers.h"
 #include "ECS/ComponentArray.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Physics.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 
@@ -302,30 +301,30 @@ namespace ECS
 				}
             }
 
-			// only want to flip the direction once per loop, otherwise a double contact can double flip
-			if(flip_x || flip_y)
-			{
-				if (Physics* A_physics = GetComponent(Physics, entity))
-				{
-					if (flip_x)
-						A_physics->speed.x = A_physics->speed.x * -1;
+			//// only want to flip the direction once per loop, otherwise a double contact can double flip
+			//if(flip_x || flip_y)
+			//{
+			//	if (Physics* A_physics = GetComponent(Physics, entity))
+			//	{
+			//		if (flip_x)
+			//			A_physics->speed.x = A_physics->speed.x * -1;
 
-					if (flip_y)
-						A_physics->speed.y = A_physics->speed.y * -1;
+			//		if (flip_y)
+			//			A_physics->speed.y = A_physics->speed.y * -1;
 
-					// Rotate sprite
-					if (ECS::Sprite* sprite = GetComponent(Sprite, entity))
-					{
-						sprite->rotation = A_physics->speed.getRotation();
-					}
-				}
+			//		// Rotate sprite
+			//		if (ECS::Sprite* sprite = GetComponent(Sprite, entity))
+			//		{
+			//			sprite->rotation = A_physics->speed.getRotation();
+			//		}
+			//	}
 
-				A_collider.reboundCount--;
-				if(A_collider.reboundCount == 0)
-				{
-					A_collider.destroyOnContact = true;
-				}
-			}
+			//	A_collider.reboundCount--;
+			//	if(A_collider.reboundCount == 0)
+			//	{
+			//		A_collider.destroyOnContact = true;
+			//	}
+			//}
 		}
 	}
 

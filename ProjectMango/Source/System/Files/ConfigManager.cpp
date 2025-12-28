@@ -82,7 +82,7 @@ static void XMLReadStrings(const XMLNode& node, Settings& out_string)
 			bool is_false = strncmp(in_value, "false", strlen("false")) == 0;
 			if (is_true || is_false)
 			{
-				out_string.values[childNode.name()] = (int)is_true;
+				out_string.values[childNode.name()] = (float)((int)is_true);
 			}
 			else
 			{

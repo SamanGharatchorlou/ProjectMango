@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "EntityStateSystem.h"
-
-#include "ECS/Components/AIComponents.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
+#include "ECS/Components/GraphicComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Animator.h"
 #include "Core/Helpers.h"
 
 namespace ECS

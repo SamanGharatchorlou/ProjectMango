@@ -2,13 +2,11 @@
 #include "Raycast.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/ComponentArray.h"
 #include "Core/Helpers.h"
 
 #include "Debugging/ImGui/ImGuiMainWindows.h"
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/Components.h"
 
 void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {

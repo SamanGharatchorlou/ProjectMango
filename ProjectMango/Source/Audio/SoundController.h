@@ -9,7 +9,7 @@ struct Channel
 {
 	//Sound sound;
 	
-	Mix_Chunk* sound;
+	Mix_Chunk* sound = nullptr;
 	VectorF sourcePosition = c_invalidVector;
 
 	// 0 - 1 independant of game sound volume

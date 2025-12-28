@@ -2,20 +2,12 @@
 #include "EntityBuilder.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "System/Files/ConfigManager.h"
-#include "ECS/Components/Biome.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Physics.h"
-#include "Graphics/Raycast.h"
-#include "Entities/Enemies/ShockSweeperEnemy.h"
-#include "Entities/Enemies/BlindingSpiderEnemy.h"
 #include "UIEntityBuilder.h"
-#include "ECS/Components/AIComponents.h"
 #include "Entities/States/Behaviours.h"
+#include "Game/SystemStateManager.h"
+#include "Game/States/GameState.h"
 
 using namespace ECS;
 
@@ -30,8 +22,8 @@ Entity CreateBasicObject(const char* id, VectorF size)
 
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.renderLayer = RenderLayer::BasicObject;
-	sprite.canFlip = false;
+	sprite.params.renderLayer = RenderLayer::BasicObject;
+	sprite.params.canFlip = false;
 
 	return entity;
 }
@@ -58,53 +50,66 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 	}
 	
 	// Sprite
-	bool requires_sprite = config || !emd.spriteId.empty();
+	bool requires_sprite = config || !emd.spriteId.empty() || !emd.spriteSheetId.empty();
 	if(requires_sprite)
 	{
+		bool is_sprite_sheet = !emd.spriteSheetId.empty();
+
 		Sprite& sprite = AddComponent(Sprite, entity);
 		if (config)
 		{
-			sprite.Init();
-			if(sprite.texture && transform.size.isZero())
-				DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
+			sprite.Init(config->data.GetString("sprite"));
+			sprite.params.canFlip = config->data.GetString("can_flip");
+
 		}
-		else
+		else if(!emd.spriteId.empty())
 		{
-			sprite.Id = emd.spriteId.c_str();
-			sprite.SetTexture(emd.spriteId.c_str());
+			sprite.Init(emd.spriteId.c_str());
+		}		
+		else if(is_sprite_sheet)
+		{
+			sprite.Init(emd.spriteSheetId.c_str());
 		}
+
+		if(sprite.image.texture && transform.size.isZero())
+			DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
 			
-		sprite.renderLayer = RenderLayer::BasicObject;
-		sprite.canFlip = false;
-		sprite.colourMod = emd.colourMod;
+		sprite.params.renderLayer = RenderLayer::BasicObject;
+		sprite.params.canFlip = false;
+		sprite.params.colourMod = emd.colourMod;
 
 		// no sprite yet, try get a coloured version
-		if(!sprite.texture && emd.colourType != -1)
+		if(!sprite.image.texture && emd.colourType != -1)
 		{
 			StringBuffer64 coloured_sprite;
-			AddColourPostfix(emd.spriteId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
-			sprite.Id = coloured_sprite.c_str();
-			sprite.SetTexture(coloured_sprite.c_str());
+			if(!emd.spriteId.empty())
+			{
+				AddColourPostfix(emd.spriteId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+			}		
+			else if(is_sprite_sheet)
+			{
+				AddColourPostfix(emd.spriteSheetId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+			}
+
+			sprite.Init(coloured_sprite.c_str());
+		}
+
+		if(sprite.image.texture && is_sprite_sheet)
+		{
+			ASSERT(emd.spriteSheetFrameCounts.lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.spriteSheetId.c_str(), emd.id.c_str());
+
+			SpriteSheet& ss = AddComponent(SpriteSheet, entity);
+			ss.Init(emd.spriteSheetFrameCounts );
 		}
 	}
 
 	// Sprite Sheet
 	if(!emd.spriteSheetId.empty())
 	{
-		ASSERT(emd.spriteSheetCount > 0, "Sprite sheet %d has count 0 entity %s", emd.spriteSheetId.c_str(), emd.id.c_str());
+		ASSERT(emd.spriteSheetFrameCounts.lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.spriteSheetId.c_str(), emd.id.c_str());
 
 		SpriteSheet& ss = AddComponent(SpriteSheet, entity);
-		ss.Init(emd.spriteSheetId.c_str(), emd.spriteSheetCount );
-
-		if(!ss.texture && emd.colourType != -1)
-		{
-			StringBuffer64 coloured_sprite;
-			AddColourPostfix(emd.spriteSheetId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
-			ss.Init(coloured_sprite.c_str(), emd.spriteSheetCount);
-		}
-		
-		ss.colourMod = emd.colourMod;
-		ss.renderLayer = RenderLayer::BasicObject;
+		ss.Init(emd.spriteSheetFrameCounts );
 	}
 
 	if(emd.isButton)
@@ -144,11 +149,6 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 	coin_stack.isInventory = false;
 	coin_stack.capacity = 5;
 	coin_stack.colourType = Colour::Type(emd.colourType);
-
-	//StringBuffer64 coloured_string;
-	//GetColouredSpriteId(emd, coloured_string);
-	//coin_stack.spritePrefix = coloured_string.c_str();
-
 	coin_stack.remaining = coin_stack.capacity;
 
 	return entity;
@@ -158,18 +158,10 @@ Entity CreateCoinPile(const EntityMetaData& emd)
 {
 	Entity entity = CreateBasicObject( emd );
 
-	//SpriteCycle& cycle = AddComponent(SpriteCycle, entity);
-
-	//StringBuffer64 coloured_string;
-	//GetColouredSpriteId(emd, coloured_string);
-	//cycle.spritePrefix = coloured_string.c_str();
-	//cycle.index = 0;
-
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = true;
 	coin_stack.capacity = 100;
 	coin_stack.colourType = Colour::Type(emd.colourType);
-	//coin_stack.spritePrefix = emd.spriteId;
 	coin_stack.remaining = 0;
 
 	return entity;
@@ -189,11 +181,11 @@ Entity CreateHealthBar(const EntityMetaData& emd)
 	layers.spriteLayers.push_back(LayeredSprite::Layer());
 
 	Sprite& hb_bars = layers.spriteLayers[0].sprite;
-	hb_bars.renderLayer = RenderLayer::BasicObject;
+	hb_bars.params.renderLayer = RenderLayer::BasicObject;
 	hb_bars.SetTexture("HealthBarBars");
 
 	Sprite& hb_health = layers.spriteLayers[1].sprite;
-	hb_health.renderLayer = (RenderLayer)((int)RenderLayer::BasicObject - 1);
+	hb_health.params.renderLayer = (RenderLayer)((int)RenderLayer::BasicObject - 1);
 	hb_health.SetTexture("HealthBarHealth");
 
 	if(!emd.callback.empty())
@@ -223,7 +215,7 @@ static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 // spawns from a card
 Entity CreateMonster(const ECS::EntityMetaData& emd)
 {
-	Entity entity = CreateActor(emd);
+	Entity entity = CreateActor(emd, nullptr);
 
 	AIController& ai = AddComponent(AIController, entity);
 	AddComponent(AIIntent, entity);
@@ -251,10 +243,15 @@ Entity CreateMonster(const ECS::EntityMetaData& emd)
 }
 
 // something that moves
-Entity CreateActor(const ECS::EntityMetaData& emd)
+Entity CreateActor(const ECS::EntityMetaData& emd, const char* id_override)
 {
 	// adding everything something NEEDS to be an enemy... pretty much anyway
 	Entity entity = ECS::CreateEntity(emd);
+	if(id_override)
+	{
+		EntityData& ed = GetOrAddComponent(EntityData, entity); 
+		ed.id = id_override;
+	}
 
 	// Collider
 	Collider& collider = AddComponent(Collider, entity);
@@ -274,11 +271,11 @@ Entity CreateActor(const ECS::EntityMetaData& emd)
 	// Health
 	Health& health = AddComponent(Health, entity);
 	health.Init();
-
-	// set sprite layer - default 5
+	
+	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.Init();
-	sprite.renderLayer = RenderLayer::Characters;
+	sprite.Init(nullptr);
+	sprite.params.renderLayer = RenderLayer::Characters;
 
 	// EntityState
 	EntityState& character_state = AddComponent(EntityState, entity);
@@ -314,16 +311,67 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	Animator& animation = AddComponent(Animator, entity);
 	animation.Init();
 
-	// set sprite layer - default 5
+	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.Init();
+	sprite.Init(nullptr);
 
 	const Sprite& parent_sprite = GetComponentRef(Sprite, parent);
-	sprite.renderLayer = (RenderLayer)((int)parent_sprite.renderLayer + 1);
+	sprite.params.renderLayer = (RenderLayer)((int)parent_sprite.params.renderLayer + 1);
 
 	// EntityState
 	AddComponent(EntityState, entity);
 
+	return entity;
+}
+
+// Enemy
+// ---------------------------------------------------------
+// create an actual enemy i.e. the thing the player fights
+Entity CreateEnemy(const ECS::EntityMetaData& emd)
+{
+	//		
+	//// pick random enemy
+	//// create enemy registry
+	//EntityData& ed = AddComponent(EntityData, entity); 
+	//ed.id = "ShockSweeper";
+
+
+	Entity entity = CreateActor(emd, "ShockSweeper");
+
+
+
+	const Config* config = ECS::GetConfigFromEntity(entity);
+
+	AIController& ai = AddComponent(AIController, entity);
+	ai.isDisabled = true;
+			
+	AddComponent(AIIntent, entity);
+
+	// Inventory
+	Inventory& inventory = AddComponent(Inventory, entity);
+
+	// Turn
+	TurnState& turn = AddComponent(TurnState, entity);
+	turn.initiative = 10;
+
+	// Pathing
+	bool disable_pathing = config->data.GetBool("disable_pathing", false);
+	if(!disable_pathing)
+	{
+		Pathing& pathing = AddComponent(Pathing, entity);
+		//pathing.Init();
+	}
+
+	// mark ourselves as the enemy
+	State& state = GameData::Get().systemStateManager->mStates.getActiveState();
+	if(GameState* game_state = dynamic_cast<GameState*>(&state))
+	{
+		game_state->enemy = entity;
+	}
+
+	Target& target = AddComponent(Target, entity);
+	target.isPlayer = true;
+		
 	return entity;
 }
 
@@ -340,9 +388,7 @@ void CreateEntities(Entity& biome_entity)
 	CreateEntitiyFunctions["Button"] = CreateBasicObject;
 	CreateEntitiyFunctions["Sprite"] = CreateBasicObject;
 	CreateEntitiyFunctions["HealthBar"] = CreateHealthBar;
-	//CreateEntitiyFunctions["TrainingDummy"] = TrainingDummy::Create;
-	CreateEntitiyFunctions["ShockSweeper"] = ShockSweeper::CreateEnemy;
-	//CreateEntitiyFunctions["BlindingSpider"] = BlindingSpider::Create;
+	CreateEntitiyFunctions["Enemy"] = CreateEnemy;
 	CreateEntitiyFunctions["PlayerSpawner"] = CreateSpawner;
 
 	// UI entities

@@ -1,13 +1,8 @@
 #include "pch.h"
 #include "Behaviours.h"
-#include "ECS/Components/Components.h"
 
-#include "ECS/Components/AIComponents.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Physics.h"
-#include "ECS/Components/Animator.h"
-
 #include "Game/Camera/Camera.h"
 
 using namespace ECS;

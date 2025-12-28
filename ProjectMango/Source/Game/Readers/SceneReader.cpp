@@ -2,13 +2,10 @@
 #include "SceneReader.h"
 
 #include "System/Files/JSONParser.h"
-#include "ECS/Components/Biome.h"
 #include "Graphics/TextureManager.h"
 #include "System/Window.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/IncludeComponents.h"
 
 namespace Scene
 {
@@ -118,30 +115,31 @@ namespace Scene
 							data_out.spriteId = field_instance[i]["__value"].GetString();
 						continue;
 					}
-					if( StringCompare("SpriteSheet", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("SpriteSheet", field_instance[i]["__identifier"].GetString()) )
 					{
 						// might be null, so need to check
 						if(field_instance[i]["__value"].IsString())
 							data_out.spriteSheetId = field_instance[i]["__value"].GetString();
 						continue;
 					}
-					if( StringCompare("SpriteSheetCount", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("SpriteSheetFrames", field_instance[i]["__identifier"].GetString()) )
 					{
-						if(field_instance[i]["__value"].IsInt())
-						{
-							data_out.spriteSheetCount = field_instance[i]["__value"].GetInt();
-						}
+						data_out.spriteSheetFrameCounts = VectorI(1,1);
+						const Value::Array& array = field_instance[i]["__value"].GetArray();
+						if(array.Size() > 0 && array[0].GetInt() > 0)
+							data_out.spriteSheetFrameCounts.x = array[0].GetInt();
+						if(array.Size() > 1 && array[1].GetInt() > 0)
+							data_out.spriteSheetFrameCounts.y = array[1].GetInt();
+
 						continue;
-					}	
-					if( StringCompare("Colour", field_instance[i]["__identifier"].GetString()) )
+					}
+					else if( StringCompare("Colour", field_instance[i]["__identifier"].GetString()) )
 					{
 						// might be null, so need to check
 						if(field_instance[i]["__value"].IsString())
 						{
 							int hex = 0;
 							const char* string = field_instance[i]["__value"].GetString();
-							//int hex = std::stoi(string + 1, 0, 16);
-
 							std::stringstream ss(string + 1);
 							ss >> std::hex >> hex;
 
@@ -149,7 +147,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("UIButton", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("UIButton", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsBool())
 						{
@@ -157,7 +155,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("Callback", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("Callback", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsString())
 						{
@@ -165,7 +163,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("UID", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("UID", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsString())
 						{
@@ -173,7 +171,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("Center", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("Center", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsBool())
 						{
@@ -181,7 +179,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("PtSize", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("PtSize", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsInt())
 						{
@@ -189,7 +187,7 @@ namespace Scene
 						}
 						continue;
 					}					
-					if( StringCompare("Random", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("Random", field_instance[i]["__identifier"].GetString()) )
 					{
 						if(field_instance[i]["__value"].IsBool())
 						{
@@ -197,12 +195,12 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("Tier", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("Tier", field_instance[i]["__identifier"].GetString()) )
 					{
 						data_out.tier = field_instance[i]["__value"].GetInt();
 						continue;
 					}
-					if( StringCompare("SizeOverride", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("SizeOverride", field_instance[i]["__identifier"].GetString()) )
 					{
 						const Value::Array& array = field_instance[i]["__value"].GetArray();
 						if(array.Size() == 2)
@@ -214,7 +212,7 @@ namespace Scene
 						}
 						continue;
 					}
-					if( StringCompare("ColourType", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("ColourType", field_instance[i]["__identifier"].GetString()) )
 					{
 						rapidjson::Type ty = field_instance[i]["__value"].GetType();
 						StringBuffer32 type_string = StringBuffer32(field_instance[i]["__value"].GetString()).to_lower();
@@ -354,7 +352,7 @@ namespace Scene
 					{
 						VectorI top_left;
 						VectorI bot_right;
-						int value;
+						int value = 0;
 					};
 
 					std::vector<GridBlock> blocks;

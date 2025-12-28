@@ -1,13 +1,10 @@
 #include "pch.h"
 #include "UISystem.h"
 
-#include "ECS/Components/Components.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/SystemManager.h"
 #include "Game/Camera/Camera.h"
-#include "Game/States/GameState.h"
-#include "Game/SystemStateManager.h"
 #include "Input/Cursor.h"
 #include "System/Window.h"
 

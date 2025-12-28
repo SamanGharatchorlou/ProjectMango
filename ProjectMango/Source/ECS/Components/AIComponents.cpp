@@ -1,15 +1,8 @@
 #include "pch.h"
 #include "AIComponents.h"
 
-#include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Physics.h"
-#include "Graphics/Raycast.h"
-#include "Core/Helpers.h"
-#include "ECS/Components/Biome.h"
-
-#include "Game/SystemStateManager.h"
-#include "Game/States/GameState.h"
+#include "ECS/Components/SpacialComponents.h"
 
 namespace ECS
 {

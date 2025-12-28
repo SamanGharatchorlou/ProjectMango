@@ -5,7 +5,7 @@ struct FontManager
 	struct Key
 	{
 		BasicString name;
-		int ptSize;
+		int ptSize = 0;
 		    
 		bool operator==(const Key& other) const
 		{

@@ -2,10 +2,8 @@
 #include "Helpers.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "Graphics/Raycast.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Biome.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
 

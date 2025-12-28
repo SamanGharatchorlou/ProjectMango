@@ -97,8 +97,8 @@ private:
 private:
 	struct FolderPath
 	{
-		Folder self;
-		Folder parent;
+		Folder self = Folder::None;
+		Folder parent = Folder::None;
 		std::vector<Folder> children;
 
 		BasicString path;

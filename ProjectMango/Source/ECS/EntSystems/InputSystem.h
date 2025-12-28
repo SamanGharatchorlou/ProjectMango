@@ -11,7 +11,5 @@ namespace ECS
 		
 		void Init() override;
 		void Update(float dt) override;
-
-		//static ECS::Entity cursor;
 	};
 }

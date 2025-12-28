@@ -16,7 +16,7 @@ namespace DebugMenu
 	struct TweakerState
 	{
 		bool drawRaycasts = false;
-		bool canBuyAnyCard = true;
+		bool canBuyAnyCard = false;
 	};
 
 	TweakerState& GetState();

@@ -5,6 +5,7 @@
 #include "Game/FrameRateController.h"
 #include "Input/Cursor.h"
 #include "ECS/Components/Components.h"
+#include "ECS/Components/SpacialComponents.h"
 
 namespace ECS
 {

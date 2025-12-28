@@ -2,13 +2,9 @@
 #include "SpawnSystem.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "Entities/EntityBuilder.h"
 #include "Graphics/Raycast.h"
-#include "Core/Helpers.h"
 #include "Entities/CardRegistry.h"
 
 namespace ECS
@@ -85,7 +81,7 @@ namespace ECS
 					float alpha = (float)animator->frameIndex / (float)animation.frameCount;
 					if(Sprite* sprite = GetComponent(Sprite, spawner.spawnedEntity))
 					{
-						sprite->colourMod.a = (Uint8)(c_alphaMax * alpha);
+						sprite->params.colourMod.a = (Uint8)(c_alphaMax * alpha);
 					}
 
 					// finished spawning
@@ -93,7 +89,7 @@ namespace ECS
 					{			
 						if(Sprite* sprite = GetComponent(Sprite, spawner.spawnedEntity))
 						{
-							sprite->colourMod.a = c_alphaMax;
+							sprite->params.colourMod.a = c_alphaMax;
 						}
 						
 						finished_spawning = true;

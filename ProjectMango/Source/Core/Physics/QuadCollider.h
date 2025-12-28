@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/Components/Collider.h"
+//#include "ECS/Components/Collider.h"
 
 
 //class QuadCollider : public ECS::Collider

@@ -8,18 +8,9 @@ constexpr u32 c_RenderLayers = 10;
 struct RenderPack
 {
 	RenderPack() { }
-	RenderPack(STexture* tex, u32 renderLayer) : texture(tex), layer(renderLayer) 
-	{
-		// override if required
-		//flipPoint = box.Size() * 0.5f;
-	}
-	//RenderPack(Font* _font, RectF box, u32 renderLayer) : font(_font), rect(box), layer(renderLayer) 
-	//{
-	//	// override if required
-	//	flipPoint = box.Size() * 0.5f;
-	//}
+	RenderPack(STexture* tex, u32 renderLayer) : texture(tex), layer(renderLayer) {}
 
-	ECS::Entity entity;
+	ECS::Entity entity = ECS::EntityInvalid;
 
 	STexture* texture = nullptr;
 	const Font* font = nullptr;
@@ -33,22 +24,25 @@ struct RenderPack
 	SColour colourMod;
 };
 
-enum DebugDrawType
+namespace DebugRender
 {
-	Point,
-	Line,
-	RectOutline,
-	RectFill,
-	Quad,
-	Count
-};
+	enum DrawType
+	{
+		Point,
+		Line,
+		RectOutline,
+		RectFill,
+		Quad,
+		Count
+	};
 
-struct DebugRenderPack
-{
-	RectF rect;
-	SColour colour;
-    DebugDrawType type;
-};
+	struct RenderPack
+	{
+		RectF rect;
+		SColour colour;
+		DrawType type = DrawType::Point;
+	};
+}
 
 class RenderManager
 {
@@ -60,10 +54,10 @@ public:
 	void render();
 
 	void AddRenderPacket(RenderPack renderPacket);
-	void AddDebugRenderPacker(const DebugRenderPack& renderPack);
+	void AddDebugRenderPacker(const DebugRender::RenderPack& renderPack);
 
 private:
 	// renderlayers + the lowest
 	std::vector<RenderPack> mRenderPackets[c_RenderLayers];
-	std::vector<DebugRenderPack> mDebugRenders;
+	std::vector<DebugRender::RenderPack> mDebugRenders;
 };

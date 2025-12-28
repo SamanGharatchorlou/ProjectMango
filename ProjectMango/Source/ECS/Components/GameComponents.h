@@ -48,7 +48,7 @@ namespace ECS
 		COMPONENT_TYPE(Colour)
 
 		// probably duplicate data in some cases, like coinstack already has it, but i also need this
-		Colour::Type colour;
+		Colour::Type colour = Count;
 	};
 	
 	void AddColourPostfix(const char* postfix, Colour::Type colour, StringBuffer64& out_string);
@@ -83,6 +83,8 @@ namespace ECS
 
 		// what to pay to aquire the card
 		int cost[Colour::Count] { 0 };
+
+		std::vector<Entity> costEntities[Colour::Count];
 
 		// how many coins it provides once owned
 		int power[Colour::Count] { 0 };

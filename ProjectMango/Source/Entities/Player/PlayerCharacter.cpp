@@ -2,11 +2,7 @@
 #include "PlayerCharacter.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
-#include "ECS/Components/Biome.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "Game/Camera/Camera.h"
 #include "Entities/EntityBuilder.h"
 

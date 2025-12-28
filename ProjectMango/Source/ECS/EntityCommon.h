@@ -22,11 +22,14 @@ namespace ECS
 			_entry( Transform ) \
 			_entry( Sprite ) \
 			_entry( SpriteSheet ) \
+			_entry( SpriteCycle ) \
+			_entry( LayeredSprite ) \
+			_entry( Animator ) \
+			_entry( VFX ) \
 			_entry( Audio ) \
 			_entry( EntityState ) \
 			_entry( PlayerController ) \
 			_entry( Physics ) \
-			_entry( Animator ) \
 			_entry( Collider ) \
 			_entry( AIController ) \
 			_entry( Pathing ) \
@@ -44,10 +47,8 @@ namespace ECS
 			_entry( Card ) \
 			_entry( TurnState ) \
 			_entry( ActionRequest ) \
-			_entry( LayeredSprite ) \
 			_entry( Callback ) \
 			_entry( Colour ) \
-			_entry( SpriteCycle ) \
 			_entry( AIIntent ) \
 			_entry( Target ) \
 			_entry( BehaviourMap ) \

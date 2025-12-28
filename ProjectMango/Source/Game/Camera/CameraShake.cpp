@@ -4,12 +4,12 @@
 // doesnt work, ends at an offset, need to come back to x = 0
 static float easeInOutBack(float x)
 {
-	const float c1 = 1.70158;
-	const float c2 = c1 * 1.525;
+	const float c1 = 1.70158f;
+	const float c2 = c1 * 1.525f;
 
-	return x < 0.5
-	  ? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
-	  : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+	return x < 0.5f
+	  ? (pow(2.0f * x, 2.0f) * ((c2 + 1.0f) * 2.0f * x - c2)) / 2.0f
+	  : (pow(2.0f * x - 2.0f, 2.0f) * ((c2 + 1) * (x * 2.0f - 2.0f) + c2) + 2.0f) / 2.0f;
 }
 
 static float sine(float x)

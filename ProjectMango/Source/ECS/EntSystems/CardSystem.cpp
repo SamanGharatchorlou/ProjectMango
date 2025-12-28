@@ -2,16 +2,13 @@
 #include "CardSystem.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
-#include "ECS/Components/UIComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "Core/Helpers.h"
 
 namespace ECS
 {
 	void CardSystem::Update(float dt)
 	{
-
 		UICursor* cursor = UICursor::Get();
 		for (Entity entity : entities)
 		{
@@ -31,6 +28,39 @@ namespace ECS
 				}
 
 				state.next = Action::Inactive;
+			}
+								
+			for( int i = 0; i < Colour::Count; i++ )
+			{
+				std::vector<Entity>& cost_entities = card.costEntities[i];
+				for( int j = 0; j < cost_entities.size(); j++ )
+				{
+					Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+					sprite.SetTexture("cost_empty");
+				}
+			}
+
+			Entity player = Target::GetPlayer();
+			if(Inventory* inventory = GetComponent(Inventory, player))
+			{
+				int buying_power[Colour::Count];
+				inventory->GetBuyingPower(buying_power, Colour::Count);
+
+				for( int i = 0; i < Colour::Count; i++ )
+				{
+					if(card.cost[i] == 0)
+						continue;
+
+					std::vector<Entity>& cost_entities = card.costEntities[i];
+					for( int j = 0; j < buying_power[i]; j++ )
+					{
+						if(cost_entities.size() > j)
+						{
+							Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+							sprite.SetTexture("cost_filled");
+						}
+					}
+				}
 			}
 		}
 	}

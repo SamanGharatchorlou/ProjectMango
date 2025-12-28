@@ -6,8 +6,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/TextureManager.h"
 #include "Game/FrameRateController.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Components.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "Graphics/RenderManager.h"
 #include "ECS/EntSystems/RenderSystem.h"
 
@@ -80,12 +79,12 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			
 		if (ImGui::TreeNode("Component Data"))
 		{
-			StringBuffer64 spriteName = TextureManager::Get()->getTextureName(sprite.texture);
+			StringBuffer64 spriteName = TextureManager::Get()->getTextureName(sprite.image.texture);
 			if (spriteName.empty())
 				spriteName = "No sprite";
 			ImGui::Text("Sprite: %s", spriteName.c_str());
 
-			ImGui::Text(sprite.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");
+			ImGui::Text(sprite.params.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");
 
 			ImGui::Checkbox("Flip override", &s_flipOverride);
 
@@ -102,12 +101,12 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			// messing around with the flip here... could break it
 			if(s_flipOverride)
 			{
-				sprite.canFlip = false;
-				sprite.flip = s_spriteFlip;
+				sprite.params.canFlip = false;
+				sprite.params.flip = s_spriteFlip;
 			}
 
 			
-			ImGui::Text("rotation: %f", sprite.rotation);
+			ImGui::Text("rotation: %f", sprite.params.rotation);
 
 			ImGui::TreePop();
 		}

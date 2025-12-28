@@ -5,8 +5,7 @@
 #include "Debugging/ImGui/ImGuiHelpers.h"
 #include "Graphics/RenderManager.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
+#include "ECS/Components/SpacialComponents.h"
 
 void DebugMenu::DrawCollider(const ECS::Collider& collider)
 {
@@ -52,7 +51,7 @@ void DebugMenu::DrawCollider(const ECS::Collider& collider)
     }
 	else
 	{
-		DebugDraw::Shape(DebugDrawType::RectOutline, collider.rect, colour);
+		DebugDraw::Shape(DebugRender::DrawType::RectOutline, collider.rect, colour);
 	}
 }
 

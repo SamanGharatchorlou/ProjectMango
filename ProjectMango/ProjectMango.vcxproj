@@ -149,6 +149,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ECS\Components\GraphicComponents.cpp" />
+    <ClCompile Include="Source\ECS\Components\SpacialComponents.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp" />
     <ClCompile Include="Source\Entities\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
@@ -170,8 +172,6 @@
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp" />
     <ClCompile Include="Source\Entities\CallbackBindings.cpp" />
     <ClCompile Include="Source\Entities\CardRegistry.cpp" />
-    <ClCompile Include="Source\Entities\Enemies\BlindingSpiderEnemy.cpp" />
-    <ClCompile Include="Source\Entities\Enemies\ShockSweeperEnemy.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp" />
     <ClCompile Include="Source\Entities\States\Behaviours.cpp" />
     <ClCompile Include="Source\Core\BasicString.cpp" />
@@ -203,12 +203,8 @@
     <ClCompile Include="Source\Debugging\MemTrack.cpp" />
     <ClCompile Include="Source\Debugging\PerformanceProfiler.cpp" />
     <ClCompile Include="Source\ECS\Components\AIComponents.cpp" />
-    <ClCompile Include="Source\ECS\Components\Animator.cpp" />
-    <ClCompile Include="Source\ECS\Components\Collider.cpp" />
     <ClCompile Include="Source\ECS\Components\Components.cpp" />
     <ClCompile Include="Source\ECS\Components\ComponentsSetup.cpp" />
-    <ClCompile Include="Source\ECS\Components\Biome.cpp" />
-    <ClCompile Include="Source\ECS\Components\Physics.cpp" />
     <ClCompile Include="Source\ECS\EntityCoordinator.cpp" />
     <ClCompile Include="Source\ECS\EntityManager.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\AIControllerSystem.cpp" />
@@ -280,6 +276,9 @@
     <ClCompile Include="ThirdParty\imgui_sdl-master\imgui_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ECS\Components\GraphicComponents.h" />
+    <ClInclude Include="Source\ECS\Components\IncludeComponents.h" />
+    <ClInclude Include="Source\ECS\Components\SpacialComponents.h" />
     <ClInclude Include="Source\ECS\EntSystems\CardSystem.h" />
     <ClInclude Include="Source\Entities\MonsterRegistry.h" />
     <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
@@ -299,8 +298,6 @@
     <ClInclude Include="Source\ECS\EntSystems\TurnActionSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h" />
     <ClInclude Include="Source\Entities\CardRegistry.h" />
-    <ClInclude Include="Source\Entities\Enemies\BlindingSpiderEnemy.h" />
-    <ClInclude Include="Source\Entities\Enemies\ShockSweeperEnemy.h" />
     <ClInclude Include="Source\Entities\Player\PlayerCharacter.h" />
     <ClInclude Include="Source\Entities\States\Behaviours.h" />
     <ClInclude Include="Source\Core\BasicString.h" />
@@ -342,12 +339,8 @@
     <ClInclude Include="Source\ECS\ComponentArray.h" />
     <ClInclude Include="Source\ECS\ComponentManager.h" />
     <ClInclude Include="Source\ECS\Components\AIComponents.h" />
-    <ClInclude Include="Source\ECS\Components\Animator.h" />
-    <ClInclude Include="Source\ECS\Components\Collider.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\ComponentsSetup.h" />
-    <ClInclude Include="Source\ECS\Components\Biome.h" />
-    <ClInclude Include="Source\ECS\Components\Physics.h" />
     <ClInclude Include="Source\ECS\EntityCommon.h" />
     <ClInclude Include="Source\ECS\EntityCoordinator.h" />
     <ClInclude Include="Source\ECS\EntityManager.h" />

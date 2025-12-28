@@ -85,10 +85,4 @@ namespace ImGui
 
 		ImGui::PopID();
 	}
-
-	static void DoDebugRenderTypeDropDown(DebugDrawType& type) 
-	{
-        const char* arrayDebugDrawType[4] = { "Point", "Line", "RectOutline", "RectFill"};
-		ImGui::Combo("Draw Types", (int*)&type, arrayDebugDrawType, 4);
-	}
 }

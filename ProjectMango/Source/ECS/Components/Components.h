@@ -1,9 +1,6 @@
 #pragma once
 
-//#include "Core/stack.h"
 #include "ComponentHelpers.h"
-
-class STexture;
 
 // when adding a component, define it in EntityCommon.h
 // then setup how its updated in ComponentsSetup
@@ -11,7 +8,6 @@ class STexture;
 // more generic components go here
 namespace ECS
 {
-	struct Collider;
 
 	struct EntityData
 	{
@@ -27,112 +23,6 @@ namespace ECS
 		static void SetParent(Entity entity, Entity parent);
 	};
 
-	struct Transform
-	{
-		COMPONENT_TYPE(Transform)
-
-		Transform();
-
-		// top left
-		VectorF targetWorldPosition;
-		VectorF worldPosition;
-		VectorF localPosition;
-
-		VectorF renderOffset;
-		VectorF size;
-
-		// set through the anim config, might not be the technical center, 
-		// but it should be the visual one (relative value)
-		VectorF center;
-
-		bool ignoreOutOfBounds;
-		
-		void Init(const EntityMetaData* emd, Collider& collider);
-		void Init(const EntityMetaData* emd);
-
-		void SetLocalPosition(VectorF pos);
-		void SetWorldPosition(VectorF pos);
-		void SetWorldRect(const VectorF& pos, const VectorF& size);
-
-		void SetObjectCenter(VectorF pos);
-		RectF GetObjectRect() const;
-
-		VectorF GetHorizontalFlipPoint() const;
-		//VectorF GetRelativeObjectCenter() const;
-		VectorF GetObjectCenter() const;
-		RectF GetRect() const;
-
-		VectorF GetRelativePosition(VectorF relative) const;
-
-		static VectorF GetObjectCenter(ECS::Entity entity);
-	};
-
-	struct Sprite
-	{
-		COMPONENT_TYPE(Sprite)
-
-		Sprite();
-
-		BasicString Id;
-		BasicString debugID;
-
-		RectF subRect;
-		STexture* texture;
-		
-		SColour colourMod;
-		SDL_RendererFlip flip;
-		
-		// in degress (because of the render function input)
-		float rotation; 
-		RenderLayer renderLayer;
-
-		bool disabled;
-		bool canFlip;
-		
-		void Init();
-		bool IsFlipped() const { return flip == SDL_FLIP_HORIZONTAL; }
-
-		void SetTexture(const char* label);
-	};
-
-	// simple sprite sheet, 1 row
-	struct SpriteSheet
-	{
-		COMPONENT_TYPE(SpriteSheet)
-
-		BasicString Id;
-		STexture* texture;
-
-		int count = 0;
-		int index = 0;
-
-		VectorF frameSize;
-		RenderLayer renderLayer;
-		SColour colourMod;
-
-		void Init(const char* sprite_sheet, int count);
-	};
-	
-	struct LayeredSprite
-	{
-		COMPONENT_TYPE(LayeredSprite)
-
-		struct Layer
-		{
-			Sprite sprite;
-			RectF rect;
-		};
-
-		std::vector<Layer> spriteLayers;
-	};
-
-	struct SpriteCycle
-	{
-		COMPONENT_TYPE(SpriteCycle)
-
-		BasicString spritePrefix;
-		int index = 0;
-	};
 
 	struct Audio
 	{
@@ -143,7 +33,7 @@ namespace ECS
 		struct Group
 		{
 			std::vector<BasicString> sounds;
-			int time;
+			int time = 0;
 		};
 
 		std::unordered_map<BasicString, Group> soundEffects;
@@ -163,10 +53,7 @@ namespace ECS
 		Action::Enum current = Action::None;
 		std::vector<Action::Enum> backlog;
 
-		bool justChanged;
-		//float timeInState;
-
-		//bool mustFinishAnimation = false;;
+		bool justChanged = false;
 	};
 
 	struct Target

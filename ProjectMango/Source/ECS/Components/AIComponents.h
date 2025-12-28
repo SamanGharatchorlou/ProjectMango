@@ -75,7 +75,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(BehaviourState)
 
-		float accelleration;
+		float accelleration = 0.0f;
 
 		// time the last attack finished and the cooldown begins
 		u64 attackCooldownTimeMS = 0;

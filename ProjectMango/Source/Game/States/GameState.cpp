@@ -2,20 +2,18 @@
 #include "GameState.h"
 
 #include "Audio/AudioManager.h"
-#include "Entities/Player/PlayerCharacter.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/Components/ComponentsSetup.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/Biome.h"
 #include "ECS/EntityCoordinator.h"
+#include "Entities/EntityBuilder.h"
+#include "Entities/Player/PlayerCharacter.h"
+#include "Entities/UIEntityBuilder.h"
 #include "Game/Camera/Camera.h"
+#include "Game/Readers/SceneReader.h"
 #include "Game/States/AnimationEditorState.h"
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
-#include "Game/Readers/SceneReader.h"
-#include "Entities/EntityBuilder.h"
-#include "Entities/UIEntityBuilder.h"
 #include "System/Window.h"
-#include "ECS/Components/Physics.h"
 
 void GameState::Init()
 {

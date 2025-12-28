@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ECS/EntityCommon.h"
+#include "ComponentHelpers.h"
+
+class STexture;
 
 namespace ECS
 {
-	struct Transform; 
-
 	struct Collider
 	{
 		COMPONENT_TYPE(Collider)
@@ -112,5 +112,133 @@ namespace ECS
 		VectorF relative_size = VectorF(1,1);
 
 		void UpdateRectFromBase();
+	};
+
+
+	struct Transform
+	{
+		COMPONENT_TYPE(Transform)
+
+		Transform();
+
+		// top left
+		VectorF targetWorldPosition;
+		VectorF worldPosition;
+		VectorF localPosition;
+
+		VectorF renderOffset;
+		VectorF size;
+
+		// set through the anim config, might not be the technical center, 
+		// but it should be the visual one (relative value)
+		VectorF center;
+
+		bool ignoreOutOfBounds;
+		
+		void Init(const EntityMetaData* emd, Collider& collider);
+		void Init(const EntityMetaData* emd);
+
+		void SetLocalPosition(VectorF pos);
+		void SetWorldPosition(VectorF pos);
+		void SetWorldRect(const VectorF& pos, const VectorF& size);
+
+		void UpdateChildTransforms();
+
+		void SetObjectCenter(VectorF pos);
+		RectF GetObjectRect() const;
+
+		VectorF GetHorizontalFlipPoint() const;
+		VectorF GetObjectCenter() const;
+		RectF GetRect() const;
+
+		VectorF GetRelativePosition(VectorF relative) const;
+
+		static VectorF GetObjectCenter(ECS::Entity entity);
+	};
+
+
+	struct Physics
+	{
+		COMPONENT_TYPE(Physics)
+
+		VectorF speed;
+		float maxSpeed = 0.0f;	
+		float acceleration = 0.0f;
+
+		float drag = 0.0f;
+		float mass = 1.0f;
+
+		bool applyGravity = false;
+		bool onFloor = false;
+
+		void Init();
+	};
+
+
+	struct TileSet
+	{
+		STexture* texture = nullptr;
+
+		VectorF mapSize;
+		VectorF tileSize;
+	};
+
+	struct Layer
+	{
+		struct Tile
+		{
+			VectorF draw_pos;
+			VectorF tileset_pos;
+		};
+
+		std::vector<Tile> tiles;
+		VectorF tileSize;
+
+		TileSet* tileSet = nullptr;
+	};
+
+	struct Level
+	{
+		VectorF worldPos;
+		VectorF size;
+
+		u32 index = 0;
+
+		BasicString id;
+
+		std::vector<Layer> layers;
+		std::vector<ECS::Entity> colliders;
+
+		Grid<int> walkableTiles;
+
+		// can i assign the entity a value? do i care? a string is probably fine
+
+		std::unordered_map<BasicString, std::vector<EntityMetaData>> entities;
+
+		VectorI GetTileIndex(VectorF position) const;
+		RectF GetWalkableTileRect(VectorI index) const;
+		RectF GetBounds() const;
+
+		bool IsPointInBounds(VectorF world_position) const;
+	};
+
+	struct Biome
+	{
+		COMPONENT_TYPE(Biome)
+		Biome();
+
+		std::vector<Level> levels;
+
+		VectorF aabb[2];
+
+		static const Level* GetLevelFromIndex(u32 level_index);
+		static const Level& GetLevel(ECS::Entity entity);
+		static const Level& GetLevel(VectorF position);
+		static const Level& GetVisibleLevel();
+
+		static const Entity GetActive();
+		static const Biome& GetActiveBiome();
+
+		//static bool GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos);
 	};
 }

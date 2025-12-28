@@ -1,11 +1,9 @@
 #include "pch.h"
 #include "AnimationSystem.h"
 
-#include "ECS/Components/Components.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Core/Helpers.h"
-#include "ECS/Components/Animator.h"
-#include "ECS/Components/Collider.h"
 
 namespace ECS
 {
@@ -80,7 +78,7 @@ namespace ECS
 			else
 				UpdateAnimator(animator, dt);
 
-			animator.SetActiveSpriteFrame(sprite);
+			//animator.SetActiveSpriteFrame(sprite);
 		}
 	}
 }

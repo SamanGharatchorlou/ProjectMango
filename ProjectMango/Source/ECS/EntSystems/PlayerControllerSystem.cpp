@@ -4,9 +4,6 @@
 #include "ECS/Components/Components.h"
 #include "ECS/EntityCoordinator.h"
 #include "Input/InputManager.h"
-#include "ECS/Components/Physics.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Biome.h"
 #include "Game/Camera/Camera.h"
 
 
