@@ -59,6 +59,7 @@ namespace ECS
 			LungeAttack,
 			FloorSlam,
 
+			Hurting,
 			TakeHit,
 			Death,
 
@@ -80,23 +81,23 @@ namespace ECS
 		BasicString uid;
 		BasicString callback;
 
-		// generic type e.g. Rune_Rebound, this would be Rune
-		// then id would be RuneRebound
-		BasicString type;
-
 		VectorF position;
 		VectorF size;
 		VectorF pivotPoint;
-
-		BasicString spriteSheetId;
-		VectorI spriteSheetFrameCounts = VectorI(1,1);
-
+		
 		BasicString spriteId;
+		BasicString spriteSheetId;
+		BasicString animatorId;
+
+		VectorI spriteSheetFrameCounts = VectorI(1,1);
 		SColour colourMod;
 		int colourType = -1;
 
 		int PtSize = -1;
 		int tier = -1;
+
+		// player = 1, enemy = 2
+		int faction = 0;
 
 		// base indentifier i.e. 'button', 'player'
 		std::vector<BasicString> tags;
@@ -104,6 +105,7 @@ namespace ECS
 		bool isButton = false;
 		bool center = false;
 		bool random = false;
+		bool snapToFloor = false;
 	};
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);

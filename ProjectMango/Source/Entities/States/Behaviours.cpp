@@ -47,8 +47,8 @@ namespace Actor
 			{
 				asd.didHit = true;
 
-				const Target& target = GetComponentRef(Target, entity);
-				Entity target_entity = target.GetTarget();
+				const Faction& faction = GetComponentRef(Faction, entity);
+				Entity target_entity = faction.GetTarget();
 				if(target_entity != EntityInvalid)
 				{
 					if(const Damage* damage = GetComponent(Damage, entity))
@@ -60,7 +60,6 @@ namespace Actor
 					VectorF position = GetPosition(target_entity);
 					Camera::Get()->AddShake(0.5f, position);
 				}
-
 			}
 		}
 

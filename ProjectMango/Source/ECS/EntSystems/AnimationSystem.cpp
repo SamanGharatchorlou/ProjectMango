@@ -13,7 +13,8 @@ namespace ECS
 		if(animator.state == TimeState::Running)
 			animator.timer += dt;
 
-		Animation& active_animation = animator.animations[animator.activeAnimation];
+		const Animation& active_animation = animator.animations->at(animator.activeAnimation);
+		const float frame_time = active_animation.frameTime * ( 1 + animator.randomisedFrameTimeVariation);
 
 		int next_frame = animator.frameIndex;
 		if(animator.timer > active_animation.frameTime)
@@ -37,9 +38,9 @@ namespace ECS
 
 	void StartAnimation(Animator& animator, Action::Enum action)
 	{
-		for( u32 i = 0; i < animator.animations.size(); i++ )
+		for( u32 i = 0; i < animator.animations->size(); i++ )
 		{
-			if(animator.animations[i].action == action)
+			if(animator.animations->at(i).action == action)
 			{
 				animator.state = TimeState::Running;
 
@@ -63,22 +64,17 @@ namespace ECS
 			if(IsSelectedDebugEntity(entity))
 				int a = 4;
 
-			Transform& transform = GetComponentRef(Transform, entity);
 			Animator& animator = GetComponentRef(Animator, entity);
-			Sprite& sprite = GetComponentRef(Sprite, entity);
-
 			if(!animator.IsValid())
 				continue;
 			
-			Animation& active_animation = animator.animations[animator.activeAnimation];
+			const Animation& active_animation = animator.animations->at(animator.activeAnimation);
 
-			EntityState& character_state = GetComponentRef(EntityState, entity);
-			if(character_state.current != active_animation.action)
-				StartAnimation(animator, character_state.current);
+			EntityState* character_state = GetComponent(EntityState, entity);
+			if( character_state && (character_state->current != active_animation.action) )
+				StartAnimation(animator, character_state->current);
 			else
 				UpdateAnimator(animator, dt);
-
-			//animator.SetActiveSpriteFrame(sprite);
 		}
 	}
 }

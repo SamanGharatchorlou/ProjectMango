@@ -4,6 +4,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Core/Helpers.h"
+#include "Entities/ResourceBank.h"
 
 namespace ECS
 {
@@ -45,7 +46,7 @@ namespace ECS
 				*intent = AIIntent();
 
 				// grab the target if it has one
-				Entity target = Target::GetTarget(entity);
+				Entity target = Faction::GetTarget(entity);
 
 				if(target != EntityInvalid)
 				{
@@ -88,8 +89,9 @@ namespace ECS
 						action_request.request = ActionRequest::CollectCoin;
 
 						int random_colur = Maths::randomNumberBetween(0, Colour::Count);
-						CoinStack* cs = CoinStack::GetCoinStack((Colour::Type)random_colur);
-						action_request.target = cs->entity; 
+						
+						CoinStack& cs = GetCoinStack(Faction::None, random_colur);
+						action_request.target = cs.entity; 
 					}
 					else
 					{

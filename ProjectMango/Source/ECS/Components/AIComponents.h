@@ -40,6 +40,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(AIIntent)
 
+		bool wantsToBeInactive = false;
+
 		bool wantsToFaceTarget = false;
 		bool wantsToMove = false;
 		bool wantsToAttack = false;
@@ -67,7 +69,6 @@ namespace ECS
 		VectorF hitBoxSize = VectorF(1.0f, 1.0f);
 		int hitFrame = 0;
 		bool didHit = false;
-
 	};
 
 	// pass/get this data when running behaviours from the behaviour map

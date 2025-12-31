@@ -17,7 +17,7 @@ u32 DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 	{
 		ECS::AIController& aic = GetComponentRef(AIController, entity);
 		
-		Entity target = Target::GetTarget(entity);
+		Entity target = Faction::GetTarget(entity);
 
 		const VectorF distance = GetPosition(entity) - GetPosition(target);
 		const float target_distance = distance.length();

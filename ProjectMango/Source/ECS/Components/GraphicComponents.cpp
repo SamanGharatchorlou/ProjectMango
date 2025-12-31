@@ -40,22 +40,22 @@ namespace ECS
 	// ------------------------------------------------------------------
 	void SpriteSheet::Init(VectorI frame_counts)
 	{
-		frame.counts = frame_counts;
+		frame.gridCount = frame_counts;
 		Sprite* sprite = GetComponent(Sprite, entity);
 		if(sprite && sprite->image.texture)
-			frame.size = sprite->image.texture->originalDimentions / frame_counts.toFloat();
+			frame.frameSize = sprite->image.texture->originalDimentions / frame_counts.toFloat();
 	}
 
 	bool SpriteSheet::HasValidFrameIndex() const
 	{
-		return index >= 0 && index < (frame.counts.x * frame.counts.y);
+		return index >= 0 && index < (frame.gridCount.x * frame.gridCount.y);
 	}
 	
 	RectF SpriteSheetFrame::GetFrameRect(int frame_index) const
 	{
-		VectorI index = IndexToGrid(frame_index, counts.x);
-		VectorF top_left = size * index.toFloat();
-		return RectF( top_left, size);
+		VectorI index = IndexToGrid(frame_index, gridCount.x);
+		VectorF top_left = frameSize * index.toFloat();
+		return RectF( top_left, frameSize);
 	}
 
 	
@@ -63,41 +63,61 @@ namespace ECS
 	// ------------------------------------------------------------------
 	void Animator::Init()
 	{
-		const Config* config = GetConfigFromEntity(entity);
-		if(!config)
-			return;
+		const char* id = GetName(entity);
+		const char* animation = id;
 
-		const char* animation = config->data.GetString("animation");
-		AnimationReader::BuildAnimatior( entity, animation );
+		const Config* config = GetConfigFromEntity(entity);
+		if(config)
+		{
+			animation = config->data.GetString("animation", id);
+		}
+		
+		AnimationReader::BuildAnimator( entity, animation );
+
 		activeAnimation = 0;
 		state = TimeState::Running;
 
-		if (config->data.GetBool("randomise_frame_start"))
+		if(config)
 		{
-			int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
-			frameIndex = frame_start;
-		}
+			if (config->data.GetBool("randomise_frame_start"))
+			{
+				int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
+				frameIndex = frame_start;
+			}
 
-		if (config->data.Contains("randomise_frame_speed"))
-		{
-			float variation = config->data.GetFloat("randomise_frame_speed");
-			int var_range = (int)(variation * 100.0f);
-			int value = rand() % (int)(var_range * 2);
-			float diff = (float)(value - var_range) / 100.0f;
-
-			ECS::Animation& animation = animations[activeAnimation];
-			animation.frameTime = animation.frameTime + (diff * animation.frameTime);
-		}
+			if (config->data.Contains("randomise_frame_speed"))
+			{
+				float variation = config->data.GetFloat("randomise_frame_speed");
+				int var_range = (int)(variation * 100.0f);
+				int value = rand() % (int)(var_range * 2);
+				randomisedFrameTimeVariation = (float)(value - var_range) / 100.0f;
+			}
 		
-		if (config->data.GetBool("randomise_animation", false))
-		{
-			activeAnimation = Maths::randomNumberBetween(0, (int)animations.size());
+			if (config->data.GetBool("randomise_animation", false))
+			{
+				activeAnimation = Maths::randomNumberBetween(0, (int)animations->size());
+			}
 		}
+
+		if(!IsValid())
+			DebugPrint(Log, "Entity %s has invalid animaton", id );
+	}
+
+	void Animator::Init(const EntityMetaData& emd)
+	{
+		const char* animation = emd.animatorId.c_str();
+		AnimationReader::BuildAnimator( entity, animation );		
+		
+		activeAnimation = 0;
+		state = TimeState::Running;
+
+		if(!IsValid())
+			DebugPrint(Log, "Entity %s has invalid animaton", GetName(entity) );
 	}
 
 	bool Animator::IsValid() const
 	{
-		return animations.size() > 0;
+		return animations && animations->size() > 0;
 	}
 
 	RectF Animator::GetActiveSubRect() const
@@ -105,7 +125,7 @@ namespace ECS
 		if(!IsValid())
 			return InvalidRectF;
 
-		const Animation& animation = animations[activeAnimation];
+		const Animation& animation = (*animations)[activeAnimation];
 		int active_frame_index = animation.startIndex + frameIndex;
 		if(animation.reversing)
 		{
@@ -117,18 +137,21 @@ namespace ECS
 
 	void Animator::StartAnimation(Action::Enum action)
 	{
-		for( u32 i = 0; i < animations.size(); i++ )
+		if(animations)
 		{
-			if(animations[i].action == action)
+			for( u32 i = 0; i < animations->size(); i++ )
 			{
-				state = TimeState::Running;
+				if( (*animations)[i].action == action)
+				{
+					state = TimeState::Running;
 
-				activeAnimation = i;
-				frameIndex = 0;
-				loopCount = 0;
-				timer = 0;
+					activeAnimation = i;
+					frameIndex = 0;
+					loopCount = 0;
+					timer = 0;
 
-				return;
+					return;
+				}
 			}
 		}
 
@@ -138,16 +161,16 @@ namespace ECS
 	const Animation& Animator::GetActiveAnimation() const
 	{
 		ASSERT(IsValid(), "Invalid animator, cannot get active animation");
-		return animations[activeAnimation];
+		return (*animations)[activeAnimation];
 	}
 
 	const Animation* Animator::GetAnimation(Action::Enum action) const
 	{
-		for( u32 i = 0; i < animations.size(); i++ )
+		for( u32 i = 0; i < animations->size(); i++ )
 		{
-			if(animations[i].action == action)
+			if( (*animations)[i].action == action)
 			{
-				return &animations[i];
+				return &(*animations)[i];
 			}
 		}
 
@@ -156,6 +179,14 @@ namespace ECS
 
 	bool Animator::OnLastFrame() const
 	{
-		return frameIndex == animations[activeAnimation].frameCount - 1;
+		return frameIndex == (*animations)[activeAnimation].frameCount - 1;
+	}
+
+	bool operator == (const Animation& a, const Animation& b)
+	{
+		return a.image.texture == b.image.texture && 
+			a.startIndex == b.startIndex &&
+			a.frameCount == b.frameCount &&
+			a.reversing == b.reversing;
 	}
 }

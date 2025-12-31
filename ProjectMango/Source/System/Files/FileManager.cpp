@@ -151,10 +151,8 @@ bool FileManager::IsValidPath(const char* path) const
 	return fs::exists(fs::path(path));
 }
 
-BasicString FileManager::findFile(const Folder folder, const char* name) const
+bool FileManager::FindFile(const Folder folder, const char* name, BasicString& out_file) const
 {
-	BasicString outPath("");
-
 	fs::path folder_path = fsPath(folder);
 	if (!folder_path.empty())
 	{
@@ -162,20 +160,22 @@ BasicString FileManager::findFile(const Folder folder, const char* name) const
 		{
 			if (!fs::is_directory(directoryPath) && StringCompare(getItemName(directoryPath.path()).c_str(), name))
 			{
-				outPath = pathToString(directoryPath.path());
+				out_file = pathToString(directoryPath.path());
 			}
 			else if (fs::is_directory(directoryPath))
 			{
-				outFilePath(outPath, directoryPath.path(), name);
+				outFilePath(out_file, directoryPath.path(), name);
 			}
-
-			if (!outPath.empty())
-				return outPath;
+			bool empt = out_file.empty();
+			if (!out_file.empty())
+			{
+				return true;
+			}
 		}
 	}
 
 	DebugPrint(Warning, "No file named '%s' was found in the folder '%s'", name, folderPath(folder).c_str());
-	return outPath;
+	return !out_file.empty();
 }
 
 BasicString FileManager::findFileEtx(const Folder folder, const char* name) const

@@ -50,7 +50,7 @@ namespace ECS
 			_entry( Callback ) \
 			_entry( Colour ) \
 			_entry( AIIntent ) \
-			_entry( Target ) \
+			_entry( Faction ) \
 			_entry( BehaviourMap ) \
 			_entry( BehaviourState ) \
 

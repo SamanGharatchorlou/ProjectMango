@@ -58,10 +58,6 @@ namespace ECS
 		COMPONENT_TYPE(CoinStack)
 
 		Colour::Type colourType = Colour::Count;
-		
-		// sprite = spritePrefix + remaining
-		// e.g. spritePrefix = "BlueCoin" then we have sprite = "BlueCoin2"
-		//BasicString spritePrefix;
 
 		int capacity = -1;
 		int remaining = -1;
@@ -70,7 +66,11 @@ namespace ECS
 		// better way to do this, but i dont want to make a new component just for this
 		bool isInventory = false;
 
-		static CoinStack* GetCoinStack(Colour::Type type);
+		Entity owner = EntityInvalid;
+
+		std::vector<Entity> costEntities;
+
+		//static CoinStack* GetCoinStack(Colour::Type type, u32 faction_team);
 	};
 
 	struct Card

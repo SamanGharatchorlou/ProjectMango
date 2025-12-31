@@ -10,21 +10,12 @@ namespace MonsterRegistry
 	void Build(const char* file)
 	{
 		using namespace rapidjson;
-
-		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
-		if(full_path.length() == 0)
-		{
-			DebugPrint(PriorityLevel::Log, "Registry file does not exist: '%s'", file);
-			return;
-		}
-
-		JSONParser parser(full_path.c_str());
 		
-		if(!parser.document.IsObject())
-		{
-			DebugPrint(PriorityLevel::Warning, "Invalid registry document: %s", full_path.c_str());
+		BasicString file_path;
+		FileManager::Get()->FindFile(FileManager::Configs, file, file_path);
+		JSONParser parser(file_path.c_str());
+		if(!parser.IsValid())
 			return;
-		}
 
 		if(parser.document.HasMember("Monsters"))
 		{
@@ -74,6 +65,9 @@ namespace MonsterRegistry
 			if(s_monsterRegistry[i].points == points)
 				valid_indexes.push_back(i);
 		}
+
+		if(valid_indexes.size() == 0)
+			return -1;
 
 		int random_index = Maths::randomNumberBetween( 0, (int)valid_indexes.size());
 		return valid_indexes[random_index];

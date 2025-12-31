@@ -8,7 +8,6 @@
 // more generic components go here
 namespace ECS
 {
-
 	struct EntityData
 	{
 		COMPONENT_TYPE(EntityData)
@@ -20,9 +19,8 @@ namespace ECS
 		ECS::Entity parent;
 		std::vector<Entity> children;
 
-		static void SetParent(Entity entity, Entity parent);
+		static void SetParent(Entity child, Entity parent);
 	};
-
 
 	struct Audio
 	{
@@ -56,19 +54,32 @@ namespace ECS
 		bool justChanged = false;
 	};
 
-	struct Target
+	struct Faction
 	{
-		COMPONENT_TYPE(Target)
+		COMPONENT_TYPE(Faction)
+			
+		enum Team
+		{
+			None,
+			Player,
+			Enemy,
+			Count
+		};
 
-		Entity targetEntity = EntityInvalid;
-		bool isEnemy = false;
-		bool isPlayer = false;
+		//Entity targetEntity = EntityInvalid;
+		Team team; 
 
 		Entity GetTarget() const;
 		static Entity GetTarget(Entity entity);
 
 		static Entity GetPlayer();
 		static Entity GetEnemy();
+		static Team GetTeam(Entity entity);
+
+		static void SetAsHostileFaction(Entity entity, Faction& hostile_faction);
+		static void SetAsAlliedFaction(Entity entity, Faction& hostile_faction);
+
+		static void DebugGetFactionName(Entity entity, BasicString& name);
 	};
 
 	struct PlayerController // more like a tag "I am a player"
@@ -120,9 +131,12 @@ namespace ECS
 
 		// kill at animator loop count
 		int deathLoops = -1;
+		Action::Enum action = Action::Death;
 
 		// kill on timer
 		float deathTimer = -FLT_MAX;
+
+		float fadeOutTime = 0.0f;
 		
 		void Update(float dt);
 		bool CanDie();

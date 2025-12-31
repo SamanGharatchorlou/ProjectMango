@@ -1,0 +1,38 @@
+{
+	"id": "Tree",
+	"frameSize_x": 112,
+	"frameSize_y": 128,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Blood Tree 1 Sprite Sheet 112x128",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 16,
+					"frameCount": 1,
+					"frameTime": 1.0
+				},
+				{
+					"action": "Idle",
+					"startIndex": 16,
+					"frameCount": 13,
+					"frameTime": 0.1
+				},
+				{
+					"action": "TakeHit",
+					"startIndex": 32,
+					"frameCount": 8,
+					"frameTime": 0.12,
+					"looping" : false
+				},
+				{
+					"action": "Hurting",
+					"startIndex": 0,
+					"frameCount": 8,
+					"frameTime": 0.1
+				}
+			]
+		}
+	]
+}

@@ -4,7 +4,6 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GraphicComponents.h"
-#include "Graphics/Raycast.h"
 #include "ECS/EntSystems/TransformSystem.h"
 
 #include "Game/Camera/Camera.h"
@@ -33,15 +32,12 @@ namespace ECS
 
 				SetWorldPosition(pos);
 
-				if(config->data.GetBool("snap_to_floor"))
-				{
-					float distance = 0.0f;
-					if( RaycastToFloor(entity, distance) )
-					{
-						// shift up 1 just so we're not inside the floor collider
-						SetWorldPosition( pos + VectorF(0.0f, distance));
-					}
-				}
+				//if(emd->snapToFloor)
+				//{
+				//	float distance = 0.0f;
+				//	if( RaycastToFloor(entity, distance) )
+				//		SetWorldPosition( pos + VectorF(0.0f, distance));
+				//}
 			}
 		}
 	}
@@ -50,6 +46,14 @@ namespace ECS
 	{
 		Init(emd);
 		collider.Init();
+		
+		//// might need to do this again to account for the collider size
+		//if(emd->snapToFloor)
+		//{
+		//	float distance = 0.0f;
+		//	if( RaycastToFloor(entity, distance) )
+		//		SetWorldPosition( worldPosition + VectorF(0.0f, distance));
+		//}
 	}
 
 	void Transform::SetWorldRect(const VectorF& _pos, const VectorF& _size)

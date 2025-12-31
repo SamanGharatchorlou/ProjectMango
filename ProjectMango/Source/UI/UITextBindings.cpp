@@ -7,13 +7,22 @@
 #include "Game/States/GameState.h"
 #include "Entities/CardRegistry.h"
 #include "ECS/Components/AIComponents.h"
+#include "Entities/ResourceBank.h"
 
 using namespace ECS;
 
 static void InventoryCoinsBindings(std::unordered_map<BasicString, std::function<BasicString(Entity entity)>>& text_bindings)
 {
 	text_bindings[ "PlayerInventoryCoins" ] =  [](Entity entity) {
-		if(Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
+		{
+			Colour::Type colour = GetComponentRef(Colour, entity).colour;
+			return BasicString(inventory->coins[colour]);
+		}
+		return BasicString(""); 
+	};
+	text_bindings[ "AIInventoryCoins" ] =  [](Entity entity) {
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetEnemy()))
 		{
 			Colour::Type colour = GetComponentRef(Colour, entity).colour;
 			return BasicString(inventory->coins[colour]);
@@ -25,7 +34,7 @@ static void InventoryCoinsBindings(std::unordered_map<BasicString, std::function
 static void TurnCoinsBindings(std::unordered_map<BasicString, std::function<BasicString(Entity)>>& text_bindings)
 {
 	text_bindings[ "PlayerTurnCoins" ] =  [](Entity entity) {
-		if(TurnState* turn_state = GetComponent(TurnState, Target::GetPlayer()))
+		if(const TurnState* turn_state = GetComponent(TurnState, Faction::GetPlayer()))
 		{
 			Colour::Type colour = GetComponentRef(Colour, entity).colour;
 			return BasicString(turn_state->collectedCoins[colour]);
@@ -34,14 +43,10 @@ static void TurnCoinsBindings(std::unordered_map<BasicString, std::function<Basi
 		return BasicString(""); };
 
 	text_bindings[ "AITurnCoins" ] =  [](Entity entity) {
-		Entity ai = Target::GetEnemy();
-		if(ai != EntityInvalid)
+		if(const TurnState* turn_state = GetComponent(TurnState, Faction::GetEnemy()))
 		{
-			if(TurnState* turn_state = GetComponent(TurnState, ai))
-			{
-				Colour::Type colour = GetComponentRef(Colour, entity).colour;
-				return BasicString(turn_state->collectedCoins[colour]);
-			}
+			Colour::Type colour = GetComponentRef(Colour, entity).colour;
+			return BasicString(turn_state->collectedCoins[colour]);
 		}
 
 		return BasicString(""); 
@@ -51,35 +56,35 @@ static void TurnCoinsBindings(std::unordered_map<BasicString, std::function<Basi
 static void CoinStackSupplyBindings(std::unordered_map<BasicString, std::function<BasicString(Entity)>>& text_bindings)
 {
 	text_bindings[ "CoinStackSupply_White" ] =  [](Entity entity) {
-		if(CoinStack* cs = CoinStack::GetCoinStack(ECS::Colour::White))
-			return BasicString(cs->remaining);
-		return BasicString(""); };
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::White);
+		return BasicString(cs.remaining); 
+	};
 
 	text_bindings[ "CoinStackSupply_Blue" ] =  [](Entity entity) {
-		if(CoinStack* cs = CoinStack::GetCoinStack(ECS::Colour::Blue))
-			return BasicString(cs->remaining);
-		return BasicString(""); };
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Blue);
+		return BasicString(cs.remaining);
+	};
 
 	text_bindings[ "CoinStackSupply_Black" ] =  [](Entity entity) {
-		if(CoinStack* cs = CoinStack::GetCoinStack(ECS::Colour::Black))
-			return BasicString(cs->remaining);
-		return BasicString(""); };
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Black);
+		return BasicString(cs.remaining); 
+	 };
 
 	text_bindings[ "CoinStackSupply_Red" ] =  [](Entity entity) {
-		if(CoinStack* cs = CoinStack::GetCoinStack(ECS::Colour::Red))
-			return BasicString(cs->remaining);
-		return BasicString(""); };
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Red);
+		return BasicString(cs.remaining); 
+	 };
 
 	text_bindings[ "CoinStackSupply_Green" ] =  [](Entity entity) {
-		if(CoinStack* cs = CoinStack::GetCoinStack(ECS::Colour::Green))
-			return BasicString(cs->remaining);	
-		return BasicString(""); };
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Green);
+		return BasicString(cs.remaining); 
+	};
 }
 
 static void CardPowerBindings(std::unordered_map<BasicString, std::function<BasicString(Entity)>>& text_bindings)
 {
 	text_bindings[ "PlayerCardPower" ] =  [](Entity entity) {
-		if(Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
 		{
 			int card_power[Colour::Count];
 			inventory->GetCardPower(card_power, Colour::Count);
@@ -90,9 +95,7 @@ static void CardPowerBindings(std::unordered_map<BasicString, std::function<Basi
 		return BasicString(""); 
 	};
 	text_bindings[ "AICardPower" ] =  [](Entity entity) {
-		
-		Entity ai = Target::GetEnemy();
-		if(Inventory* inventory = GetComponent(Inventory, ai))
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetEnemy()))
 		{
 			int card_power[Colour::Count];
 			inventory->GetCardPower(card_power, Colour::Count);
@@ -108,12 +111,11 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 {
 	InventoryCoinsBindings(text_bindings);
 	TurnCoinsBindings(text_bindings);
-	//CoinStackSupplyBindings(text_bindings);
 	CardPowerBindings(text_bindings);
 
 	text_bindings[ "TurnNumber" ] =  [](Entity entity) {
-		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(GameState* game_state = dynamic_cast<GameState*>(&state))
+		const State& state = GameData::Get().systemStateManager->mStates.getActiveState();
+		if(const GameState* game_state = dynamic_cast<const GameState*>(&state))
 		{
 			char buffer[32];
 			snprintf(buffer, 32, "Turn: %d", game_state->turnIndex + 1);
@@ -124,13 +126,12 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	};
 
 	text_bindings[ "GameOverResult" ] =  [](Entity entity) {
-		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(GameState* game_state = dynamic_cast<GameState*>(&state))
+		const State& state = GameData::Get().systemStateManager->mStates.getActiveState();
+		if(const GameState* game_state = dynamic_cast<const GameState*>(&state))
 		{
 			if(game_state->gameOver)
 			{
-				Entity ai = Target::GetEnemy();
-				if(ECS::Health* health = GetComponent(Health, ai))
+				if(const ECS::Health* health = GetComponent(Health, Faction::GetEnemy()))
 				{
 					if(health->currentHealth <= 0)
 					{
@@ -141,7 +142,7 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 					}
 				}
 				
-				if(ECS::Health* health = GetComponent(Health, Target::GetPlayer()))
+				if(const ECS::Health* health = GetComponent(Health, Faction::GetPlayer()))
 				{
 					if(health->currentHealth <= 0)
 					{
@@ -158,7 +159,7 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	};
 
 	text_bindings[ "PlayerPoints" ] =  [](Entity entity) {
-		if(Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
 		{
 			int total_points = 0;
 			for( int card_index : inventory->cards )
@@ -176,9 +177,7 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	};
 
 	text_bindings[ "AIPoints" ] =  [](Entity entity) {
-		
-		Entity ai = Target::GetEnemy();
-		if(Inventory* inventory = GetComponent(Inventory, ai))
+		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetEnemy()))
 		{
 			int total_points = 0;
 			for( int card_index : inventory->cards )

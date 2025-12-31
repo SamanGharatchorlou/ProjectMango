@@ -1,6 +1,0 @@
-{
-	"id" : "PlayerSpawner",
-	"animation": "WarpAnimations",
-	"size": [112, 164],
-	"snap_to_floor": true
-}

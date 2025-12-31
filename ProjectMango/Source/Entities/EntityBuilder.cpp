@@ -8,6 +8,9 @@
 #include "Entities/States/Behaviours.h"
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Graphics/Raycast.h"
+#include "Entities/ResourceBank.h"
 
 using namespace ECS;
 
@@ -50,10 +53,12 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 	}
 	
 	// Sprite
-	bool requires_sprite = config || !emd.spriteId.empty() || !emd.spriteSheetId.empty();
+	bool requires_sprite = config || !emd.spriteId.empty() || !emd.spriteSheetId.empty() || !emd.animatorId.empty();
 	if(requires_sprite)
 	{
+		bool has_sprite = !emd.spriteId.empty();
 		bool is_sprite_sheet = !emd.spriteSheetId.empty();
+		bool is_animator = !emd.animatorId.empty();
 
 		Sprite& sprite = AddComponent(Sprite, entity);
 		if (config)
@@ -62,7 +67,7 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 			sprite.params.canFlip = config->data.GetString("can_flip");
 
 		}
-		else if(!emd.spriteId.empty())
+		else if(has_sprite)
 		{
 			sprite.Init(emd.spriteId.c_str());
 		}		
@@ -82,7 +87,7 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 		if(!sprite.image.texture && emd.colourType != -1)
 		{
 			StringBuffer64 coloured_sprite;
-			if(!emd.spriteId.empty())
+			if(has_sprite)
 			{
 				AddColourPostfix(emd.spriteId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
 			}		
@@ -101,6 +106,14 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 			SpriteSheet& ss = AddComponent(SpriteSheet, entity);
 			ss.Init(emd.spriteSheetFrameCounts );
 		}
+
+		if(is_animator)
+		{
+			Animator& animator = AddComponent(Animator, entity);
+			animator.Init(emd);
+			
+			AddComponent(EntityState, entity);
+		}
 	}
 
 	// Sprite Sheet
@@ -110,18 +123,6 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 
 		SpriteSheet& ss = AddComponent(SpriteSheet, entity);
 		ss.Init(emd.spriteSheetFrameCounts );
-	}
-
-	if(emd.isButton)
-	{
-		UIButton& button = AddComponent(UIButton, entity);
-		button.UID = emd.uid;
-	}
-
-	if(!emd.callback.empty())
-	{
-		Callback& cb = AddComponent(Callback, entity);
-		cb.callback = emd.callback;
 	}
 
 	return entity;
@@ -150,8 +151,82 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 	coin_stack.capacity = 5;
 	coin_stack.colourType = Colour::Type(emd.colourType);
 	coin_stack.remaining = coin_stack.capacity;
+	
+	RegisterCoinResource(entity, emd.faction);
 
 	return entity;
+}
+
+static void SetupCostIcons(Entity entity, int count)
+{
+	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+
+	DestroyChildren(entity);
+	coin_stack.costEntities.resize(count);
+
+	const Transform& transform = GetComponentRef(Transform, entity);
+	VectorF size = transform.size;
+	VectorF bottom = VectorF(size.x * 0.1f, size.y * 0.85f);
+
+	for( u32 i = 0; i < count; i++ )
+	{
+		Entity child_entity = CreateEntity("coin_icon");
+		coin_stack.costEntities[i] = (child_entity);
+
+		EntityData::SetParent(child_entity, entity);
+
+		// Transform
+		VectorF size = VectorF(9,9);
+		Transform& child_transform = AddComponent(Transform, child_entity);
+		child_transform.size = size;
+
+		VectorF offset =  VectorF(0.0f, i * 1.25f);
+		VectorF local_position = bottom - (child_transform.size * offset);
+		child_transform.SetLocalPosition( local_position );
+
+		// Sprite
+		Sprite& child_sprite = AddComponent(Sprite, child_entity);
+		child_sprite.SetTexture("cost_filled");
+		child_sprite.params.renderLayer = RenderLayer::UI;
+		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
+		child_sprite.params.colourMod.setOpacity(0.6f);
+	}
+}
+
+static void SetupPowerIcons(Entity entity, int count)
+{
+	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+
+	DestroyChildren(entity);
+	coin_stack.costEntities.resize(count);
+
+	const Transform& transform = GetComponentRef(Transform, entity);
+	VectorF size = transform.size;
+	VectorF top = VectorF(size.x * 0.1f, size.y * 0.1f);
+
+	for( u32 i = 0; i < count; i++ )
+	{
+		Entity child_entity = CreateEntity("coin_icon");
+		coin_stack.costEntities[i] = (child_entity);
+
+		EntityData::SetParent(child_entity, entity);
+
+		// Transform
+		VectorF size = VectorF(9,9);
+		Transform& child_transform = AddComponent(Transform, child_entity);
+		child_transform.size = size;
+
+		VectorF offset =  VectorF(0.0f, i * 1.25f);
+		VectorF local_position = top + (child_transform.size * offset);
+		child_transform.SetLocalPosition( local_position );
+
+		// Sprite
+		Sprite& child_sprite = AddComponent(Sprite, child_entity);
+		child_sprite.SetTexture("power_filled");
+		child_sprite.params.renderLayer = RenderLayer::UI;
+		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
+		child_sprite.params.colourMod.setOpacity(0.6f);
+	}
 }
 
 Entity CreateCoinPile(const EntityMetaData& emd)
@@ -160,9 +235,30 @@ Entity CreateCoinPile(const EntityMetaData& emd)
 
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = true;
-	coin_stack.capacity = 100;
+	coin_stack.capacity = 5;
 	coin_stack.colourType = Colour::Type(emd.colourType);
 	coin_stack.remaining = 0;
+
+	SetupCostIcons(entity, coin_stack.capacity);
+
+	RegisterCoinResource(entity, emd.faction);
+
+	return entity;
+}
+
+Entity CreateCardPower(const EntityMetaData& emd)
+{
+	Entity entity = CreateBasicObject( emd );
+
+	CoinStack& coin_stack = AddComponent(CoinStack, entity);
+	coin_stack.isInventory = false;
+	coin_stack.capacity = 5;
+	coin_stack.colourType = Colour::Type(emd.colourType);
+	coin_stack.remaining = 0;
+
+	SetupPowerIcons(entity, coin_stack.capacity);
+	
+	RegisterCardResource(entity, emd.faction);
 
 	return entity;
 }
@@ -188,56 +284,22 @@ Entity CreateHealthBar(const EntityMetaData& emd)
 	hb_health.params.renderLayer = (RenderLayer)((int)RenderLayer::BasicObject - 1);
 	hb_health.SetTexture("HealthBarHealth");
 
-	if(!emd.callback.empty())
-	{
-		Callback& cb = AddComponent(Callback, entity);
-		cb.callback = emd.callback;
-	}
-
 	return entity;
 }
 
 static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 {
-	ECS::Entity entity = CreateAnimatedObject(emd);
+	ECS::Entity entity = CreateBasicObject(emd);
 
 	// Spawner
 	AddComponent(Spawner, entity);
 
 	Collider& collider = AddComponent(Collider, entity);
-	collider.Init();
 	collider.SetFlag(Collider::GhostCollider);
 	collider.SetFlag(Collider::IgnoreTerrain);
 
-	return entity;
-}
-
-// spawns from a card
-Entity CreateMonster(const ECS::EntityMetaData& emd)
-{
-	Entity entity = CreateActor(emd, nullptr);
-
-	AIController& ai = AddComponent(AIController, entity);
-	AddComponent(AIIntent, entity);
-	AddComponent(Pathing, entity);
-
-	Collider& collider = GetComponentRef(Collider, entity);
-	collider.Init();
-	collider.SetFlag(Collider::IsEnemy);
-	
-	//ai.isDisabled = true;
-
-	BehaviourState& state = AddComponent(BehaviourState, entity);
-	state.Init();
-
-	BehaviourMap& map = AddComponent(BehaviourMap, entity);
-	std::vector<Action::Enum> states;
-	states.push_back(Action::Idle);
-	states.push_back(Action::Run);
-	states.push_back(Action::BasicAttack);
-	states.push_back(Action::Death);
-
-	PopulateMonsterBehaviours(map, states);
+	Transform& transform = GetComponentRef(Transform, entity);
+	transform.Init(&emd, collider);
 
 	return entity;
 }
@@ -283,6 +345,36 @@ Entity CreateActor(const ECS::EntityMetaData& emd, const char* id_override)
 	return entity;
 }
 
+
+// spawns from a card
+Entity CreateMonster(const ECS::EntityMetaData& emd)
+{
+	Entity entity = CreateActor(emd, nullptr);
+
+	AIController& ai = AddComponent(AIController, entity);
+	AddComponent(AIIntent, entity);
+	AddComponent(Pathing, entity);
+
+	Collider& collider = GetComponentRef(Collider, entity);
+	collider.Init();
+	// remove this to prevent enemies passing each other
+	collider.SetFlag(Collider::TerrainOnly);
+
+	BehaviourState& state = AddComponent(BehaviourState, entity);
+	state.Init();
+
+	BehaviourMap& map = AddComponent(BehaviourMap, entity);
+	std::vector<Action::Enum> states;
+	states.push_back(Action::Idle);
+	states.push_back(Action::Run);
+	states.push_back(Action::BasicAttack);
+	states.push_back(Action::Death);
+
+	PopulateMonsterBehaviours(map, states);
+
+	return entity;
+}
+
 // the thing on the card, mostly just an animated object
 Entity CreateCardActor(const char* monster, Entity parent)
 {
@@ -298,7 +390,8 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
 	transform.Init(nullptr);
-
+	
+	// Collider
 	Collider& collider = AddComponent(Collider, entity);
 	collider.Init();
 	collider.SetFlag(Collider::IgnoreAll);
@@ -328,39 +421,23 @@ Entity CreateCardActor(const char* monster, Entity parent)
 // ---------------------------------------------------------
 // create an actual enemy i.e. the thing the player fights
 Entity CreateEnemy(const ECS::EntityMetaData& emd)
-{
-	//		
-	//// pick random enemy
-	//// create enemy registry
-	//EntityData& ed = AddComponent(EntityData, entity); 
-	//ed.id = "ShockSweeper";
-
-
+{	
+	// pick random enemy create enemy registry
 	Entity entity = CreateActor(emd, "ShockSweeper");
+	
+	AddComponent(AIIntent, entity);
+	AddComponent(Inventory, entity);
 
-
-
-	const Config* config = ECS::GetConfigFromEntity(entity);
+	Collider& collider = GetComponentRef(Collider, entity);
+	collider.SetFlag(Collider::IsEnemy);
 
 	AIController& ai = AddComponent(AIController, entity);
 	ai.isDisabled = true;
-			
-	AddComponent(AIIntent, entity);
-
-	// Inventory
-	Inventory& inventory = AddComponent(Inventory, entity);
+	
 
 	// Turn
 	TurnState& turn = AddComponent(TurnState, entity);
 	turn.initiative = 10;
-
-	// Pathing
-	bool disable_pathing = config->data.GetBool("disable_pathing", false);
-	if(!disable_pathing)
-	{
-		Pathing& pathing = AddComponent(Pathing, entity);
-		//pathing.Init();
-	}
 
 	// mark ourselves as the enemy
 	State& state = GameData::Get().systemStateManager->mStates.getActiveState();
@@ -368,11 +445,87 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	{
 		game_state->enemy = entity;
 	}
-
-	Target& target = AddComponent(Target, entity);
-	target.isPlayer = true;
 		
 	return entity;
+}
+
+// Enemy
+// ---------------------------------------------------------
+// create an actual enemy i.e. the thing the player fights
+Entity CreatePlayer(const ECS::EntityMetaData& emd)
+{	
+	ECS::Entity entity = CreateActor(emd, nullptr);
+
+	AddComponent(PlayerController, entity);
+	AddComponent(AIIntent, entity);
+	AddComponent(BehaviourState, entity);
+	AddComponent(Inventory, entity);
+
+	Collider& collider = GetComponentRef(Collider, entity);
+	collider.SetFlag(Collider::IsPlayer);
+	collider.SetFlag(Collider::Static);
+
+	// Turn
+	TurnState& turn = AddComponent(TurnState, entity);
+	turn.initiative = 5;
+
+	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
+		DebugMenu::SelectEntity(entity);
+		
+	return entity;
+}
+
+Entity CreateVFX(const char* vfx, const RectF& rect)
+{
+	EntityMetaData data;
+	data.id = vfx;
+	data.position = rect.TopLeft();
+	data.size = rect.Size();
+	data.spriteId = vfx;
+
+	Entity entity = CreateBasicObject(data);
+
+	// Animation
+	Animator& animator = AddComponent(Animator, entity);
+	animator.Init();
+	animator.StartAnimation(Action::Active);
+
+	DeathScentence& ds = AddComponent(DeathScentence, entity);
+	ds.deathLoops = 1;
+	ds.action = Action::Active;
+
+	return entity;
+}
+
+static void PostProcess(Entity entity, const EntityMetaData& emd)
+{
+	if(emd.isButton)
+	{
+		UIButton& button = GetOrAddComponent(UIButton, entity);
+		button.UID = emd.uid;
+	}
+
+	if(!emd.callback.empty())
+	{
+		Callback& cb = GetOrAddComponent(Callback, entity);
+		cb.callback = emd.callback;
+	}
+
+	if(emd.faction != 0)
+	{
+		Faction& faction = GetOrAddComponent(Faction, entity);
+		faction.team = (Faction::Team)emd.faction;
+	}
+	
+	if(emd.snapToFloor)
+	{
+		float distance = 0.0f;
+		if( RaycastToFloor(entity, distance) )
+		{
+			Transform& transform = GetComponentRef(Transform, entity);
+			transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
+		}
+	}
 }
 
 void CreateEntities(Entity& biome_entity)
@@ -384,12 +537,14 @@ void CreateEntities(Entity& biome_entity)
 	CreateEntitiyFunctions["Card"] = CreateCardEntity;
 	CreateEntitiyFunctions["CoinStack"] = CreateCoinStack;
 	CreateEntitiyFunctions["CoinPile"] = CreateCoinPile;
+	CreateEntitiyFunctions["CardPower"] = CreateCardPower;
 	CreateEntitiyFunctions["Text"] = CreateUIText;
 	CreateEntitiyFunctions["Button"] = CreateBasicObject;
 	CreateEntitiyFunctions["Sprite"] = CreateBasicObject;
 	CreateEntitiyFunctions["HealthBar"] = CreateHealthBar;
 	CreateEntitiyFunctions["Enemy"] = CreateEnemy;
-	CreateEntitiyFunctions["PlayerSpawner"] = CreateSpawner;
+	CreateEntitiyFunctions["Spawner"] = CreateSpawner;
+	CreateEntitiyFunctions["Player"] = CreatePlayer;
 
 	// UI entities
 	CreateUIEntities();
@@ -410,7 +565,8 @@ void CreateEntities(Entity& biome_entity)
 				const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
 				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
 				{
-					create_fn(entitiy_meta_data[e]);
+					Entity entity = create_fn(entitiy_meta_data[e]);
+					PostProcess(entity, entitiy_meta_data[e]);
 				}
 			}
 			else

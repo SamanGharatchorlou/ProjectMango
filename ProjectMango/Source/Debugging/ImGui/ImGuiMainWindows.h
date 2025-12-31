@@ -17,6 +17,9 @@ namespace DebugMenu
 	{
 		bool drawRaycasts = false;
 		bool canBuyAnyCard = false;
+
+		bool turnLogActive = true;
+		std::vector<BasicString> turnLog;
 	};
 
 	TweakerState& GetState();

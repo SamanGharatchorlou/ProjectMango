@@ -65,25 +65,49 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 	VectorF ray_direction = direction.normalise();
 
 	float ray_distance = 0.0f;
-	const float ray_increment = 2.0f;
+
+	// assume here that nothing is narrower than 4 pixles
+	const float ray_increment = 4.0f;
 
 	while( ray_distance < distance )
 	{
+		// -- broad phase --
 		VectorF ray_point = from + ray_direction * ray_distance;
 
 		for( u32 i = 0; i < target_colliders.size(); i++ )
 		{
+			// hit something
 			if(target_colliders[i]->Contains(ray_point))
 			{
-				result.entity = target_colliders[i]->entity;
-				// bump it back up to just before it colided, otherwise we're likely just side causing thing to get stuck
-				result.distance = ray_distance - ray_increment;
-				result.hitPosition = ray_point;
-				result.hasHit = true;
+				// -- narrow phase -- 
+				// go back 1 increment, decrease ray increments and do a more accurate test
+				ray_distance -= ray_increment;
+				ray_point = from + ray_direction * ray_distance;
+	
+				const float small_ray_increment = 1.0f;
+				int count = (int)(ray_increment / small_ray_increment);
 
-				if(DebugMenu::GetState().drawRaycasts)
-					DebugDraw::Line(from, ray_point, SColour::Red);
-				return;
+				for( u32 j = 0; j < count; j++ )
+				{
+					ray_distance += small_ray_increment;
+					ray_point = from + ray_direction * ray_distance;
+
+					if(target_colliders[i]->Contains(ray_point))
+					{
+						result.entity = target_colliders[i]->entity;
+
+						// bump it back up to just before it colided, otherwise we're likely just inside something causing it to get stuck
+						result.distance = ray_distance - small_ray_increment;
+						result.hitPosition = ray_point;
+						result.hasHit = true;
+
+						if(DebugMenu::GetState().drawRaycasts)
+							DebugDraw::Line(from, ray_point, SColour::Red);
+
+						return;
+					}
+
+				}
 			}
 		}
 
@@ -131,11 +155,11 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 {
 	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
-		RectF rect = transform->GetRect();
-		ASSERT(!rect.Size().isZero(), "cant raycast to floor if the size hasnt been set");
+		ASSERT(!transform->GetRect().Size().isZero(), "cant raycast to floor if the size hasnt been set");
 
-		// raycast from the top down, in case we're already in the floor
-		VectorF top = VectorF(transform->GetObjectCenter().x, rect.TopPoint());
+		// shift it a little right so we dont raycast of an edge (since we're using the world pos i.e. top left)
+		// using the x center would make more sense but large sprites can cause it to fall off an edge
+		VectorF top = transform->worldPosition + VectorF(5.0f, 0.0);
 
 		std::vector<ECS::Entity> self;
 		self.push_back(entity);
@@ -148,7 +172,12 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 		RaycastResult result;
 		Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
 
-		out_distance = result.distance - rect.Height();
+		if(result.hasHit)
+		{
+			float top_to_bottom = transform->GetObjectRect().BotPoint() - top.y;
+			out_distance = result.distance - top_to_bottom;
+		}
+
 		return result.hasHit;
 	}
 

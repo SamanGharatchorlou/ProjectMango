@@ -91,7 +91,7 @@ static void XMLReadStrings(const XMLNode& node, Settings& out_string)
 		}
 		else
 		{
-			out_string.values[childNode.name()] = converted;
+			out_string.values[childNode.name()] = (float)converted;
 		}
 
 		childNode = childNode.next();
@@ -100,30 +100,11 @@ static void XMLReadStrings(const XMLNode& node, Settings& out_string)
 
 void ConfigManager::GetFullPath(const char* name, BasicString& out_path)
 {
-	out_path = FileManager::Get()->findFile(FileManager::Configs, name);
-	if (out_path.empty())
+	if (!FileManager::Get()->FindFile(FileManager::Configs, name, out_path))
 	{
 		DebugPrint(Warning, "No config file found named %s found in config folder", name);
 	}
 }
-//
-//void ConfigManager::Load()
-//{
-//	for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
-//	{
-//		Config& config = iter->second;
-//
-//		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, iter->first.c_str());
-//		if(!file_path.empty())
-//		{
-//			Read(file_path.c_str());
-//			continue;
-//		}
-//
-//		DebugPrint(Warning, "No config file found named %s found in config folder", iter->first.c_str());
-//	}
-//}
-
 
 void ConfigManager::ParseAll()
 {
@@ -138,21 +119,20 @@ void ConfigManager::ParseAll()
 	}
 }
 
-bool ConfigManager::Parse(const char* path)
+bool ConfigManager::Parse(const char* full_path)
 {
 	bool did_read = false;
 
 	FileManager* fm = FileManager::Get();
-	if (fm->IsValidPath(path))
+	if (fm->IsValidPath(full_path))
 	{
 		// if its an animation we read that somewhere else, no need to do it here
-		if(!fm->IsFileInFolder(FileManager::Config_Data, path))
+		if(!fm->IsFileInFolder(FileManager::Config_Data, full_path))
 			return true;
 
 		// check ext then run xml or json?
-		JSONParser parser(path);
-
-		if (!parser.document.IsObject())
+		JSONParser parser(full_path);
+		if (!parser.IsValid())
 			return false;
 
 		if (parser.document.HasMember("types"))
@@ -176,7 +156,7 @@ bool ConfigManager::Parse(const char* path)
 		}
 		else
 		{
-			ASSERT(parser.document.HasMember("id"), "config %s has no id", path);
+			ASSERT(parser.document.HasMember("id"), "config %s has no id", full_path);
 
 			Config config;
 			JSONReadData(parser.document, config.data);
@@ -191,52 +171,6 @@ bool ConfigManager::Parse(const char* path)
 	return did_read;
 }
 
-//
-//void ConfigManager::Add(const char* path, Config::Type type)
-//{
-//	if (mConfigs.count(path) == 0)
-//	{
-//		Config* new_config = new Config(path);
-//		mConfigs[path] = new_config;
-//		mConfigs[path]->type = type;
-//	}
-//}
-//
-//Config* ConfigManager::AddAndLoad(const char* path, Config::Type type)
-//{
-//	if (mConfigs.count(path) == 0)
-//	{
-//		Config* new_config = new Config(path);
-//		mConfigs[path] = new_config;
-//		mConfigs[path]->type = type;
-//
-//		BasicString file_path = FileManager::Get()->findFile(FileManager::Configs, path);
-//		if (!file_path.empty())
-//		{
-//
-//			config->Read(file_path.c_str());
-//			continue;
-//		}
-//
-//	}
-//
-//
-//
-//	Add(path, type);
-//	Load();
-//	return mConfigs[path];
-//}
-
-//void ConfigManager::Reload()
-//{
-//	//for (auto iter = mConfigs.begin(); iter != mConfigs.end(); iter++)
-//	//{
-//	//	iter->second->parsed = false;
-//	//}
-//
-//	Load();
-//}
-
 const Config* ConfigManager::GetConfig(const char* config)
 {
 	if (mConfigs.contains(config))
@@ -246,18 +180,16 @@ const Config* ConfigManager::GetConfig(const char* config)
 	}
 	else if(FileManager::Get()->exists(FileManager::Configs, config))
 	{
-		BasicString full_path = (FileManager::Get()->findFile(FileManager::Configs, config));
+		BasicString full_path;
+		FileManager::Get()->FindFile(FileManager::Configs, config, full_path);
 		if(Parse(full_path.c_str()))
 			return &mConfigs.at(config);
-		//return AddAndLoad(config);
 	}
 
-	//DebugPrint(Warning, "No config in the config manager with name: %s", config);
 	return nullptr;
 }
 
 const Config* GetConfig(const char* config)
 {
-	//BasicString path = FileManager::Get()->findFile(FileManager::Configs, config);
 	return ConfigManager::Get()->GetConfig(config);
 }

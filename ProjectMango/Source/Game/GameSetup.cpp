@@ -37,9 +37,10 @@ void GameSetup::initGameData(GameData& game_data)
 
 	// todo: get window size and resize the window based on that
 	// so i dont have to faff around with the screen size
-	BasicString path = FileManager::Get()->findFile(FileManager::Configs, "GameSettings").c_str();
+	BasicString path;
+	FileManager::Get()->FindFile(FileManager::Configs, "GameSettings", path);
 	ASSERT(path.c_str() != nullptr, "No game settings");
-	cm->Parse(path.c_str());
+	cm->Parse("GameSettings");
 
 	Window* window = initSDLWindow();
 	game_data.init(window);

@@ -17,7 +17,11 @@ u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 
 		ImGui::Text("Current: %.f", health.currentHealth);
 		ImGui::Text("Max: %.f", health.maxHealth);
-
+				
+		if(ImGui::Button("Reduce by 1"))
+		{
+			health.currentHealth= health.currentHealth - 1.0f;
+		}
 		if(ImGui::Button("Reduce by 10"))
 		{
 			health.currentHealth= health.currentHealth - 10.0f;
@@ -79,7 +83,7 @@ u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 
 		if(ImGui::Button("TakeCoin"))
 		{
-			if(ECS::Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
+			if(ECS::Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
 			{
 				if(coin_stack.remaining > 0)
 				{
@@ -91,7 +95,7 @@ u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 		
 		if(ImGui::Button("ReturnCoin"))
 		{
-			if(ECS::Inventory* inventory = GetComponent(Inventory, Target::GetPlayer()))
+			if(ECS::Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
 			{
 				if(inventory->coins[c_type] > 0)
 				{
@@ -157,6 +161,29 @@ u32 DebugMenu::DoCardDebugMenu(ECS::Entity& entity)
 			ImGui::PopStyleColor();
 			ImGui::SameLine();
 		}
+
+		ImGui::PopID();
+	}
+
+	return (u32)type;
+}
+
+u32 DebugMenu::DoFactionDebugMenu(ECS::Entity& entity)
+{
+	ECS::Component::Type type = ECS::Component::Faction;
+
+	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	{
+		ECS::Faction& faction = GetComponentRef(Faction, entity);
+		ImGui::PushID(entity + (int)type);
+
+		const char* team = "None";
+		if(faction.team == Faction::Player)
+			team = "Player";
+		if(faction.team == Faction::Enemy)
+			team = "Enemy";
+
+		ImGui::Text("%s", team );
 
 		ImGui::PopID();
 	}

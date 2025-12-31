@@ -10,13 +10,16 @@ using namespace rapidjson;
 
 JSONParser::JSONParser(const char* filePath)
 {
-	ASSERT(fs::exists(filePath), "File path %s does not exist, cannot parse xml file", filePath);
+	Parse(filePath);
+}
 
-	if(FILE* fp = fopen(filePath, "rb"))
+bool JSONParser::Parse(const char* full_path)
+{
+	if(FILE* fp = fopen(full_path, "rb"))
 	{
-		ASSERT(fp, "failed to read file %s", filePath);
+		ASSERT(fp, "failed to read file %s", full_path);
 
-		const u32 size = (u32)std::filesystem::file_size( fs::path(filePath) );
+		const u32 size = (u32)std::filesystem::file_size( fs::path(full_path) );
 
 		// cant be sure how big this might be so new a buffer so its on the heap
 		char* buffer = new char[size];
@@ -29,6 +32,19 @@ JSONParser::JSONParser(const char* filePath)
 		delete[] buffer;
 		buffer = nullptr;
 	}
+		
+	if(!document.IsObject())
+	{
+		DebugPrint(PriorityLevel::Warning, "Invalid json document: %s", full_path);
+		return false;
+	}
+
+	return true;
+}
+
+bool JSONParser::IsValid() const
+{
+	return document.IsObject();
 }
 
 void JSONParser::Print()
@@ -41,7 +57,6 @@ void JSONParser::Print()
 
 	printf(output);
 }
-
 
 void JSONParser::DoTest()
 {

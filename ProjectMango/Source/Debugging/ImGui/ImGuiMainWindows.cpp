@@ -27,7 +27,7 @@ TweakerState& DebugMenu::GetState()
     return s_state;
 }
 
-static ECS::Entity s_selectedEntity = 0;
+static ECS::Entity s_selectedEntity = EntityInvalid;
 static StringBuffer64 filterBuffer;
 
 u32 DebugMenu::GetSelectedEntity() { return s_selectedEntity; }
@@ -178,6 +178,7 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(Card);
         DoComponentDropdown(BehaviourState);
         DoComponentDropdown(EntityState);
+        DoComponentDropdown(Faction);
 
         ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
         for (u32 i = 0; i < ECS::Component::Count; i++) 
@@ -536,15 +537,12 @@ void DebugMenu::DoGameStateWindow()
 }
 
 static bool s_debugCamera = false;
-
 static bool s_getRenderLayerData = false;
 std::vector<int> s_renderPacks;
 
-
-
 void DebugMenu::DoTweakerWindow() 
 {
-	ECS::Entity entity = Target::GetPlayer();
+	ECS::Entity entity = Faction::GetPlayer();
 
     if(ECS::Health* health = GetComponent(Health, entity))
     {
@@ -577,6 +575,19 @@ void DebugMenu::DoTweakerWindow()
         }
 
         ImGui::TreePop();
+    }
+    
+    ImGui::Checkbox("Turn Logging", &s_state.turnLogActive);
+    if (s_state.turnLogActive)
+    {
+        for( u32 i = 0; i < s_state.turnLog.size(); i++ )
+        {
+            ImGui::Text(s_state.turnLog[i].c_str());
+        }
+    }
+    else
+    {
+        s_state.turnLog.clear();
     }
 }
 

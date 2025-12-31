@@ -98,6 +98,20 @@ namespace AnimationEditor
                 FileManager* fm = FileManager::Get();
                 std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Images);
 
+                std::sort(file_names.begin(), file_names.end(), [](const BasicString& a, const BasicString& b) {
+                    int index = 0;
+                    while(a.length() > index && b.length() > index)
+                    {
+                        if(a.c_str()[index] < b.c_str()[index])
+                            return true;
+                        else if(a.c_str()[index] > b.c_str()[index])
+                            return false;
+
+                        index++;
+                    }
+                    return a.length() < b.length();
+		        });
+
                 for( u32 i = 0; i < file_names.size(); i++ )
                 {
                     const bool is_selected =  StringCompare(s_state.selectedSpriteSheet.c_str(), file_names[i].c_str());
@@ -340,7 +354,9 @@ namespace AnimationEditor
             if (ImGui::BeginCombo("Build Animator From Config", c.selected.c_str()))
             {
                 FileManager* fm = FileManager::Get();
-                std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Config_Animations);
+                std::vector<BasicString> file_names;// = fm->fileNamesInFolder(FileManager::Config_Animations);
+
+                AnimationReader::Debug_GetAnimationIDs(file_names);
 
                 for( u32 i = 0; i < file_names.size(); i++ )
                 {
@@ -353,7 +369,9 @@ namespace AnimationEditor
                         RemoveComponent(Animator, s_state.configAnim.entity);
                         AddComponent(Animator, s_state.configAnim.entity);
 
-                        AnimationReader::BuildAnimatior(s_state.configAnim.entity, c.selected.c_str());
+
+
+                        AnimationReader::BuildAnimator(s_state.configAnim.entity, c.selected.c_str());
                     }
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -366,16 +384,16 @@ namespace AnimationEditor
 
             // animation player/reader
             Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
-            if( anim && anim->animations.size() > 0 )
+            if( anim && anim->IsValid() )
             {
                 ImGui::PushID("config selector");
 
                 const char* select_animation_string = ActionToString(anim->GetActiveAnimation().action);
                 if (ImGui::BeginCombo("Select Animation", select_animation_string))
                 {
-                    for( u32 i = 0; i < anim->animations.size(); i++ )
+                    for( u32 i = 0; i < anim->animations->size(); i++ )
                     {
-                        const char* action_string = ActionToString(anim->animations[i].action);
+                        const char* action_string = ActionToString(anim->animations->at(i).action);
 
                         const bool is_selected =  StringCompare(action_string, select_animation_string);
 
@@ -475,20 +493,22 @@ namespace AnimationEditor
                 const ECS::Animation& selected_animation = anim->GetActiveAnimation();
 
 			    VectorF dim = selected_animation.image.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.frame.counts.toFloat();
+                const VectorF real_frame_size = dim / selected_animation.frame.gridCount.toFloat();
             
                 // the visible size of the frame you're looking at, probably the yellow box
                 float x_spacing = y_spacing.y;
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+                frame_texture_size *= s_state.screenSizeFactor;
                 frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
                 frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
+
 
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(sprite.image.texture, 1);
+                RenderPack frame_pack(selected_animation.image.texture, 1);
                 frame_pack.rect = renderFrameRect;
-                frame_pack.subRect = selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
+                frame_pack.subRect = anim->GetActiveSubRect();// //selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
                 frame_pack.flip =sprite.params.flip;
 
                 const RectF& selection_rect = s_state.cursorSelection.selectionRect;
@@ -582,14 +602,15 @@ namespace AnimationEditor
 
             // display relative position to the whole sprite
             Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
-            if( anim && anim->animations.size() > 0 )
+            if( anim && anim->IsValid() )
             {
                 const ECS::Animation& selected_animation = anim->GetActiveAnimation();
                 const VectorF dim = selected_animation.image.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.frame.counts.toFloat(); 
+                const VectorF real_frame_size = dim / selected_animation.frame.gridCount.toFloat(); 
 
                 float x_spacing = y_spacing.y;
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+                frame_texture_size *= s_state.screenSizeFactor;
                 frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
                 frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
 

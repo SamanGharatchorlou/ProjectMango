@@ -19,11 +19,15 @@ BasicString::BasicString(const BasicString& string) : BasicString(string.c_str()
 
 BasicString::BasicString(const char* string, unsigned int length)
 {
-	mLength = length; //strlen(string);
-	mCap = length + 1;
-	mBuffer = new char[mCap];
+	if(string)
+	{
+		mLength = length; //strlen(string);
+		mCap = length + 1;
+		mBuffer = new char[mCap];
 
-	memcpy(mBuffer, string, mLength + 1);
+		memcpy(mBuffer, string, mLength);
+		mBuffer[mLength] = '\0';
+	}
 }
 
 
@@ -110,7 +114,9 @@ BasicString& BasicString::concat(const char* string)
 
 void BasicString::clear()
 {
-	memset(mBuffer, 0, mLength);
+	if(mBuffer)
+        mBuffer[0] = '\0';
+
 	mLength = 0;
 }
 
@@ -140,13 +146,17 @@ void BasicString::getInput(const BasicString& message)
 void BasicString::assignTerminated(const char* string)
 {
 	if(!ownsBuffer)
+	{
+		DebugPrint(Error, "trying to assign the string %s to a buffer(%s) we dont own", string, mBuffer);
 		return;
+	}
 
 	// i think i need this, copying an empty string breaks the code
 	if(string)
 	{
 		mLength = (uint32_t)strlen(string);
-		memcpy(mBuffer, string, mLength + 1);
+		memcpy(mBuffer, string, mLength);
+		mBuffer[mLength] = '\0';
 	}
 }
 

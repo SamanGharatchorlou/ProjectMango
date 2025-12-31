@@ -42,8 +42,8 @@ namespace ECS
 
 	struct SpriteSheetFrame
 	{
-		VectorF size;
-		VectorI counts;
+		VectorF frameSize;
+		VectorI gridCount;
 
 		RectF GetFrameRect(int index) const;
 	};
@@ -95,12 +95,14 @@ namespace ECS
 		bool looping = true;
 		bool reversing = false;
 	};
+		
+	bool operator == (const Animation& a, const Animation& b);
 
 	struct Animator
 	{
 		COMPONENT_TYPE(Animator)
 
-		std::vector<Animation> animations;
+		const std::vector<Animation>* animations = nullptr;
 
 		int activeAnimation = 0;
 		int frameIndex = 0;
@@ -110,9 +112,14 @@ namespace ECS
 		int loopCount = 0;
 		float timer = 0.0f;
 
+		float randomisedFrameTimeVariation = 0.0f;
+
 		void Init();
+		void Init(const EntityMetaData& emd);
 
 		void StartAnimation(Action::Enum action);
+
+		//Animation& GetAnimation(Action::Enum action);
 
 		const Animation& GetActiveAnimation() const;
 		const Animation* GetAnimation(Action::Enum action) const;
@@ -123,11 +130,11 @@ namespace ECS
 		bool IsValid() const;
 	};
 
-	//struct VFX
-	//{
-	//	COMPONENT_TYPE(VFX)
+	struct VFX
+	{
+		COMPONENT_TYPE(VFX)
 
-	//	Animation animation;
+		//Animation animation;
 
-	//};
+	};
 }

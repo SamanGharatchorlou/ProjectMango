@@ -1,21 +1,8 @@
 {
 	"id": "Player",
-	"animation": "GunSlingerAnimations",
-	"ranged" : true,
-	"size_x": 150,
-	"size_y": 150,
-	"gravity": true,
-	"max_health": 100,
-	"acceleration_x": 80,
-	"acceleration_y": 100,
-	"max_run_speed": 350,
-	"max_fall_speed": 800,
-	"jump_impulse": 800,
-	"roll_impulse": 500,
-	"basic_attack_damage": 10,
-	"basic_attack_force": 80,
-	"jump_attack_damage": 15,
-	"jump_attack_force": 200,
-	"slam_attack_damage": 25,
-	"slam_attack_force": 400
+	"animation": "Tree",
+	"size": [224, 256],
+	"object_pos": [ 0.36, 0.74 ],
+	"object_size": [ 0.16, 0.255 ],
+	"max_health": 10
 }

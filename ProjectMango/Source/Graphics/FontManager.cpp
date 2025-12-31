@@ -23,7 +23,8 @@ TTF_Font* FontManager::GetFont(const char* font_key, int pt_size)
 	else
 	{
 		// open the font
-		BasicString path = FileManager::Get()->findFile(FileManager::Font, font_key);
+		BasicString path;
+		FileManager::Get()->FindFile(FileManager::Font, font_key, path);
 		if (TTF_Font* ttf_font = TTF_OpenFont(path.c_str(), pt_size))
 		{
 			fonts.insert( { { BasicString(font_key), pt_size }, ttf_font } );

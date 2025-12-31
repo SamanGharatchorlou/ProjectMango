@@ -4,11 +4,15 @@
 
 struct JSONParser
 {
+	JSONParser() { }
 	JSONParser(const char* filePath);
 	~JSONParser() { }
 
+	bool Parse(const char* file_path);
 	void Print();
 	void DoTest();
+
+	bool IsValid() const;
 
 	rapidjson::Document document;
 };

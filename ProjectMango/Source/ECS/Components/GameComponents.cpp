@@ -8,6 +8,7 @@
 #include "Entities/CardRegistry.h"
 #include "Entities/MonsterRegistry.h"
 #include "Entities/EntityBuilder.h"
+#include "Entities/ResourceBank.h"
 
 namespace ECS
 {
@@ -61,7 +62,7 @@ namespace ECS
 		{
 			if(DebugMenu::GetState().canBuyAnyCard)
 			{
-				if(Target::GetPlayer() == entity)
+				if(Faction::GetTeam(entity) == Faction::Player)
 					return true;
 			}
 
@@ -146,6 +147,7 @@ namespace ECS
 		}
 	}
 
+
 	static void GenerateCostIcons(Entity entity)
 	{
 		Card& card = GetComponentRef(Card, entity);		
@@ -184,8 +186,7 @@ namespace ECS
 				child_sprite.SetTexture("cost_empty");
 				child_sprite.params.renderLayer = RenderLayer::UI;
 				child_sprite.params.colourMod = Colour::s_typeToColour.at(colour);
-				child_sprite.params.colourMod.setOpacity(0.7f);
-
+				child_sprite.params.colourMod.setOpacity(0.6f);
 			}
 
 			count++;
@@ -238,24 +239,26 @@ namespace ECS
 
 	// CoinStack
 	// ------------------------------------------------------------------
-	CoinStack* CoinStack::GetCoinStack(Colour::Type type)
-	{
-		ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
-		for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
-		{
-			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
-			if(coin_stack.isInventory)
-				continue;
 
-			if(coin_stack.colourType == type )
-			{
-				return &coin_stack;
-			}
-		}
+	// this isnt working, cant get the coin stacks like this, now i have card power for example
+	// guess this is more a generic stack of... something?
+	//CoinStack* CoinStack::GetCoinStack(Colour::Type type, u32 faction_team)
+	//{
+	//	ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
+	//	for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
+	//	{
+	//		if(faction_team == Faction::GetTeam(iter->first))
+	//		{
+	//			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
+	//			if(coin_stack.colourType == type )
+	//			{
+	//				return &coin_stack;
+	//			}
+	//		}
+	//	}
 
-		return nullptr;
-	}
-
+	//	return nullptr;
+	//}
 
 	// Turn
 	// ------------------------------------------------------------------
@@ -299,10 +302,9 @@ namespace ECS
 		if(coins_collected > 0)
 		{
 			std::vector<Colour::Type> available_coin_stacks;
-
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				if(CoinStack::GetCoinStack((Colour::Type)i)->remaining > 0)
+				if(GetCoinStack(Faction::None, i).remaining > 0)
 				{
 					available_coin_stacks.push_back((Colour::Type)i);
 				}

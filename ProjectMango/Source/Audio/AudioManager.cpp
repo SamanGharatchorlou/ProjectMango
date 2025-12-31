@@ -193,7 +193,8 @@ Mix_Music* AudioManager::GetMusicTrack(const char* id)
 	else
 	{
 		const FileManager* fm = FileManager::Get();
-		BasicString file = fm->findFile(FileManager::Audio_Music, id);
+		BasicString file;
+		fm->FindFile(FileManager::Audio_Music, id, file);
 		return LoadMusicTrack(id, file.c_str());
 	}
 }

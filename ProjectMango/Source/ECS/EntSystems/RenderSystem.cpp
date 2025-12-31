@@ -7,8 +7,6 @@
 #include "Graphics/RenderManager.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 
-void SetupSpriteUIBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
-
 namespace ECS
 {
 	std::unordered_map<BasicString, std::function<void(ECS::Entity)>> s_spriteBindings;
@@ -17,17 +15,10 @@ namespace ECS
 	{
 		pack.texture = sprite.image.texture;
 		pack.layer = (u32)sprite.params.renderLayer;
-		//pack.subRect = sprite.params.subRect;
 		pack.flip = sprite.params.flip;
 		pack.rotation = sprite.params.rotation;
 		pack.colourMod = sprite.params.colourMod;
 	}
-		
-	//void GenerateRenderPack(const SpriteSheet& sprite_sheet, RenderPack& pack)
-	//{
-	//	GenerateRenderPack(sprite_sheet.sprite, pack);
-	//	pack.subRect = sprite_sheet.frame.GetFrameRect(sprite_sheet.index);
-	//}
 
 	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
 	{
@@ -46,7 +37,6 @@ namespace ECS
 
 	void RenderSystem::Init()
 	{
-		SetupSpriteUIBindings(s_spriteBindings);
 	}
 
 	void RenderSystem::Update(float dt)
@@ -75,7 +65,7 @@ namespace ECS
 			
 			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
-				if(camera_rect.Intersect(render_rect))
+				if(!sprite->params.disabled && camera_rect.Intersect(render_rect))
 				{
 					pack.rect = render_rect;
 					pack.flipPoint = transform.GetHorizontalFlipPoint();
@@ -86,6 +76,10 @@ namespace ECS
 						if(sprite_sheet->HasValidFrameIndex())
 						{
 							pack.subRect = sprite_sheet->frame.GetFrameRect(sprite_sheet->index);
+						}
+						else
+						{
+							continue;
 						}
 					}
 					else if(const Animator* animator = GetComponent(Animator, entity))

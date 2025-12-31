@@ -24,7 +24,7 @@ namespace ECS
 			{
 				// try to flip to face the target direction
 				
-				Entity target = Target::GetTarget(entity);
+				Entity target = Faction::GetTarget(entity);
 				if(target != EntityInvalid)
 				{
 					SDL_RendererFlip desired_flip = GetDesiredFacingDirection(entity, target);
@@ -50,13 +50,14 @@ namespace ECS
 				can_move = false;
 			}
 
-			state.next = Action::Idle;
-
+			state.next = intent.wantsToBeInactive ? Action::Inactive : Action::Idle;
 
 			if(Health* health = GetComponent(Health, entity))
 			{
 				if(health->currentHealth <= 0)
 					state.next = Action::Death;
+				else if( (health->currentHealth / health->maxHealth) <= 0.2f)
+					state.next = Action::Hurting;
 			}
 			
 			// death

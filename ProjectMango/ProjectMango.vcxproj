@@ -153,6 +153,7 @@
     <ClCompile Include="Source\ECS\Components\SpacialComponents.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp" />
     <ClCompile Include="Source\Entities\MonsterRegistry.cpp" />
+    <ClCompile Include="Source\Entities\ResourceBank.cpp" />
     <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
@@ -172,7 +173,6 @@
     <ClCompile Include="Source\ECS\EntSystems\UISystem.cpp" />
     <ClCompile Include="Source\Entities\CallbackBindings.cpp" />
     <ClCompile Include="Source\Entities\CardRegistry.cpp" />
-    <ClCompile Include="Source\Entities\Player\PlayerCharacter.cpp" />
     <ClCompile Include="Source\Entities\States\Behaviours.cpp" />
     <ClCompile Include="Source\Core\BasicString.cpp" />
     <ClCompile Include="Source\Core\Buffer.cpp" />
@@ -184,7 +184,6 @@
     <ClCompile Include="Source\Core\Maths.cpp" />
     <ClCompile Include="Source\Core\NSISFileOutput.cpp" />
     <ClCompile Include="Source\Core\Physics\QuadCollider.cpp" />
-    <ClCompile Include="Source\Core\Property.cpp" />
     <ClCompile Include="Source\Core\StringBuffers.cpp" />
     <ClCompile Include="Source\Core\TypeDefs.cpp" />
     <ClCompile Include="Source\Debugging\AnimationEditor.cpp" />
@@ -251,7 +250,6 @@
     <ClCompile Include="Source\Entities\EntityBuilder.cpp" />
     <ClCompile Include="Source\Game\Readers\SceneReader.cpp" />
     <ClCompile Include="Source\Entities\UIEntityBuilder.cpp" />
-    <ClCompile Include="Source\System\Files\Config.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
     <ClCompile Include="Source\System\Files\JSONParser.cpp" />
@@ -264,7 +262,6 @@
     <ClCompile Include="Source\UI\Text\Text.cpp" />
     <ClCompile Include="Source\UI\UIButtonBindings.cpp" />
     <ClCompile Include="Source\UI\UIManager.cpp" />
-    <ClCompile Include="Source\UI\UISpriteBindings.cpp" />
     <ClCompile Include="Source\UI\UITextBindings.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
@@ -281,6 +278,7 @@
     <ClInclude Include="Source\ECS\Components\SpacialComponents.h" />
     <ClInclude Include="Source\ECS\EntSystems\CardSystem.h" />
     <ClInclude Include="Source\Entities\MonsterRegistry.h" />
+    <ClInclude Include="Source\Entities\ResourceBank.h" />
     <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />
@@ -298,7 +296,6 @@
     <ClInclude Include="Source\ECS\EntSystems\TurnActionSystem.h" />
     <ClInclude Include="Source\ECS\EntSystems\UISystem.h" />
     <ClInclude Include="Source\Entities\CardRegistry.h" />
-    <ClInclude Include="Source\Entities\Player\PlayerCharacter.h" />
     <ClInclude Include="Source\Entities\States\Behaviours.h" />
     <ClInclude Include="Source\Core\BasicString.h" />
     <ClInclude Include="Source\Core\Buffer.h" />
@@ -316,7 +313,6 @@
     <ClInclude Include="Source\Core\NSISFileOutput.h" />
     <ClInclude Include="Source\Core\ObjectPool.h" />
     <ClInclude Include="Source\Core\Physics\QuadCollider.h" />
-    <ClInclude Include="Source\Core\Property.h" />
     <ClInclude Include="Source\Core\Quad2D.h" />
     <ClInclude Include="Source\Core\Queue.h" />
     <ClInclude Include="Source\Core\SRect.h" />
@@ -387,7 +383,6 @@
     <ClInclude Include="Source\Entities\EntityBuilder.h" />
     <ClInclude Include="Source\Game\Readers\SceneReader.h" />
     <ClInclude Include="Source\Entities\UIEntityBuilder.h" />
-    <ClInclude Include="Source\System\Files\Config.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />
     <ClInclude Include="Source\System\Files\JSONParser.h" />

@@ -25,6 +25,7 @@
 #include "ECS/EntSystems/TurnActionSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
+#include "Game/Readers/AnimationReader.h"
 #include "Entities/CardRegistry.h"
 #include "Entities/MonsterRegistry.h"
 #include "Entities/States/Behaviours.h"
@@ -52,7 +53,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(EntityState, c_common);
 	DEFINE_COMPONENT(AIController, c_common);
 	DEFINE_COMPONENT(Pathing, c_common);
-	DEFINE_COMPONENT(Target, c_common);
+	DEFINE_COMPONENT(Faction, c_common);
 	DEFINE_COMPONENT(AIIntent, c_common);
 	DEFINE_COMPONENT(BehaviourMap, c_common);
 	DEFINE_COMPONENT(BehaviourState, c_common);
@@ -111,7 +112,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<TurnActionSystem>(turnActionSignature); 
 
 	// Player Controller
-	Signature playerInputSignature = ArcheBit(PlayerController) | ArcheBit(EntityState) | ArcheBit(Physics);
+	Signature playerInputSignature = ArcheBit(PlayerController);
 	ecs->RegisterAndSystem<PlayerControllerSystem>(playerInputSignature);
 
 
@@ -120,8 +121,8 @@ void ECS::RegisterAllSystems()
 	// --------- gameplay-logic systems ---------
 
 	// Health
-	Signature HealthSignature = ArcheBit(Health);
-	ecs->RegisterAndSystem<HealthSystem>(HealthSignature);
+	Signature HealthSignature = ArcheBit(Health) | ArcheBit(DeathScentence);
+	ecs->RegisterOrSystem<HealthSystem>(HealthSignature);
 
 	// Spawn
 	Signature SpawnSignature = ArcheBit(Spawner);
@@ -153,7 +154,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<EntityStateSystem>(EntityStateSignature);
 
 	// Animation
-	Signature animationSignature = ArcheBit(Sprite) | ArcheBit(Animator) | ArcheBit(EntityState);
+	Signature animationSignature = ArcheBit(Animator);
 	ecs->RegisterAndSystem<AnimationSystem>(animationSignature);
 
 	// Behaviour
@@ -195,6 +196,8 @@ void ECS::RegisterAllSystems()
 void ECS::ParseComponentData()
 {
 	// parse all the animation data here too, bank it, then read from it rather than parse it everytime
+	AnimationReader::ReadAnimationData();
+
 	CardRegistry::Build("Tier1Cards", 0);
 	CardRegistry::Build("Tier2Cards", 1);
 	CardRegistry::Build("Tier3Cards", 2);

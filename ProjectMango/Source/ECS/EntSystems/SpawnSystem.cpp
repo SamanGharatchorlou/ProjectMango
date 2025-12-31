@@ -49,23 +49,13 @@ namespace ECS
 						{
 							Damage& damage = AddComponent(Damage, spawner.spawnedEntity);
 							damage.value = (float)card->points;
-
-							Entity target = Target::GetTarget(entity);
-							if(target != EntityInvalid)
-							{
-								if(Health* health = GetComponent(Health, target))
-									health->ApplyDamage((float)card->points);
-							}
 						}
 					}
 					
 					if(request.owner != EntityInvalid)
 					{
-						Target& target = AddComponent(Target, spawner.spawnedEntity);
-						if(Target::GetPlayer() == request.owner)
-							target.isEnemy = true;
-						else if(Target::GetEnemy() == request.owner)
-							target.isPlayer = true;
+						Faction& faction = AddComponent(Faction, spawner.spawnedEntity);
+						Faction::SetAsAlliedFaction(request.owner, faction);
 					}
 
 					// update the position once we have created the object
@@ -122,6 +112,8 @@ namespace ECS
 						continue;
 				}
 
+				//const Faction* spawner_faction = GetComponent(Faction, entity);
+				Faction::Team spawner_faction = Faction::GetTeam(entity);
 
 				const ComponentArray<SpawnRequest>& requests = GetAllComponents(SpawnRequest);
 
@@ -131,7 +123,10 @@ namespace ECS
 				for( auto iter = requests.entityToComponent.begin(); iter != requests.entityToComponent.end(); iter++ )
 				{
 					const SpawnRequest& request = requests.GetComponentByIndex(iter->second);
-					if(request.frameTime < earliest_frame)
+
+					bool same_faction = spawner_faction == Faction::GetTeam(request.owner);
+
+					if(same_faction && request.frameTime < earliest_frame)
 					{
 						next_to_spawn = iter->first;
 						earliest_frame = request.frameTime;
@@ -144,9 +139,6 @@ namespace ECS
 					state.next = Action::Active;
 				}
 			}
-
-			// todo: handle multiple spawners
-			break;
 		}
 	}
 }

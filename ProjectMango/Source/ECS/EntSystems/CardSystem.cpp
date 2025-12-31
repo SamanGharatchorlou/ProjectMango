@@ -40,7 +40,7 @@ namespace ECS
 				}
 			}
 
-			Entity player = Target::GetPlayer();
+			Entity player = Faction::GetPlayer();
 			if(Inventory* inventory = GetComponent(Inventory, player))
 			{
 				int buying_power[Colour::Count];

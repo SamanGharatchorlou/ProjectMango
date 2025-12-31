@@ -11,9 +11,13 @@
 #include "Entities/CardRegistry.h"
 #include "Entities/MonsterRegistry.h"
 #include "Game/FrameRateController.h"
+#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Entities/ResourceBank.h"
 
 namespace ECS
 {
+	char turnLog[256] = { 0 };
+
 	// +amount = take coins, -amount = return coins
 	static void TakeCoins(Entity entity, Colour::Type colour, int amount)
 	{
@@ -21,22 +25,11 @@ namespace ECS
 		inventory.coins[colour] += amount;
 
 		// return coins to the stack
-		CoinStack* cs = CoinStack::GetCoinStack(colour);
-		cs->remaining -= amount;
+		CoinStack& cs = GetCoinStack(Faction::None, (u32)colour);
+		cs.remaining -= amount;
 
 		TurnState& turn = GetComponentRef(TurnState, entity);
 		turn.collectedCoins[colour] += amount;
-		
-		/*
-		* This nees a VFX system to work properly
-		* 
-		Entity cs_entity = cs->entity;
-
-		Animator& animator = AddComponent(Animator, cs_entity);
-		
-		AnimationReader::BuildAnimatior( animator, "ClinkAnimation" );
-		animator.StartAnimation(ActionState::Active);
-		*/
 	}
 
 	static void TakeCard(Entity entity, const Card& card)
@@ -56,8 +49,6 @@ namespace ECS
 
 			// returning coins
 			TakeCoins(entity, type, -card_cost[i]);
-
-			//ASSERT(inventory.coins[type] >= 0, "the player has less than 0 coins, should be impossible");
 		}
 
 		TurnState& turn = GetComponentRef(TurnState, entity);
@@ -233,6 +224,55 @@ namespace ECS
 			bool can_end_turn = turn->canEndTurn || game_state->autoConfirmTurn;
 			if(can_end_turn && !turn->CanAquireMoreResources())
 			{
+				if(DebugMenu::GetState().turnLogActive)
+				{
+					std::vector<BasicString>& turn_log = DebugMenu::GetState().turnLog;
+
+					char header[32];
+					snprintf(header, 32, "\n%s Turn %d", Faction::GetTeam(entity) == Faction::Player ? "Player" : "Enemy", turn->turnIndex );
+					turn_log.emplace_back(BasicString(header));
+
+					const int length = 512;
+					char buffer[length] = { 0 };
+
+					for( u32 i = 0; i < Colour::Count; i++ )
+					{
+						if(turn->collectedCoins[i] > 0)
+						{
+							snprintf(buffer, length, "\t%s: %d", Colour::s_typeToString.at((Colour::Type)i).c_str(), turn->collectedCoins[i] );
+							turn_log.emplace_back( BasicString( buffer ) );
+						}
+					}
+					
+					if(const Card* collected_card = CardRegistry::LookupCard(turn->collectedCardRegIndex))
+					{
+						const char* power = nullptr;
+						for( u32 i = 0; i < Colour::Count; i++ )
+						{
+							if(collected_card->power[i] > 0)
+							{
+								power = Colour::s_typeToString.at((Colour::Type)i).c_str();
+								break;
+							}
+						}
+
+						snprintf(buffer, length, "\tCard Tier: %d, Points: %d, Power: %s, Cost: ", collected_card->tier, collected_card->points, power );
+						for( u32 i = 0; i < Colour::Count; i++ )
+						{
+							if(collected_card->cost[i] > 0)
+							{
+								int spent_coins = turn->collectedCoins[i];
+
+								char cost[32];
+								snprintf(cost, 32, " %s: %d(%d),", Colour::s_typeToString.at((Colour::Type)i).c_str(), collected_card->cost[i], spent_coins );
+								strncat(buffer, cost, strlen(cost));
+							}
+						}
+
+						turn_log.emplace_back( BasicString( buffer ) );
+					}
+				}
+
 				if(const Card* collected_card = CardRegistry::LookupCard(turn->collectedCardRegIndex))
 				{
 					// redraw any cards we removed 
@@ -271,7 +311,6 @@ namespace ECS
 					}
 				}
 
-				
 				turn->isActiveTurn = false;
 				turn->turnIndex++;
 			}

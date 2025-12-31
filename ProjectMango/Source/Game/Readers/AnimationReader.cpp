@@ -8,7 +8,17 @@
 #include "System/Files/JSONParser.h"
 #include "ECS/Components/AIComponents.h"
 
-static std::unordered_map<BasicString, ECS::Animation> s_spriteSheets;
+using namespace ECS;
+
+//static std::unordered_map<BasicString, Animation> s_spriteSheets;
+
+struct AnimatorData
+{
+	 std::vector<Animation> animations;
+	 AttackStateData attackStateData;
+};
+
+static std::unordered_map< BasicString, AnimatorData > s_animationData;
 
 namespace AnimationReader
 {	
@@ -45,86 +55,169 @@ namespace AnimationReader
 	}
 
 	// this runs every time i fire a spell, lets not...
-	void BuildAnimatior(ECS::Entity entity, const char* file)
+	void BuildAnimator(Entity entity, const char* animator_id)
 	{
-		BasicString full_path = FileManager::Get()->findFile(FileManager::Configs, file);
-		if(full_path.length() == 0)
-		{
-			DebugPrint(PriorityLevel::Log, "Animation file does not exist: '%s'", file);
+		if(animator_id && !s_animationData.contains(animator_id))
 			return;
+
+		const AnimatorData& animator_data = s_animationData.at(animator_id);
+
+		Animator& animator = GetComponentRef(Animator, entity);
+		animator.animations = &animator_data.animations;
+			
+		// attack data	
+		if( animator_data.attackStateData.hitBoxPos != (VectorF(0,0) ) || 
+			animator_data.attackStateData.hitBoxSize != VectorF(1.0f, 1.0f) )
+		{
+			BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
+			beviour_state.attackData.insert( { Action::BasicAttack, animator_data.attackStateData } );
 		}
+	}
 
+	
+	void Debug_GetAnimationIDs(std::vector<BasicString>& out_ids)
+	{
+		std::vector<BasicString> files;
+		FileManager::Get()->GetFilesInFolder(FileManager::Config_Animations, files);
 
-		JSONParser parser(full_path.c_str());
-		
-		if(!parser.document.IsObject())
+		for( const BasicString& file : files )
 		{
-			DebugPrint(PriorityLevel::Warning, "Invalid animation document: %s", full_path.c_str());
-			return;
-		} 
-
-		ECS::Animator& animator = GetComponentRef(Animator, entity);
-		float frame_size_x = parser.document["frameSize_x"].GetFloat();
-		float frame_size_y = parser.document["frameSize_y"].GetFloat();
-
-		const Value::Array& sprite_sheets = parser.document["spriteSheets"].GetArray();
-		for( u32 i = 0; i < sprite_sheets.Size(); i++ )
-		{
-			const Value& sprite_sheet = sprite_sheets[i];
-
-			const char* spriteSheet_id = sprite_sheet["spriteSheet"].GetString();
-			STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
-			if (!texture)
+			JSONParser parser(file.c_str());
+			if(!parser.IsValid())
+				continue;
+			
+			if(parser.document.HasMember("vfx"))
 			{
-				DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
-			}
-
-			if(!s_spriteSheets.contains(spriteSheet_id))
-			{
-				ECS::Animation animation;
-				animation.image.id = spriteSheet_id;
-				animation.image.texture = texture;
-				animation.frame.size.x = frame_size_x;
-				animation.frame.size.y = frame_size_y;
-				animation.frame.counts = (texture->originalDimentions / animation.frame.size).toInt();
-				
-				s_spriteSheets[spriteSheet_id] = animation;
-			}
-
-			VectorF object_center;
-			if(sprite_sheet.HasMember("object_center"))
-			{
-				const Value& center = sprite_sheet["object_center"];
-				object_center = VectorF(center[0].GetFloat(), center[1].GetFloat());
-			}
-
-			const Value& anims = sprite_sheet["animations"];
-			for( u32 i = 0; i < anims.Size(); i++ )
-			{
-				ECS::Animation anim;
-
-				const Value& animation = anims[i];
-				anim = s_spriteSheets[spriteSheet_id];
-				anim.action = animation.HasMember("action") ? ECS::StringToAction(animation["action"].GetString()) : ECS::Action::None;
-				anim.startIndex = animation["startIndex"].GetInt();
-				anim.frameCount = animation["frameCount"].GetInt();
-				anim.frameTime = animation["frameTime"].GetFloat();
-				anim.looping = animation.HasMember("looping") ? animation["looping"].GetBool() : true;
-				anim.reversing = animation.HasMember("reverse") ? animation["reverse"].GetBool() : false;
-
-				if( anim.action == ECS::Action::AttackWindUp || anim.action == ECS::Action::BasicAttack )
+				Value& types = parser.document["vfx"];
+				if (types.IsArray())
 				{
-					ECS::AttackStateData hitbox_data;
-					PopulateColliderData("hitbox", animation, &hitbox_data.hitBoxPos, &hitbox_data.hitBoxSize);
-					
-					if(animation.HasMember("hit_frame"))
-						hitbox_data.hitFrame = animation["hit_frame"].GetInt();
-
-					ECS::BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
-					beviour_state.attackData.insert( { anim.action, hitbox_data } );
+					for (u32 i = 0; i < types.Size(); i++)
+					{
+						const char* id = types[i]["id"].GetString();
+						out_ids.emplace_back(BasicString(id));
+					}
 				}
+			}
+			else
+			{
+				const char* id = parser.document["id"].GetString();
+				out_ids.emplace_back(BasicString(id));
+			}
+		}
+	}
 
-				animator.animations.push_back(anim);
+
+	// gets each individual animation and puts it into the map
+	// problem is i need them packaged up into lists so i can make an animator out of it
+	// so just turn them into lists instead?
+	void ReadAnimationData()
+	{
+		std::vector<BasicString> files;
+		FileManager::Get()->GetFilesInFolder(FileManager::Config_Animations, files);
+
+		for( const BasicString& file : files )
+		{
+			JSONParser parser(file.c_str());
+			if(!parser.IsValid())
+				continue;
+			
+			if(parser.document.HasMember("vfx"))
+			{
+				Value& types = parser.document["vfx"];
+				if (types.IsArray())
+				{
+					for (u32 i = 0; i < types.Size(); i++)
+					{
+						Value& vfx_data = types[i];
+						const char* id = vfx_data["id"].GetString();
+
+						const char* spriteSheet_id = vfx_data["spriteSheet"].GetString();
+						STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+						if (!texture)
+						{
+							DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
+							continue;
+						}
+					
+						std::vector<Animation>& animations = s_animationData[id].animations;
+						animations.push_back( Animation() );
+						Animation& animation = animations.back();
+
+						// vfx defaults
+						animation.looping = false;
+						animation.action =  Action::Active;
+					
+						// sprite sheet image
+						animation.image.texture = texture;
+						animation.image.id = spriteSheet_id;
+
+						// frames
+						animation.frame.frameSize.x = vfx_data["frameSize"][0].GetFloat();
+						animation.frame.frameSize.y = vfx_data["frameSize"][1].GetFloat();
+						animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
+						animation.frameTime = vfx_data["frameTime"].GetFloat();
+						animation.startIndex = vfx_data["startIndex"].GetInt();;
+						animation.frameCount = vfx_data["frameCount"].GetInt();;
+					}
+				}
+			}
+			else
+			{
+				const char* id = parser.document["id"].GetString();
+				std::vector<Animation>& animations = s_animationData[id].animations;
+
+				float frame_size_x = parser.document["frameSize_x"].GetFloat();
+				float frame_size_y = parser.document["frameSize_y"].GetFloat();
+
+				const Value::Array& sprite_sheets = parser.document["spriteSheets"].GetArray();
+				for( u32 i = 0; i < sprite_sheets.Size(); i++ )
+				{
+					const Value& sprite_sheet = sprite_sheets[i];
+
+					const char* spriteSheet_id = sprite_sheet["spriteSheet"].GetString();
+					STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+					if (!texture)
+					{
+						DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
+						continue;
+					}
+
+					const Value& anims = sprite_sheet["animations"];
+					for( u32 i = 0; i < anims.Size(); i++ )
+					{
+						animations.push_back( Animation() );
+						Animation& animation = animations.back();
+
+						// image data
+						animation.image.id = spriteSheet_id;
+						animation.image.texture = texture;
+
+						// frame data
+						animation.frame.frameSize.x = frame_size_x;
+						animation.frame.frameSize.y = frame_size_y;
+						animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
+				
+						// animation data
+						animation.action = anims[i].HasMember("action") ? StringToAction(anims[i]["action"].GetString()) : Action::None;
+						animation.startIndex = anims[i]["startIndex"].GetInt();
+						animation.frameCount = anims[i]["frameCount"].GetInt();
+						animation.frameTime = anims[i]["frameTime"].GetFloat();
+						animation.looping = anims[i].HasMember("looping") ? anims[i]["looping"].GetBool() : true;
+						animation.reversing = anims[i].HasMember("reverse") ? anims[i]["reverse"].GetBool() : false;
+
+						// attack data
+						if( animation.action == Action::BasicAttack )
+						{
+							AttackStateData hitbox_data;
+							PopulateColliderData("hitbox", anims[i], &hitbox_data.hitBoxPos, &hitbox_data.hitBoxSize);
+					
+							if(anims[i].HasMember("hit_frame"))
+								hitbox_data.hitFrame = anims[i]["hit_frame"].GetInt();
+
+							s_animationData[id].attackStateData = hitbox_data;
+						}
+					}
+				}
 			}
 		}
 	}

@@ -57,36 +57,58 @@ namespace Scene
 		return false;
 	}
 
+	static bool CheckBool(const Value& field_instance, const char* field, bool& instance)
+	{
+		if( StringCompare(field, field_instance["__identifier"].GetString()) )
+		{
+			if(field_instance["__value"].IsBool())
+			{
+				instance = field_instance["__value"].GetBool();
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	static bool CheckString(const Value& field_instance, const char* field, BasicString& instance)
+	{
+		if( StringCompare(field, field_instance["__identifier"].GetString()) )
+		{
+			if(field_instance["__value"].IsString())
+			{
+				instance = field_instance["__value"].GetString();
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	static bool CheckInt(const Value& field_instance, const char* field, int& instance)
+	{
+		if( StringCompare(field, field_instance["__identifier"].GetString()) )
+		{
+			if(field_instance["__value"].IsInt())
+			{
+				instance = field_instance["__value"].GetInt();
+			}
+			return true;
+		}
+
+		return false;
+	}
+
 	static void ReadMetaData(Value& data_in, ECS::EntityMetaData& data_out, VectorF level_to_window, VectorF level_world_pos)
 	{
 		float width = data_in["width"].GetFloat();
 		float height = data_in["height"].GetFloat();
 
+		data_out.id = data_in["__identifier"].GetString();
+
 		Value& px = data_in["px"];
 		float px_x = px[0].GetFloat(); // + (width * 0.5f);
 		float px_y = px[1].GetFloat(); // - (height);
-
-		const char* identifier = data_in["__identifier"].GetString();
-
-		// split formatted entities like Rune_Rebound
-		// id = RuneRebound
-		// type = Rune
-		BasicString prefix;
-		BasicString postfix;
-		if (SplitIdentiferType(identifier, prefix, postfix))
-		{
-			data_out.type = prefix;
-
-			char buffer[64];
-			snprintf(buffer, 64, "%s%s", prefix.c_str(), postfix.c_str());
-			data_out.id = buffer;
-		}
-		else
-		{
-			data_out.id = identifier;
-			data_out.type = identifier;
-		}
-
 		data_out.position = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
 		data_out.size = (VectorF(width, height) * level_to_window);
 
@@ -103,29 +125,27 @@ namespace Scene
 
 		if (data_in.HasMember("fieldInstances"))
 		{
-			const Value::Array& field_instance = data_in["fieldInstances"].GetArray();
-			for (u32 i = 0; i < field_instance.Size(); i++)
+			const Value::Array& field_instances = data_in["fieldInstances"].GetArray();
+			for (u32 i = 0; i < field_instances.Size(); i++)
 			{
-				if( field_instance[i]["__identifier"].IsString() )
+				Value& field_instance = field_instances[i];
+				if( field_instance["__identifier"].IsString() )
 				{
-					if( StringCompare("Sprite", field_instance[i]["__identifier"].GetString()) )
-					{
-						// might be null, so need to check
-						if(field_instance[i]["__value"].IsString())
-							data_out.spriteId = field_instance[i]["__value"].GetString();
-						continue;
-					}
-					else if( StringCompare("SpriteSheet", field_instance[i]["__identifier"].GetString()) )
-					{
-						// might be null, so need to check
-						if(field_instance[i]["__value"].IsString())
-							data_out.spriteSheetId = field_instance[i]["__value"].GetString();
-						continue;
-					}
-					else if( StringCompare("SpriteSheetFrames", field_instance[i]["__identifier"].GetString()) )
+					if(CheckString(field_instance,			"Sprite", data_out.spriteId)) continue;
+					else if(CheckString(field_instance,		"SpriteSheet", data_out.spriteSheetId)) continue;
+					else if(CheckString(field_instance,		"Animator", data_out.animatorId)) continue;
+					else if( CheckBool(field_instance,		"UIButton", data_out.isButton) ) continue;
+					else if( CheckString(field_instance,	"Callback", data_out.callback)) continue;
+					else if( CheckString(field_instance,	"UID", data_out.uid)) continue;
+					else if( CheckBool(field_instance,		"Center", data_out.center) ) continue;
+					else if( CheckInt(field_instance,		"PtSize", data_out.PtSize) ) continue;
+					else if( CheckBool(field_instance,		"Random", data_out.random) ) continue;
+					else if( CheckInt(field_instance,		"Tier", data_out.tier) ) continue;
+					else if( CheckBool(field_instance,		"SnapToFloor", data_out.snapToFloor) ) continue;					
+					else if( StringCompare("SpriteSheetFrames", field_instance["__identifier"].GetString()) )
 					{
 						data_out.spriteSheetFrameCounts = VectorI(1,1);
-						const Value::Array& array = field_instance[i]["__value"].GetArray();
+						const Value::Array& array = field_instance["__value"].GetArray();
 						if(array.Size() > 0 && array[0].GetInt() > 0)
 							data_out.spriteSheetFrameCounts.x = array[0].GetInt();
 						if(array.Size() > 1 && array[1].GetInt() > 0)
@@ -133,76 +153,9 @@ namespace Scene
 
 						continue;
 					}
-					else if( StringCompare("Colour", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("SizeOverride", field_instance["__identifier"].GetString()) )
 					{
-						// might be null, so need to check
-						if(field_instance[i]["__value"].IsString())
-						{
-							int hex = 0;
-							const char* string = field_instance[i]["__value"].GetString();
-							std::stringstream ss(string + 1);
-							ss >> std::hex >> hex;
-
-							data_out.colourMod = SColour(hex);
-						}
-						continue;
-					}
-					else if( StringCompare("UIButton", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsBool())
-						{
-							data_out.isButton = field_instance[i]["__value"].GetBool();
-						}
-						continue;
-					}
-					else if( StringCompare("Callback", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsString())
-						{
-							data_out.callback = field_instance[i]["__value"].GetString();
-						}
-						continue;
-					}
-					else if( StringCompare("UID", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsString())
-						{
-							data_out.uid = field_instance[i]["__value"].GetString();
-						}
-						continue;
-					}
-					else if( StringCompare("Center", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsBool())
-						{
-							data_out.center = field_instance[i]["__value"].GetBool();
-						}
-						continue;
-					}
-					else if( StringCompare("PtSize", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsInt())
-						{
-							data_out.PtSize = field_instance[i]["__value"].GetInt();
-						}
-						continue;
-					}					
-					else if( StringCompare("Random", field_instance[i]["__identifier"].GetString()) )
-					{
-						if(field_instance[i]["__value"].IsBool())
-						{
-							data_out.random = field_instance[i]["__value"].GetBool();
-						}
-						continue;
-					}
-					else if( StringCompare("Tier", field_instance[i]["__identifier"].GetString()) )
-					{
-						data_out.tier = field_instance[i]["__value"].GetInt();
-						continue;
-					}
-					else if( StringCompare("SizeOverride", field_instance[i]["__identifier"].GetString()) )
-					{
-						const Value::Array& array = field_instance[i]["__value"].GetArray();
+						const Value::Array& array = field_instance["__value"].GetArray();
 						if(array.Size() == 2)
 						{
 							if(array[0].GetFloat() > 0)
@@ -212,12 +165,34 @@ namespace Scene
 						}
 						continue;
 					}
-					else if( StringCompare("ColourType", field_instance[i]["__identifier"].GetString()) )
+					else if( StringCompare("ColourType", field_instance["__identifier"].GetString()) )
 					{
-						rapidjson::Type ty = field_instance[i]["__value"].GetType();
-						StringBuffer32 type_string = StringBuffer32(field_instance[i]["__value"].GetString()).to_lower();
+						StringBuffer32 type_string = StringBuffer32(field_instance["__value"].GetString()).to_lower();
 						if( ECS::Colour::s_stringToType.contains(type_string) )
 							data_out.colourType = (u32)ECS::Colour::s_stringToType.at( type_string );
+						continue;
+					}
+					else if( StringCompare("Faction", field_instance["__identifier"].GetString()) )
+					{
+						StringBuffer32 type_string = StringBuffer32(field_instance["__value"].GetString()).to_lower();
+						if( "player" == type_string )
+							data_out.faction = 1;
+						else if( "enemy" == type_string )
+							data_out.faction = 2;
+						continue;
+					}
+					else if( StringCompare("Colour", field_instance["__identifier"].GetString()) )
+					{
+						// might be null, so need to check
+						if(field_instance["__value"].IsString())
+						{
+							int hex = 0;
+							const char* string = field_instance["__value"].GetString();
+							std::stringstream ss(string + 1);
+							ss >> std::hex >> hex;
+
+							data_out.colourMod = SColour(hex);
+						}
 						continue;
 					}
 				}
@@ -253,8 +228,12 @@ namespace Scene
 
 	void BuildBiome(const char* biome_id, ECS::Entity& biome_entity)
 	{
-		BasicString string = FileManager::Get()->findFile(FileManager::Maps, biome_id);
-		JSONParser parser(string.c_str());
+		BasicString file;
+		FileManager::Get()->FindFile(FileManager::Maps, biome_id, file);
+
+		JSONParser parser(file.c_str());
+		if(!parser.IsValid())
+			return;
 
 		const VectorF window_size = GameData::Get().window->size();
 
@@ -331,17 +310,8 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.type];
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.id];
 						entity_data.push_back(emd);
-
-						//if (entry.HasMember("fieldInstances"))
-						//{
-						//	const Value::Array& field_instance = entry["fieldInstances"].GetArray();
-						//	for (u32 i = 0; i < field_instance.Size(); i++)
-						//	{
-						//		emd.tag = field_instance[i]["__identifier"].GetString();
-						//	}
-						//}
 					}
 				}
 				else if( StringCompare(layer_id, "TerrainColliders" ) )
@@ -547,17 +517,8 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.type];
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.id];
 						entity_data.push_back(emd);
-
-						//if (entry.HasMember("fieldInstances"))
-						//{
-						//	const Value::Array& field_instance = entry["fieldInstances"].GetArray();
-						//	for (u32 i = 0; i < field_instance.Size(); i++)
-						//	{
-						//		emd.tag = field_instance[i]["__identifier"].GetString();
-						//	}
-						//}
 					}
 				}
 			}

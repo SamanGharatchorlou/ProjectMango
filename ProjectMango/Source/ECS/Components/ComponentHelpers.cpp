@@ -246,6 +246,7 @@ namespace ECS
 		s_stateMap["TakeHit"] = Action::TakeHit;
 		s_stateMap["Death"] = Action::Death;
 		s_stateMap["Spawning"] = Action::Spawning;
+		s_stateMap["Hurting"] = Action::Hurting;
 	}
 
 	Action::Enum StringToAction(const char* action)

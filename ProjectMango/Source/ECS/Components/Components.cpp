@@ -12,6 +12,9 @@
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 
+//temp
+#include "Entities/EntityBuilder.h"
+
 namespace ECS
 {
 	// EntityData
@@ -19,22 +22,22 @@ namespace ECS
 	EntityData::EntityData() : parent(EntityInvalid)
 	{ }
 
-	void EntityData::SetParent(Entity entity, Entity parent)
+	void EntityData::SetParent(Entity child, Entity parent)
 	{
 		// todo: now that I default add this to every entity i can remove this first check right?
 		// set new entity parent
-		EntityData* entity_data = GetComponent(EntityData, entity);
+		EntityData* entity_data = GetComponent(EntityData, child);
 		if(!entity_data)
 		{
-			AddComponent(EntityData, entity);
-			entity_data = GetComponent(EntityData, entity);
+			AddComponent(EntityData, child);
+			entity_data = GetComponent(EntityData, child);
 		}
 
 		// remove ourself from the old parent, if there was one
 		if( entity_data->parent != EntityInvalid )
 		{
 			EntityData& old_parent_entity_data = GetComponentRef(EntityData, entity_data->parent);
-			EraseSwap(old_parent_entity_data.children, entity);
+			EraseSwap(old_parent_entity_data.children, child);
 		}
 
 		entity_data->parent = parent;
@@ -47,7 +50,7 @@ namespace ECS
 			parent_entity_data = GetComponent(EntityData, parent);
 		}
 
-		PushBackUnique(parent_entity_data->children, entity);
+		PushBackUnique(parent_entity_data->children, child);
 	}
 
 
@@ -99,37 +102,44 @@ namespace ECS
 	
 	// Target
 	// ------------------------------------------------------------------
-	Entity Target::GetTarget() const
+	Entity Faction::GetTarget() const
 	{
-		Entity target_entity = targetEntity;
+		Entity target_entity = EntityInvalid;
 
-		if(isEnemy)
+		if(team == Team::Player)
 		{
 			target_entity = GetEnemy();
 		}
-		else if(isPlayer)
+		else if(team == Team::Enemy)
 		{
 			target_entity = GetPlayer();
 		}
 					
 		if (ecs->IsAlive(target_entity))
-			return target_entity;
-
-		return EntityInvalid;
-	}
-
-	
-	Entity Target::GetTarget(Entity entity)
-	{
-		if(Target* target = GetComponent(Target, entity) )
 		{
-			return target->GetTarget();
+			if(const Health* health = GetComponent(Health, target_entity))
+			{
+				if(health->currentHealth <= 0)
+					return EntityInvalid;
+			}
+			return target_entity;
 		}
 
 		return EntityInvalid;
 	}
 
-	Entity Target::GetPlayer()
+	
+	Entity Faction::GetTarget(Entity entity)
+	{
+		if(Faction* faction = GetComponent(Faction, entity) )
+		{
+			return faction->GetTarget();
+		}
+
+		return EntityInvalid;
+	}
+
+	Entity Faction::GetPlayer()
 	{
 		ComponentArray<PlayerController>& players =  GetAllComponents(PlayerController);
 		for( auto iter = players.entityToComponent.begin(); iter != players.entityToComponent.end(); iter++ )
@@ -139,13 +149,54 @@ namespace ECS
 
 		return EntityInvalid;
 	}
-	Entity Target::GetEnemy()
+	Entity Faction::GetEnemy()
 	{
 		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
 		if(GameState* game_state = dynamic_cast<GameState*>(&state))
 			return game_state->enemy;
 
 		return EntityInvalid;
+	}
+
+	void Faction::SetAsHostileFaction(Entity entity, Faction& hostile_faction)
+	{
+		if(const Faction* entity_faction = GetComponent(Faction, entity) )
+		{
+			if(entity_faction->team == Team::Player)
+				hostile_faction.team = Team::Enemy;
+			else if(entity_faction->team == Team::Player)
+				hostile_faction.team = Team::Enemy;
+		}
+	}
+
+	void Faction::SetAsAlliedFaction(Entity entity, Faction& hostile_faction)
+	{
+		if(const Faction* entity_faction = GetComponent(Faction, entity) )
+		{
+			if(entity_faction->team != Team::None)
+				hostile_faction.team = entity_faction->team;
+		}
+	}
+	
+	Faction::Team Faction::GetTeam(Entity entity)
+	{
+		if(Faction* faction = GetComponent(Faction, entity) )
+		{
+			return faction->team;
+		}
+
+		return Team::None;
+	}
+
+	void Faction::DebugGetFactionName(Entity entity, BasicString& name)
+	{
+		Faction::Team team = GetTeam(entity);
+		if(team == Faction::Player)
+			name = "Player";
+		if(team == Faction::Enemy)
+			name = "Enemy";
+
+		name = "None";
 	}
 
 	// EntityState
@@ -217,6 +268,12 @@ namespace ECS
 
 		currentHealth -= damage;
 		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
+
+		RectF rect;
+		rect.SetSize(123.0f,97.5f);
+		rect.SetCenter(GetPosition(entity));
+
+		CreateVFX("BloodHit1", rect);
 	}
 
 	// DeathScentence
@@ -245,19 +302,34 @@ namespace ECS
 		if(!CanDie())
 			return;
 
+		bool destroy_entity = false;
+
 		// animator trigger
 		if( deathLoops != -1)
 		{
-			if(const Animator* animator = GetComponent(Animator, entity))
+			bool animate_on_exit = false;
+
+			const Animator* animator = GetComponent(Animator, entity);
+			if(animator)
 			{
-				if(animator->GetActiveAnimation().action == Action::Death)
+				animate_on_exit = animator->GetAnimation(action) != nullptr;
+			}
+
+			if(animate_on_exit)
+			{
+				if(animator->GetActiveAnimation().action == action)
 				{
 					if(animator->loopCount >= deathLoops)
 					{
 						ecs->entities.KillEntity(entity);
-						return;
+						destroy_entity = true;
 					}
 				}
+			}
+			else
+			{
+				ecs->entities.KillEntity(entity);
+				destroy_entity = true;
 			}
 		}
 	}

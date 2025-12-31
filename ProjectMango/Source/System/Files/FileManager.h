@@ -49,8 +49,8 @@ public:
 	bool exists(const Folder folder, const char* name) const;
 	bool IsValidPath(const char* path) const;
 
-	BasicString findFile(const Folder folder, const char* name) const;
-	BasicString findFile(const Folder folder, StringBuffer64 name) const { findFile(folder, name.c_str()); }
+	bool FindFile(const Folder folder, const char* name, BasicString& out_file) const;
+	//BasicString findFile(const Folder folder, StringBuffer64 name) const { findFile(folder, name.c_str()); }
 	BasicString findFileEtx(const Folder folder, const char* name) const;
 
 	// todo: dont return these vectors, fill some in instead, same with allFilesinFolder functions

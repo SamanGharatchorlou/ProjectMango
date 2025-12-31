@@ -6,7 +6,6 @@
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/EntityCoordinator.h"
 #include "Entities/EntityBuilder.h"
-#include "Entities/Player/PlayerCharacter.h"
 #include "Entities/UIEntityBuilder.h"
 #include "Game/Camera/Camera.h"
 #include "Game/Readers/SceneReader.h"
@@ -24,21 +23,16 @@ void GameState::Init()
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
 	AddComponent(Biome, biome_entity);
-	Scene::BuildBiome( "GemBiome_old", biome_entity );
+	Scene::BuildBiome( "GemBiome", biome_entity );
 	activeLevel = biome_entity;
-
-	ECS::EntityMetaData empty_data;
-	ECS::Entity player = Player::Spawn(empty_data);
 	
 	CreateEntities(biome_entity);
-
-	ECS::EntityState& player_state = GetComponentRef(EntityState, player);
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
 
 	camera->setViewport(window->size());
-	camera->targetEntity = Target::GetPlayer();
+	camera->targetEntity = Faction::GetPlayer();
 	camera->InitShakeyCam(5.0f, VectorF(12.0,0));
 
 	// Start Audio
@@ -98,14 +92,14 @@ void GameState::FastUpdate(float dt)
 
 void GameState::Update(float dt)
 {
-	ECS::Entity ai = ECS::Target::GetEnemy();
+	ECS::Entity ai = ECS::Faction::GetEnemy();
 	if(ECS::Health* health = GetComponent(Health, ai))
 	{
 		if(health->currentHealth <= 0)
 			gameOver = true;
 	}
 
-	ECS::Entity player = Target::GetPlayer();
+	ECS::Entity player = Faction::GetPlayer();
 	if(ECS::Health* health = GetComponent(Health, player))
 	{
 		if(health->currentHealth <= 0)

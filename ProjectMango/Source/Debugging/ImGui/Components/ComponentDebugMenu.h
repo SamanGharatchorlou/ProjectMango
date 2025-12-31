@@ -24,6 +24,7 @@ namespace DebugMenu
 	u32 DoCardDebugMenu(ECS::Entity& entity);
 	u32 DoBehaviourStateDebugMenu(ECS::Entity& entity);
 	u32 DoEntityStateDebugMenu(ECS::Entity& entity);
+	u32 DoFactionDebugMenu(ECS::Entity& entity);
 
 	void DrawCollider(const ECS::Collider& collider);
 
