@@ -60,7 +60,8 @@
 					"frameTime": 0.15,
 					"looping": false,
 					"hitbox_pos": [ 0.0, 0.0 ],
-					"hitbox_size": [ 3.0, 1.0 ]
+					"hitbox_size": [ 3.0, 1.0 ],
+					"hit_vfx" : "HitLightningPop1"
 				}
 			]
 		}

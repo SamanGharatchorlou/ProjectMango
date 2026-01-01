@@ -25,7 +25,7 @@ namespace ECS
 			_entry( SpriteCycle ) \
 			_entry( LayeredSprite ) \
 			_entry( Animator ) \
-			_entry( VFX ) \
+			_entry( Jiggler ) \
 			_entry( Audio ) \
 			_entry( EntityState ) \
 			_entry( PlayerController ) \

@@ -10,12 +10,10 @@
 
 using namespace ECS;
 
-//static std::unordered_map<BasicString, Animation> s_spriteSheets;
-
 struct AnimatorData
 {
 	 std::vector<Animation> animations;
-	 AttackStateData attackStateData;
+	 std::unordered_map<Action::Enum, AttackStateData> attackStateData;
 };
 
 static std::unordered_map< BasicString, AnimatorData > s_animationData;
@@ -54,6 +52,21 @@ namespace AnimationReader
 		return has_data;
 	}
 
+	
+	bool AnimationExists(const char* animiation_id)
+	{
+		return s_animationData.contains(animiation_id);
+	}
+
+	static void AddAttackData(Entity entity, const AnimatorData& animator_data, Action::Enum action)
+	{
+		if(animator_data.attackStateData.contains(action))
+		{
+			BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
+			beviour_state.attackData.insert( { action, animator_data.attackStateData.at(action) } );
+		}
+	}
+
 	// this runs every time i fire a spell, lets not...
 	void BuildAnimator(Entity entity, const char* animator_id)
 	{
@@ -64,14 +77,27 @@ namespace AnimationReader
 
 		Animator& animator = GetComponentRef(Animator, entity);
 		animator.animations = &animator_data.animations;
-			
-		// attack data	
-		if( animator_data.attackStateData.hitBoxPos != (VectorF(0,0) ) || 
-			animator_data.attackStateData.hitBoxSize != VectorF(1.0f, 1.0f) )
+		
+		for( u32 i = 0; i < animator.animations->size(); i++ )
 		{
-			BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
-			beviour_state.attackData.insert( { Action::BasicAttack, animator_data.attackStateData } );
+			AddAttackData(entity, animator_data, animator.animations->at(i).action);
 		}
+
+		//if(animator.HasAnimation(Action::BasicAttack))
+		//{
+		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
+		//	beviour_state.attackData.insert( { Action::BasicAttack, animator_data.attackStateData.at() } );
+		//}
+		//if(animator.HasAnimation(Action::AttackRecovery))
+		//{
+		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
+		//	beviour_state.attackData.insert( { Action::AttackRecovery, animator_data.attackStateData } );
+		//}
+		//if(animator.HasAnimation(Action::AttackWindUp))
+		//{
+		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
+		//	beviour_state.attackData.insert( { Action::AttackWindUp, animator_data.attackStateData } );
+		//}
 	}
 
 	
@@ -206,7 +232,8 @@ namespace AnimationReader
 						animation.reversing = anims[i].HasMember("reverse") ? anims[i]["reverse"].GetBool() : false;
 
 						// attack data
-						if( animation.action == Action::BasicAttack )
+						bool has_attack_data = anims[i].HasMember("hitbox_size");
+						if( has_attack_data )
 						{
 							AttackStateData hitbox_data;
 							PopulateColliderData("hitbox", anims[i], &hitbox_data.hitBoxPos, &hitbox_data.hitBoxSize);
@@ -214,7 +241,13 @@ namespace AnimationReader
 							if(anims[i].HasMember("hit_frame"))
 								hitbox_data.hitFrame = anims[i]["hit_frame"].GetInt();
 
-							s_animationData[id].attackStateData = hitbox_data;
+							if(anims[i].HasMember("hit_vfx"))
+								hitbox_data.hitVfx = anims[i]["hit_vfx"].GetString();
+							
+							if(anims[i].HasMember("attack_vfx"))
+								hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
+
+							s_animationData[id].attackStateData.insert( {animation.action, hitbox_data } );
 						}
 					}
 				}

@@ -6,6 +6,49 @@ class STexture;
 
 namespace ECS
 {
+	struct Collider;
+
+	struct Transform
+	{
+		COMPONENT_TYPE(Transform)
+
+		Transform();
+
+		// top left
+		VectorF targetWorldPosition;
+		VectorF worldPosition;
+		VectorF localPosition;
+
+		VectorF size;
+
+		// facing to the right ( 0 == right, 1 == left)
+		SDL_RendererFlip facingDirection = SDL_FLIP_NONE;
+
+		bool ignoreOutOfBounds;
+		
+		void Init(const EntityMetaData* emd, Collider& collider);
+		void Init(const EntityMetaData* emd);
+
+		void SetLocalPosition(VectorF pos);
+		void SetWorldPosition(VectorF pos);
+		void SetWorldRect(const VectorF& pos, const VectorF& size);
+
+		void UpdateChildTransforms();
+
+		void SetObjectCenter(VectorF pos);
+		RectF GetObjectRect() const;
+
+		bool FacingLeft() const { return facingDirection == SDL_FLIP_HORIZONTAL; }
+
+		VectorF GetHorizontalFlipPoint() const;
+		VectorF GetObjectCenter() const;
+		RectF GetRect() const;
+
+		VectorF GetRelativePosition(VectorF relative) const;
+
+		static VectorF GetObjectCenter(ECS::Entity entity);
+	};
+
 	struct Collider
 	{
 		COMPONENT_TYPE(Collider)
@@ -112,48 +155,6 @@ namespace ECS
 		VectorF relative_size = VectorF(1,1);
 
 		void UpdateRectFromBase();
-	};
-
-
-	struct Transform
-	{
-		COMPONENT_TYPE(Transform)
-
-		Transform();
-
-		// top left
-		VectorF targetWorldPosition;
-		VectorF worldPosition;
-		VectorF localPosition;
-
-		VectorF renderOffset;
-		VectorF size;
-
-		// set through the anim config, might not be the technical center, 
-		// but it should be the visual one (relative value)
-		VectorF center;
-
-		bool ignoreOutOfBounds;
-		
-		void Init(const EntityMetaData* emd, Collider& collider);
-		void Init(const EntityMetaData* emd);
-
-		void SetLocalPosition(VectorF pos);
-		void SetWorldPosition(VectorF pos);
-		void SetWorldRect(const VectorF& pos, const VectorF& size);
-
-		void UpdateChildTransforms();
-
-		void SetObjectCenter(VectorF pos);
-		RectF GetObjectRect() const;
-
-		VectorF GetHorizontalFlipPoint() const;
-		VectorF GetObjectCenter() const;
-		RectF GetRect() const;
-
-		VectorF GetRelativePosition(VectorF relative) const;
-
-		static VectorF GetObjectCenter(ECS::Entity entity);
 	};
 
 

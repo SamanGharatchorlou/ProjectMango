@@ -10,5 +10,7 @@ namespace DebugMenu
 	void Draw();
 
 	void OpenEditorWindow();
+
+	void ToggleShow();
 }
 #endif

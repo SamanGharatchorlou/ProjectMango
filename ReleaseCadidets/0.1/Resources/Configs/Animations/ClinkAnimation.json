@@ -1,0 +1,20 @@
+{
+	"id": "Clink",
+	"frameSize_x": 32,
+	"frameSize_y": 32,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "clink",
+			"animations": [
+				{
+					"action": "Active",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.15,
+					"looping" : false
+				}
+			]
+		}
+	]
+}

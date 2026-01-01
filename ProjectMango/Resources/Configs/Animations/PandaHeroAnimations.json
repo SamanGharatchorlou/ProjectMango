@@ -64,44 +64,8 @@
 					"looping": false,
 					"hit_frame" : 4,
 					"hitbox_pos": [ 0.481, 0.581 ],
-					"hitbox_size": [ 0.363, 0.305 ]
-				},
-				{
-					"action": "BasicAttackHold",
-					"startIndex": 187,
-					"frameCount": 4,
-					"frameTime": 0.04,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ],
-					"attack_collider_pos": [ 0.481, 0.581 ],
-					"attack_collider_size": [ 0.363, 0.305 ]
-				},
-				{
-					"action": "LungeAttack",
-					"startIndex": 204,
-					"frameCount": 17,
-					"frameTime": 0.04,
-					"looping": false,
-					"attack_collider_frame_start" : 9,
-					"attack_collider_frame_end" : 11,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ],
-					"entity_collider_end_pos": [ 0.59, 0.42 ],
-					"attack_collider_pos": [ 0.45, 0.602 ],
-					"attack_collider_size": [ 0.38, 0.277 ]
-				},
-				{
-					"action": "FloorSlam",
-					"startIndex": 120,
-					"frameCount": 9,
-					"frameTime": 0.1,
-					"looping": false,
-					"attack_collider_frame_start" : 2,
-					"attack_collider_frame_end" : 5,
-					"entity_collider_pos": [ 0.38, 0.42 ],
-					"entity_collider_size": [ 0.0889, 0.457 ],
-					"attack_collider_pos": [ 0.06, 0.11 ],
-					"attack_collider_size": [ 0.71, 0.76 ]
+					"hitbox_size": [ 0.363, 0.305 ],
+					"hit_vfx" : "Hit2"
 				}
 			]
 		}

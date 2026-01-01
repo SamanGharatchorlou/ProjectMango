@@ -2,8 +2,7 @@
 #include "TurnActionSystem.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/GameComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
@@ -97,10 +96,10 @@ namespace ECS
 					if(types.size() >= 2 && Contains<Colour::Type>(types, coin_type))
 						return false;
 
-					if(coin_stack->remaining > 0)
-					{
-						TakeCoins(turn.entity, coin_type, 1);
-					}
+					if(coin_stack->remaining <= 0)
+						return false;
+
+					TakeCoins(turn.entity, coin_type, 1);
 				}
 
 				break;
@@ -119,10 +118,10 @@ namespace ECS
 				
 				if(Card* card = GetComponent(Card, action_request.target))
 				{
-					if( card->CanAfford(turn.entity) )
-					{
-						TakeCard(turn.entity, *card);
-					}
+					if( !card->CanAfford(turn.entity) )
+						return false;
+				
+					TakeCard(turn.entity, *card);
 				}
 
 				break;
@@ -216,7 +215,18 @@ namespace ECS
 
 			if(ActionRequest* action_request = GetComponent(ActionRequest, entity))
 			{
-				ExecuteAction(*action_request, *turn);
+				bool did_execute = ExecuteAction(*action_request, *turn);
+
+				if(!did_execute && Faction::GetPlayer() == entity)
+				{
+					Jiggler& jiggle = AddComponent(Jiggler, action_request->target);
+					jiggle.amplitude = 8.0f;
+					jiggle.frequency = 30.0f;
+					jiggle.decayTime = 4.0f;
+					jiggle.undisturbedLoops = 1;
+					//jiggle.Start();
+				}
+
 				RemoveComponent(ActionRequest, entity);
 			}
 

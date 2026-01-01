@@ -77,6 +77,7 @@ void ECS::RegisterAllComponents()
 	DEFINE_COMPONENT(Inventory, c_rare);
 	DEFINE_COMPONENT(TurnState, c_rare);
 	DEFINE_COMPONENT(ActionRequest, c_rare);
+	DEFINE_COMPONENT(Jiggler, c_rare);
 
 	DEFINE_COMPONENT(UICursor, 1);
 
@@ -134,9 +135,8 @@ void ECS::RegisterAllSystems()
 
 	// todo: can remove this now?
 	// Compoenent Updates - runs all basic object component update function
-	//Signature ComponentsSignature =
-	//	ArcheBit(DeathScentence);
-	//ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
+	Signature ComponentsSignature = ArcheBit(Jiggler);
+	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 	
 	// --------- state systems ---------

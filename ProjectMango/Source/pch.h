@@ -99,10 +99,8 @@ namespace fs = std::filesystem;
 
 
 // --- Debug Only Includes ---
-#if DEBUG_MODE
 #include "Debugging/DebugDraw.h"
 #include "Debugging/Logging.h"
-#endif
 
 // NEW operator override
 // where should this go?

@@ -46,6 +46,7 @@ static void UpdateCoinPile(Entity coin_pile, Entity owner)
 	{
 		CoinStack& coin_stack = GetComponentRef(CoinStack, coin_pile);
 		coin_stack.remaining = inventory->coins[coin_stack.colourType];
+		coin_stack.remaining = Maths::Max(coin_stack.remaining, 0);
 
 		UpdateCostIcons(coin_pile);
 	}
@@ -61,6 +62,7 @@ static void UpdateCardPower(Entity coin_pile, Entity owner)
 		inventory->GetCardPower(card_power, Colour::Count);
 
 		coin_stack.remaining = card_power[coin_stack.colourType];
+		coin_stack.remaining = Maths::Max(coin_stack.remaining, 0);
 
 		UpdateCostIcons(coin_pile);
 	}

@@ -1,0 +1,49 @@
+{
+	"id": "Wasp",
+	"frameSize_x": 16,
+	"frameSize_y": 16,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Wasp 16x16 Sprite Sheet",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.25
+				},
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.25
+				},
+				{
+					"action": "Run",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.18
+				},
+				{
+					"action": "BasicAttack",
+					"startIndex": 6,
+					"frameCount": 6,
+					"frameTime": 0.15,
+					"looping": false,
+					"hit_frame" : 3,
+					"hitbox_pos": [ 0.10, 0.50 ],
+					"hitbox_size": [ 0.332, 0.375 ],
+					"hit_vfx" : "HitSpark1"
+				},
+				{
+					"action": "Death",
+					"startIndex": 18,
+					"frameCount": 5,
+					"frameTime": 0.12,
+					"looping": false
+				}
+			]
+		}
+	]
+}

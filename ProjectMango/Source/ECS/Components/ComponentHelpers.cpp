@@ -145,9 +145,9 @@ namespace ECS
 	}
 
 	SDL_RendererFlip GetFacingDirection(Entity entity)
-	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
-		return sprite.params.flip;
+	{	
+		Transform& transform = GetComponentRef(Transform, entity);
+		return transform.facingDirection;
 	}
 
 	VectorI GetFacingDirectionVector(Entity entity)
@@ -163,23 +163,31 @@ namespace ECS
 
 	void SetFacingDirection(Entity entity, SDL_RendererFlip direction)
 	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
-
-		if (sprite.params.canFlip)
-			sprite.params.flip = direction;
+		Transform& transform = GetComponentRef(Transform, entity);
+		if(transform.facingDirection != direction)
+		{
+			FlipFacingDirection(entity);
+		}
 	}
 
-	void FlipFacingDirection(Entity entity)
+	SDL_RendererFlip FlipFacingDirection(Entity entity)
 	{
-		Sprite& sprite = GetComponentRef(Sprite, entity);
+		Transform& transform = GetComponentRef(Transform, entity);
 
-		if (sprite.params.canFlip)
+		if(transform.facingDirection == SDL_FLIP_NONE)
+			transform.facingDirection = SDL_FLIP_HORIZONTAL;
+		else
+			transform.facingDirection = SDL_FLIP_NONE;
+
+		if(Sprite* sprite = GetComponent(Sprite, entity))
 		{
-			if (sprite.params.flip == SDL_FLIP_HORIZONTAL)
-				sprite.params.flip = SDL_FLIP_NONE;
+			if (sprite->params.flip == SDL_FLIP_HORIZONTAL)
+				sprite->params.flip = SDL_FLIP_NONE;
 			else
-				sprite.params.flip = SDL_FLIP_HORIZONTAL;
+				sprite->params.flip = SDL_FLIP_HORIZONTAL;
 		}
+
+		return transform.facingDirection;
 	}
 
 	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target_entity)
@@ -240,9 +248,7 @@ namespace ECS
 		s_stateMap["Crouch"] = Action::Crouch;
 		s_stateMap["AttackWindUp"] = Action::AttackWindUp;
 		s_stateMap["BasicAttack"] = Action::BasicAttack;
-		s_stateMap["BasicAttackHold"] = Action::BasicAttackHold;
-		s_stateMap["LungeAttack"] = Action::LungeAttack;
-		s_stateMap["FloorSlam"] = Action::FloorSlam;
+		s_stateMap["AttackRecovery"] = Action::AttackRecovery;
 		s_stateMap["TakeHit"] = Action::TakeHit;
 		s_stateMap["Death"] = Action::Death;
 		s_stateMap["Spawning"] = Action::Spawning;

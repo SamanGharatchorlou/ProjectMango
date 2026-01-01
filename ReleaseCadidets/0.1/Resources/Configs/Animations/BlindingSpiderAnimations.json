@@ -1,0 +1,75 @@
+{
+	"id": "BlindingSpider",
+	"frameSize_x": 16,
+	"frameSize_y": 16,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "prep blind attack 16x16",
+			"animations": [
+				{
+					"action": "AttackWindUp",
+					"startIndex": 0,
+					"frameCount": 3,
+					"frameTime": 0.1,
+					"looping" : false
+				}
+			]
+		},
+		{
+			"spriteSheet": "blind attack 16x16",
+			"animations": [
+				{
+					"action": "BasicAttack",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.1,
+					"looping" : false,
+					"hit_frame" : 2,
+					"hitbox_pos": [ 0.05, 0.0 ],
+					"hitbox_size": [ 0.95, 0.75 ]
+				}
+			]
+		},
+		{
+			"spriteSheet": "static idle",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.15
+				},
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.15
+				}
+			]
+		},
+		{
+			"spriteSheet": "walk 16x16",
+			"animations": [
+				{
+					"action": "Run",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.15
+				}
+			]
+		},
+		{
+			"spriteSheet": "deah 16x16",
+			"animations": [
+				{
+					"action": "Death",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.15,
+					"looping" : false
+				}
+			]
+		}
+	]
+}

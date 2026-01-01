@@ -3,10 +3,10 @@
 
 namespace Maths
 {
-	//float GetAngle(VectorF a, VectorF b)
-	//{
-	//	float dot = DotProduct(a,b);
-	//	float mag = a.length() * b.length();
-	//	return (float)acos(dot / mag);
-	//}
+	// easings from https://easings.net/
+	float EaseOutCubic(float x)
+	{
+		x = clamp<float>(x, 0.0f, 1.0f);
+		return 1.0f - pow(1.0f - x, 3.0f);
+	}
 }

@@ -95,10 +95,8 @@ Window* GameSetup::initSDLWindow()
 				initFont();
 				initAudio();
 
-				SDL_ShowCursor(false);
-
-				// this makes it go weird, but did work once... no idea
-				//SDL_SetRelativeMouseMode(SDL_TRUE);
+				//SDL_CaptureMouse(SDL_TRUE);
+				SDL_ShowCursor(SDL_DISABLE);
 			}
 			else
 				DebugPrint(Error, "Renderer could not be created! SDL Image Error: %s", IMG_GetError());

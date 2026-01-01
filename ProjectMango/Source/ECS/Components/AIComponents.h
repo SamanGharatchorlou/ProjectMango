@@ -11,29 +11,18 @@ namespace ECS
 
 		// cant move or attack
 		bool isDisabled = false;
-
-		bool CanMoveForward(int ease_factor, float dt) const;
 	};
 
 	struct Pathing
 	{
 		COMPONENT_TYPE(Pathing)
 
-		Pathing();
-
-		//Entity target;
-
 		// the incremental next position to move to: pos + speed
 		// probably set by the AIController
 		//VectorF currentLocation;
 		VectorF targetLocation;
 
-		// sets the bounds
-		//u32 levelIndex = -1;
-
 		bool hasValidPath = false;
-
-		//void Init();
 	};
 
 	struct AIIntent
@@ -45,7 +34,6 @@ namespace ECS
 		bool wantsToFaceTarget = false;
 		bool wantsToMove = false;
 		bool wantsToAttack = false;
-
 	};
 	
 	typedef void (*BehaviourFunction)( ECS::Entity );
@@ -64,11 +52,19 @@ namespace ECS
 
 	struct AttackStateData
 	{
+		// vfx of the attack i.e. the blade swing
+		BasicString attackVfx;
+		// vfx of the hit, i.e. blood splat
+		BasicString hitVfx;
+
 		// size of the attack collider, relative to the transform
 		VectorF hitBoxPos = VectorF(0, 0);
 		VectorF hitBoxSize = VectorF(1.0f, 1.0f);
 		int hitFrame = 0;
 		bool didHit = false;
+
+		bool playedAttackVfx = false;
+		bool playedHitVfx = false;
 	};
 
 	// pass/get this data when running behaviours from the behaviour map

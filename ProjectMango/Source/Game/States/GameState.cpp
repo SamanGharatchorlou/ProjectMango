@@ -13,6 +13,7 @@
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
 #include "System/Window.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 
 void GameState::Init()
 {
@@ -69,7 +70,6 @@ void GameState::HandleInput()
         GameData::Get().systemStateManager->mStates.replaceState(new GameState);
 		return;
 	}
-#endif
 
 	if(input->isPressed(Button::P))
 	{
@@ -79,8 +79,17 @@ void GameState::HandleInput()
 				
 		ECS::Signature transform_signature = ArcheBit(Transform);
 		ecs->ToggleSystemPaused( transform_signature );
+
+		ECS::Signature anim_signature = ArcheBit(Animator);
+		ecs->ToggleSystemPaused( anim_signature );
 		return;
 	}
+	
+	if(input->isPressed(Button::F10))
+	{
+		DebugMenu::ToggleShow();
+	}
+#endif
 }
 
 

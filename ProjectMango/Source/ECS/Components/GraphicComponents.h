@@ -9,6 +9,8 @@ namespace ECS
 {
 	struct SpriteParameters
 	{
+		VectorF renderOffset;
+
 		SColour colourMod;
 		SDL_RendererFlip flip = SDL_FLIP_NONE;
 		
@@ -17,7 +19,6 @@ namespace ECS
 		RenderLayer renderLayer = RenderLayer::None;
 
 		bool disabled = false;
-		bool canFlip = true;
 	};
 
 	struct SpriteImage
@@ -34,7 +35,6 @@ namespace ECS
 		SpriteParameters params;
 		
 		void Init(const char* sprite_id);
-		bool IsFlipped() const { return params.flip == SDL_FLIP_HORIZONTAL; }
 		bool IsValid() const;
 
 		void SetTexture(const char* label);
@@ -119,10 +119,9 @@ namespace ECS
 
 		void StartAnimation(Action::Enum action);
 
-		//Animation& GetAnimation(Action::Enum action);
-
 		const Animation& GetActiveAnimation() const;
 		const Animation* GetAnimation(Action::Enum action) const;
+		bool HasAnimation(Action::Enum action) const;
 		RectF GetActiveSubRect() const;
 
 		bool OnLastFrame() const;
@@ -130,11 +129,24 @@ namespace ECS
 		bool IsValid() const;
 	};
 
-	struct VFX
+	struct Jiggler
 	{
-		COMPONENT_TYPE(VFX)
+		COMPONENT_TYPE(Jiggler)
 
-		//Animation animation;
+		u64 startTime = 0;
 
+		// amount it moves
+		float amplitude = 0.0f;
+		// how fast it moves
+		float frequency = 0.0f;
+
+		// reduces amplitude over time
+		u64 decayStartTime = 0;
+		float decayTime = 0.0f;
+
+		// number of loops before the decay kicks in
+		int undisturbedLoops;
+
+		//float GetXOffset() const;
 	};
 }

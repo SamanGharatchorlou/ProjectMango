@@ -121,7 +121,7 @@ namespace ECS
 		bool invulnerable;
 		
 		void Init();
-		void ApplyDamage(float damage);
+		bool ApplyDamage(float damage);
 	};
 
 
@@ -137,8 +137,8 @@ namespace ECS
 		float deathTimer = -FLT_MAX;
 
 		float fadeOutTime = 0.0f;
+		float fadeOutTimer = 0.0f;
 		
-		void Update(float dt);
 		bool CanDie();
 	};
 

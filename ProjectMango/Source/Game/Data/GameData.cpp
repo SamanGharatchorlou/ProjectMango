@@ -70,6 +70,8 @@ void GameData::init(Window* newWindow)
 
 #if IMGUI
 	DebugMenu::Init();
+	// default hide
+	DebugMenu::ToggleShow();
 #endif
 }
 

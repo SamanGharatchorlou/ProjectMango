@@ -16,8 +16,7 @@ namespace ECS
 		// Transform
 	// ------------------------------------------------------------------
 	Transform::Transform() : 
-		ignoreOutOfBounds(false),
-		center(0.5f, 0.5f)
+		ignoreOutOfBounds(false)
 	{ }
 
 	void Transform::Init(const EntityMetaData* emd)
@@ -25,19 +24,13 @@ namespace ECS
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			size = config->data.GetVector("size");
+			facingDirection = config->data.GetBool("flipped") ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
 			if(emd)
 			{
 				VectorF pos = emd->position - (size * emd->pivotPoint);
 
 				SetWorldPosition(pos);
-
-				//if(emd->snapToFloor)
-				//{
-				//	float distance = 0.0f;
-				//	if( RaycastToFloor(entity, distance) )
-				//		SetWorldPosition( pos + VectorF(0.0f, distance));
-				//}
 			}
 		}
 	}
@@ -46,14 +39,6 @@ namespace ECS
 	{
 		Init(emd);
 		collider.Init();
-		
-		//// might need to do this again to account for the collider size
-		//if(emd->snapToFloor)
-		//{
-		//	float distance = 0.0f;
-		//	if( RaycastToFloor(entity, distance) )
-		//		SetWorldPosition( worldPosition + VectorF(0.0f, distance));
-		//}
 	}
 
 	void Transform::SetWorldRect(const VectorF& _pos, const VectorF& _size)
@@ -67,18 +52,6 @@ namespace ECS
 		// update children positions
 		if (EntityData* entity_data = GetComponent(EntityData, entity))
 		{
-			SDL_RendererFlip sprite_flip = SDL_FLIP_NONE;
-
-			VectorF flip_point;
-			if (ECS::Sprite* parent_sprite = GetComponent(Sprite, entity))
-			{
-				if (parent_sprite->IsFlipped())
-				{
-					flip_point = GetHorizontalFlipPoint();
-					sprite_flip = parent_sprite->params.flip;
-				}
-			}
-
 			// handle horizontal flip 
 			for (u32 i = 0; i < entity_data->children.size(); i++)
 			{
@@ -86,17 +59,16 @@ namespace ECS
 				Transform& child_transform = GetComponentRef(Transform, child);
 				VectorF child_world_pos = worldPosition + child_transform.localPosition;
 
-				if (!flip_point.isZero())
+				if (facingDirection != SDL_FLIP_NONE)
 				{
-					VectorF flip_distance = child_transform.localPosition - flip_point;
+					VectorF flip_distance = child_transform.localPosition - GetHorizontalFlipPoint();
 					flip_distance.y = 0;
 					child_world_pos -= (flip_distance * 2.0f + VectorF(child_transform.size.x, 0.0f));
 				}
 
-				if (ECS::Sprite* sprite = GetComponent(Sprite, child))
+				if(child_transform.facingDirection != facingDirection)
 				{
-					if (sprite->params.canFlip)
-						sprite->params.flip = sprite_flip;
+					FlipFacingDirection(child);
 				}
 
 				child_transform.SetWorldPosition(child_world_pos);
@@ -141,7 +113,8 @@ namespace ECS
 	void Transform::SetObjectCenter(VectorF pos)
 	{
 		VectorF object_size = size;
-		VectorF object_offset = object_size * center;
+		// assuming a mid center
+		VectorF object_offset = object_size * VectorF(0.5f, 0.5f);
 
 		if(Collider* collider = GetComponent(Collider, entity))
 		{
@@ -178,7 +151,7 @@ namespace ECS
 		}
 		else
 		{
-			return VectorF(0.5f, 0.5f);
+			return VectorF(0.5f, 0.5f) * size;
 		}
 	}
 

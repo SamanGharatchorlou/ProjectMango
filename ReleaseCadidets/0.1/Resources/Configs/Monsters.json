@@ -1,0 +1,32 @@
+{
+	"Monsters": [
+		{
+			"id": "BlindingSpider", 
+			"points" : 1
+		},
+		{
+			"id": "BlindingSpider", 
+			"points" : 2
+		},
+		{
+			"id": "ShockSweeper", 
+			"points" : 3
+		},
+		{
+			"id": "GunSlinger",
+			"points" : 4
+		},
+		{
+			"id": "PandaHero",
+			"points" : 5
+		},
+		{
+			"id": "ShockSweeper",
+			"points" : 6
+		},
+		{
+			"id": "ShockSweeper",
+			"points" : 7
+		}
+	]
+}

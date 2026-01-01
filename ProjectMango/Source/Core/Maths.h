@@ -33,6 +33,7 @@ namespace Maths
 	{
 		return radians * static_cast<T>(180.0f / pi);
 	}
-	
 
+	// easings from https://easings.net/
+	float EaseOutCubic(float x);
 }

@@ -24,7 +24,10 @@ namespace ECS
 				state.next = Action::Inactive;
 			}
 
-			bool must_finish_anim = state.current == Action::AttackWindUp || state.current == Action::BasicAttack;
+			bool must_finish_anim = 
+				state.current == Action::AttackWindUp || 
+				state.current == Action::BasicAttack || 
+				state.current == Action::AttackRecovery;
 
 			bool can_change_state = !must_finish_anim;
 			if(must_finish_anim)

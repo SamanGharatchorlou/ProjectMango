@@ -11,6 +11,7 @@
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "Graphics/Raycast.h"
 #include "Entities/ResourceBank.h"
+#include "Game/Readers/AnimationReader.h"
 
 using namespace ECS;
 
@@ -26,7 +27,6 @@ Entity CreateBasicObject(const char* id, VectorF size)
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.params.renderLayer = RenderLayer::BasicObject;
-	sprite.params.canFlip = false;
 
 	return entity;
 }
@@ -64,8 +64,6 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 		if (config)
 		{
 			sprite.Init(config->data.GetString("sprite"));
-			sprite.params.canFlip = config->data.GetString("can_flip");
-
 		}
 		else if(has_sprite)
 		{
@@ -80,7 +78,6 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 			DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
 			
 		sprite.params.renderLayer = RenderLayer::BasicObject;
-		sprite.params.canFlip = false;
 		sprite.params.colourMod = emd.colourMod;
 
 		// no sprite yet, try get a coloured version
@@ -364,13 +361,7 @@ Entity CreateMonster(const ECS::EntityMetaData& emd)
 	state.Init();
 
 	BehaviourMap& map = AddComponent(BehaviourMap, entity);
-	std::vector<Action::Enum> states;
-	states.push_back(Action::Idle);
-	states.push_back(Action::Run);
-	states.push_back(Action::BasicAttack);
-	states.push_back(Action::Death);
-
-	PopulateMonsterBehaviours(map, states);
+	PopulateMonsterBehaviours(map);
 
 	return entity;
 }
@@ -477,6 +468,9 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 
 Entity CreateVFX(const char* vfx, const RectF& rect)
 {
+	if(!vfx || !AnimationReader::AnimationExists(vfx))
+		return EntityInvalid;
+
 	EntityMetaData data;
 	data.id = vfx;
 	data.position = rect.TopLeft();

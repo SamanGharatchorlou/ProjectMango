@@ -13,7 +13,6 @@
 #include "Game/States/GameState.h"
 
 //temp
-#include "Entities/EntityBuilder.h"
 
 namespace ECS
 {
@@ -261,19 +260,19 @@ namespace ECS
 		currentHealth = maxHealth;
 	}
 
-	void Health::ApplyDamage(float damage)
+	bool Health::ApplyDamage(float damage)
 	{
 		if(invulnerable)
-			return;
+			return false;
 
-		currentHealth -= damage;
-		currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
+		if(currentHealth > 0)
+		{
+			currentHealth -= damage;
+			currentHealth = std::clamp(currentHealth, 0.0f, maxHealth);
+			return true;
+		}
 
-		RectF rect;
-		rect.SetSize(123.0f,97.5f);
-		rect.SetCenter(GetPosition(entity));
-
-		CreateVFX("BloodHit1", rect);
+		return false;
 	}
 
 	// DeathScentence
@@ -290,47 +289,5 @@ namespace ECS
 		}
 
 		return true;
-	}
-
-	void DeathScentence::Update(float dt)
-	{
-		if(deathTimer != -FLT_MAX)
-		{
-			deathTimer -= dt;
-		}
-
-		if(!CanDie())
-			return;
-
-		bool destroy_entity = false;
-
-		// animator trigger
-		if( deathLoops != -1)
-		{
-			bool animate_on_exit = false;
-
-			const Animator* animator = GetComponent(Animator, entity);
-			if(animator)
-			{
-				animate_on_exit = animator->GetAnimation(action) != nullptr;
-			}
-
-			if(animate_on_exit)
-			{
-				if(animator->GetActiveAnimation().action == action)
-				{
-					if(animator->loopCount >= deathLoops)
-					{
-						ecs->entities.KillEntity(entity);
-						destroy_entity = true;
-					}
-				}
-			}
-			else
-			{
-				ecs->entities.KillEntity(entity);
-				destroy_entity = true;
-			}
-		}
 	}
 }

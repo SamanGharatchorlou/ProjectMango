@@ -19,6 +19,7 @@
 #include "Audio/AudioManager.h"
 
 using namespace DebugMenu;
+using namespace ECS;
 
 static TweakerState s_state;
 
@@ -28,6 +29,7 @@ TweakerState& DebugMenu::GetState()
 }
 
 static ECS::Entity s_selectedEntity = EntityInvalid;
+static bool s_ignoreTerrain = true;
 static StringBuffer64 filterBuffer;
 
 u32 DebugMenu::GetSelectedEntity() { return s_selectedEntity; }
@@ -93,8 +95,30 @@ void DebugMenu::DoEntitySystemWindow()
     const char* selected = ECS::GetName(s_selectedEntity);
     if (!selected)
         selected = "";
+    
+	UICursor* cursor = UICursor::Get();
+	InputManager* input = InputManager::Get();
+    VectorF cursor_pos = input->cursorWorldPosition();
+    const ComponentArray<Transform>& transforms = GetAllComponents(Transform);
+    for (auto iter = transforms.entityToComponent.begin(); iter != transforms.entityToComponent.end(); iter++)
+    {
+        Entity entity = iter->first;
+        if(s_ignoreTerrain && IsTerrain(entity))
+        {
+            continue;
+        }
 
-    static bool s_ignoreTerrain = true;
+        if(entity == cursor->entity)
+            continue;
+        
+        const Transform& transform = transforms.GetComponentByIndex(iter->second);
+        if(Contains(transform.GetObjectRect(), cursor_pos))
+        {
+            ImGui::Text("Hovered Entity: %s(%d)", GetName(entity), entity);
+            break;
+        }
+    }
+
     ImGui::Checkbox("Ignore Terrain Entities", &s_ignoreTerrain);
 
     if (ImGui::BeginCombo("Entities", selected, 0))

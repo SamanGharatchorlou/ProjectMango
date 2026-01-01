@@ -5,6 +5,9 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 
+//temp
+#include "Entities/EntityBuilder.h"
+
 using namespace ECS;
 
 // default behaviours
@@ -34,16 +37,85 @@ namespace Actor
 		physics.acceleration = 0;
 	}
 
+	
+	static void PlayHitAnimationVFX(Entity entity)
+	{
+		Animator& animator = GetComponentRef(Animator, entity);
+		BehaviourState& state = GetComponentRef(BehaviourState, entity);
+		Action::Enum action = animator.GetActiveAnimation().action;
+
+		if(state.attackData.contains(action))
+		{
+			AttackStateData& asd = state.attackData[action];
+			bool hit_frame = animator.frameIndex == asd.hitFrame;
+			if( hit_frame && !asd.playedHitVfx && !asd.hitVfx.empty())
+			{
+				const Faction& faction = GetComponentRef(Faction, entity);
+				Entity target_entity = faction.GetTarget();
+				if(target_entity != EntityInvalid)
+				{
+					if(!asd.hitVfx.empty())
+					{
+						RectF rect;
+						rect.SetSize(123.0f,97.5f);
+						rect.SetCenter(GetPosition(target_entity));
+
+						CreateVFX(asd.hitVfx.c_str(), rect);
+					}
+
+					VectorF position = GetPosition(target_entity);
+					Camera::Get()->AddShake(0.5f, position);
+				}
+				
+				asd.playedHitVfx = true;
+			}
+		}
+	}
+
+	static void PlayAttackAnimationVFX(Entity entity)
+	{
+		Animator& animator = GetComponentRef(Animator, entity);
+		BehaviourState& state = GetComponentRef(BehaviourState, entity);
+		Action::Enum action = animator.GetActiveAnimation().action;	
+
+		if(state.attackData.contains(action))
+		{
+			AttackStateData& asd = state.attackData[action];
+			bool hit_frame = animator.frameIndex == asd.hitFrame;	
+			if(hit_frame && !asd.playedAttackVfx && !asd.attackVfx.empty())
+			{
+				const Transform& transform = GetComponentRef(Transform, entity);
+				const VectorF pos =  transform.worldPosition + transform.size * asd.hitBoxPos;
+				const VectorF size = transform.size * asd.hitBoxSize;
+				const RectF attack_rect(pos, size);
+
+				CreateVFX(asd.attackVfx.c_str(), attack_rect);
+
+				asd.playedAttackVfx = true;
+			}
+		}
+	}
+
+	static void PlayAttackVFX(ECS::Entity entity)
+	{		
+		PlayAttackAnimationVFX(entity);
+		PlayHitAnimationVFX(entity);
+	}
+
 	// BasicAttack
 	static void BasicAttackUpdate(ECS::Entity entity)
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
 		BehaviourState& state = GetComponentRef(BehaviourState, entity);
+		
+		PlayAttackVFX(entity);
 
 		if(state.attackData.contains(Action::BasicAttack))
 		{
-			AttackStateData& asd = state.attackData[Action::BasicAttack];	
-			if( !asd.didHit && animator.frameIndex == asd.hitFrame)
+
+			AttackStateData& asd = state.attackData[Action::BasicAttack];
+			bool hit_frame = animator.frameIndex == asd.hitFrame;
+			if( hit_frame && !asd.didHit)
 			{
 				asd.didHit = true;
 
@@ -54,11 +126,10 @@ namespace Actor
 					if(const Damage* damage = GetComponent(Damage, entity))
 					{
 						if(Health* health = GetComponent(Health, target_entity))
+						{
 							health->ApplyDamage(damage->value);
+						}
 					}
-
-					VectorF position = GetPosition(target_entity);
-					Camera::Get()->AddShake(0.5f, position);
 				}
 			}
 		}
@@ -100,14 +171,15 @@ namespace Monster
 		ds.deathLoops = 1;
 
 		ds.deathTimer = 1.0f;
+		ds.fadeOutTime = 1.0f;
 	}
 }
 
-void PopulateDefaultBehaviours(ECS::BehaviourMap& map, std::vector<Action::Enum> actions)
+void PopulateDefaultBehaviours(ECS::BehaviourMap& map)
 {
-	for( u32 i = 0; i < actions.size(); i++ )
+	for( u32 i = 0; i < Action::Count; i++ )
 	{
-		Action::Enum state = actions[i];
+		Action::Enum state = (Action::Enum)i;
 		switch( state )
 		{
 			case ECS::Action::Idle:
@@ -120,6 +192,10 @@ void PopulateDefaultBehaviours(ECS::BehaviourMap& map, std::vector<Action::Enum>
 			case ECS::Action::BasicAttack:
 				map.updates[state] = Actor::BasicAttackUpdate;
 				break;
+			case ECS::Action::AttackWindUp:
+			case ECS::Action::AttackRecovery:
+				map.updates[state] = Actor::PlayAttackVFX;
+				break;
 			case ECS::Action::Death:
 				map.enters[state] = Actor::DeathEnter;
 				break;
@@ -129,15 +205,15 @@ void PopulateDefaultBehaviours(ECS::BehaviourMap& map, std::vector<Action::Enum>
 	}
 }
 
-void PopulateMonsterBehaviours(ECS::BehaviourMap& map, std::vector<Action::Enum> actions)
+void PopulateMonsterBehaviours(ECS::BehaviourMap& map)
 {
 	// populate with defaults first
-	PopulateDefaultBehaviours(map, actions);
+	PopulateDefaultBehaviours(map);
 
 	// then override any defined with the monster versions
-	for( u32 i = 0; i < actions.size(); i++ )
+	for( u32 i = 0; i < Action::Count; i++ )
 	{
-		Action::Enum state = actions[i];
+		Action::Enum state = (Action::Enum)i;
 		switch( state )
 		{
 			case ECS::Action::BasicAttack:

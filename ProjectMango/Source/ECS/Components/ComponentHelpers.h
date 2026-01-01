@@ -55,9 +55,7 @@ namespace ECS
 
 			AttackWindUp,
 			BasicAttack,
-			BasicAttackHold,
-			LungeAttack,
-			FloorSlam,
+			AttackRecovery,
 
 			Hurting,
 			TakeHit,
@@ -127,12 +125,11 @@ namespace ECS
 	// facing direction
 	SDL_RendererFlip GetFacingDirection(Entity entity);
 	VectorI GetFacingDirectionVector(Entity entity);
+	VectorI FacingDirectionToVector(SDL_RendererFlip facing);
 
 	void SetFacingDirection(Entity entity, SDL_RendererFlip direction);
-	void FlipFacingDirection(Entity entity);
+	SDL_RendererFlip FlipFacingDirection(Entity entity);
 	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target);
-
-	VectorI FacingDirectionToVector(SDL_RendererFlip facing);
 
 	template<class T>
 	void CopyComponent( T& to, const T& from )

@@ -1,0 +1,8 @@
+{
+	"id" : "GameSettings",
+	"title": "Mango",
+	"size_x": 1280,
+	"size_y": 1280,
+	"fit_to_screen": false,
+	"FramerateCap": 60
+}

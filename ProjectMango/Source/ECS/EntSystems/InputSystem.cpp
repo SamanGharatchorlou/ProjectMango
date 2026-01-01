@@ -8,6 +8,8 @@
 #include "Game/FrameRateController.h"
 #include "Core/Helpers.h"
 
+#include "Entities/EntityBuilder.h"
+
 void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
 
 namespace ECS
@@ -32,6 +34,19 @@ namespace ECS
 		const FrameRateController& frc = FrameRateController::Get();
 		const int frame_count = frc.frameCount;
 		const VectorF cursor_pos = cursor->Position();
+
+		if(left_select)
+		{
+			RectF cursor_rect;
+			cursor_rect.SetSize(cursor->cursor->size() * 3.0f);
+			cursor_rect.SetCenter(cursor_pos);
+
+			int number = Maths::randomNumberBetween(0, 2);
+			Entity vfx = CreateVFX( number == 0 ? "Hit1" : "Hit2", cursor_rect);
+			Sprite& sprite = GetComponentRef(Sprite, vfx);
+			sprite.params.rotation = (float)Maths::randomNumberBetween(0, 360);
+			sprite.params.colourMod.setOpacity(0.7f);
+		}
 
 		for (Entity entity : entities)
 		{

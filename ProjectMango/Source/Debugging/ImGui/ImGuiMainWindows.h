@@ -16,7 +16,7 @@ namespace DebugMenu
 	struct TweakerState
 	{
 		bool drawRaycasts = false;
-		bool canBuyAnyCard = false;
+		bool canBuyAnyCard = true;
 
 		bool turnLogActive = true;
 		std::vector<BasicString> turnLog;

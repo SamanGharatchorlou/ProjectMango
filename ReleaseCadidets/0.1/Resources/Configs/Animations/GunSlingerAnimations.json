@@ -1,0 +1,68 @@
+{
+	"id": "GunSlinger",
+	"frameSize_x": 48,
+	"frameSize_y": 48,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "GunSlinger",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 1.0
+				},	
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 1.0
+				},				
+				{
+					"action": "Run",
+					"startIndex": 9,
+					"frameCount": 8,
+					"frameTime": 0.1
+				},
+				{
+					"action": "Death",
+					"startIndex": 99,
+					"frameCount": 4,
+					"frameTime": 0.3,
+					"looping": false
+				},
+				{
+					"action": "Roll",
+					"startIndex": 91,
+					"frameCount": 7,
+					"frameTime": 0.08
+				},
+				{
+					"action": "Crouch",
+					"startIndex": 81,
+					"frameCount": 3,
+					"frameTime": 0.15,
+					"looping": false
+				},
+				{
+					"action": "AttackWindUp",
+					"startIndex": 18,
+					"frameCount": 5,
+					"frameTime": 0.1,
+					"looping" : false,
+					"flip_point_x": 0.22
+				},
+				{
+					"action": "BasicAttack",
+					"startIndex": 27,
+					"frameCount": 3,
+					"frameTime": 0.15,
+					"looping": false,
+					"hitbox_pos": [ 0.0, 0.0 ],
+					"hitbox_size": [ 3.0, 1.0 ]
+				}
+			]
+		}
+	]
+}

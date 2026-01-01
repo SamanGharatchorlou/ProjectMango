@@ -16,6 +16,22 @@
 #if IMGUI
 namespace DebugMenu
 {
+	static bool hidden = false;
+
+	void ToggleShow()
+	{
+		hidden = !hidden;
+
+		if(!hidden)
+		{
+			SDL_ShowCursor(SDL_ENABLE);
+		}
+		else
+		{
+			SDL_ShowCursor(SDL_DISABLE);
+		}
+	}
+
 	void Init()
 	{
 		SDL_Renderer* renderer = Renderer::Get()->sdlRenderer();
@@ -26,6 +42,9 @@ namespace DebugMenu
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+		SDL_ShowCursor(SDL_DISABLE);
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
@@ -38,6 +57,9 @@ namespace DebugMenu
 
 	bool HandleInput(SDL_Event& event)
 	{
+		if(hidden)
+			return false;
+
 		ImGui_ImplSDL2_ProcessEvent(&event);
 
 		// consume game inputs when over gui window
@@ -56,10 +78,15 @@ namespace DebugMenu
 	void OpenEditorWindow()
 	{
 		s_editorWindow = true;
+
+		hidden = false;
 	}
 
 	void Draw()
 	{
+		if(hidden)
+			return;
+
 		ImGui_ImplSDLRenderer2_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();

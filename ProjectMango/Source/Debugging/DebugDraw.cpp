@@ -10,8 +10,8 @@ namespace DebugDraw
 {
 	void Shape(u32 renderType, RectF rect, SColour colour) 
 	{
-		DebugRender::DrawType type = (DebugRender::DrawType)renderType
-;		switch (type) 
+		DebugRender::DrawType type = (DebugRender::DrawType)renderType;
+		switch (type) 
 			{
 				case DebugRender::DrawType::Point:
 				{

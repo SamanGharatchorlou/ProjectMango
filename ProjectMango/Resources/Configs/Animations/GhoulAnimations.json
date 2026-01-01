@@ -1,0 +1,49 @@
+{
+	"id": "Ghoul",
+	"frameSize_x": 62,
+	"frameSize_y": 33,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Ghoul Sprite Sheet 62 x 33",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 3,
+					"frameCount": 1,
+					"frameTime": 0.25
+				},
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 4,
+					"frameTime": 0.2
+				},
+				{
+					"action": "Run",
+					"startIndex": 11,
+					"frameCount": 9,
+					"frameTime": 0.1
+				},
+				{
+					"action": "BasicAttack",
+					"startIndex": 22,
+					"frameCount": 7,
+					"frameTime": 0.1,
+					"looping": false,
+					"hit_frame" : 3,
+					"hitbox_pos": [ 0.45, 0.24 ],
+					"hitbox_size": [ 0.55, 0.61 ],
+					"hit_vfx" : "HitBlood2"
+				},
+				{
+					"action": "Death",
+					"startIndex": 44,
+					"frameCount": 8,
+					"frameTime": 0.1,
+					"looping": false
+				}
+			]
+		}
+	]
+}

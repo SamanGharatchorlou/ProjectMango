@@ -5,7 +5,11 @@
 			"points" : 1
 		},
 		{
-			"id": "BlindingSpider", 
+			"id": "Wasp", 
+			"points" : 1
+		},
+		{
+			"id": "Ghoul", 
 			"points" : 2
 		},
 		{
@@ -13,20 +17,20 @@
 			"points" : 3
 		},
 		{
+			"id": "Shielder", 
+			"points" : 3
+		},
+		{
 			"id": "GunSlinger",
+			"points" : 4
+		},
+		{
+			"id": "HeavySlicer",
 			"points" : 4
 		},
 		{
 			"id": "PandaHero",
 			"points" : 5
-		},
-		{
-			"id": "ShockSweeper",
-			"points" : 6
-		},
-		{
-			"id": "ShockSweeper",
-			"points" : 7
 		}
 	]
 }

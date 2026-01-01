@@ -1,0 +1,124 @@
+{
+	"vfx" : [
+		{
+			"id": "Hit1",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.08,
+			"startIndex": 0,
+			"frameCount": 4
+		},
+		{
+			"id": "Hit2",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.08,
+			"startIndex": 28,
+			"frameCount": 4
+		},
+		{
+			"id": "HitPop",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 42,
+			"frameCount": 9
+		},
+		{
+			"id": "HitPuff",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 14,
+			"frameCount": 9
+		},
+		{
+			"id": "HitSpark1",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 56,
+			"frameCount": 5
+		},
+		{
+			"id": "HitSpark2",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 70,
+			"frameCount": 6
+		},
+		{
+			"id": "HitLightning1",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 84,
+			"frameCount": 7
+		},
+		{
+			"id": "HitLightningPop1",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.08,
+			"startIndex": 98,
+			"frameCount": 9
+		},
+		{
+			"id": "HitLightningStrike",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 112,
+			"frameCount": 4
+		},
+		{
+			"id": "HitLightningPop2",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.1,
+			"startIndex": 126,
+			"frameCount": 10
+		},
+		{
+			"id": "HitBlood1",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.07,
+			"startIndex": 140,
+			"frameCount": 6
+		},
+		{
+			"id": "HitBlood2",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.07,
+			"startIndex": 154,
+			"frameCount": 4
+		},
+		{
+			"id": "HitBloodPop",
+			"spriteSheet": "HitVFX",
+			"frameSize": [82, 65],
+			"frameTime": 0.07,
+			"startIndex": 168,
+			"frameCount": 9
+		},
+		{
+			"id": "HeavySlice",
+			"spriteSheet": "VFX Sprite Sheet 60x41",
+			"frameSize": [60, 41],
+			"frameTime": 0.1,
+			"startIndex": 12,
+			"frameCount": 4
+		},
+		{
+			"id": "HeavyDice",
+			"spriteSheet": "VFX Sprite Sheet 60x41",
+			"frameSize": [60, 41],
+			"frameTime": 0.1,
+			"startIndex": 24,
+			"frameCount": 4
+		}
+	]
+}

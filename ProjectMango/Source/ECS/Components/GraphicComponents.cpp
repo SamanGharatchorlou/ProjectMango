@@ -14,9 +14,10 @@ namespace ECS
 	// ------------------------------------------------------------------
 	void Sprite::Init(const char* sprite_id)
 	{
-		if(!sprite_id)
+		const Config* config = GetConfigFromEntity(entity);
+		if(config)
 		{
-			if(const Config* config = GetConfigFromEntity(entity))
+			if(!sprite_id)
 			{
 				sprite_id = config->data.GetString("sprite");
 			}
@@ -175,6 +176,20 @@ namespace ECS
 		}
 
 		return nullptr;
+	}
+
+	
+	bool Animator::HasAnimation(Action::Enum action) const
+	{
+		for( u32 i = 0; i < animations->size(); i++ )
+		{
+			if( (*animations)[i].action == action)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	bool Animator::OnLastFrame() const

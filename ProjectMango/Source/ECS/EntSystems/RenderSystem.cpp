@@ -20,16 +20,6 @@ namespace ECS
 		pack.colourMod = sprite.params.colourMod;
 	}
 
-	void GenerateRenderPack(const UIText& ui_text, RenderPack& pack)
-	{
-		const Transform& transform = GetComponentRef(Transform, ui_text.entity);
-		const RectF render_rect(transform.worldPosition + transform.renderOffset + ui_text.renderOffset, transform.size);
-
-		pack.font = &ui_text.font;
-		pack.rect = render_rect;
-		pack.layer = (u32)RenderLayer::UI;
-	}
-
 	bool IsValid(const RenderPack& pack)
 	{
 		return (pack.texture || pack.font) && pack.layer > 0;
@@ -58,13 +48,14 @@ namespace ECS
 				int a = 4;
 
 			const Transform& transform = GetComponentRef(Transform, entity);
-			RectF render_rect(transform.worldPosition + transform.renderOffset, transform.size);
+			RectF render_rect(transform.worldPosition, transform.size);
 			
 			RenderPack pack;
 			pack.entity = entity;
 			
 			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
+				render_rect.Translate(sprite->params.renderOffset);
 				if(!sprite->params.disabled && camera_rect.Intersect(render_rect))
 				{
 					pack.rect = render_rect;
@@ -99,7 +90,7 @@ namespace ECS
 			{
 				if(!ui_text->text.empty())
 				{
-					render_rect = render_rect.MoveCopy(ui_text->renderOffset);				
+					render_rect.Translate(ui_text->renderOffset);				
 					if(camera_rect.Intersect(render_rect))
 					{
 						pack.rect = render_rect;

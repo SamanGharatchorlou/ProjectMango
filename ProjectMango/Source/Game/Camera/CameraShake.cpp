@@ -14,15 +14,15 @@ static float easeInOutBack(float x)
 
 static float sine(float x)
 {
-	return sin((double)x);
+	return (float)sin((double)x);
 }
 
 void CameraShake::Update(float dt)
 {
 	if(x < 1.0f)
 	{
-		float sdirection = direction.x >= 0 ? 1 : -1;
-		float progress = sine(x * M_PI * 2.0f ) * sdirection;
+		float sdirection = direction.x >= 0.0f ? 1.0f : -1.0f;
+		float progress = sine(x * (float)M_PI * 2.0f ) * sdirection;
 		float damping = 1 - (x * 0.5f);
 		VectorF amplitude = maxTrauma * magnitude;
 		trauma = amplitude * progress * damping;

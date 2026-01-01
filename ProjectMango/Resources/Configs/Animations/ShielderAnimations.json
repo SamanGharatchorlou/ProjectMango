@@ -1,0 +1,49 @@
+{
+	"id": "Shielder",
+	"frameSize_x": 129,
+	"frameSize_y": 46,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "Shielder 129x46 Sprite Sheet",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.25
+				},
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 0.2
+				},
+				{
+					"action": "Run",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.2
+				},
+				{
+					"action": "BasicAttack",
+					"startIndex": 17,
+					"frameCount": 17,
+					"frameTime": 0.1,
+					"looping": false,
+					"hit_frame" : 9,
+					"hitbox_pos": [ 0.529, 0.50 ],
+					"hitbox_size": [ 0.30, 0.50 ],
+					"hit_vfx" : "HitLightningPop2"
+				},
+				{
+					"action": "Death",
+					"startIndex": 68,
+					"frameCount": 16,
+					"frameTime": 0.1,
+					"looping": false
+				}
+			]
+		}
+	]
+}

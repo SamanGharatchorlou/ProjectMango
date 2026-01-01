@@ -100,16 +100,25 @@ namespace AnimationEditor
 
                 std::sort(file_names.begin(), file_names.end(), [](const BasicString& a, const BasicString& b) {
                     int index = 0;
-                    while(a.length() > index && b.length() > index)
+
+                    const char* aa = a.c_str();
+                    const char* bb = b.c_str();
+
+                    StringBuffer64 str_a(a.c_str());
+                    str_a = str_a.to_lower();                    
+                    StringBuffer64 str_b(b.c_str());
+                    str_b = str_b.to_lower();
+
+                    while(str_a.length() > index && str_b.length() > index)
                     {
-                        if(a.c_str()[index] < b.c_str()[index])
+                        if(str_a.c_str()[index] < str_b.c_str()[index])
                             return true;
-                        else if(a.c_str()[index] > b.c_str()[index])
+                        else if(str_a.c_str()[index] > str_b.c_str()[index])
                             return false;
 
                         index++;
                     }
-                    return a.length() < b.length();
+                    return str_a.length() < str_b.length();
 		        });
 
                 for( u32 i = 0; i < file_names.size(); i++ )
@@ -597,8 +606,8 @@ namespace AnimationEditor
         if(!selection_rect.Size().isZero())
         {
             DebugDraw::RectOutline( selection_rect, SColour::Green);
-            ImGui::VectorText("Absolute Position", selection_rect.TopLeft());
-            ImGui::VectorText("Absolute Size", selection_rect.Size());
+            //ImGui::VectorText("Absolute Position", selection_rect.TopLeft());
+            //ImGui::VectorText("Absolute Size", selection_rect.Size());
 
             // display relative position to the whole sprite
             Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
@@ -624,7 +633,7 @@ namespace AnimationEditor
                 float y_center = selection_rect.Center().y - draw_point_TL.y;
                 VectorF relaive_center = relative_pos + relative_size * 0.5;
 
-                ImGui::VectorText("Relative Center", relaive_center );
+                //ImGui::VectorText("Relative Center", relaive_center );
             }
         }
 
@@ -639,7 +648,7 @@ namespace AnimationEditor
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
 	    STexture* black_bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
 	    STexture* white_bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
-	    RenderPack pack(white_bg, 0);
+	    RenderPack pack(black_bg, 0);
         pack.rect = screen;
 	    rm->AddRenderPacket(pack);
     }

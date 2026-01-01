@@ -20,13 +20,12 @@ Entity CreateUICursor()
 	Transform& transform = AddComponent(Transform, entity);
 	transform.size = config->data.GetVector("size");
 	transform.SetWorldPosition(VectorF());
-	transform.renderOffset = transform.size * -0.5;
 
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.params.renderLayer = RenderLayer::Top;
-	sprite.params.canFlip = false;
 	sprite.Init(nullptr);
+	sprite.params.renderOffset = transform.size * -0.5;
 
 	UICursor& cursor = AddComponent(UICursor, entity);
 	InputManager* input = InputManager::Get();

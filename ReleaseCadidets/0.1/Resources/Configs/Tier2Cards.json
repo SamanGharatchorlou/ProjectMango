@@ -1,0 +1,162 @@
+{
+	"Cards": [
+		{
+			"colour": "white", 
+			"cost": [0,0,2,2,3],
+			"points" : 1
+		},
+		{
+			"colour": "white", 
+			"cost": [0,0,0,5,0],
+			"points" : 2
+		},
+		{
+			"colour": "white", 
+			"cost": [0,0,2,4,1],
+			"points" : 2
+		},
+		{
+			"colour": "white", 
+			"cost": [2,3,0,3,0],
+			"points" : 1
+		},
+		{
+			"colour": "white", 
+			"cost": [0,0,3,5,0],
+			"points" : 2
+		},
+		{
+			"colour": "white", 
+			"cost": [6,0,0,0,0],
+			"points" : 3
+		},
+
+
+		{
+			"colour": "blue", 
+			"cost": [0,2,0,3,2],
+			"points" : 1
+		},
+		{
+			"colour": "blue", 
+			"cost": [0,2,3,0,3],
+			"points" : 1
+		},		
+		{
+			"colour": "blue", 
+			"cost": [0,6,0,0,0],
+			"points" : 3
+		},		
+		{
+			"colour": "blue", 
+			"cost": [0,5,0,0,0],
+			"points" : 2
+		},		
+		{
+			"colour": "blue", 
+			"cost": [5,3,0,0,0],
+			"points" : 2
+		},
+		{
+			"colour": "blue", 
+			"cost": [2,0,4,1,0],
+			"points" : 2
+		},
+
+
+		{
+			"colour": "black", 
+			"cost": [0,0,6,0,0],
+			"points" : 3
+		},
+		{
+			"colour": "black", 
+			"cost": [5,0,0,0,0],
+			"points" : 2
+		},
+		{
+			"colour": "black", 
+			"cost": [3,0,2,0,3],
+			"points" : 1
+		},
+		{
+			"colour": "black", 
+			"cost": [0,0,0,3,5],
+			"points" : 2
+		},
+		{
+			"colour": "black", 
+			"cost": [3,2,0,0,2],
+			"points" : 1
+		},
+		{
+			"colour": "black", 
+			"cost": [0,1,0,2,4],
+			"points" : 2
+		},
+
+
+		{
+			"colour": "red", 
+			"cost": [0,0,5,0,0],
+			"points" : 2
+		},
+		{
+			"colour": "red", 
+			"cost": [3,0,5,0,0],
+			"points" : 2
+		},
+		{
+			"colour": "red", 
+			"cost": [0,3,3,2,0],
+			"points" : 1
+		},
+		{
+			"colour": "red", 
+			"cost": [1,4,0,0,2],
+			"points" : 2
+		},
+		{
+			"colour": "red", 
+			"cost": [2,0,3,2,0],
+			"points" : 1
+		},
+		{
+			"colour": "red", 
+			"cost": [0,0,0,6,0],
+			"points" : 3
+		},
+
+
+		{
+			"colour": "green", 
+			"cost": [3,0,0,3,2],
+			"points" : 1
+		},
+		{
+			"colour": "green", 
+			"cost": [2,3,2,0,0],
+			"points" : 1
+		},
+		{
+			"colour": "green", 
+			"cost": [0,0,0,0,5],
+			"points" : 2
+		},
+		{
+			"colour": "green", 
+			"cost": [0,5,0,0,3],
+			"points" : 2
+		},
+		{
+			"colour": "green", 
+			"cost": [0,0,0,0,6],
+			"points" : 3
+		},
+		{
+			"colour": "green", 
+			"cost": [4,2,1,0,0],
+			"points" : 2
+		}
+	]
+}

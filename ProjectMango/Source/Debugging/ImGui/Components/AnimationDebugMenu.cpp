@@ -101,12 +101,12 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 			// messing around with the flip here... could break it
 			if(s_flipOverride)
 			{
-				sprite.params.canFlip = false;
 				sprite.params.flip = s_spriteFlip;
 			}
-
 			
 			ImGui::Text("rotation: %f", sprite.params.rotation);
+
+			ImGui::Text("render offset %f, %f", sprite.params.renderOffset.x,sprite.params.renderOffset.y);
 
 			ImGui::TreePop();
 		}

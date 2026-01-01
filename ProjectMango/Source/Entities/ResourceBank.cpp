@@ -13,11 +13,6 @@ struct FactionResources
 };
 
 FactionResources s_bank[Faction::Count];
-//
-//FactionResources& GetResources(u32 faction_team)
-//{
-//	return s_bank[faction_team];
-//}
 
 void RegisterCoinResource(Entity entity, u32 faction)
 {
