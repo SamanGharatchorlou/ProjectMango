@@ -11,7 +11,7 @@
 	"iid": "a502b8e0-73f0-11ef-8eb1-af7ce018d269",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 110,
+	"nextUid": 135,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -366,13 +366,90 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameStart",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 133,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_Bool",
+						"params": [ true ]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameSpeed",
+					"doc": null,
+					"__type": "Float",
+					"uid": 134,
+					"type": "F_Float",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Float", "params": [0.3] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
 				}
 			]
 		},
 		{
 			"identifier": "Flower",
-			"uid": 13,
-			"tags": [],
+			"uid": 126,
+			"tags": ["AnimatedObject"],
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
@@ -389,7 +466,7 @@
 			"fillOpacity": 0.08,
 			"lineOpacity": 0,
 			"hollow": false,
-			"color": "#D77643",
+			"color": "#EAD4AA",
 			"renderMode": "Tile",
 			"showName": true,
 			"tilesetId": 9,
@@ -402,12 +479,207 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "Animator",
+					"doc": null,
+					"__type": "String",
+					"uid": 127,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Flower"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameStart",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 128,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_Bool",
+						"params": [ true ]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameSpeed",
+					"doc": null,
+					"__type": "Float",
+					"uid": 129,
+					"type": "F_Float",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Float", "params": [0.2] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "SizeOverride",
+					"doc": null,
+					"__type": "Array<Float>",
+					"uid": 131,
+					"type": "F_Float",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "SnapToFloor",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 132,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_Bool",
+						"params": [ true ]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		},
 		{
 			"identifier": "Torch",
 			"uid": 14,
-			"tags": [],
+			"tags": ["AnimatedObject"],
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
@@ -437,42 +709,125 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
-		},
-		{
-			"identifier": "Door",
-			"uid": 15,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#E4A672",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 9,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 9, "x": 352, "y": 272, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "Animator",
+					"doc": null,
+					"__type": "String",
+					"uid": 110,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Torch"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameStart",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 111,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_Bool",
+						"params": [ true ]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "RandomiseFrameSpeed",
+					"doc": null,
+					"__type": "Float",
+					"uid": 113,
+					"type": "F_Float",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Float", "params": [0.4] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		},
 		{
 			"identifier": "BlindingSpider",
@@ -545,79 +900,6 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Rune_Rebound",
-			"uid": 19,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#FEAE34",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 9,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 9, "x": 16, "y": 848, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
-			"fieldDefs": [
-				{
-					"identifier": "Rebound",
-					"doc": null,
-					"__type": "String",
-					"uid": 24,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				}
-			]
-		},
-		{
 			"identifier": "TrainingDummy",
 			"uid": 22,
 			"tags": ["enemy"],
@@ -651,79 +933,6 @@
 			"pivotX": 0,
 			"pivotY": 0,
 			"fieldDefs": []
-		},
-		{
-			"identifier": "Rune_Echo",
-			"uid": 23,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#63C74D",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 9,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 9, "x": 32, "y": 848, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
-			"fieldDefs": [
-				{
-					"identifier": "Echo",
-					"doc": null,
-					"__type": "String",
-					"uid": 25,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": true,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				}
-			]
 		},
 		{
 			"identifier": "Card",
@@ -800,46 +1009,6 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "UIButton",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 36,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ true ]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
 					"identifier": "Random",
 					"doc": null,
 					"__type": "Bool",
@@ -880,7 +1049,7 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "UID",
+					"identifier": "ButtonCallback",
 					"doc": null,
 					"__type": "String",
 					"uid": 50,
@@ -959,270 +1128,6 @@
 			]
 		},
 		{
-			"identifier": "CoinStack",
-			"uid": 30,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#FFFFFF",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 9,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0.5,
-			"pivotY": 0.5,
-			"fieldDefs": [
-				{
-					"identifier": "UIButton",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 37,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ true ]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "UID",
-					"doc": null,
-					"__type": "String",
-					"uid": 49,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "ColourType",
-					"doc": null,
-					"__type": "LocalEnum.ColourType",
-					"uid": 64,
-					"type": "F_Enum(51)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "ValueOnly",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Callback",
-					"doc": null,
-					"__type": "String",
-					"uid": 74,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "SpriteSheet",
-					"doc": null,
-					"__type": "String",
-					"uid": 85,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["coins"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "SpriteSheetFrames",
-					"doc": null,
-					"__type": "Array<Int>",
-					"uid": 90,
-					"type": "F_Int",
-					"isArray": true,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				}
-			]
-		},
-		{
 			"identifier": "Text",
 			"uid": 34,
 			"tags": ["UI"],
@@ -1257,7 +1162,7 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "UID",
+					"identifier": "TextCallback",
 					"doc": null,
 					"__type": "String",
 					"uid": 35,
@@ -1406,46 +1311,6 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
-				},
-				{
-					"identifier": "ColourType",
-					"doc": null,
-					"__type": "LocalEnum.ColourType",
-					"uid": 52,
-					"type": "F_Enum(51)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["None"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
 				}
 			]
 		},
@@ -1484,7 +1349,7 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "UID",
+					"identifier": "ButtonCallback",
 					"doc": null,
 					"__type": "String",
 					"uid": 45,
@@ -1521,7 +1386,7 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "center",
+					"identifier": "Center",
 					"doc": null,
 					"__type": "Bool",
 					"uid": 46,
@@ -1588,46 +1453,6 @@
 					"regex": null,
 					"acceptFileTypes": null,
 					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "UIButton",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 48,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ true ]
-					},
 					"textLanguageMode": null,
 					"symmetricalRef": false,
 					"autoChainRef": true,
@@ -1933,46 +1758,6 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
-				},
-				{
-					"identifier": "ColourType",
-					"doc": null,
-					"__type": "LocalEnum.ColourType",
-					"uid": 87,
-					"type": "F_Enum(51)",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["None"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
 				}
 			]
 		},
@@ -1983,8 +1768,8 @@
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
-			"width": 16,
-			"height": 16,
+			"width": 5,
+			"height": 10,
 			"resizableX": false,
 			"resizableY": false,
 			"minWidth": null,
@@ -2010,46 +1795,6 @@
 			"pivotX": 0,
 			"pivotY": 0,
 			"fieldDefs": [
-				{
-					"identifier": "ColourType",
-					"doc": null,
-					"__type": "LocalEnum.ColourType",
-					"uid": 67,
-					"type": "F_Enum(51)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["None"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
 				{
 					"identifier": "Callback",
 					"doc": null,
@@ -2093,6 +1838,43 @@
 					"__type": "LocalEnum.Faction",
 					"uid": 109,
 					"type": "F_Enum(99)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "ColourType",
+					"doc": null,
+					"__type": "LocalEnum.ColourType",
+					"uid": 123,
+					"type": "F_Enum(51)",
 					"isArray": false,
 					"canBeNull": false,
 					"arrayMinLength": null,
@@ -2506,8 +2288,8 @@
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
-			"width": 16,
-			"height": 16,
+			"width": 5,
+			"height": 10,
 			"resizableX": false,
 			"resizableY": false,
 			"minWidth": null,
@@ -2534,10 +2316,240 @@
 			"pivotY": 0,
 			"fieldDefs": [
 				{
+					"identifier": "Callback",
+					"doc": null,
+					"__type": "String",
+					"uid": 108,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
 					"identifier": "ColourType",
 					"doc": null,
 					"__type": "LocalEnum.ColourType",
-					"uid": 107,
+					"uid": 122,
+					"type": "F_Enum(51)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
+		},
+		{
+			"identifier": "CoinStack",
+			"uid": 115,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#E4A672",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 9,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Callback",
+					"doc": null,
+					"__type": "String",
+					"uid": 116,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["CoinStack"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "ButtonCallback",
+					"doc": null,
+					"__type": "String",
+					"uid": 118,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["RequestCoin"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "SpriteSheet",
+					"doc": null,
+					"__type": "String",
+					"uid": 119,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["coins"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "ColourType",
+					"doc": null,
+					"__type": "LocalEnum.ColourType",
+					"uid": 121,
 					"type": "F_Enum(51)",
 					"isArray": false,
 					"canBeNull": false,
@@ -2571,14 +2583,14 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "Callback",
+					"identifier": "SpriteSheetFrames",
 					"doc": null,
-					"__type": "String",
-					"uid": 108,
-					"type": "F_String",
-					"isArray": false,
-					"canBeNull": true,
-					"arrayMinLength": null,
+					"__type": "Array<Float>",
+					"uid": 124,
+					"type": "F_Float",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 2,
 					"arrayMaxLength": null,
 					"editorDisplayMode": "Hidden",
 					"editorDisplayScale": 1,
@@ -2597,7 +2609,7 @@
 					"max": null,
 					"regex": null,
 					"acceptFileTypes": null,
-					"defaultOverride": null,
+					"defaultOverride": { "id": "V_Float", "params": [5] },
 					"textLanguageMode": null,
 					"symmetricalRef": false,
 					"autoChainRef": true,
@@ -2657,11 +2669,10 @@
 	], "enums": [
 		{ "identifier": "ColourType", "uid": 51, "values": [
 			{ "id": "Blue", "tileRect": null, "color": 1777128 },
-			{ "id": "Black", "tileRect": null, "color": 1052690 },
 			{ "id": "Red", "tileRect": null, "color": 14031386 },
 			{ "id": "Green", "tileRect": null, "color": 4703787 },
-			{ "id": "None", "tileRect": null, "color": 12635100 },
-			{ "id": "White", "tileRect": null, "color": 16777215 }
+			{ "id": "White", "tileRect": null, "color": 16777215 },
+			{ "id": "Black", "tileRect": null, "color": 0 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Faction", "uid": 99, "values": [
 			{ "id": "Enemy", "tileRect": null, "color": 16593411 },
@@ -2707,7 +2718,7 @@
 					"layerDefUid": 75,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2716,8 +2727,8 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,0
 					],
 					"autoLayerTiles": [],
 					"seed": 6964266,
@@ -2741,7 +2752,7 @@
 					"layerDefUid": 29,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
@@ -2749,166 +2760,6 @@
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": [
-						{
-							"__identifier": "CoinStack",
-							"__grid": [4,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "f9678b50-ac70-11f0-835c-9311619853cf",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [72,232],
-							"fieldInstances": [
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 37, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 49, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RequestCoin"]
-								}] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 64, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 74, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["CoinStack"]
-								}] },
-								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 85, "realEditorValues": [] },
-								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Int>", "__value": [5], "__tile": null, "defUid": 90, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
-							],
-							"__worldX": 72,
-							"__worldY": 232
-						},
-						{
-							"__identifier": "CoinStack",
-							"__grid": [2,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "f9c7acb0-ac70-11f0-835c-bd6790246d65",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [40,232],
-							"fieldInstances": [
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 37, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 49, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RequestCoin"]
-								}] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 64, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["White"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 74, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["CoinStack"]
-								}] },
-								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 85, "realEditorValues": [] },
-								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Int>", "__value": [5], "__tile": null, "defUid": 90, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
-							],
-							"__worldX": 40,
-							"__worldY": 232
-						},
-						{
-							"__identifier": "CoinStack",
-							"__grid": [5,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "fa32ca90-ac70-11f0-835c-a3add01e25fd",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [88,232],
-							"fieldInstances": [
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 37, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 49, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RequestCoin"]
-								}] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 64, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 74, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["CoinStack"]
-								}] },
-								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 85, "realEditorValues": [] },
-								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Int>", "__value": [5], "__tile": null, "defUid": 90, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
-							],
-							"__worldX": 88,
-							"__worldY": 232
-						},
-						{
-							"__identifier": "CoinStack",
-							"__grid": [6,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "fa8be710-ac70-11f0-835c-3b530f048cac",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [104,232],
-							"fieldInstances": [
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 37, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 49, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RequestCoin"]
-								}] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 64, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 74, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["CoinStack"]
-								}] },
-								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 85, "realEditorValues": [] },
-								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Int>", "__value": [5], "__tile": null, "defUid": 90, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
-							],
-							"__worldX": 104,
-							"__worldY": 232
-						},
-						{
-							"__identifier": "CoinStack",
-							"__grid": [3,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "faef63d0-ac70-11f0-835c-a3b662ebc4be",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [56,232],
-							"fieldInstances": [
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 37, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 49, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["RequestCoin"]
-								}] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 64, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 74, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["CoinStack"]
-								}] },
-								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 85, "realEditorValues": [] },
-								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Int>", "__value": [5], "__tile": null, "defUid": 90, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
-							],
-							"__worldX": 56,
-							"__worldY": 232
-						},
 						{
 							"__identifier": "Card",
 							"__grid": [2,11],
@@ -2926,9 +2777,8 @@
 									"id": "V_String",
 									"params": ["card_base"]
 								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["RequestCard"]
 								}] },
@@ -2954,9 +2804,8 @@
 									"id": "V_String",
 									"params": ["card_base"]
 								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["RequestCard"]
 								}] },
@@ -2982,9 +2831,8 @@
 									"id": "V_String",
 									"params": ["card_base"]
 								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["RequestCard"]
 								}] },
@@ -3010,9 +2858,8 @@
 									"id": "V_String",
 									"params": ["card_base"]
 								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["RequestCard"]
 								}] },
@@ -3034,16 +2881,15 @@
 							"defUid": 44,
 							"px": [240,240],
 							"fieldInstances": [
-								{ "__identifier": "UID", "__type": "String", "__value": "EndTurnButton", "__tile": null, "defUid": 45, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "EndTurnButton", "__tile": null, "defUid": 45, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["EndTurnButton"]
 								}] },
-								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
 								{ "__identifier": "Sprite", "__type": "String", "__value": "tick", "__tile": null, "defUid": 47, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["tick"]
-								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 48, "realEditorValues": [] }
+								}] }
 							],
 							"__worldX": 240,
 							"__worldY": 240
@@ -3061,23 +2907,22 @@
 							"defUid": 44,
 							"px": [240,224],
 							"fieldInstances": [
-								{ "__identifier": "UID", "__type": "String", "__value": "UndoTurnButton", "__tile": null, "defUid": 45, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "ReturnCoinsButton", "__tile": null, "defUid": 45, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["UndoTurnButton"]
+									"params": ["ReturnCoinsButton"]
 								}] },
-								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
 								{ "__identifier": "Sprite", "__type": "String", "__value": "undo_turn", "__tile": null, "defUid": 47, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["undo_turn"]
-								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 48, "realEditorValues": [] }
+								}] }
 							],
 							"__worldX": 240,
 							"__worldY": 224
 						},
 						{
 							"__identifier": "Button",
-							"__grid": [15,13],
+							"__grid": [15,0],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 288, "y": 32, "w": 16, "h": 16 },
@@ -3086,21 +2931,20 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 44,
-							"px": [240,208],
+							"px": [240,0],
 							"fieldInstances": [
-								{ "__identifier": "UID", "__type": "String", "__value": "AutoConfirmTurn", "__tile": null, "defUid": 45, "realEditorValues": [{
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "AutoConfirmTurn", "__tile": null, "defUid": 45, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["AutoConfirmTurn"]
 								}] },
-								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
 								{ "__identifier": "Sprite", "__type": "String", "__value": "cross", "__tile": null, "defUid": 47, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["cross"]
-								}] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 48, "realEditorValues": [] }
+								}] }
 							],
 							"__worldX": 240,
-							"__worldY": 208
+							"__worldY": 0
 						},
 						{
 							"__identifier": "Card",
@@ -3116,9 +2960,8 @@
 							"px": [40,125],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							],
 							"__worldX": 40,
@@ -3138,9 +2981,8 @@
 							"px": [72,125],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							],
 							"__worldX": 72,
@@ -3160,9 +3002,8 @@
 							"px": [104,125],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							],
 							"__worldX": 104,
@@ -3182,9 +3023,8 @@
 							"px": [136,125],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
 							],
 							"__worldX": 136,
@@ -3204,9 +3044,8 @@
 							"px": [136,72],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							],
 							"__worldX": 136,
@@ -3226,9 +3065,8 @@
 							"px": [104,72],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							],
 							"__worldX": 104,
@@ -3248,9 +3086,8 @@
 							"px": [72,72],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							],
 							"__worldX": 72,
@@ -3270,42 +3107,12 @@
 							"px": [40,72],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							],
 							"__worldX": 40,
 							"__worldY": 72
-						},
-						{
-							"__identifier": "CoinPile",
-							"__grid": [11,13],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#0099DB",
-							"iid": "a4518210-d380-11f0-b828-0b1fd53a71a9",
-							"width": 16,
-							"height": 16,
-							"defUid": 66,
-							"px": [176,208],
-							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCoinPile"]
-								}] },
-								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] }
-							],
-							"__worldX": 176,
-							"__worldY": 208
 						},
 						{
 							"__identifier": "CoinPile",
@@ -3314,16 +3121,12 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
-							"iid": "f8839da0-d380-11f0-b828-254ac2afd307",
-							"width": 16,
-							"height": 16,
+							"iid": "a4518210-d380-11f0-b828-0b1fd53a71a9",
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [192,208],
+							"px": [200,208],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
@@ -3331,9 +3134,13 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Player"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
 								}] }
 							],
-							"__worldX": 192,
+							"__worldX": 200,
 							"__worldY": 208
 						},
 						{
@@ -3344,15 +3151,11 @@
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
 							"iid": "f8ebd550-d380-11f0-b828-d72c89cf42ef",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [208,208],
+							"px": [220,208],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
@@ -3360,9 +3163,13 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Player"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
 								}] }
 							],
-							"__worldX": 208,
+							"__worldX": 220,
 							"__worldY": 208
 						},
 						{
@@ -3373,15 +3180,11 @@
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
 							"iid": "f9400fd0-d380-11f0-b828-bb72915bd805",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [224,208],
+							"px": [230,208],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
@@ -3389,14 +3192,18 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Player"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
 								}] }
 							],
-							"__worldX": 224,
+							"__worldX": 230,
 							"__worldY": 208
 						},
 						{
 							"__identifier": "HealthBar",
-							"__grid": [15,11],
+							"__grid": [15,10],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
@@ -3405,7 +3212,7 @@
 							"width": 8,
 							"height": 32,
 							"defUid": 70,
-							"px": [240,176],
+							"px": [244,160],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
 									"id": "V_String",
@@ -3416,37 +3223,8 @@
 									"params": ["PlayerHealthBar"]
 								}] }
 							],
-							"__worldX": 240,
-							"__worldY": 176
-						},
-						{
-							"__identifier": "CoinPile",
-							"__grid": [10,1],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#0099DB",
-							"iid": "2096a9f0-d380-11f0-b8d4-1bc5f3e774f0",
-							"width": 16,
-							"height": 16,
-							"defUid": 66,
-							"px": [160,16],
-							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["White"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["EnemyCoinPile"]
-								}] },
-								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Enemy"]
-								}] }
-							],
-							"__worldX": 160,
-							"__worldY": 16
+							"__worldX": 244,
+							"__worldY": 160
 						},
 						{
 							"__identifier": "CoinPile",
@@ -3455,16 +3233,12 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
-							"iid": "21209a70-d380-11f0-b8d4-4f6237c00a0f",
-							"width": 16,
-							"height": 16,
+							"iid": "2096a9f0-d380-11f0-b8d4-1bc5f3e774f0",
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [176,16],
+							"px": [190,16],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["EnemyCoinPile"]
@@ -3472,9 +3246,13 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Enemy"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
 								}] }
 							],
-							"__worldX": 176,
+							"__worldX": 190,
 							"__worldY": 16
 						},
 						{
@@ -3484,16 +3262,12 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
-							"iid": "21868830-d380-11f0-b8d4-b99d3f2aa759",
-							"width": 16,
-							"height": 16,
+							"iid": "21209a70-d380-11f0-b8d4-4f6237c00a0f",
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [192,16],
+							"px": [200,16],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["EnemyCoinPile"]
@@ -3501,9 +3275,42 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Enemy"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
 								}] }
 							],
-							"__worldX": 192,
+							"__worldX": 200,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,1],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "21868830-d380-11f0-b8d4-b99d3f2aa759",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [210,16],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["EnemyCoinPile"]
+								}] },
+								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Enemy"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] }
+							],
+							"__worldX": 210,
 							"__worldY": 16
 						},
 						{
@@ -3514,15 +3321,11 @@
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
 							"iid": "21f6af20-d380-11f0-b8d4-839a07dffa0b",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [208,16],
+							"px": [220,16],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["EnemyCoinPile"]
@@ -3530,9 +3333,13 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Enemy"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
 								}] }
 							],
-							"__worldX": 208,
+							"__worldX": 220,
 							"__worldY": 16
 						},
 						{
@@ -3543,15 +3350,11 @@
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
 							"iid": "22643e00-d380-11f0-b8d4-715b84ff958c",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [224,16],
+							"px": [230,16],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "EnemyCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["EnemyCoinPile"]
@@ -3559,14 +3362,18 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Enemy"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
 								}] }
 							],
-							"__worldX": 224,
+							"__worldX": 230,
 							"__worldY": 16
 						},
 						{
 							"__identifier": "HealthBar",
-							"__grid": [15,3],
+							"__grid": [15,2],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
@@ -3575,7 +3382,7 @@
 							"width": 8,
 							"height": 32,
 							"defUid": 70,
-							"px": [240,48],
+							"px": [244,32],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
 									"id": "V_String",
@@ -3586,26 +3393,22 @@
 									"params": ["AIHealthBar"]
 								}] }
 							],
-							"__worldX": 240,
-							"__worldY": 48
+							"__worldX": 244,
+							"__worldY": 32
 						},
 						{
 							"__identifier": "CoinPile",
-							"__grid": [10,13],
+							"__grid": [11,13],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
 							"__smartColor": "#0099DB",
 							"iid": "879cb970-d380-11f0-8a8b-5775cc0ce46e",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 66,
-							"px": [160,208],
+							"px": [190,208],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 67, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["White"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
@@ -3613,9 +3416,13 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Player"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
 								}] }
 							],
-							"__worldX": 160,
+							"__worldX": 190,
 							"__worldY": 208
 						},
 						{
@@ -3691,7 +3498,9 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 105, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Player"]
-								}] }
+								}] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 133, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 134, "realEditorValues": [] }
 							],
 							"__worldX": 160,
 							"__worldY": 64
@@ -3721,7 +3530,9 @@
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 105, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Enemy"]
-								}] }
+								}] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 133, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 134, "realEditorValues": [] }
 							],
 							"__worldX": 160,
 							"__worldY": 144
@@ -3734,21 +3545,21 @@
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
 							"iid": "23437910-d380-11f0-a7a0-17e889b3a810",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [224,224],
+							"px": [230,224],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
 								}] }
 							],
-							"__worldX": 224,
+							"__worldX": 230,
 							"__worldY": 224
 						},
 						{
@@ -3759,21 +3570,46 @@
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
 							"iid": "6ababf00-d380-11f0-9e37-3324b508cf38",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [208,224],
+							"px": [220,224],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
 								}] }
 							],
-							"__worldX": 208,
+							"__worldX": 220,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CardPower",
+							"__grid": [13,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#C0CBDC",
+							"iid": "6af55700-d380-11f0-9e37-91dfed0ac427",
+							"width": 5,
+							"height": 10,
+							"defUid": 106,
+							"px": [210,224],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] }
+							],
+							"__worldX": 210,
 							"__worldY": 224
 						},
 						{
@@ -3783,22 +3619,22 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
-							"iid": "6af55700-d380-11f0-9e37-91dfed0ac427",
-							"width": 16,
-							"height": 16,
+							"iid": "6b351f20-d380-11f0-9e37-0dc14debcad0",
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [192,224],
+							"px": [200,224],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
 								}] }
 							],
-							"__worldX": 192,
+							"__worldX": 200,
 							"__worldY": 224
 						},
 						{
@@ -3808,47 +3644,22 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
-							"iid": "6b351f20-d380-11f0-9e37-0dc14debcad0",
-							"width": 16,
-							"height": 16,
+							"iid": "6b6fb720-d380-11f0-9e37-173410cb2379",
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [176,224],
+							"px": [190,224],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["InventoryCardPower"]
-								}] }
-							],
-							"__worldX": 176,
-							"__worldY": 224
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [10,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "6b6fb720-d380-11f0-9e37-173410cb2379",
-							"width": 16,
-							"height": 16,
-							"defUid": 106,
-							"px": [160,224],
-							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 107, "realEditorValues": [{
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 122, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["White"]
-								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
 								}] }
 							],
-							"__worldX": 160,
+							"__worldX": 190,
 							"__worldY": 224
 						},
 						{
@@ -3859,21 +3670,21 @@
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
 							"iid": "1d92d9a0-d380-11f0-9e37-0d7b908dac4a",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [224,32],
+							"px": [230,32],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["AICardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
 								}] }
 							],
-							"__worldX": 224,
+							"__worldX": 230,
 							"__worldY": 32
 						},
 						{
@@ -3884,21 +3695,46 @@
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
 							"iid": "1dce8310-d380-11f0-9e37-e73e308e75ff",
-							"width": 16,
-							"height": 16,
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [208,32],
+							"px": [220,32],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["AICardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
 								}] }
 							],
-							"__worldX": 208,
+							"__worldX": 220,
+							"__worldY": 32
+						},
+						{
+							"__identifier": "CardPower",
+							"__grid": [13,2],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#C0CBDC",
+							"iid": "1e10bc30-d380-11f0-9e37-a3c004a19294",
+							"width": 5,
+							"height": 10,
+							"defUid": 106,
+							"px": [210,32],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["AICardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] }
+							],
+							"__worldX": 210,
 							"__worldY": 32
 						},
 						{
@@ -3908,22 +3744,22 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
-							"iid": "1e10bc30-d380-11f0-9e37-a3c004a19294",
-							"width": 16,
-							"height": 16,
+							"iid": "1e4b7b40-d380-11f0-9e37-c98e68535511",
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [192,32],
+							"px": [200,32],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["AICardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
 								}] }
 							],
-							"__worldX": 192,
+							"__worldX": 200,
 							"__worldY": 32
 						},
 						{
@@ -3933,48 +3769,383 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
 							"__smartColor": "#C0CBDC",
-							"iid": "1e4b7b40-d380-11f0-9e37-c98e68535511",
-							"width": 16,
-							"height": 16,
+							"iid": "1e8db460-d380-11f0-9e37-47c3d6331183",
+							"width": 5,
+							"height": 10,
 							"defUid": 106,
-							"px": [176,32],
+							"px": [190,32],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 107, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
 								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["AICardPower"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 122, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
 								}] }
 							],
-							"__worldX": 176,
+							"__worldX": 190,
 							"__worldY": 32
 						},
 						{
-							"__identifier": "CardPower",
-							"__grid": [10,2],
+							"__identifier": "Torch",
+							"__grid": [6,1],
 							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "1e8db460-d380-11f0-9e37-47c3d6331183",
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "79dc7a60-d380-11f0-b8aa-a7867c38001b",
 							"width": 16,
 							"height": 16,
-							"defUid": 106,
-							"px": [160,32],
+							"defUid": 14,
+							"px": [96,16],
 							"fieldInstances": [
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 107, "realEditorValues": [{
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 96,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "e0ed0620-d380-11f0-8ca4-9781a1412544",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [210,208],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Player"]
+								}] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] }
+							],
+							"__worldX": 210,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [2,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "352b0130-d380-11f0-81c5-239be7613fbf",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [40,232],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 121, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["White"]
 								}] },
-								{ "__identifier": "Callback", "__type": "String", "__value": "AICardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
+								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+							],
+							"__worldX": 40,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [3,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "6a02d630-d380-11f0-81c5-5bf6e0fdb936",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [56,232],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 121, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["AICardPower"]
-								}] }
+									"params": ["Blue"]
+								}] },
+								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+							],
+							"__worldX": 56,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [4,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "6a427740-d380-11f0-81c5-71eec4e896aa",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [72,232],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] },
+								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+							],
+							"__worldX": 72,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [5,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "6a8c7890-d380-11f0-81c5-172a4c86ee14",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [88,232],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
+								}] },
+								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+							],
+							"__worldX": 88,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [6,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "74189fb0-d380-11f0-81c5-9560c4eb9052",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [104,232],
+							"fieldInstances": [
+								{ "__identifier": "Callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "SpriteSheet", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
+								}] },
+								{ "__identifier": "SpriteSheetFrames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+							],
+							"__worldX": 104,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [9,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "11401780-d380-11f0-81c5-e95f5ed80ac0",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [144,224],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "SizeOverride", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 131, "realEditorValues": [] },
+								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": 144,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [10,3],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "08e30510-d380-11f0-81c5-b18eb7803972",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [160,48],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
 							"__worldX": 160,
-							"__worldY": 32
+							"__worldY": 48
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [2,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "1cd6bf30-d380-11f0-81c5-35456ce5b73a",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [32,16],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 32,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [10,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "1db1dcf0-d380-11f0-81c5-a5bdd2975ef7",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [160,16],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 160,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [13,3],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "5a48e140-d380-11f0-81c5-a1ce4c0a9899",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [208,48],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 208,
+							"__worldY": 48
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [13,12],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "675de100-d380-11f0-81c5-61d21a87bc40",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [208,192],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 208,
+							"__worldY": 192
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [11,12],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "67a7e250-d380-11f0-81c5-196445b0997e",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [176,192],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": 176,
+							"__worldY": 192
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [11,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "816193d0-d380-11f0-81c5-3d4caec71425",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [176,224],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "SizeOverride", "__type": "Array<Float>", "__value": [13,13], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [13] }, { "id": "V_Float", "params": [13] } ] },
+								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": 176,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [7,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "8b0eb070-d380-11f0-81c5-75b3f3dff4c0",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [112,224],
+							"fieldInstances": [
+								{ "__identifier": "Animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "SizeOverride", "__type": "Array<Float>", "__value": [10,10], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [10] }, { "id": "V_Float", "params": [10] } ] },
+								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": 112,
+							"__worldY": 224
 						}
 					]
 				},
@@ -3994,7 +4165,7 @@
 					"layerDefUid": 27,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
@@ -4004,7 +4175,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Text",
-							"__grid": [13,1],
+							"__grid": [12,15],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
@@ -4013,9 +4184,9 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 34,
-							"px": [208,16],
+							"px": [200,245],
 							"fieldInstances": [
-								{ "__identifier": "UID", "__type": "String", "__value": "TurnNumber", "__tile": null, "defUid": 35, "realEditorValues": [{
+								{ "__identifier": "TextCallback", "__type": "String", "__value": "TurnNumber", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["TurnNumber"]
 								}] },
@@ -4024,14 +4195,10 @@
 									"params": [ false ]
 								}] },
 								{ "__identifier": "PtSize", "__type": "Int", "__value": 30, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
-								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "None", "__tile": null, "defUid": 52, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["None"]
-								}] }
+								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] }
 							],
-							"__worldX": 208,
-							"__worldY": 16
+							"__worldX": 200,
+							"__worldY": 245
 						},
 						{
 							"__identifier": "Text",
@@ -4046,20 +4213,40 @@
 							"defUid": 34,
 							"px": [192,128],
 							"fieldInstances": [
-								{ "__identifier": "UID", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 35, "realEditorValues": [{
+								{ "__identifier": "TextCallback", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["GameOverResult"]
 								}] },
 								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
 								{ "__identifier": "PtSize", "__type": "Int", "__value": 80, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
-								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] },
-								{ "__identifier": "ColourType", "__type": "LocalEnum.ColourType", "__value": "None", "__tile": null, "defUid": 52, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["None"]
-								}] }
+								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] }
 							],
 							"__worldX": 192,
 							"__worldY": 128
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [13,0],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "35bb0930-d380-11f0-81c5-991906864d7d",
+							"width": 16,
+							"height": 16,
+							"defUid": 34,
+							"px": [214,0],
+							"fieldInstances": [
+								{ "__identifier": "TextCallback", "__type": "String", "__value": "AutoConfirmText", "__tile": null, "defUid": 35, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["AutoConfirmText"]
+								}] },
+								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
+								{ "__identifier": "PtSize", "__type": "Int", "__value": 20, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
+								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] }
+							],
+							"__worldX": 214,
+							"__worldY": 0
 						}
 					]
 				},
@@ -4145,7 +4332,7 @@
 						{ "px": [128,48], "src": [272,0], "f": 0, "t": 17, "d": [56], "a": 1 },
 						{ "px": [144,48], "src": [272,0], "f": 0, "t": 17, "d": [57], "a": 1 },
 						{ "px": [160,48], "src": [272,0], "f": 0, "t": 17, "d": [58], "a": 1 },
-						{ "px": [176,48], "src": [112,160], "f": 0, "t": 187, "d": [59], "a": 1 },
+						{ "px": [176,48], "src": [208,128], "f": 0, "t": 157, "d": [59], "a": 1 },
 						{ "px": [192,48], "src": [64,80], "f": 0, "t": 94, "d": [60], "a": 1 },
 						{ "px": [208,48], "src": [272,0], "f": 0, "t": 17, "d": [61], "a": 1 },
 						{ "px": [224,48], "src": [48,80], "f": 0, "t": 93, "d": [62], "a": 1 },
@@ -4340,7 +4527,7 @@
 						{ "px": [176,240], "src": [32,160], "f": 0, "t": 182, "d": [251], "a": 1 },
 						{ "px": [192,240], "src": [16,208], "f": 0, "t": 235, "d": [252], "a": 1 },
 						{ "px": [208,240], "src": [32,208], "f": 0, "t": 236, "d": [253], "a": 1 },
-						{ "px": [224,240], "src": [176,0], "f": 0, "t": 11, "d": [254], "a": 1 },
+						{ "px": [224,240], "src": [32,160], "f": 0, "t": 182, "d": [254], "a": 1 },
 						{ "px": [240,240], "src": [32,160], "f": 0, "t": 182, "d": [255], "a": 1 }
 					],
 					"entityInstances": []
@@ -4466,9 +4653,8 @@
 							"px": [16,224],
 							"fieldInstances": [
 								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "UIButton", "__type": "Bool", "__value": true, "__tile": null, "defUid": 36, "realEditorValues": [] },
 								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "UID", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
 								{ "__identifier": "Tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [] }
 							],
 							"__worldX": 16,

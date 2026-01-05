@@ -58,57 +58,57 @@ void JSONParser::Print()
 	printf(output);
 }
 
-void JSONParser::DoTest()
+bool PopulateSettingByType(const rapidjson::Value& value, const char* id, kJsonType type, Settings& settings)
 {
-	Value::MemberIterator levels = document.FindMember("levels");
-
-	bool has_mem = levels != document.MemberEnd();
-	bool arr = levels->value.IsArray();
-
-	Value& level_0 = levels->value[0];
-
-
-	Value::MemberIterator yep = level_0.FindMember("layerInstances");
-	bool has_memb = yep != document.MemberEnd();
-
-	bool is_layers = yep->value.IsArray();
-
-    for (SizeType i = 0; i < yep->value.Size(); i++)
-	{
-		Value& layer = yep->value[i];
-
-		const char* id = layer["__identifier"].GetString();
-		const int def_id = layer["layerDefUid"].GetInt();
-
-		Value& grid = layer["gridTiles"];
-		bool has_grid = layer.HasMember("gridTiles");
-
-		if( grid.IsArray() )
+	switch( type )
+	{	
+		case kJsonType::Number:
 		{
-			const Value::Array& grid_array = grid.GetArray();
-
-			for( u32 i = 0; i < grid.Size(); i++ )
-			{
-				Value& entry = grid[i];
-
-				bool has_member_px = entry.HasMember("px");
-				Value& px = entry["px"];
-				
-				bool is_arry = px.IsArray();
-
-
-				int x = px[0].GetInt();
-				int y = px[1].GetInt();
-
-				int b = 10;
-			}
+			settings.values[id] = value.GetFloat();
+			return true;
 		}
+		case kJsonType::True:
+		{
+			settings.values[id] = true;
+			return true;
+		}
+		case kJsonType::False:
+		{
+			settings.values[id] = false;
+			return true;
+		}
+		case kJsonType::String:
+		{
+			settings.strings[id] = value.GetString();
+			return true;
+		} 
+		case kJsonType::Array:
+		{			
+			const Value::ConstArray& array = value.GetArray();
+			if(array.Size() > 0 && array.begin()->GetType() == kJsonType::Number)
+			{
+				if(array.Size() <= 2)
+				{
+					VectorF vector;
+					if( array.Size() > 0 )
+						vector.x = array[0].GetFloat();
+					if( array.Size() > 1 )
+						vector.y = array[1].GetFloat();
 
-		int c = 4;
+					settings.vectors[id] = vector;
+				}
+				else
+				{
+					std::vector<float>& float_array = settings.floatArrays.data[id];
+					for( u32 i = 0; i < array.Size(); i++ )
+					{
+						float_array.push_back(array[i].GetFloat());
+					}
+				}
+			}
+			return true;
+		}
+		default:
+			return false;
 	}
-
-	int a = 4;
 }
-
-
-

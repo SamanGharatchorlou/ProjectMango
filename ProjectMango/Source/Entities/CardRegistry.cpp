@@ -3,6 +3,7 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "System/Files/JSONParser.h"
+#include "System/Files/TextFileReader.h"
 #include "ECS/EntityCoordinator.h"
 #include "MonsterRegistry.h"
 
@@ -15,7 +16,19 @@ namespace CardRegistry
 	std::vector<int> s_cardRegistryDrawPile[Card::c_tiers];
 	std::vector<int> s_cardRegistryDiscard[Card::c_tiers];
 
-	void Build(const char* file, int tier_index)
+	
+	void ClearAll()
+	{
+		s_cardRegistry.clear();
+
+		for( u32 i = 0; i < Card::c_tiers; i++ )
+		{
+			s_cardRegistryDrawPile[i].clear();
+			s_cardRegistryDiscard[i].clear();
+		}
+	}
+
+	void ReadomFromJson(const char* file, int tier_index)
 	{
 		using namespace rapidjson;
 		
@@ -59,6 +72,66 @@ namespace CardRegistry
 			}
 		}
 	}
+
+	
+	void ReadomFromCSV(const char* file, int tier_index)
+	{
+		BasicString file_path;
+		FileManager::Get()->FindFile( FileManager::Configs, file, file_path );
+		TextFileReader reader(file_path.c_str());
+
+		std::string line;
+		while(std::getline(reader.mFile, line))
+		{
+			// read a line, each line is a card
+			std::stringstream ss(line);
+
+			s_cardRegistry.push_back( Card() );
+			Card& card = s_cardRegistry.back();
+			card.tier = tier_index;
+			card.registryIndex = s_cardRegistry.size() - 1;
+
+			s_cardRegistryDrawPile[tier_index].push_back(card.registryIndex);
+			
+			int column = 0;
+			std::string cell;
+			while(std::getline(ss, cell, ',' ))
+			{
+				switch( column )
+				{
+					case 0:
+					{
+						StringBuffer32 colour_string(cell.c_str());
+						colour_string = colour_string.to_lower();
+						card.colour = Colour::s_stringToType.at(colour_string.c_str());
+						card.power[card.colour] = 1;
+						break;
+					}
+					case 1:
+					{
+						card.points = atoi(cell.c_str());
+						break;
+					}
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+					{
+						// i.e. white at column 0 is index 0
+						int colour_index = column - 2;
+						card.cost[colour_index] = atoi(cell.c_str());
+						break;
+					}
+					// end
+					default:
+						break;
+				}	
+				column++;
+			}
+		}
+	}
+
 
 	const Card* LookupCard(int index)
 	{

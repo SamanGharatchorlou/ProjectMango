@@ -7,6 +7,11 @@ namespace MonsterRegistry
 {
 	std::vector<Monster> s_monsterRegistry;
 
+	void Clear()
+	{
+		s_monsterRegistry.clear();
+	}
+
 	void Build(const char* file)
 	{
 		using namespace rapidjson;

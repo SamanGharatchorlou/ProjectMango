@@ -55,6 +55,7 @@ namespace ECS
 
 			AttackWindUp,
 			BasicAttack,
+			FollowUpAttack,
 			AttackRecovery,
 
 			Hurting,
@@ -70,40 +71,11 @@ namespace ECS
 	Action::Enum StringToAction(const char* action);
 	const char* ActionToString(Action::Enum action);
 
+	// this is the same as a config, guess its still better to keep them different
 	struct EntityMetaData
 	{
-		// the base name e.g. text, card etc.
-		BasicString id;
-
-		// unique name e.g. InventoryCoins_White, used to lookup a specific thing
-		BasicString uid;
-		BasicString callback;
-
-		VectorF position;
-		VectorF size;
-		VectorF pivotPoint;
-		
-		BasicString spriteId;
-		BasicString spriteSheetId;
-		BasicString animatorId;
-
-		VectorI spriteSheetFrameCounts = VectorI(1,1);
-		SColour colourMod;
-		int colourType = -1;
-
-		int PtSize = -1;
-		int tier = -1;
-
-		// player = 1, enemy = 2
-		int faction = 0;
-
-		// base indentifier i.e. 'button', 'player'
-		std::vector<BasicString> tags;
-
-		bool isButton = false;
-		bool center = false;
-		bool random = false;
-		bool snapToFloor = false;
+		const char* GetID() const;
+		Settings data;
 	};
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);

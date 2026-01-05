@@ -7,7 +7,9 @@ namespace ECS
 
 namespace CardRegistry
 {
-	void Build(const char* config, int tier);
+	void ClearAll();
+	void ReadomFromJson(const char* config, int tier);
+	void ReadomFromCSV(const char* config, int tier);
 
 	const ECS::Card* LookupCard(int index);
 

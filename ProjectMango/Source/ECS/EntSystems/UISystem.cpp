@@ -52,16 +52,12 @@ namespace ECS
 			// set ui text
 			if(UIText* text = GetComponent(UIText, entity))
 			{
-				if( !text->UID.empty() )
+				if( !text->callback.empty() )
 				{
-					auto iter = s_textBindings.find(text->UID);
+					auto iter = s_textBindings.find(text->callback);
 					if(iter != s_textBindings.end())
 					{
 						const BasicString& new_text = iter->second(entity);
-
-						if(new_text.length() == 0 )
-							int a = 4;
-
 						if( text->text != new_text )
 						{
 							text->SetText(new_text.c_str());
@@ -73,9 +69,9 @@ namespace ECS
 			// update button visual e.g. make it green
 			if(UIButton* button = GetComponent(UIButton, entity))
 			{
-				if( !button->UID.empty() )
+				if( !button->callback.empty() )
 				{
-					auto iter = s_buttonBindings.find(button->UID);
+					auto iter = s_buttonBindings.find(button->callback);
 					if(iter != s_buttonBindings.end())
 					{
 						iter->second(entity);

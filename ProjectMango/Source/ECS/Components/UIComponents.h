@@ -23,7 +23,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(UIButton);
 		
-		BasicString UID;
+		BasicString callback;
 
 		int lastPressedFrameCount;
 
@@ -37,7 +37,7 @@ namespace ECS
 	{
 		COMPONENT_TYPE(UIText);
 
-		BasicString UID;
+		BasicString callback;
 
 		BasicString text;
 		Font font;

@@ -1,9 +1,9 @@
 #include "pch.h"
+
 #include "ECS/Components/Components.h"
 #include "ECS/Components/UIComponents.h"
 #include "ECS/Components/GameComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 #include "Entities/CardRegistry.h"
 #include "ECS/Components/AIComponents.h"
@@ -87,7 +87,7 @@ static void CardPowerBindings(std::unordered_map<BasicString, std::function<Basi
 		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
 		{
 			int card_power[Colour::Count];
-			inventory->GetCardPower(card_power, Colour::Count);
+			inventory->GetCardPower(card_power);
 
 			Colour::Type colour = GetComponentRef(Colour, entity).colour;
 			return BasicString(card_power[colour]);
@@ -98,7 +98,7 @@ static void CardPowerBindings(std::unordered_map<BasicString, std::function<Basi
 		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetEnemy()))
 		{
 			int card_power[Colour::Count];
-			inventory->GetCardPower(card_power, Colour::Count);
+			inventory->GetCardPower(card_power);
 
 			Colour::Type colour = GetComponentRef(Colour, entity).colour;
 			return BasicString(card_power[colour]);
@@ -114,11 +114,14 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	CardPowerBindings(text_bindings);
 
 	text_bindings[ "TurnNumber" ] =  [](Entity entity) {
-		const State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(const GameState* game_state = dynamic_cast<const GameState*>(&state))
+		if(const GameState* game_state = GameState::GetActive())
 		{
-			char buffer[32];
-			snprintf(buffer, 32, "Turn: %d", game_state->turnIndex + 1);
+			Faction::Team faction = Faction::None;
+			if(TurnState* turn = TurnState::GetActive())
+				faction = Faction::GetTeam(turn->entity);
+
+			char buffer[64];
+			snprintf(buffer, 64, "%s Turn: %d", faction == Faction::Player ? "Player" : "Enemy", game_state->turnIndex + 1);
 			return BasicString(buffer);
 		}
 					
@@ -126,8 +129,7 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	};
 
 	text_bindings[ "GameOverResult" ] =  [](Entity entity) {
-		const State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(const GameState* game_state = dynamic_cast<const GameState*>(&state))
+		if(const GameState* game_state = GameState::GetActive())
 		{
 			if(game_state->gameOver)
 			{
@@ -192,6 +194,10 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 		}
 					
 		return BasicString(""); 
+	};
+
+	text_bindings[ "AutoConfirmText" ] =  [](Entity entity) {				
+		return BasicString("Auto-confirm End Turn"); 
 	};
 
 }

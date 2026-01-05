@@ -14,6 +14,8 @@ public:
 	void Resume() override;
 	void Exit() override;
 	
+	static GameState* GetActive();
+
 	ECS::Entity activeLevel = ECS::EntityInvalid;
 
 	int turnIndex = 0;

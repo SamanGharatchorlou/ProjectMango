@@ -62,13 +62,21 @@ namespace Actor
 
 						CreateVFX(asd.hitVfx.c_str(), rect);
 					}
-
-					VectorF position = GetPosition(target_entity);
-					Camera::Get()->AddShake(0.5f, position);
 				}
 				
 				asd.playedHitVfx = true;
 			}
+		}
+	}
+
+	void ApplyCameraShake(Entity entity, float impact)
+	{
+		const Faction& faction = GetComponentRef(Faction, entity);
+		Entity target_entity = faction.GetTarget();
+		if(target_entity != EntityInvalid)
+		{
+			VectorF position = GetPosition(target_entity);
+			Camera::Get()->AddShake(impact, position);
 		}
 	}
 
@@ -81,7 +89,7 @@ namespace Actor
 		if(state.attackData.contains(action))
 		{
 			AttackStateData& asd = state.attackData[action];
-			bool hit_frame = animator.frameIndex == asd.hitFrame;	
+			bool hit_frame = animator.frameIndex == asd.attackFrame;	
 			if(hit_frame && !asd.playedAttackVfx && !asd.attackVfx.empty())
 			{
 				const Transform& transform = GetComponentRef(Transform, entity);
@@ -102,18 +110,16 @@ namespace Actor
 		PlayHitAnimationVFX(entity);
 	}
 
-	// BasicAttack
-	static void BasicAttackUpdate(ECS::Entity entity)
+	static void AttackUpdate(ECS::Entity entity, Action::Enum attack)
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
 		BehaviourState& state = GetComponentRef(BehaviourState, entity);
 		
 		PlayAttackVFX(entity);
 
-		if(state.attackData.contains(Action::BasicAttack))
+		if(state.attackData.contains(attack))
 		{
-
-			AttackStateData& asd = state.attackData[Action::BasicAttack];
+			AttackStateData& asd = state.attackData[attack];
 			bool hit_frame = animator.frameIndex == asd.hitFrame;
 			if( hit_frame && !asd.didHit)
 			{
@@ -127,7 +133,11 @@ namespace Actor
 					{
 						if(Health* health = GetComponent(Health, target_entity))
 						{
-							health->ApplyDamage(damage->value);
+							bool did_hit = health->ApplyDamage(damage->value * asd.damageRatio);
+							if(did_hit)
+							{
+								ApplyCameraShake(entity, damage->value * asd.damageRatio * 0.2f);
+							}
 						}
 					}
 				}
@@ -137,12 +147,24 @@ namespace Actor
 		if(animator.loopCount > 0)
 		{
 			const Animation& animation = animator.GetActiveAnimation();
-			ASSERT(animation.action == Action::BasicAttack, "Not the basic attack anim state in the basic attack update");
+			ASSERT(animation.action == attack, "Not the basic attack anim state in the basic attack update");
 
 			// mark the attack as finished
 			BehaviourState& state = GetComponentRef(BehaviourState, entity);
 			state.attackFinishedTimeMS = GetTicksMS();
 		}
+	}
+
+
+	// BasicAttack
+	static void BasicAttackUpdate(ECS::Entity entity)
+	{
+		AttackUpdate(entity, Action::BasicAttack);
+	}
+
+	static void FollowUpAttackUpdate(ECS::Entity entity)
+	{
+		AttackUpdate(entity, Action::FollowUpAttack);
 	}
 
 	static void BasicAttackExit(ECS::Entity entity)
@@ -191,6 +213,9 @@ void PopulateDefaultBehaviours(ECS::BehaviourMap& map)
 				break;
 			case ECS::Action::BasicAttack:
 				map.updates[state] = Actor::BasicAttackUpdate;
+				break;
+			case ECS::Action::FollowUpAttack:
+				map.updates[state] = Actor::FollowUpAttackUpdate;
 				break;
 			case ECS::Action::AttackWindUp:
 			case ECS::Action::AttackRecovery:

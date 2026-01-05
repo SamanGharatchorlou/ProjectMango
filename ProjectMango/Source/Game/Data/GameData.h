@@ -3,7 +3,7 @@
 class Window;
 class InputManager;
 class RenderManager;
-class ConfigManager;
+struct ConfigManager;
 class AudioManager;
 struct SystemStateManager;
 struct UIManager;

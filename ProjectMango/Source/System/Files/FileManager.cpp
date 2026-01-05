@@ -277,7 +277,9 @@ std::vector<BasicString> FileManager::fileNamesInFolder(const Folder folder) con
 	std::vector<BasicString> fileNameList;
 	for( u32 i = 0; i < fileList.size(); i++ )
 	{
-		fileNameList.push_back( getItemName(fileList[i].c_str()).c_str() );
+		StringBuffer64 file_name = getItemName(fileList[i].c_str());
+		if(!file_name.empty())
+			fileNameList.push_back( file_name.c_str() );
 	}
 
 	return fileNameList;

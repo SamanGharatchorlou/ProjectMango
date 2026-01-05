@@ -54,19 +54,35 @@ struct Settings
 
 	inline VectorF GetVector(const char* label, VectorF default_value = VectorF(0,0) ) const
 	{
-		if(floatArrays.data.contains(label))
+		if(vectors.data.contains(label))
+			return vectors.data.at(label);
+
+		return default_value;
+	}
+
+	inline SColour GetColour(const char* label, SColour default_value = SColour() ) const
+	{
+		if (strings.data.contains(label))
 		{
-			const std::vector<float>& array = floatArrays.data.at(label);
-			return VectorF(array[0], array[1]);
+			int hex = 0;
+			const char* string = strings.data.at(label).c_str();
+			std::stringstream ss(string + 1);
+			ss >> std::hex >> hex;
+
+			return SColour(hex);
 		}
 
 		return default_value;
 	}
 
-	inline bool Contains(const char* key) const { return values.data.contains(key) || strings.data.contains(key) || floatArrays.data.contains(key); }
+	inline bool Contains(const char* key) const { 
+		return values.data.contains(key) || strings.data.contains(key) ||
+			vectors.data.contains(key) || floatArrays.data.contains(key); 
+	}
 
 	SettingValues<BasicString> strings;
 	SettingValues<float> values;
+	SettingValues<VectorF> vectors;
 
 	SettingArrays<float> floatArrays;
 };

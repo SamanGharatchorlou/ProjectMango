@@ -4,7 +4,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Core/Helpers.h"
-#include "Entities/ResourceBank.h"
+#include "Entities/Enemies/AIStrategies.h"
 
 namespace ECS
 {
@@ -81,45 +81,12 @@ namespace ECS
 					if(HasComponent(ActionRequest, entity))
 						continue;
 
-					int random_action = Maths::randomNumberBetween(0,2);
+					// wait 1 second between actions
+					if(GetTicksMS() < (turn->lastActionTimeMS + 1000))
+						continue;
 
-					if(random_action == 0)
-					{
-						ActionRequest& action_request = AddComponent(ActionRequest, entity);
-						action_request.request = ActionRequest::CollectCoin;
-
-						int random_colur = Maths::randomNumberBetween(0, Colour::Count);
-						
-						CoinStack& cs = GetCoinStack(Faction::None, random_colur);
-						action_request.target = cs.entity; 
-					}
-					else
-					{
-						std::vector<Card*> sorted_cards_by_tier;
-
-						ComponentArray<Card>& cards =  GetAllComponents(Card);
-						for( auto iter = cards.entityToComponent.begin(); iter != cards .entityToComponent.end(); iter++ )
-						{ 
-							Card& card = cards.GetComponentByIndex(iter->second);
-							sorted_cards_by_tier.push_back(&card);
-						}
-
-						std::sort(sorted_cards_by_tier.begin(), sorted_cards_by_tier.end(), [](const Card* a, const Card* b) { 
-							return a->tier > b->tier;
-						});
-
-						for( Card* card : sorted_cards_by_tier )
-						{
-							if(card->CanAfford(entity))
-							{
-								ActionRequest& action_request = AddComponent(ActionRequest, entity);
-								action_request.request = ActionRequest::AquireCard;
-								action_request.target = card->entity;
-
-								break;
-							}
-						}
-					}
+					//TakeRandomAction(entity);
+					AIStrategy::BuyBestCard(entity);
 				}
 			}
 		}

@@ -44,7 +44,7 @@ namespace ECS
 			if(Inventory* inventory = GetComponent(Inventory, player))
 			{
 				int buying_power[Colour::Count];
-				inventory->GetBuyingPower(buying_power, Colour::Count);
+				inventory->GetBuyingPower(buying_power);
 
 				for( int i = 0; i < Colour::Count; i++ )
 				{

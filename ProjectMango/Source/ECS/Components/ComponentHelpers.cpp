@@ -9,13 +9,18 @@
 
 namespace ECS
 {
+	const char* EntityMetaData::GetID() const
+	{
+		return data.GetString("Id");
+	}
+
 	Entity CreateEntity(const ECS::EntityMetaData& emd)
 	{
 		Entity entity = ecs->CreateNewEntity();
-		if (!emd.id.empty()) 
+		if ( emd.data.Contains("Id") )
 		{ 
 			EntityData& ed = AddComponent(EntityData, entity); 
-			ed.id = emd.id;
+			ed.id = emd.GetID();
 		}
 		return entity;
 	}
@@ -248,6 +253,7 @@ namespace ECS
 		s_stateMap["Crouch"] = Action::Crouch;
 		s_stateMap["AttackWindUp"] = Action::AttackWindUp;
 		s_stateMap["BasicAttack"] = Action::BasicAttack;
+		s_stateMap["FollowUpAttack"] = Action::FollowUpAttack;
 		s_stateMap["AttackRecovery"] = Action::AttackRecovery;
 		s_stateMap["TakeHit"] = Action::TakeHit;
 		s_stateMap["Death"] = Action::Death;

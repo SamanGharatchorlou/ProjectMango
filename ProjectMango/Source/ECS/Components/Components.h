@@ -66,7 +66,6 @@ namespace ECS
 			Count
 		};
 
-		//Entity targetEntity = EntityInvalid;
 		Team team; 
 
 		Entity GetTarget() const;
@@ -75,6 +74,7 @@ namespace ECS
 		static Entity GetPlayer();
 		static Entity GetEnemy();
 		static Team GetTeam(Entity entity);
+		static Team GetTeam(const char* faction);
 
 		static void SetAsHostileFaction(Entity entity, Faction& hostile_faction);
 		static void SetAsAlliedFaction(Entity entity, Faction& hostile_faction);

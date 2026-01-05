@@ -83,7 +83,11 @@
 			"points" : 0
 		},
 
-
+		{
+			"colour": "black", 
+			"cost": [0,4,0,0,0],
+			"points" : 1
+		},
 		{
 			"colour": "black", 
 			"cost": [1,1,0,1,1],
@@ -98,11 +102,6 @@
 			"colour": "black", 
 			"cost": [2,2,0,1,0],
 			"points" : 0
-		},
-		{
-			"colour": "black", 
-			"cost": [0,4,0,0,0],
-			"points" : 1
 		},
 		{
 			"colour": "black", 

@@ -648,7 +648,7 @@ namespace AnimationEditor
 	    RectF screen(VectorF::zero(), s_targetWindowSize);
 	    STexture* black_bg = TextureManager::Get()->getTexture( "EditorBg_black", FileManager::Image_UI );
 	    STexture* white_bg = TextureManager::Get()->getTexture( "EditorBg", FileManager::Image_UI );
-	    RenderPack pack(black_bg, 0);
+	    RenderPack pack(white_bg, 0);
         pack.rect = screen;
 	    rm->AddRenderPacket(pack);
     }

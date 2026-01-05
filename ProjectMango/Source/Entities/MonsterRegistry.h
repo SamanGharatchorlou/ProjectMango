@@ -10,6 +10,7 @@ struct Monster
 namespace MonsterRegistry
 {
 	void Build(const char* config);
+	void Clear();
 
 	const char* GetMonster(int index);
 	const char* GetRandomMonster(int points);

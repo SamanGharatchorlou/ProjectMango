@@ -36,24 +36,24 @@ Entity CreateUICursor()
 
 Entity CreateUIText(const EntityMetaData& emd)
 {
-	Entity entity = CreateEntity(emd.id.c_str());
+	Entity entity = CreateEntity(emd.GetID());
 
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
-	transform.size = emd.size;
-	transform.SetWorldPosition( emd.position - (emd.size * emd.pivotPoint) );
+	transform.Init(&emd);
 	
 	// UIText
 	UIText& ui_text = AddComponent(UIText, entity);
-	ui_text.UID = emd.uid;
-	ui_text.center = emd.center;
-	ui_text.SetSize(emd.PtSize);
-	ui_text.SetColour(emd.colourMod);
+	ui_text.callback = emd.data.GetString("TextCallback");
+	ui_text.center = emd.data.GetBool("Center");
+	ui_text.SetSize(emd.data.GetInt("PtSize"));
+	ui_text.SetColour(emd.data.GetColour("Colour"));
 
-	if(emd.colourType != -1)
+	Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);;
+	if(colour_type != -1)
 	{
 		Colour& colour = AddComponent(Colour, entity);
-		colour.colour = (Colour::Type)emd.colourType;
+		colour.colour = colour_type;
 	}
 
 	return entity;
@@ -62,7 +62,7 @@ Entity CreateUIText(const EntityMetaData& emd)
 Entity CreateCardEntity(const EntityMetaData& emd)
 {
 	Entity entity = CreateBasicObject( emd );
-	CardRegistry::DrawRandomCard(entity, emd.tier);
+	CardRegistry::DrawRandomCard(entity, emd.data.GetInt("Tier"));
 
 	return entity;
 }

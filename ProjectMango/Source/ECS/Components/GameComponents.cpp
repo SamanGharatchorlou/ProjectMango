@@ -9,6 +9,8 @@
 #include "Entities/MonsterRegistry.h"
 #include "Entities/EntityBuilder.h"
 #include "Entities/ResourceBank.h"
+#include "Core/Helpers.h"
+#include "Game/States/GameState.h"
 
 namespace ECS
 {
@@ -16,27 +18,27 @@ namespace ECS
 	// ------------------------------------------------------------------
 	Inventory::Inventory() { }
 	
-	void Inventory::GetCardPower(int array[], int size) const
+	void Inventory::GetCardPower(int array[]) const
 	{
-		memset(array, 0, sizeof(int) * size);
+		memset(array, 0, sizeof(int) * Colour::Count);
 		for( u32 i = 0; i < cards.size(); i++ )
 		{
 			const ECS::Card* card = CardRegistry::LookupCard(cards[i]);
-			for( int j = 0; j < size; j++ )
+			for( int j = 0; j < Colour::Count; j++ )
 			{
 				array[j] +=  card->power[j];
 			}
 		}
 	}
 
-	void Inventory::GetBuyingPower(int array[], int size) const
+	void Inventory::GetBuyingPower(int array[]) const
 	{
-		memset(array, 0, sizeof(int) * size);
+		memset(array, 0, sizeof(int) * Colour::Count);
 
 		int card_power[Colour::Count] { 0 };
-		GetCardPower(card_power, size);
+		GetCardPower(card_power);
 
-		for( u32 i = 0; i < size; i++ )
+		for( u32 i = 0; i < Colour::Count; i++ )
 		{
 			array[i] = coins[i] + card_power[i];
 		}
@@ -67,7 +69,7 @@ namespace ECS
 			}
 
 			int buying_power[Colour::Count];
-			inventory->GetBuyingPower(buying_power, Colour::Count);
+			inventory->GetBuyingPower(buying_power);
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
 				if(buying_power[i] < cost[i])
@@ -236,42 +238,8 @@ namespace ECS
 		}
 	}
 
-
-	// CoinStack
-	// ------------------------------------------------------------------
-
-	// this isnt working, cant get the coin stacks like this, now i have card power for example
-	// guess this is more a generic stack of... something?
-	//CoinStack* CoinStack::GetCoinStack(Colour::Type type, u32 faction_team)
-	//{
-	//	ComponentArray<CoinStack>& coin_stacks =  GetAllComponents(CoinStack);
-	//	for( auto iter = coin_stacks.entityToComponent.begin(); iter != coin_stacks.entityToComponent.end(); iter++ )
-	//	{
-	//		if(faction_team == Faction::GetTeam(iter->first))
-	//		{
-	//			CoinStack& coin_stack = coin_stacks.GetComponentByIndex(iter->second);
-	//			if(coin_stack.colourType == type )
-	//			{
-	//				return &coin_stack;
-	//			}
-	//		}
-	//	}
-
-	//	return nullptr;
-	//}
-
 	// Turn
 	// ------------------------------------------------------------------
-	TurnState::TurnState() : 
-		isActiveTurn(false),
-		turnIndex(0), 
-		collectedCardSource(EntityInvalid),  
-		collectedCardRegIndex(-1),
-		canEndTurn(false), 
-		initiative(0),
-		attackingMonster(EntityInvalid)
-	{ }
-
 	void TurnState::ResetState()
 	{
 		memset(collectedCoins, 0, sizeof(int) * (int)Colour::Count);
@@ -344,6 +312,69 @@ namespace ECS
 		// already collect a card
 		if(collectedCardSource != EntityInvalid)
 			return true;
+
+		return false;
+	}
+
+	bool TurnState::CanCollectCoin(Colour::Type colour) const
+	{
+		if(!CanAquireMoreResources())
+			return false;
+
+		// if we have collect 2 different coins, we cannot collect another one it must be a different coin
+		std::vector<Colour::Type> types;
+		for( u32 i = 0; i < Colour::Count; i++ )
+		{
+			if( collectedCoins[i] > 0 )
+				types.push_back((Colour::Type)i);
+		}
+
+		if(types.size() >= 2 && Contains<Colour::Type>(types, colour))
+			return false;
+
+		return true;
+	}
+
+	TurnState* TurnState::GetActive()
+	{
+		std::vector<Entity> turn_order;
+
+		ComponentArray<TurnState>& turn_states =  GetAllComponents(TurnState);
+		for( auto iter = turn_states.entityToComponent.begin(); iter != turn_states.entityToComponent.end(); iter++ )
+		{
+			turn_order.push_back(iter->first);
+		}
+
+		std::sort(turn_order.begin(), turn_order.end(), [](Entity a, Entity b) { 
+			TurnState& turn_A = GetComponentRef(TurnState, a);
+			TurnState& turn_B = GetComponentRef(TurnState, b);
+			return turn_A.initiative < turn_B.initiative;
+		});
+
+		if(GameState* game_state = GameState::GetActive())
+		{
+			for (Entity entity : turn_order)
+			{
+				TurnState& turn = GetComponentRef(TurnState, entity);
+
+				// not entities turn
+				if(turn.turnIndex > game_state->turnIndex)
+				{
+					continue;
+				}
+				return &turn;
+			}
+		}
+
+		return nullptr;
+	}
+
+	bool TurnState::IsCurrentTurn() const
+	{
+		if(const TurnState* active_turn = TurnState::GetActive())
+		{
+			return entity == active_turn->entity;
+		}
 
 		return false;
 	}

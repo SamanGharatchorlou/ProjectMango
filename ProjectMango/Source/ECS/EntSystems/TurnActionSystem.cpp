@@ -4,7 +4,6 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
 
-#include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 #include "Core/Helpers.h"
 #include "Entities/CardRegistry.h"
@@ -29,6 +28,8 @@ namespace ECS
 
 		TurnState& turn = GetComponentRef(TurnState, entity);
 		turn.collectedCoins[colour] += amount;
+		
+		turn.lastActionTimeMS = GetTicksMS();
 	}
 
 	static void TakeCard(Entity entity, const Card& card)
@@ -38,7 +39,7 @@ namespace ECS
 
 		Inventory& inventory = GetComponentRef(Inventory, entity);
 		int card_power[Colour::Count];
-		inventory.GetCardPower(card_power, Colour::Count);
+		inventory.GetCardPower(card_power);
 
 		// reduce cost of the card by the players card power
 		for( u32 i = 0; i < Colour::Count; i++ )
@@ -62,13 +63,15 @@ namespace ECS
 			Entity spawn_requst = CreateEntity("SpawnRequest");
 			SpawnRequest& sr = AddComponent(SpawnRequest, spawn_requst);
 			sr.frameTime = FrameRateController::Get().frameCount;
-			sr.emd.id = MonsterRegistry::GetMonster(card.monsterRegistryIndex);
+			sr.emd.data.strings["Id"] = MonsterRegistry::GetMonster(card.monsterRegistryIndex);
 			sr.owner = turn.entity;
 			sr.cardRegistryIndex = card.registryIndex;
 		}
 
 		// destroys all children
 		CardRegistry::DiscardCard(card.entity);
+
+		turn.lastActionTimeMS = GetTicksMS();
 	}
 
 	static bool ExecuteAction(ActionRequest& action_request, TurnState& turn)
@@ -77,44 +80,19 @@ namespace ECS
 		{
 			case ActionRequest::CollectCoin:
 			{
-				if(!turn.CanAquireMoreResources())
+				const CoinStack& coin_stack = GetComponentRef(CoinStack, action_request.target);
+				Colour::Type coin_type = coin_stack.colourType;
+				if(!turn.CanCollectCoin(coin_type))
 					return false;
 
-				if(CoinStack* coin_stack = GetComponent(CoinStack, action_request.target))
-				{
-					Colour::Type coin_type = coin_stack->colourType;
-
-					// if we have collect 2 different coins, we cannot collect another of those of those
-					// it must be a different coin
-					std::vector<Colour::Type> types;
-					for( u32 i = 0; i < Colour::Count; i++ )
-					{
-						if( turn.collectedCoins[i] > 0 && !Contains<Colour::Type>(types, (Colour::Type)i) )
-							types.push_back((Colour::Type)i);
-					}
-
-					if(types.size() >= 2 && Contains<Colour::Type>(types, coin_type))
-						return false;
-
-					if(coin_stack->remaining <= 0)
-						return false;
-
-					TakeCoins(turn.entity, coin_type, 1);
-				}
+				TakeCoins(turn.entity, coin_type, 1);
 
 				break;
 			}
 			case ActionRequest::AquireCard:
 			{
-				if(!turn.CanAquireMoreResources())
+				if(turn.HasAquiredResources())
 					return false;
-
-				// cannot get a card if you've already got some coins
-				for( u32 i = 0; i < Colour::Count; i++ )
-				{
-					if( turn.collectedCoins[i] > 0 )
-						return false;
-				}
 				
 				if(Card* card = GetComponent(Card, action_request.target))
 				{
@@ -126,7 +104,7 @@ namespace ECS
 
 				break;
 			}
-			case ActionRequest::UndoTurn:
+			case ActionRequest::ReturnCoins:
 			{
 				// return collected coins
 				for( u32 i = 0; i < Colour::Count; i++ )
@@ -138,21 +116,8 @@ namespace ECS
 						TakeCoins(turn.entity, type, -turn.collectedCoins[type]);
 					}
 				}
-
-				// return collected card
-				if(turn.collectedCardSource != EntityInvalid)
-				{
-					CardRegistry::DrawCard(turn.collectedCardSource, turn.collectedCardRegIndex);
-
-					// remove from inventory
-					if(Inventory* inventory = GetComponent(Inventory, turn.entity))
-					{
-						Erase(inventory->cards, turn.collectedCardRegIndex);
-					}
-				}
 					
 				turn.ResetState();
-
 				break;
 			}
 			default:
@@ -162,48 +127,11 @@ namespace ECS
 		return true;
 	}
 
-	// gets the turn state it should be now
-	TurnState* GetCurrentTurnState()
-	{
-		std::vector<Entity> turn_order;
-
-		ComponentArray<TurnState>& turn_states =  GetAllComponents(TurnState);
-		for( auto iter = turn_states.entityToComponent.begin(); iter != turn_states.entityToComponent.end(); iter++ )
-		{
-			turn_order.push_back(iter->first);
-		}
-
-		std::sort(turn_order.begin(), turn_order.end(), [](Entity a, Entity b) { 
-			TurnState& turn_A = GetComponentRef(TurnState, a);
-			TurnState& turn_B = GetComponentRef(TurnState, b);
-			return turn_A.initiative < turn_B.initiative;
-		});
-
-        State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(GameState* game_state = dynamic_cast<GameState*>(&state))
-		{
-			for (Entity entity : turn_order)
-			{
-				TurnState& turn = GetComponentRef(TurnState, entity);
-
-				// not entities turn
-				if(turn.turnIndex > game_state->turnIndex)
-				{
-					continue;
-				}
-				return &turn;
-			}
-		}
-
-		return nullptr;
-	}
-
 	void TurnActionSystem::Update(float dt)
 	{
-		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		GameState* game_state = dynamic_cast<GameState*>(&state);
+		GameState* game_state = GameState::GetActive();
 
-		if(TurnState* turn = GetCurrentTurnState())
+		if(TurnState* turn = TurnState::GetActive())
 		{
 			if(!turn->isActiveTurn)
 			{			
@@ -224,7 +152,6 @@ namespace ECS
 					jiggle.frequency = 30.0f;
 					jiggle.decayTime = 4.0f;
 					jiggle.undisturbedLoops = 1;
-					//jiggle.Start();
 				}
 
 				RemoveComponent(ActionRequest, entity);
@@ -285,8 +212,7 @@ namespace ECS
 
 				if(const Card* collected_card = CardRegistry::LookupCard(turn->collectedCardRegIndex))
 				{
-					// redraw any cards we removed 
-					//int random_card_index = CardRegistry::PickRandomIndex(collected_card->tier);
+					// redraw any cards we removed
 					CardRegistry::DrawRandomCard( turn->collectedCardSource, collected_card->tier );
 				}
 
@@ -323,6 +249,8 @@ namespace ECS
 
 				turn->isActiveTurn = false;
 				turn->turnIndex++;
+				
+				turn->ResetState();
 			}
 		}
 		else

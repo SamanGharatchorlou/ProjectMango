@@ -11,6 +11,5 @@ public:
 
 	int fileLength();
 
-private:
 	std::ifstream mFile;
 };

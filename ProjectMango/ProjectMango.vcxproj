@@ -153,6 +153,7 @@
     <ClCompile Include="Source\ECS\Components\GraphicComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpacialComponents.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp" />
+    <ClCompile Include="Source\Entities\Enemies\AIStrategies.cpp" />
     <ClCompile Include="Source\Entities\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Entities\ResourceBank.cpp" />
     <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
@@ -254,9 +255,7 @@
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
     <ClCompile Include="Source\System\Files\JSONParser.cpp" />
-    <ClCompile Include="Source\System\Files\StatReader.cpp" />
     <ClCompile Include="Source\System\Files\TextFileReader.cpp" />
-    <ClCompile Include="Source\System\Files\XMLNode.cpp" />
     <ClCompile Include="Source\System\Files\XMLParser.cpp" />
     <ClCompile Include="Source\System\Window.cpp" />
     <ClCompile Include="Source\UI\Text\Font.cpp" />
@@ -278,6 +277,7 @@
     <ClInclude Include="Source\ECS\Components\IncludeComponents.h" />
     <ClInclude Include="Source\ECS\Components\SpacialComponents.h" />
     <ClInclude Include="Source\ECS\EntSystems\CardSystem.h" />
+    <ClInclude Include="Source\Entities\Enemies\AIStrategies.h" />
     <ClInclude Include="Source\Entities\MonsterRegistry.h" />
     <ClInclude Include="Source\Entities\ResourceBank.h" />
     <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
@@ -387,9 +387,7 @@
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />
     <ClInclude Include="Source\System\Files\JSONParser.h" />
-    <ClInclude Include="Source\System\Files\StatReader.h" />
     <ClInclude Include="Source\System\Files\TextFileReader.h" />
-    <ClInclude Include="Source\System\Files\XMLNode.h" />
     <ClInclude Include="Source\System\Files\XMLParser.h" />
     <ClInclude Include="Source\System\Window.h" />
     <ClInclude Include="Source\UI\Text\Font.h" />

@@ -106,11 +106,24 @@ namespace ECS
 
 	void Animator::Init(const EntityMetaData& emd)
 	{
-		const char* animation = emd.animatorId.c_str();
-		AnimationReader::BuildAnimator( entity, animation );		
+		AnimationReader::BuildAnimator( entity, emd.data.GetString("Animator") );		
 		
 		activeAnimation = 0;
 		state = TimeState::Running;
+
+		if (emd.data.Contains("RandomiseFrameStart"))
+		{
+			int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
+			frameIndex = frame_start;
+		}
+		
+		if (emd.data.Contains("RandomiseFrameSpeed"))
+		{
+			float variation = emd.data.GetFloat("RandomiseFrameSpeed");
+			int var_range = (int)(variation * 100.0f);
+			int value = rand() % (int)(var_range * 2);
+			randomisedFrameTimeVariation = (float)(value - var_range) / 100.0f;
+		}
 
 		if(!IsValid())
 			DebugPrint(Log, "Entity %s has invalid animaton", GetName(entity) );

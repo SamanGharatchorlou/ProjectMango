@@ -14,56 +14,11 @@ ConfigManager* ConfigManager::Get()
 using namespace rapidjson;
 
 
-static void JSONReadData(const Value& doc_values, Settings& settings)
+void JSONReadData(const Value& doc_values, Settings& settings)
 {
 	for (Value::ConstMemberIterator itr = doc_values.MemberBegin(); itr != doc_values.MemberEnd(); ++itr)
 	{
-		const char* id = itr->name.GetString();
-		switch( itr->value.GetType() )
-		{	
-			case kJsonType::Number:
-			{
-				settings.values[id] = itr->value.GetFloat();
-				break;
-			}
-			case kJsonType::True:
-			{
-				settings.values[id] = true;
-				break;
-			}
-			case kJsonType::False:
-			{
-				settings.values[id] = false;
-				break;
-			}
-			case kJsonType::String:
-			{
-				settings.strings[id] = itr->value.GetString();
-				break;
-			}
-			case kJsonType::Array:
-			{			
-				const rapidjson::Value& value = itr->value;
-
-				const Value::ConstArray& array = value.GetArray();
-			
-				if(array.Size() > 0)
-				{
-					if(array.begin()->GetType() == kJsonType::Number)
-					{
-						std::vector<float>& float_array = settings.floatArrays.data[id];
-						for( u32 i = 0; i < array.Size(); i++ )
-						{
-							float_array.push_back(array[i].GetFloat());
-						}
-					}
-
-				}
-				break;
-			}
-			default:
-				break;
-		}
+		PopulateSettingByType(itr->value, itr->name.GetString(), (kJsonType)itr->value.GetType(), settings );
 	}
 }
 
@@ -119,6 +74,19 @@ void ConfigManager::ParseAll()
 	}
 }
 
+static void ReadConfig(std::unordered_map<StringBuffer32, Config>& configs, rapidjson::Value& value)
+{
+	ASSERT(value.HasMember("id"), "config has no id");
+
+	const char* id = value["id"].GetString();
+	configs[id] = Config(id);
+						
+	for (Value::ConstMemberIterator itr = value.MemberBegin(); itr != value.MemberEnd(); ++itr)
+	{
+		PopulateSettingByType(itr->value, itr->name.GetString(), (kJsonType)itr->value.GetType(), configs[id].data);
+	}
+}
+
 bool ConfigManager::Parse(const char* full_path)
 {
 	bool did_read = false;
@@ -142,28 +110,14 @@ bool ConfigManager::Parse(const char* full_path)
 			{
 				for (u32 i = 0; i < types.Size(); i++)
 				{
-					Value& type = types[i];
-
-					ASSERT(type.HasMember("id"), "config has no id");
-
-					const char* id = type["id"].GetString();
-					mConfigs[id] = Config(id);
-					JSONReadData(type, mConfigs[id].data);
-
+					ReadConfig(mConfigs, types[i] );
 					did_read = true;
 				}
 			}
 		}
 		else
 		{
-			ASSERT(parser.document.HasMember("id"), "config %s has no id", full_path);
-
-			Config config;
-			JSONReadData(parser.document, config.data);
-			config.name = parser.document["id"].GetString();
-
-			mConfigs[config.name] = config;
-
+			ReadConfig(mConfigs, parser.document );
 			did_read = true;
 		}
 	}

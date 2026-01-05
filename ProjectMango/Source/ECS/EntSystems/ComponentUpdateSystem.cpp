@@ -34,7 +34,7 @@ namespace ECS
 				if(jiggler->decayStartTime > 0)
 				{
 					u64 decay_time = GetTicksMS() - jiggler->decayStartTime;
-					double time_of_decay = (float)(decay_time) / 1000.0f;
+					float time_of_decay = (float)(decay_time) / 1000.0f;
 					decay = expf(-jiggler->decayTime * time_of_decay);
 				}
 

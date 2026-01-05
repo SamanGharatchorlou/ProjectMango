@@ -151,7 +151,7 @@ namespace ECS
 	Entity Faction::GetEnemy()
 	{
 		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(GameState* game_state = dynamic_cast<GameState*>(&state))
+		if(GameState* game_state = GameState::GetActive())
 			return game_state->enemy;
 
 		return EntityInvalid;
@@ -186,6 +186,16 @@ namespace ECS
 
 		return Team::None;
 	}
+	
+	Faction::Team Faction::GetTeam(const char* faction)
+	{
+		if(StringCompare(faction, "Player"))
+			return Faction::Player;
+		else if(StringCompare(faction, "Enemy"))
+			return Faction::Enemy;
+
+		return Faction::None;
+	}
 
 	void Faction::DebugGetFactionName(Entity entity, BasicString& name)
 	{
@@ -197,10 +207,6 @@ namespace ECS
 
 		name = "None";
 	}
-
-	// EntityState
-	// ------------------------------------------------------------------
-
 
 	
 	// Damage

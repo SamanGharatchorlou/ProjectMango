@@ -27,7 +27,7 @@
 					"looping" : false,
 					"hit_frame" : 2,
 					"hitbox_pos": [ 0.05, 0.0 ],
-					"hitbox_size": [ 0.95, 0.75 ],
+					"hitbox_size": [ 1.1, 0.75 ],
 					"hit_vfx" : "Hit1"
 				}
 			]

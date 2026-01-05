@@ -6,7 +6,7 @@
 			"frameSize": [82, 65],
 			"frameTime": 0.08,
 			"startIndex": 0,
-			"frameCount": 4
+			"frameCount": 5
 		},
 		{
 			"id": "Hit2",
@@ -119,6 +119,14 @@
 			"frameTime": 0.1,
 			"startIndex": 24,
 			"frameCount": 4
+		},
+		{
+			"id": "LordOfFlameSlam",
+			"spriteSheet": "LordOfFlameSlam",
+			"frameSize": [49, 28],
+			"frameTime": 0.1,
+			"startIndex": 5,
+			"frameCount": 14
 		}
 	]
 }

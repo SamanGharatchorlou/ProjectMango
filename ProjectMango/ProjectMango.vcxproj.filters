@@ -216,13 +216,7 @@
     <ClCompile Include="Source\System\Files\FileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\System\Files\StatReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\Files\TextFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\System\Files\XMLNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\Files\XMLParser.cpp">
@@ -370,6 +364,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\ResourceBank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Enemies\AIStrategies.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -620,13 +617,7 @@
     <ClInclude Include="Source\System\Files\FileManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\Files\StatReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\System\Files\TextFileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\System\Files\XMLNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Files\XMLParser.h">
@@ -1143,6 +1134,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\ResourceBank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Enemies\AIStrategies.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -59,7 +59,7 @@ static void UpdateCardPower(Entity coin_pile, Entity owner)
 		CoinStack& coin_stack = GetComponentRef(CoinStack, coin_pile);
 
 		int card_power[Colour::Count];
-		inventory->GetCardPower(card_power, Colour::Count);
+		inventory->GetCardPower(card_power);
 
 		coin_stack.remaining = card_power[coin_stack.colourType];
 		coin_stack.remaining = Maths::Max(coin_stack.remaining, 0);

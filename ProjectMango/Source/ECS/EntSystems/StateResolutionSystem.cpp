@@ -56,7 +56,7 @@ namespace ECS
 			if(Health* health = GetComponent(Health, entity))
 			{
 				if(health->currentHealth <= 0)
-					next_state = Action::Death;
+					next_state = Action::Death; 
 				else if( (health->currentHealth / health->maxHealth) <= 0.2f)
 					next_state = Action::Hurting;
 			}
@@ -71,6 +71,7 @@ namespace ECS
 				bool can_begin_new_attack = 
 					state.current != Action::AttackWindUp && 
 					state.current != Action::BasicAttack && 
+					state.current != Action::FollowUpAttack && 
 					state.current != Action::AttackRecovery &&
 					!waiting_to_die;
 
@@ -82,29 +83,26 @@ namespace ECS
 						next_state = Action::AttackWindUp;
 					else
 						next_state = Action::BasicAttack;
-
-					// starting a new attack, cant be inturrupted now
-					//continue;
 				}
 				else
 				{
 					if(state.current == Action::AttackWindUp)
 					{
 						next_state = Action::BasicAttack;
-
-						// finished wind up, starting actual attack
-						//continue;
 					}
-					else if(state.current == Action::BasicAttack)
-					{		
+					else if(state.current == Action::BasicAttack || state.current == Action::FollowUpAttack)
+					{
 						const Animator& animator = GetComponentRef(Animator, entity);			
+						bool has_attack_follow_up = animator.HasAnimation(Action::FollowUpAttack);
 						bool has_attack_recovery = animator.HasAnimation(Action::AttackRecovery);
-						if(has_attack_recovery)
+
+						if(has_attack_follow_up)
+						{
+							next_state = Action::FollowUpAttack;
+						}
+						else if(has_attack_recovery)
 						{
 							next_state = Action::AttackRecovery;
-
-							// finished attack, beginning recovery
-							//continue;
 						}
 					}
 				}

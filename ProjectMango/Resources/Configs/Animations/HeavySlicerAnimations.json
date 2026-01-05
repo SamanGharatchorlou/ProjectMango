@@ -35,10 +35,11 @@
 					"hitbox_pos": [ 0.1, -0.2 ],
 					"hitbox_size": [ 1.2, 1.2 ],
 					"hit_vfx" : "HitBloodPop",
-					"attack_vfx" : "HeavySlice"
+					"attack_vfx" : "HeavySlice",
+					"damage_ratio" : 0.6
 				},
 				{
-					"action": "AttackRecovery",
+					"action": "FollowUpAttack",
 					"startIndex": 45,
 					"frameCount": 5,
 					"frameTime": 0.1,
@@ -46,7 +47,8 @@
 					"hitbox_pos": [ 0.1, -0.2 ],
 					"hitbox_size": [ 1.2, 1.2 ],
 					"hit_vfx" : "HitBlood1",
-					"attack_vfx" : "HeavyDice"
+					"attack_vfx" : "HeavyDice",
+					"damage_ratio" : 0.4
 				},
 				{
 					"action": "Death",

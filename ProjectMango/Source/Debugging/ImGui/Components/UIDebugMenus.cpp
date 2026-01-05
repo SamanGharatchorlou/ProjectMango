@@ -16,6 +16,7 @@ u32 DebugMenu::DoUIButtonDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + (int)type);
 
 		ImGui::Text("Is Pressed %d", ui_button.IsPressed(c_inputBuffer));
+		ImGui::Text("callback: %s", ui_button.callback.c_str());
 
 		ImGui::PopID();
 	}
@@ -36,7 +37,7 @@ u32 DebugMenu::DoUITextDebugMenu(ECS::Entity& entity)
 		ImGui::Text("%s", ui_text.text.c_str() );
 
 		ImGui::Text("Size: %d", ui_text.font.GetPtSize());
-		ImGui::Text("UID: %s", ui_text.UID.c_str());
+		ImGui::Text("callback: %s", ui_text.callback.c_str());
 
 		ImGui::PopID();
 	}

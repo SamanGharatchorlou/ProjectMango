@@ -2,7 +2,6 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 
 using namespace ECS;
@@ -32,15 +31,18 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 			action_request.target = entity;
 		};
 
-	button_bindings[ "EndTurnButton" ] =  [](ECS::Entity) {
+	button_bindings[ "EndTurnButton" ] =  [](ECS::Entity entity) {
 		if(TurnState* turn_state = GetComponent(TurnState, Faction::GetPlayer()))
 		{
 			turn_state->canEndTurn = true;
+
+			Sprite& sprite = GetComponentRef(Sprite, entity);
+			sprite.params.disabled = true;
 		} };
 		
-	button_bindings[ "UndoTurnButton" ] =  [](ECS::Entity entity) {
+	button_bindings[ "ReturnCoinsButton" ] =  [](ECS::Entity entity) {
 			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
-			action_request.request = ActionRequest::UndoTurn;
+			action_request.request = ActionRequest::ReturnCoins;
 			action_request.target = entity; 
 		};
 
@@ -49,8 +51,7 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 		UIButton& button = GetComponentRef(UIButton, entity);
 		sprite.SetTexture(button.toggle ? "tick" : "cross");
 
-		State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-		if(GameState* game_state = dynamic_cast<GameState*>(&state))
+		if(GameState* game_state = GameState::GetActive())
 		{
 			game_state->autoConfirmTurn = button.toggle;
 		}
@@ -60,21 +61,51 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 void SetupButtonUIBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings)
 {
 	button_bindings[ "EndTurnButton" ] =  [](ECS::Entity entity) {
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+		sprite.params.disabled = true;
+
+		if(const GameState* game_state = GameState::GetActive())
+		{
+			if(game_state->autoConfirmTurn)
+				return;
+		}
+
 		if(const TurnState* turn_state = GetComponent(TurnState, Faction::GetPlayer()))
 		{
-			Sprite& sprite = GetComponentRef(Sprite, entity);
-			if(turn_state->CanAquireMoreResources())
-				sprite.params.colourMod = SColour::White;
-			else
-				sprite.params.colourMod = SColour::Green;
-		} };
-	button_bindings[ "UndoTurnButton" ] =  [](ECS::Entity entity) {
+			if(turn_state->IsCurrentTurn())
+			{
+				Sprite& sprite = GetComponentRef(Sprite, entity);
+				sprite.params.disabled = turn_state->CanAquireMoreResources();
+
+				if( !sprite.params.disabled )
+					int a = 4;
+
+				
+				bool my_bool = turn_state->CanAquireMoreResources();
+				int a = 4;
+			}
+		} 
+	};
+
+	button_bindings[ "ReturnCoinsButton" ] =  [](ECS::Entity entity) {
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+		sprite.params.disabled = true;
 		if(const TurnState* turn_state = GetComponent(TurnState, Faction::GetPlayer()))
 		{
-			Sprite& sprite = GetComponentRef(Sprite, entity);
-			if(turn_state->HasAquiredResources())
-				sprite.params.colourMod = SColour::Green;
-			else
-				sprite.params.colourMod = SColour::White;
-		} };
+			if(turn_state->IsCurrentTurn())
+			{
+				bool has_collected_coins = false;
+				for( u32 i = 0; i < Colour::Count; i++ )
+				{
+					if(turn_state->collectedCoins[i] > 0)
+					{
+						has_collected_coins = true;
+						break;
+					}
+				}
+
+				sprite.params.disabled = !has_collected_coins;
+			}
+		} 
+	};
 }

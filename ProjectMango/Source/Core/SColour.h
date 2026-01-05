@@ -19,6 +19,12 @@ struct SColour
 		Black,
 		White,
 
+		CardWhite,
+		CardBlue,
+		CardBlack,
+		CardRed,
+		CardGreen,
+
 		Custom,
 		Count
 	};

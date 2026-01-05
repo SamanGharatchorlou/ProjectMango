@@ -6,7 +6,6 @@
 #include "System/Files/ConfigManager.h"
 #include "UIEntityBuilder.h"
 #include "Entities/States/Behaviours.h"
-#include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "Graphics/Raycast.h"
@@ -35,62 +34,53 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 {
 	Entity entity = CreateEntity(emd);
 
-	const Config* config = GetConfigFromEntity(entity);
+	if(StringCompare(emd.GetID(), "Flower"))
+		int a = 4;
 
+	// Transform
 	Transform& transform = AddComponent(Transform, entity);
-
-	// change this, does need this if here should be the same with the correct fallbacks
-	if (config)
-	{
-		// Transform
-		transform.Init(&emd);
-	}
-	else
-	{
-		// Transform
-		transform.size = emd.size;
-		transform.SetWorldPosition(emd.position - (emd.size * emd.pivotPoint));
-	}
+	transform.Init(&emd);
 	
 	// Sprite
-	bool requires_sprite = config || !emd.spriteId.empty() || !emd.spriteSheetId.empty() || !emd.animatorId.empty();
-	if(requires_sprite)
-	{
-		bool has_sprite = !emd.spriteId.empty();
-		bool is_sprite_sheet = !emd.spriteSheetId.empty();
-		bool is_animator = !emd.animatorId.empty();
+	bool has_sprite = emd.data.Contains("Sprite");
+	bool is_sprite_sheet = emd.data.Contains("SpriteSheet");
+	bool is_animator = emd.data.Contains("Animator");
 
+	const Config* config = GetConfigFromEntity(entity);
+	if(config || has_sprite || is_sprite_sheet || is_animator)
+	{
 		Sprite& sprite = AddComponent(Sprite, entity);
 		if (config)
 		{
-			sprite.Init(config->data.GetString("sprite"));
+			sprite.Init(config->data.GetString("Sprite"));
 		}
 		else if(has_sprite)
 		{
-			sprite.Init(emd.spriteId.c_str());
+			sprite.Init(emd.data.GetString("Sprite"));
 		}		
 		else if(is_sprite_sheet)
 		{
-			sprite.Init(emd.spriteSheetId.c_str());
+			sprite.Init(emd.data.GetString("SpriteSheet"));
 		}
 
 		if(sprite.image.texture && transform.size.isZero())
 			DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
 			
 		sprite.params.renderLayer = RenderLayer::BasicObject;
-		sprite.params.colourMod = emd.colourMod;
+		sprite.params.colourMod = emd.data.GetColour("Colour");
 
 		// no sprite yet, try get a coloured version
-		if(!sprite.image.texture && emd.colourType != -1)
+		Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);
+		if(!sprite.image.texture && colour_type != -1)
 		{
 			StringBuffer64 coloured_sprite;
 			if(has_sprite)
 			{
-				AddColourPostfix(emd.spriteId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+				AddColourPostfix(emd.data.GetString("Sprite"), colour_type, coloured_sprite);
 			}		
 			else if(is_sprite_sheet)
 			{
-				AddColourPostfix(emd.spriteSheetId.c_str(), (Colour::Type)emd.colourType, coloured_sprite);
+				AddColourPostfix(emd.data.GetString("SpriteSheet"), colour_type, coloured_sprite);
 			}
 
 			sprite.Init(coloured_sprite.c_str());
@@ -98,10 +88,10 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 
 		if(sprite.image.texture && is_sprite_sheet)
 		{
-			ASSERT(emd.spriteSheetFrameCounts.lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.spriteSheetId.c_str(), emd.id.c_str());
+			ASSERT( emd.data.GetVector("SpriteSheetFrames").lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.data.GetString( "SpriteSheet" ), emd.GetID() );
 
 			SpriteSheet& ss = AddComponent(SpriteSheet, entity);
-			ss.Init(emd.spriteSheetFrameCounts );
+			ss.Init( emd.data.GetVector("SpriteSheetFrames").toInt() );
 		}
 
 		if(is_animator)
@@ -111,15 +101,6 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 			
 			AddComponent(EntityState, entity);
 		}
-	}
-
-	// Sprite Sheet
-	if(!emd.spriteSheetId.empty())
-	{
-		ASSERT(emd.spriteSheetFrameCounts.lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.spriteSheetId.c_str(), emd.id.c_str());
-
-		SpriteSheet& ss = AddComponent(SpriteSheet, entity);
-		ss.Init(emd.spriteSheetFrameCounts );
 	}
 
 	return entity;
@@ -146,10 +127,10 @@ Entity CreateCoinStack(const EntityMetaData& emd)
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = false;
 	coin_stack.capacity = 5;
-	coin_stack.colourType = Colour::Type(emd.colourType);
+	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);
 	coin_stack.remaining = coin_stack.capacity;
 	
-	RegisterCoinResource(entity, emd.faction);
+	RegisterCoinResource(entity, Faction::GetTeam(emd.data.GetString("Faction")));
 
 	return entity;
 }
@@ -233,12 +214,12 @@ Entity CreateCoinPile(const EntityMetaData& emd)
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = true;
 	coin_stack.capacity = 5;
-	coin_stack.colourType = Colour::Type(emd.colourType);
+	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);
 	coin_stack.remaining = 0;
 
 	SetupCostIcons(entity, coin_stack.capacity);
 
-	RegisterCoinResource(entity, emd.faction);
+	RegisterCoinResource(entity, Faction::GetTeam(emd.data.GetString("Faction")));
 
 	return entity;
 }
@@ -250,12 +231,12 @@ Entity CreateCardPower(const EntityMetaData& emd)
 	CoinStack& coin_stack = AddComponent(CoinStack, entity);
 	coin_stack.isInventory = false;
 	coin_stack.capacity = 5;
-	coin_stack.colourType = Colour::Type(emd.colourType);
+	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);
 	coin_stack.remaining = 0;
 
 	SetupPowerIcons(entity, coin_stack.capacity);
 	
-	RegisterCardResource(entity, emd.faction);
+	RegisterCardResource(entity, Faction::GetTeam(emd.data.GetString("Faction")));
 
 	return entity;
 }
@@ -266,8 +247,7 @@ Entity CreateHealthBar(const EntityMetaData& emd)
 			
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
-	transform.size = emd.size;
-	transform.SetWorldPosition(emd.position - (emd.size * emd.pivotPoint));
+	transform.Init(&emd);
 
 	LayeredSprite& layers = AddComponent(LayeredSprite, entity);
 	layers.spriteLayers.push_back(LayeredSprite::Layer());
@@ -376,7 +356,7 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	EntityData::SetParent(entity, parent);
 
 	EntityMetaData meta_data;
-	meta_data.id = monster;
+	meta_data.data.strings["Id"] = monster;
 	
 	// Transform
 	Transform& transform = AddComponent(Transform, entity);
@@ -388,7 +368,7 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	collider.SetFlag(Collider::IgnoreAll);
 	
 	Transform& parent_transform = GetComponentRef(Transform, parent);
-	VectorF anchor = parent_transform.worldPosition + parent_transform.size * 0.7f;
+	VectorF anchor = parent_transform.worldPosition + parent_transform.size * 0.65f;
 	transform.SetObjectCenter(anchor);
 
 	// Animator
@@ -431,8 +411,7 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	turn.initiative = 10;
 
 	// mark ourselves as the enemy
-	State& state = GameData::Get().systemStateManager->mStates.getActiveState();
-	if(GameState* game_state = dynamic_cast<GameState*>(&state))
+	if(GameState* game_state = GameState::GetActive())
 	{
 		game_state->enemy = entity;
 	}
@@ -472,10 +451,10 @@ Entity CreateVFX(const char* vfx, const RectF& rect)
 		return EntityInvalid;
 
 	EntityMetaData data;
-	data.id = vfx;
-	data.position = rect.TopLeft();
-	data.size = rect.Size();
-	data.spriteId = vfx;
+	data.data.strings["Id"] = vfx;
+	data.data.vectors["Position"] = rect.TopLeft();
+	data.data.vectors["Size"] = rect.Size();
+	data.data.strings["Sprite"] = vfx;
 
 	Entity entity = CreateBasicObject(data);
 
@@ -493,25 +472,25 @@ Entity CreateVFX(const char* vfx, const RectF& rect)
 
 static void PostProcess(Entity entity, const EntityMetaData& emd)
 {
-	if(emd.isButton)
+	if( emd.data.Contains("ButtonCallback") )
 	{
 		UIButton& button = GetOrAddComponent(UIButton, entity);
-		button.UID = emd.uid;
+		button.callback = emd.data.GetString("ButtonCallback");
 	}
 
-	if(!emd.callback.empty())
+	if( emd.data.Contains("Callback") )
 	{
 		Callback& cb = GetOrAddComponent(Callback, entity);
-		cb.callback = emd.callback;
+		cb.callback = emd.data.GetString("Callback");
 	}
 
-	if(emd.faction != 0)
+	if( emd.data.Contains("Faction") )
 	{
 		Faction& faction = GetOrAddComponent(Faction, entity);
-		faction.team = (Faction::Team)emd.faction;
+		faction.team = Faction::GetTeam(emd.data.GetString("Faction"));
 	}
 	
-	if(emd.snapToFloor)
+	if( emd.data.GetBool("SnapToFloor") )
 	{
 		float distance = 0.0f;
 		if( RaycastToFloor(entity, distance) )
@@ -520,6 +499,8 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 			transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
 		}
 	}
+
+	ASSERT(GetComponentRef(Transform, entity).size.isPositive(), "%s: Invalid Transform, has size 0", GetName(entity));
 }
 
 void CreateEntities(Entity& biome_entity)
@@ -533,8 +514,6 @@ void CreateEntities(Entity& biome_entity)
 	CreateEntitiyFunctions["CoinPile"] = CreateCoinPile;
 	CreateEntitiyFunctions["CardPower"] = CreateCardPower;
 	CreateEntitiyFunctions["Text"] = CreateUIText;
-	CreateEntitiyFunctions["Button"] = CreateBasicObject;
-	CreateEntitiyFunctions["Sprite"] = CreateBasicObject;
 	CreateEntitiyFunctions["HealthBar"] = CreateHealthBar;
 	CreateEntitiyFunctions["Enemy"] = CreateEnemy;
 	CreateEntitiyFunctions["Spawner"] = CreateSpawner;
@@ -552,20 +531,17 @@ void CreateEntities(Entity& biome_entity)
 			const char* type = iter->first.c_str();
 
 			// create game object
+			CreateEntityFn create_fn = CreateBasicObject;
 			if(CreateEntitiyFunctions.contains(type))
 			{
-				CreateEntityFn create_fn = CreateEntitiyFunctions.at(type);
-
-				const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
-				for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
-				{
-					Entity entity = create_fn(entitiy_meta_data[e]);
-					PostProcess(entity, entitiy_meta_data[e]);
-				}
+				create_fn = CreateEntitiyFunctions.at(type);
 			}
-			else
+
+			const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
+			for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
 			{
-				DebugPrint(Warning, "No CreateEntity function defined for %s", type);
+				Entity entity = create_fn(entitiy_meta_data[e]);
+				PostProcess(entity, entitiy_meta_data[e]);
 			}
 		}
 	}

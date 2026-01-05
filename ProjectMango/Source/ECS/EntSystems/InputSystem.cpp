@@ -63,9 +63,9 @@ namespace ECS
 					}
 				}
 
-				if( ui_button->IsPressed() && !ui_button->UID.empty() )
+				if( ui_button->IsPressed() )
 				{
-					auto iter = s_buttonActionBindings.find(ui_button->UID);
+					auto iter = s_buttonActionBindings.find(ui_button->callback.c_str());
 					if(iter != s_buttonActionBindings.end())
 						iter->second(ui_button->entity);
 				}

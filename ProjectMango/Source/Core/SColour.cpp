@@ -56,6 +56,22 @@ SColour::SColour(Enum colour)
 	case White:
 		r = 255; g = 255; b = 255;
 		break;
+
+	case CardWhite:
+		r = 231; g = 225; b = 214;
+		break;	
+	case CardBlue:
+		r = 19; g = 126; b = 187;
+		break;	
+	case CardBlack:
+		r = 9; g = 9; b = 9;
+		break;	
+	case CardRed:
+		r = 195; g = 14; b = 14;
+		break;	
+	case CardGreen:
+		r = 23; g = 130; b = 41;
+		break;
 	case Custom:
 	default:
 		r = 0; g = 0; b = 0;

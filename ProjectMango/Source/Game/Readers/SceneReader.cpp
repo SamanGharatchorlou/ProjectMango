@@ -40,88 +40,25 @@ namespace Scene
 			}
 		}
 	}
-
-	static bool SplitIdentiferType(const char* indentifier_in, BasicString& prefix, BasicString& postfix)
-	{
-		prefix = indentifier_in;
-		int length = 0;
-		if (const char* sub_str = prefix.FindSubString("_"))
-		{
-			length = (int)(sub_str - prefix.buffer());
-			prefix.SetLength(length);
-
-			postfix = sub_str + 1;
-			return true;
-		}
-
-		return false;
-	}
-
-	static bool CheckBool(const Value& field_instance, const char* field, bool& instance)
-	{
-		if( StringCompare(field, field_instance["__identifier"].GetString()) )
-		{
-			if(field_instance["__value"].IsBool())
-			{
-				instance = field_instance["__value"].GetBool();
-			}
-			return true;
-		}
-
-		return false;
-	}
-
-	static bool CheckString(const Value& field_instance, const char* field, BasicString& instance)
-	{
-		if( StringCompare(field, field_instance["__identifier"].GetString()) )
-		{
-			if(field_instance["__value"].IsString())
-			{
-				instance = field_instance["__value"].GetString();
-			}
-			return true;
-		}
-
-		return false;
-	}
-
-	static bool CheckInt(const Value& field_instance, const char* field, int& instance)
-	{
-		if( StringCompare(field, field_instance["__identifier"].GetString()) )
-		{
-			if(field_instance["__value"].IsInt())
-			{
-				instance = field_instance["__value"].GetInt();
-			}
-			return true;
-		}
-
-		return false;
-	}
-
+		
 	static void ReadMetaData(Value& data_in, ECS::EntityMetaData& data_out, VectorF level_to_window, VectorF level_world_pos)
 	{
 		float width = data_in["width"].GetFloat();
 		float height = data_in["height"].GetFloat();
 
-		data_out.id = data_in["__identifier"].GetString();
+		const char* id = data_in["__identifier"].GetString();
+		data_out.data.strings["Id"] = id;
 
 		Value& px = data_in["px"];
 		float px_x = px[0].GetFloat(); // + (width * 0.5f);
 		float px_y = px[1].GetFloat(); // - (height);
-		data_out.position = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
-		data_out.size = (VectorF(width, height) * level_to_window);
+		data_out.data.vectors["Position"] = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
+		data_out.data.vectors["Size"] = (VectorF(width, height) * level_to_window);
 
 		Value& pivot = data_in["__pivot"];
 		float pivot_x = pivot[0].GetFloat();
 		float pivot_y = pivot[1].GetFloat();
-		data_out.pivotPoint = VectorF(pivot_x, pivot_y);
-
-		const Value::Array& tags = data_in["__tags"].GetArray();
-		for (u32 i = 0; i < tags.Size(); i++)
-		{
-			data_out.tags.push_back(tags[i].GetString());
-		}
+		data_out.data.vectors["PivotPoint"] = VectorF(pivot_x, pivot_y);
 
 		if (data_in.HasMember("fieldInstances"))
 		{
@@ -129,73 +66,32 @@ namespace Scene
 			for (u32 i = 0; i < field_instances.Size(); i++)
 			{
 				Value& field_instance = field_instances[i];
-				if( field_instance["__identifier"].IsString() )
+
+				const char* field_id = field_instance["__identifier"].GetString();
+				kJsonType field_type = (kJsonType)field_instance["__value"].GetType();
+				Value& field_value = field_instance["__value"];
+
+				bool did_populate = PopulateSettingByType(field_value, field_id, field_type, data_out.data);
+				if(!did_populate)
 				{
-					if(CheckString(field_instance,			"Sprite", data_out.spriteId)) continue;
-					else if(CheckString(field_instance,		"SpriteSheet", data_out.spriteSheetId)) continue;
-					else if(CheckString(field_instance,		"Animator", data_out.animatorId)) continue;
-					else if( CheckBool(field_instance,		"UIButton", data_out.isButton) ) continue;
-					else if( CheckString(field_instance,	"Callback", data_out.callback)) continue;
-					else if( CheckString(field_instance,	"UID", data_out.uid)) continue;
-					else if( CheckBool(field_instance,		"Center", data_out.center) ) continue;
-					else if( CheckInt(field_instance,		"PtSize", data_out.PtSize) ) continue;
-					else if( CheckBool(field_instance,		"Random", data_out.random) ) continue;
-					else if( CheckInt(field_instance,		"Tier", data_out.tier) ) continue;
-					else if( CheckBool(field_instance,		"SnapToFloor", data_out.snapToFloor) ) continue;					
-					else if( StringCompare("SpriteSheetFrames", field_instance["__identifier"].GetString()) )
-					{
-						data_out.spriteSheetFrameCounts = VectorI(1,1);
-						const Value::Array& array = field_instance["__value"].GetArray();
-						if(array.Size() > 0 && array[0].GetInt() > 0)
-							data_out.spriteSheetFrameCounts.x = array[0].GetInt();
-						if(array.Size() > 1 && array[1].GetInt() > 0)
-							data_out.spriteSheetFrameCounts.y = array[1].GetInt();
-
-						continue;
-					}
-					else if( StringCompare("SizeOverride", field_instance["__identifier"].GetString()) )
-					{
-						const Value::Array& array = field_instance["__value"].GetArray();
-						if(array.Size() == 2)
-						{
-							if(array[0].GetFloat() > 0)
-								data_out.size.x = array[0].GetFloat() * level_to_window.x;
-							if(array[1].GetFloat() > 0)
-								data_out.size.y = array[1].GetFloat() * level_to_window.y;
-						}
-						continue;
-					}
-					else if( StringCompare("ColourType", field_instance["__identifier"].GetString()) )
-					{
-						StringBuffer32 type_string = StringBuffer32(field_instance["__value"].GetString()).to_lower();
-						if( ECS::Colour::s_stringToType.contains(type_string) )
-							data_out.colourType = (u32)ECS::Colour::s_stringToType.at( type_string );
-						continue;
-					}
-					else if( StringCompare("Faction", field_instance["__identifier"].GetString()) )
-					{
-						StringBuffer32 type_string = StringBuffer32(field_instance["__value"].GetString()).to_lower();
-						if( "player" == type_string )
-							data_out.faction = 1;
-						else if( "enemy" == type_string )
-							data_out.faction = 2;
-						continue;
-					}
-					else if( StringCompare("Colour", field_instance["__identifier"].GetString()) )
-					{
-						// might be null, so need to check
-						if(field_instance["__value"].IsString())
-						{
-							int hex = 0;
-							const char* string = field_instance["__value"].GetString();
-							std::stringstream ss(string + 1);
-							ss >> std::hex >> hex;
-
-							data_out.colourMod = SColour(hex);
-						}
-						continue;
-					}
+					DebugPrint(Warning, "Failed to populate field %s", field_id);
 				}
+			}
+
+			// custom data
+			if(data_out.data.Contains("SizeOverride"))
+			{
+				VectorF size = data_out.data.GetVector("SizeOverride");
+				data_out.data.vectors["Size"] = (size * level_to_window);
+			}
+			else if(data_out.data.Contains("ColourType"))
+			{
+				const char* colour_string = data_out.data.GetString("ColourType");
+				StringBuffer32 string(colour_string);
+				StringBuffer32 lower_string = string.to_lower();
+
+				ECS::Colour::Type colour_type = ECS::Colour::s_stringToType.at(lower_string);
+				data_out.data.values["ColourType"] = (float)colour_type;
 			}
 		}
 	}
@@ -219,7 +115,7 @@ namespace Scene
 					ECS::EntityMetaData emd;
 					ReadMetaData(entry, emd, level_to_window, VectorF());
 
-					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.id];
+					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.GetID()];
 					entity_data.push_back(emd);
 				}
 			}
@@ -310,7 +206,7 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.id];
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
 						entity_data.push_back(emd);
 					}
 				}
@@ -517,7 +413,7 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.id];
+						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
 						entity_data.push_back(emd);
 					}
 				}

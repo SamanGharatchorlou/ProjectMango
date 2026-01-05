@@ -198,9 +198,16 @@ void ECS::ParseComponentData()
 	// parse all the animation data here too, bank it, then read from it rather than parse it everytime
 	AnimationReader::ReadAnimationData();
 
-	CardRegistry::Build("Tier1Cards", 0);
-	CardRegistry::Build("Tier2Cards", 1);
-	CardRegistry::Build("Tier3Cards", 2);
+	CardRegistry::ReadomFromCSV("Tier1Cards", 0);
+	CardRegistry::ReadomFromJson("Tier2Cards", 1);
+	CardRegistry::ReadomFromJson("Tier3Cards", 2);
 
-	MonsterRegistry::Build( "Monsters" );
+	MonsterRegistry::Build( "CardMonsters" );
+}
+
+void ECS::ClearComponentData()
+{
+	AnimationReader::ClearAnimationData();
+	CardRegistry::ClearAll();
+	MonsterRegistry::Clear();
 }

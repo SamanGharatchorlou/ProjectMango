@@ -81,7 +81,7 @@
 		{
 			"id": "Wasp",
 			"object_pos": [ 0.373, 0.373 ],
-			"object_size": [ 0.255, 0.627 ],
+			"object_size": [ 0.255, 0.85 ],
 			"size": [80, 80],
 			"gravity": false,
 			"flipped": true,
@@ -101,6 +101,19 @@
 			"snap_to_floor": true,
 			"acceleration": 80,
 			"max_run_speed": 60,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		},
+		{
+			"id": "LordOfFlame",
+			"object_pos": [ 0.164, 0.405 ],
+			"object_size": [ 0.127, 0.550 ],
+			"size": [290, 94],
+			"gravity": true,
+			"snap_to_floor": true,
+			"acceleration": 80,
+			"max_run_speed": 50,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10

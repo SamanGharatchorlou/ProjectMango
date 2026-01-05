@@ -34,11 +34,11 @@ namespace ECS
 		};
 				
 		inline static const std::unordered_map<Type, SColour> s_typeToColour { 
-			{ White,	SColour::White }, 
-			{ Blue,		SColour::Blue }, 
-			{ Black,	SColour::Black },
-			{ Red,		SColour::Red },
-			{ Green,	SColour::Green } 
+			{ White,	SColour::CardWhite }, 
+			{ Blue,		SColour::CardBlue }, 
+			{ Black,	SColour::CardBlack },
+			{ Red,		SColour::CardRed },
+			{ Green,	SColour::CardGreen } 
 		};
 
 		static constexpr u32 s_defaultNoColour = 0xF1F1F1;
@@ -69,8 +69,6 @@ namespace ECS
 		Entity owner = EntityInvalid;
 
 		std::vector<Entity> costEntities;
-
-		//static CoinStack* GetCoinStack(Colour::Type type, u32 faction_team);
 	};
 
 	struct Card
@@ -115,8 +113,9 @@ namespace ECS
 		// cards we own
 		std::vector<int> cards;
 
-		void GetCardPower(int array[], int size) const;
-		void GetBuyingPower(int array[], int size) const;
+		// array size always Colour::Count
+		void GetCardPower(int array[]) const;
+		void GetBuyingPower(int array[]) const;
 
 		int GetPoints() const;
 	};
@@ -124,23 +123,26 @@ namespace ECS
 	struct TurnState
 	{
 		COMPONENT_TYPE(TurnState)
-		TurnState();
 
-		int turnIndex;
-		int initiative;
-		bool canEndTurn;
-		bool isActiveTurn;
+		int turnIndex = 0;
+		int initiative = 0;
+		bool canEndTurn = false;
+		bool isActiveTurn = false;;
 
-		Entity attackingMonster;
+		u64 lastActionTimeMS = 0;
 
 		int collectedCoins[Colour::Count] { 0 };
 
-		int collectedCardRegIndex;
-		Entity collectedCardSource;
+		int collectedCardRegIndex = -1;
+		Entity collectedCardSource = EntityInvalid;
 
 		void ResetState();
 		bool CanAquireMoreResources() const;
 		bool HasAquiredResources() const;
+		bool CanCollectCoin(Colour::Type colour) const;
+
+		static TurnState* GetActive();
+		bool IsCurrentTurn() const;
 	};
 
 	struct ActionRequest
@@ -154,7 +156,7 @@ namespace ECS
 			CollectCoin,
 			AquireCard,
 			EndTurn,
-			UndoTurn
+			ReturnCoins
 		};
 
 		Type request;

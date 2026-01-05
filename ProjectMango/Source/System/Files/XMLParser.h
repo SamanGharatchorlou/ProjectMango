@@ -2,7 +2,6 @@
 
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
-#include "XMLNode.h"
 
 class XMLNode
 {

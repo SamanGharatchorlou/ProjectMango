@@ -15,6 +15,13 @@
 #include "System/Window.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
 
+
+GameState* GameState::GetActive()
+{		
+	State& state = GameData::Get().systemStateManager->mStates.getActiveState();
+	return dynamic_cast<GameState*>(&state);
+}
+
 void GameState::Init()
 {
 	ECS::RegisterAllComponents();
@@ -67,7 +74,9 @@ void GameState::HandleInput()
 	}
 	if(input->isPressed(Button::R))
 	{
-        GameData::Get().systemStateManager->mStates.replaceState(new GameState);
+		
+		GameData::Get().systemStateManager->mRestart = true;
+        //GameData::Get().systemStateManager->mStates.replaceState(new GameState);
 		return;
 	}
 

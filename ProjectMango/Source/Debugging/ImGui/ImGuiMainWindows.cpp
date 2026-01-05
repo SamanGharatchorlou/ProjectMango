@@ -604,14 +604,24 @@ void DebugMenu::DoTweakerWindow()
     ImGui::Checkbox("Turn Logging", &s_state.turnLogActive);
     if (s_state.turnLogActive)
     {
-        for( u32 i = 0; i < s_state.turnLog.size(); i++ )
+        if(ImGui::TreeNode("Turn Log"))
         {
-            ImGui::Text(s_state.turnLog[i].c_str());
+            for( u32 i = 0; i < s_state.turnLog.size(); i++ )
+            {
+                ImGui::Text(s_state.turnLog[i].c_str());
+            }
+
+            ImGui::TreePop();
         }
     }
     else
     {
         s_state.turnLog.clear();
+    }
+
+    if(ImGui::TreeNode("AI Strategy"))
+    {
+
     }
 }
 

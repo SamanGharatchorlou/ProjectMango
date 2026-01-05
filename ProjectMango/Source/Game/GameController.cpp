@@ -13,6 +13,7 @@
 #include "Game/FrameRateController.h"
 #include "Game/States/StartupState.h"
 #include "System/Window.h"
+#include "ECS/Components/ComponentsSetup.h"
 
 
 
@@ -80,6 +81,13 @@ void GameController::restartGame()
 	DebugPrint(Log, "--- Begin game restart ---");
 
 	GameSetup::setTutorial("OFF");
+
+	// re-read all the configs (for debugging/faster iterating mostly)
+	ConfigManager::Get()->mConfigs.clear();
+	ECS::ClearComponentData();
+
+	ConfigManager::Get()->ParseAll();
+	ECS::ParseComponentData();
 
 	// Remove all states
 	sm->mStates.shallowClear();

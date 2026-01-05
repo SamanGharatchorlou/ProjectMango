@@ -54,13 +54,20 @@ namespace ECS
 	{
 		// vfx of the attack i.e. the blade swing
 		BasicString attackVfx;
+
 		// vfx of the hit, i.e. blood splat
 		BasicString hitVfx;
 
 		// size of the attack collider, relative to the transform
 		VectorF hitBoxPos = VectorF(0, 0);
 		VectorF hitBoxSize = VectorF(1.0f, 1.0f);
+		
+		// how much of the total damage this does, i.e. attack + follow up attack can do 0.5 each
+		float damageRatio = 1.0f;
+
 		int hitFrame = 0;
+		int attackFrame = 0;
+
 		bool didHit = false;
 
 		bool playedAttackVfx = false;

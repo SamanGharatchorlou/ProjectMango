@@ -4,6 +4,8 @@
 namespace AnimationReader
 {
 	void ReadAnimationData();
+	void ClearAnimationData();
+
 	void BuildAnimator(ECS::Entity entity, const char* file);
 
 	bool AnimationExists(const char* animiation_id);

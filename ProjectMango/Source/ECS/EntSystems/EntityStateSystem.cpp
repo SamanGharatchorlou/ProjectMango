@@ -22,11 +22,22 @@ namespace ECS
 			if(state.current == Action::None && state.next == Action::None)
 			{
 				state.next = Action::Inactive;
+
+				
+				if(Animator* animator = GetComponent(Animator, entity))
+				{
+					if(!animator->HasAnimation(Action::Inactive))
+					{
+						if(animator->HasAnimation(Action::Idle))
+							state.next = Action::Idle;
+					}
+				}
 			}
 
 			bool must_finish_anim = 
 				state.current == Action::AttackWindUp || 
 				state.current == Action::BasicAttack || 
+				state.current == Action::FollowUpAttack || 
 				state.current == Action::AttackRecovery;
 
 			bool can_change_state = !must_finish_anim;

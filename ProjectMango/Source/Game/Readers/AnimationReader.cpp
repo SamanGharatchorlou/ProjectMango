@@ -22,6 +22,11 @@ namespace AnimationReader
 {	
 	using namespace rapidjson;
 
+	void ClearAnimationData()
+	{
+		s_animationData.clear();
+	}
+
 	static bool PopulateColliderData(const char* prefix, const Value& animation, VectorF* out_pos, VectorF* out_size)
 	{
 		bool has_data = false;
@@ -51,7 +56,6 @@ namespace AnimationReader
 
 		return has_data;
 	}
-
 	
 	bool AnimationExists(const char* animiation_id)
 	{
@@ -82,22 +86,6 @@ namespace AnimationReader
 		{
 			AddAttackData(entity, animator_data, animator.animations->at(i).action);
 		}
-
-		//if(animator.HasAnimation(Action::BasicAttack))
-		//{
-		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
-		//	beviour_state.attackData.insert( { Action::BasicAttack, animator_data.attackStateData.at() } );
-		//}
-		//if(animator.HasAnimation(Action::AttackRecovery))
-		//{
-		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
-		//	beviour_state.attackData.insert( { Action::AttackRecovery, animator_data.attackStateData } );
-		//}
-		//if(animator.HasAnimation(Action::AttackWindUp))
-		//{
-		//	BehaviourState& beviour_state = GetOrAddComponent(BehaviourState, entity);
-		//	beviour_state.attackData.insert( { Action::AttackWindUp, animator_data.attackStateData } );
-		//}
 	}
 
 	
@@ -246,6 +234,13 @@ namespace AnimationReader
 							
 							if(anims[i].HasMember("attack_vfx"))
 								hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
+							
+							hitbox_data.attackFrame = hitbox_data.hitFrame;
+							if(anims[i].HasMember("attack_frame"))
+								hitbox_data.attackFrame = anims[i]["attack_frame"].GetInt();
+							
+							if(anims[i].HasMember("damage_ratio"))
+								hitbox_data.damageRatio = anims[i]["damage_ratio"].GetFloat();
 
 							s_animationData[id].attackStateData.insert( {animation.action, hitbox_data } );
 						}

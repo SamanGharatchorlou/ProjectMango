@@ -21,17 +21,16 @@ namespace ECS
 
 	void Transform::Init(const EntityMetaData* emd)
 	{
+		if(emd)
+		{	
+			size = emd->data.GetVector("Size");
+			SetWorldPosition(emd->data.GetVector("Position") - (size * emd->data.GetVector("PivotPoint")));
+		}
+
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			size = config->data.GetVector("size");
 			facingDirection = config->data.GetBool("flipped") ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-			if(emd)
-			{
-				VectorF pos = emd->position - (size * emd->pivotPoint);
-
-				SetWorldPosition(pos);
-			}
 		}
 	}
 	

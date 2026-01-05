@@ -97,7 +97,8 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 						result.entity = target_colliders[i]->entity;
 
 						// bump it back up to just before it colided, otherwise we're likely just inside something causing it to get stuck
-						result.distance = ray_distance - small_ray_increment;
+						// dont do this, it creates a small gap that looks bad
+						result.distance = ray_distance;// - small_ray_increment;
 						result.hitPosition = ray_point;
 						result.hasHit = true;
 
@@ -176,6 +177,9 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 		{
 			float top_to_bottom = transform->GetObjectRect().BotPoint() - top.y;
 			out_distance = result.distance - top_to_bottom;
+
+			//// a bit hacky here, actually snap it to the floor, otherwise it floats 1 pixel above
+			//out_distance++;
 		}
 
 		return result.hasHit;
