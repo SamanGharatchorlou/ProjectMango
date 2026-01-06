@@ -115,8 +115,6 @@ bool ConfigManager::Parse(const char* path)
 		{
 			ASSERT(parser.document.HasMember("id"), "config %s has no id", path);
 
-			FileManager::Folder folder = FileManager::Get()->GetFolderFromPath(path);
-
 			Config* config = new Config();
 			JSONReadData(parser.document, config->data);
 			config->name = parser.document["id"].GetString();
