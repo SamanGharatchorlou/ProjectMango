@@ -11,6 +11,7 @@
 #include "Graphics/Raycast.h"
 #include "Entities/ResourceBank.h"
 #include "Game/Readers/AnimationReader.h"
+#include "Core/Helpers.h"
 
 using namespace ECS;
 
@@ -154,7 +155,8 @@ static void SetupCostIcons(Entity entity, int count)
 		EntityData::SetParent(child_entity, entity);
 
 		// Transform
-		VectorF size = VectorF(9,9);
+		VectorF size = VectorF(15,15);
+		size = AdjustToScreenSize(size);
 		Transform& child_transform = AddComponent(Transform, child_entity);
 		child_transform.size = size;
 

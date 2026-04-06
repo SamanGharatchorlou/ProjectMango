@@ -6,6 +6,7 @@
 #include "Input/Cursor.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/SpacialComponents.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -67,9 +68,9 @@ namespace ECS
 		font.SetColour(text.c_str(), scolour.toSDL());
 	}
 
-		
 	void UIText::SetSize(int ptSize) 
 	{ 
+		ptSize = (int)(AdjustToScreenSize((float)ptSize) + 0.5f);
 		font.SetSize(text.c_str(), ptSize);
 
 		if(center)

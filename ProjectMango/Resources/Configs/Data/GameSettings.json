@@ -1,8 +1,9 @@
 {
-	"id" : "GameSettings",
+	"id": "GameSettings",
 	"title": "Mango",
-	"size_x": 1280,
-	"size_y": 1280,
-	"fit_to_screen": false,
+	"size_x": 1024,
+	"size_y": 1024,
+	"fit_to_screen": true,
+	"screen_ratio": [ 1, 1 ],
 	"FramerateCap": 60
 }

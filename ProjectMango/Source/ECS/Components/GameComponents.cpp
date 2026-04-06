@@ -176,6 +176,7 @@ namespace ECS
 
 				// Transform
 				VectorF size = VectorF(9,9);
+				size = AdjustToScreenSize(size);
 				Transform& child_transform = AddComponent(Transform, child_entity);
 				child_transform.size = size;
 
