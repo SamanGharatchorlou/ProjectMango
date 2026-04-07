@@ -272,6 +272,7 @@ static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 
 	// Spawner
 	AddComponent(Spawner, entity);
+	AddComponent(EntityState, entity);
 
 	Collider& collider = AddComponent(Collider, entity);
 	collider.SetFlag(Collider::GhostCollider);

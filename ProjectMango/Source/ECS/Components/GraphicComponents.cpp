@@ -80,9 +80,9 @@ namespace ECS
 
 		if(config)
 		{
-			if (config->data.GetBool("randomise_frame_start"))
+			if (config->data.GetBool("randomise_frame_start") && IsValid())
 			{
-				int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
+				int frame_start = (rand() % GetActiveAnimation()->frameCount) + 1;
 				frameIndex = frame_start;
 			}
 
@@ -111,9 +111,9 @@ namespace ECS
 		activeAnimation = 0;
 		state = TimeState::Running;
 
-		if (emd.data.Contains("RandomiseFrameStart"))
+		if (emd.data.Contains("RandomiseFrameStart") && IsValid())
 		{
-			int frame_start = (rand() % GetActiveAnimation().frameCount) + 1;
+			int frame_start = (rand() % GetActiveAnimation()->frameCount) + 1;
 			frameIndex = frame_start;
 		}
 		
@@ -131,7 +131,7 @@ namespace ECS
 
 	bool Animator::IsValid() const
 	{
-		return animations && animations->size() > 0;
+		return animations && activeAnimation >= 0 && activeAnimation < animations->size();
 	}
 
 	RectF Animator::GetActiveSubRect() const
@@ -170,12 +170,15 @@ namespace ECS
 		}
 
 		DebugPrint(Warning, "No animation found for action %s", ActionToString(action));
-	}
-
-	const Animation& Animator::GetActiveAnimation() const
+	}		
+	const Animation* Animator::GetActiveAnimation() const
 	{
-		ASSERT(IsValid(), "Invalid animator, cannot get active animation");
-		return (*animations)[activeAnimation];
+		if(IsValid())
+		{
+			return &(*animations)[activeAnimation];
+		}
+		
+		return nullptr;
 	}
 
 	const Animation* Animator::GetAnimation(Action::Enum action) const

@@ -36,7 +36,7 @@ u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 	{
 		const ECS::Animator& animator = GetComponentRef(Animator, entity);
 
-		Action::Enum active_animation = animator.GetActiveAnimation().action;
+		Action::Enum active_animation = animator.GetActiveAnimation()->action;
 		if(active_animation != s_activeAction)
 		{
 			s_activeAction = active_animation;

@@ -119,7 +119,7 @@ namespace ECS
 
 		void StartAnimation(Action::Enum action);
 
-		const Animation& GetActiveAnimation() const;
+		const Animation* GetActiveAnimation() const;
 		const Animation* GetAnimation(Action::Enum action) const;
 		bool HasAnimation(Action::Enum action) const;
 		RectF GetActiveSubRect() const;

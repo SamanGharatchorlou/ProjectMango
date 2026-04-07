@@ -2718,7 +2718,7 @@
 					"layerDefUid": 75,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -3427,7 +3427,7 @@
 						},
 						{
 							"__identifier": "Enemy",
-							"__grid": [13,4],
+							"__grid": [12,9],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 0, "w": 16, "h": 16 },
@@ -3436,7 +3436,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 88,
-							"px": [208,64],
+							"px": [200,144],
 							"fieldInstances": [
 								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 93, "realEditorValues": [{
 									"id": "V_Bool",
@@ -3444,12 +3444,12 @@
 								}] },
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 104, "realEditorValues": [] }
 							],
-							"__worldX": 208,
-							"__worldY": 64
+							"__worldX": 200,
+							"__worldY": 144
 						},
 						{
 							"__identifier": "Player",
-							"__grid": [12,9],
+							"__grid": [9,9],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 0, "y": 240, "w": 16, "h": 16 },
@@ -3458,7 +3458,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 95,
-							"px": [204,144],
+							"px": [156,144],
 							"fieldInstances": [
 								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 97, "realEditorValues": [{
 									"id": "V_Bool",
@@ -3470,40 +3470,8 @@
 								}] },
 								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 103, "realEditorValues": [] }
 							],
-							"__worldX": 204,
+							"__worldX": 156,
 							"__worldY": 144
-						},
-						{
-							"__identifier": "Spawner",
-							"__grid": [10,4],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 32, "y": 224, "w": 16, "h": 16 },
-							"__smartColor": "#BE4A2F",
-							"iid": "72e2ff50-d380-11f0-a191-b5ac37323617",
-							"width": 32,
-							"height": 16,
-							"defUid": 8,
-							"px": [160,64],
-							"fieldInstances": [
-								{ "__identifier": "SizeOverride", "__type": "Array<Float>", "__value": [22,32], "__tile": null, "defUid": 91, "realEditorValues": [ { "id": "V_Float", "params": [22] }, { "id": "V_Float", "params": [32] } ] },
-								{ "__identifier": "SnapToFloor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 92, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] },
-								{ "__identifier": "Animator", "__type": "String", "__value": "Spawner", "__tile": null, "defUid": 94, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Spawner"]
-								}] },
-								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 105, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
-								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 133, "realEditorValues": [] },
-								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 134, "realEditorValues": [] }
-							],
-							"__worldX": 160,
-							"__worldY": 64
 						},
 						{
 							"__identifier": "Spawner",
@@ -3512,7 +3480,7 @@
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 32, "y": 224, "w": 16, "h": 16 },
 							"__smartColor": "#BE4A2F",
-							"iid": "d70f98a0-d380-11f0-8d29-bb1e8dcd56bf",
+							"iid": "72e2ff50-d380-11f0-a191-b5ac37323617",
 							"width": 32,
 							"height": 16,
 							"defUid": 8,
@@ -3527,9 +3495,9 @@
 									"id": "V_String",
 									"params": ["Spawner"]
 								}] },
-								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 105, "realEditorValues": [{
+								{ "__identifier": "Faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 105, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Enemy"]
+									"params": ["Player"]
 								}] },
 								{ "__identifier": "RandomiseFrameStart", "__type": "Bool", "__value": true, "__tile": null, "defUid": 133, "realEditorValues": [] },
 								{ "__identifier": "RandomiseFrameSpeed", "__type": "Float", "__value": 0.3, "__tile": null, "defUid": 134, "realEditorValues": [] }
