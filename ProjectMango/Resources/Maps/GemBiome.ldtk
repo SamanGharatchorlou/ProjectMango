@@ -2718,7 +2718,7 @@
 					"layerDefUid": 75,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": true,
+					"visible": false,
 					"optionalRules": [],
 					"intGridCsv": [
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -4175,7 +4175,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Text",
-							"__grid": [12,15],
+							"__grid": [11,15],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
@@ -4184,7 +4184,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 34,
-							"px": [200,245],
+							"px": [184,245],
 							"fieldInstances": [
 								{ "__identifier": "TextCallback", "__type": "String", "__value": "TurnNumber", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
@@ -4197,12 +4197,12 @@
 								{ "__identifier": "PtSize", "__type": "Int", "__value": 30, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
 								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] }
 							],
-							"__worldX": 200,
+							"__worldX": 184,
 							"__worldY": 245
 						},
 						{
 							"__identifier": "Text",
-							"__grid": [12,8],
+							"__grid": [7,9],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
@@ -4211,7 +4211,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 34,
-							"px": [192,128],
+							"px": [112,144],
 							"fieldInstances": [
 								{ "__identifier": "TextCallback", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
@@ -4221,12 +4221,12 @@
 								{ "__identifier": "PtSize", "__type": "Int", "__value": 80, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
 								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] }
 							],
-							"__worldX": 192,
-							"__worldY": 128
+							"__worldX": 112,
+							"__worldY": 144
 						},
 						{
 							"__identifier": "Text",
-							"__grid": [13,0],
+							"__grid": [12,0],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
@@ -4235,7 +4235,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 34,
-							"px": [214,0],
+							"px": [198,0],
 							"fieldInstances": [
 								{ "__identifier": "TextCallback", "__type": "String", "__value": "AutoConfirmText", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
@@ -4245,7 +4245,7 @@
 								{ "__identifier": "PtSize", "__type": "Int", "__value": 20, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
 								{ "__identifier": "Colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] }
 							],
-							"__worldX": 214,
+							"__worldX": 198,
 							"__worldY": 0
 						}
 					]

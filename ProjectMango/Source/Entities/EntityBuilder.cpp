@@ -192,7 +192,7 @@ static void SetupPowerIcons(Entity entity, int count)
 		EntityData::SetParent(child_entity, entity);
 
 		// Transform
-		VectorF size = VectorF(9,9);
+		VectorF size = VectorF(15,15);
 		Transform& child_transform = AddComponent(Transform, child_entity);
 		child_transform.size = size;
 
