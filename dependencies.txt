@@ -5,3 +5,15 @@ Library Directories: $(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(Proje
 C/C++ - Addition Include Directories: $(ProjectDir)Source;$(ProjectDir)ThirdParty;%(AdditionalIncludeDirectories)
 
 Linker - Input - Addition Dependencies: $(CoreLibraryDependencies);%(AdditionalDependencies);SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib
+
+*when cloning the project on git this is probably the only thing that needs adding and is custom per project/machine
+Environment Path: 
+D:\Git\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2-2.30.5\lib\x64
+D:\Git\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64
+D:\Git\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64
+D:\Git\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64
+
+C:\Users\saman\Documents\Code\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2-2.30.5\lib\x64
+C:\Users\saman\Documents\Code\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64
+C:\Users\saman\Documents\Code\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64
+C:\Users\saman\Documents\Code\ProjectMango\ProjectMango\ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64

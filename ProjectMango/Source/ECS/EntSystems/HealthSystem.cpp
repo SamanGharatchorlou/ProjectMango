@@ -38,7 +38,7 @@ namespace ECS
 
 					if(animate_on_exit)
 					{
-						if(animator->GetActiveAnimation().action == ds->action)
+						if(animator->GetActiveAnimation()->action == ds->action)
 						{
 							if(animator->loopCount >= ds->deathLoops)
 							{

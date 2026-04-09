@@ -53,7 +53,8 @@ namespace ECS
 			}
 		}
 
-		DebugPrint(Warning, "No animation found for action %s", ActionToString(action));
+		animator.activeAnimation = -1;
+		DebugPrintOnce(Warning, "No animation found for action %s", ActionToString(action));
 	}
 
 	void AnimationSystem::Update(float dt)
@@ -63,16 +64,19 @@ namespace ECS
 			// debug break point
 			if(IsSelectedDebugEntity(entity))
 				int a = 4;
+			
+			Action::Enum active_action = Action::None;
 
 			Animator& animator = GetComponentRef(Animator, entity);
-			if(!animator.IsValid())
-				continue;
-			
-			const Animation& active_animation = animator.animations->at(animator.activeAnimation);
+			if(animator.IsValid())
+			{
+				const Animation& active_animation = animator.animations->at(animator.activeAnimation);
+				active_action = active_animation.action;
+			}
 
-			EntityState* character_state = GetComponent(EntityState, entity);
-			if( character_state && (character_state->current != active_animation.action) )
-				StartAnimation(animator, character_state->current);
+			EntityState* entity_state = GetComponent(EntityState, entity);
+			if( entity_state && (entity_state->current != active_action) )
+				StartAnimation(animator, entity_state->current);
 			else
 				UpdateAnimator(animator, dt);
 		}

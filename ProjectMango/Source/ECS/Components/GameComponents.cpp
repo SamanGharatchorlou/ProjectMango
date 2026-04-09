@@ -176,6 +176,7 @@ namespace ECS
 
 				// Transform
 				VectorF size = VectorF(9,9);
+				size = AdjustToScreenSize(size);
 				Transform& child_transform = AddComponent(Transform, child_entity);
 				child_transform.size = size;
 
@@ -188,7 +189,7 @@ namespace ECS
 				child_sprite.SetTexture("cost_empty");
 				child_sprite.params.renderLayer = RenderLayer::UI;
 				child_sprite.params.colourMod = Colour::s_typeToColour.at(colour);
-				child_sprite.params.colourMod.setOpacity(0.6f);
+				child_sprite.params.colourMod.setOpacity(0.85f);
 			}
 
 			count++;
@@ -223,7 +224,7 @@ namespace ECS
 			UIText& ui_text = AddComponent(UIText, points_entity);
 			ui_text.center = true;
 			ui_text.SetColour(SColour::White);
-			ui_text.SetSize(27);
+			ui_text.SetSize(19);
 
 			BasicString number_to_text = BasicString(points);
 			ui_text.SetText(number_to_text.c_str());

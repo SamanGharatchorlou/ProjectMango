@@ -65,10 +65,10 @@ namespace ECS
 				bool finished_spawning = false;
 
 				// fade it in during the animation
-				if(Animator* animator = GetComponent(Animator, entity))
+				Animator* animator = GetComponent(Animator, entity);
+				if(animator && animator->GetActiveAnimation())
 				{
-					const Animation& animation = animator->GetActiveAnimation();
-					float alpha = (float)animator->frameIndex / (float)animation.frameCount;
+					float alpha = (float)animator->frameIndex / (float)animator->GetActiveAnimation()->frameCount;
 					if(Sprite* sprite = GetComponent(Sprite, spawner.spawnedEntity))
 					{
 						sprite->params.colourMod.a = (Uint8)(c_alphaMax * alpha);
@@ -87,7 +87,7 @@ namespace ECS
 				}
 				else
 				{
-					finished_spawning= true;
+					finished_spawning = true;
 				}
 
 				if(finished_spawning)
@@ -105,12 +105,12 @@ namespace ECS
 			}
 			else
 			{
-				// wait until the collider is clear
-				if(Collider* collider = GetComponent(Collider, entity))
-				{
-					if(collider->collisions.size() > 0)
-						continue;
-				}
+				//// wait until the collider is clear
+				//if(Collider* collider = GetComponent(Collider, entity))
+				//{
+				//	if(collider->collisions.size() > 0)
+				//		continue;
+				//}
 
 				//const Faction* spawner_faction = GetComponent(Faction, entity);
 				Faction::Team spawner_faction = Faction::GetTeam(entity);

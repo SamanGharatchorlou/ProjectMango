@@ -12,9 +12,11 @@ public:
 
 	SDL_Window* get() const { return mWindow; }
 
-	// pretend size, always 1024x1024
 	VectorF size() const;
 	VectorF realSize() const;
+
+	// pretend size, always 1024x1024
+	VectorF fakeSize() const { return VectorF(1024, 1024); }
 
 	void setTitle(const char* title);
 

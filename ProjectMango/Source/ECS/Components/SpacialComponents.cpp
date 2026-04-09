@@ -30,6 +30,7 @@ namespace ECS
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			size = config->data.GetVector("size");
+			size = AdjustToScreenSize(size);
 			facingDirection = config->data.GetBool("flipped") ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 		}
 	}

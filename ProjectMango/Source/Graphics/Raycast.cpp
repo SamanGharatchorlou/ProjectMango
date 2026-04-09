@@ -160,29 +160,51 @@ bool RaycastToFloor(ECS::Entity entity, float& out_distance)
 
 		// shift it a little right so we dont raycast of an edge (since we're using the world pos i.e. top left)
 		// using the x center would make more sense but large sprites can cause it to fall off an edge
-		VectorF top = transform->worldPosition + VectorF(5.0f, 0.0);
+		RectF object_rect = transform->GetRect();
+		VectorF test_points[3] { object_rect.TopLeft(), object_rect.TopCenter(), object_rect.TopRight() };
 
-		std::vector<ECS::Entity> self;
-		self.push_back(entity);
-
-		std::vector<u32> collider_flags;
-		collider_flags.push_back(ECS::Collider::IsFloor);
-			
-		const ECS::Level& level = ECS::Biome::GetLevel(entity);
-
-		RaycastResult result;
-		Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
-
-		if(result.hasHit)
+		bool has_hit = false;
+		for( u32 i = 0; i < 3; i++ )
 		{
-			float top_to_bottom = transform->GetObjectRect().BotPoint() - top.y;
-			out_distance = result.distance - top_to_bottom;
+			std::vector<ECS::Entity> self;
+			self.push_back(entity);
 
-			//// a bit hacky here, actually snap it to the floor, otherwise it floats 1 pixel above
-			//out_distance++;
+			std::vector<u32> collider_flags;
+			collider_flags.push_back(ECS::Collider::IsFloor);
+			
+			const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+			RaycastResult result;
+			Raycast(test_points[i], VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
+
+			if(result.hasHit)
+			{
+				float top_to_bottom = transform->GetObjectRect().BotPoint() - test_points[i].y;
+				float distance = result.distance - top_to_bottom;
+				out_distance = Maths::Min(distance, out_distance);
+
+				has_hit = true;
+			}
 		}
 
-		return result.hasHit;
+		//std::vector<ECS::Entity> self;
+		//self.push_back(entity);
+
+		//std::vector<u32> collider_flags;
+		//collider_flags.push_back(ECS::Collider::IsFloor);
+		//	
+		//const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+		//RaycastResult result;
+		//Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
+
+		//if(result.hasHit)
+		//{
+		//	float top_to_bottom = transform->GetObjectRect().BotPoint() - top.y;
+		//	out_distance = result.distance - top_to_bottom;
+		//}
+
+		return has_hit;
 	}
 
 	return false;

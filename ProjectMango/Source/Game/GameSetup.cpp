@@ -181,15 +181,34 @@ Window* GameSetup::createWindow()
 		if(!success)
 			DebugPrint(Error, "%s", SDL_GetError());
 		
-		const VectorI screenSize(rect.w, rect.h);
-		window->init(gs->data.GetString("Title"), screenSize);
+		VectorI screen_size(rect.w, rect.h);
+		// account for the top bar
+		screen_size.y -= 32.0f;
+
+		VectorF default_ratio(-1.0f, -1.0f);
+		VectorF screen_ratio = gs->data.GetVector("screen_ratio", default_ratio);
+		if (screen_ratio != default_ratio)
+		{
+			// set y relative to x
+			if (screen_size.x <= screen_size.y)
+			{
+				screen_size.y = (screen_size.x / screen_ratio.x) * screen_ratio.y;
+			}
+			// set x relative to u
+			else
+			{
+				screen_size.x = (screen_size.y / screen_ratio.y) * screen_ratio.x;
+			}
+		}
+
+		window->init(gs->data.GetString("Title"), screen_size);
 	}
 	else
 	{	
 		const int width = gs->data.GetInt("size_x");
 		const int height = gs->data.GetInt("size_y");
-		const VectorI screenSize(width, height);
-		window->init(gs->data.GetString("title"), screenSize);
+		const VectorI screen_size(width, height);
+		window->init(gs->data.GetString("title"), screen_size);
 	}
 
 	return window;

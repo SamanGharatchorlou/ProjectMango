@@ -5,6 +5,7 @@
 #include "ECS/Components/SpacialComponents.h"
 #include "Graphics/Raycast.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "System/Window.h"
 
 
 float EaseOut(float value, int easing_factor)
@@ -67,4 +68,16 @@ bool IsTargetInFrontOfSource(ECS::Entity target, ECS::Entity source)
 bool IsSelectedDebugEntity(ECS::Entity entity)
 {
 	return DebugMenu::GetSelectedEntity() == entity;
+}
+
+float AdjustToScreenSize(float size)
+{
+	const Window* window = GameData::Get().window;
+	return size * window->realSize().area() / window->fakeSize().area();
+}
+
+VectorF AdjustToScreenSize(VectorF size)
+{
+	const Window* window = GameData::Get().window;
+	return size * window->realSize() / window->fakeSize();
 }

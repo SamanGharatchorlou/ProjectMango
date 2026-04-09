@@ -23,7 +23,6 @@ namespace ECS
 			{
 				state.next = Action::Inactive;
 
-				
 				if(Animator* animator = GetComponent(Animator, entity))
 				{
 					if(!animator->HasAnimation(Action::Inactive))

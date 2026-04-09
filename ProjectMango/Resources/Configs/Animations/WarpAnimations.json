@@ -5,17 +5,6 @@
 	"spriteSheets" : 
 	[
 		{
-			"spriteSheet": "idle 28x41",
-			"animations": [
-				{
-					"action": "Inactive",
-					"startIndex": 0,
-					"frameCount": 9,
-					"frameTime": 0.1
-				}
-			]
-		},
-		{
 			"spriteSheet": "warp 28x41",
 			"animations": [
 				{

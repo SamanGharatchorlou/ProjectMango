@@ -89,7 +89,7 @@ namespace CardRegistry
 			s_cardRegistry.push_back( Card() );
 			Card& card = s_cardRegistry.back();
 			card.tier = tier_index;
-			card.registryIndex = s_cardRegistry.size() - 1;
+			card.registryIndex = (int)s_cardRegistry.size() - 1;
 
 			s_cardRegistryDrawPile[tier_index].push_back(card.registryIndex);
 			

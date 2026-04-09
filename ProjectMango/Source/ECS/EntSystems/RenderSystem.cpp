@@ -77,8 +77,8 @@ namespace ECS
 					{
 						if(animator->IsValid())
 						{
-							const Animation& animation = animator->GetActiveAnimation();
-							pack.texture = animation.image.texture;
+							const Animation* animation = animator->GetActiveAnimation();
+							pack.texture = animation->image.texture;
 							pack.subRect = animator->GetActiveSubRect();
 						}
 					}

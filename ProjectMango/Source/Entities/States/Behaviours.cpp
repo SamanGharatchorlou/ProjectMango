@@ -42,7 +42,7 @@ namespace Actor
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
 		BehaviourState& state = GetComponentRef(BehaviourState, entity);
-		Action::Enum action = animator.GetActiveAnimation().action;
+		Action::Enum action = animator.GetActiveAnimation()->action;
 
 		if(state.attackData.contains(action))
 		{
@@ -84,7 +84,7 @@ namespace Actor
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
 		BehaviourState& state = GetComponentRef(BehaviourState, entity);
-		Action::Enum action = animator.GetActiveAnimation().action;	
+		Action::Enum action = animator.GetActiveAnimation()->action;	
 
 		if(state.attackData.contains(action))
 		{
@@ -146,8 +146,8 @@ namespace Actor
 
 		if(animator.loopCount > 0)
 		{
-			const Animation& animation = animator.GetActiveAnimation();
-			ASSERT(animation.action == attack, "Not the basic attack anim state in the basic attack update");
+			const Animation* animation = animator.GetActiveAnimation();
+			ASSERT(animation->action == attack, "Not the basic attack anim state in the basic attack update");
 
 			// mark the attack as finished
 			BehaviourState& state = GetComponentRef(BehaviourState, entity);

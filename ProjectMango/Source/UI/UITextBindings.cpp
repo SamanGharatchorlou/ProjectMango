@@ -139,8 +139,10 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 					{
 						UIText& text = GetComponentRef(UIText, entity);
 						text.SetColour(SColour::Green);
-
-						return BasicString("VICTORY");
+						
+						char buffer[64];
+						snprintf(buffer, 64, "VICTORY: Turn %d", game_state->turnIndex + 1);
+						return BasicString(buffer);
 					}
 				}
 				
@@ -150,8 +152,10 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 					{
 						UIText& text = GetComponentRef(UIText, entity);
 						text.SetColour(SColour::Red);
-
-						return BasicString("DEFEATED");
+												
+						char buffer[64];
+						snprintf(buffer, 64, "DEFEATED: Turn %d", game_state->turnIndex + 1);
+						return BasicString(buffer);
 					}
 				}
 			}

@@ -397,7 +397,7 @@ namespace AnimationEditor
             {
                 ImGui::PushID("config selector");
 
-                const char* select_animation_string = ActionToString(anim->GetActiveAnimation().action);
+                const char* select_animation_string = ActionToString(anim->GetActiveAnimation()->action);
                 if (ImGui::BeginCombo("Select Animation", select_animation_string))
                 {
                     for( u32 i = 0; i < anim->animations->size(); i++ )
@@ -427,13 +427,13 @@ namespace AnimationEditor
                     anim->frameIndex--;
                     if(anim->frameIndex == (u32)-1)
                     {
-                        const ECS::Animation& active_animation = anim->GetActiveAnimation();
-                        anim->frameIndex = active_animation.frameCount - 1;
+                        const ECS::Animation* active_animation = anim->GetActiveAnimation();
+                        anim->frameIndex = active_animation->frameCount - 1;
                     }
 			    }
 
                 bool is_playing = anim->state == TimeState::Running;
-                bool requires_restart = !anim->GetActiveAnimation().looping && anim->OnLastFrame();
+                bool requires_restart = !anim->GetActiveAnimation()->looping && anim->OnLastFrame();
 
                 StringBuffer32 play_pause_button_text;
                 if(is_playing)
@@ -466,7 +466,7 @@ namespace AnimationEditor
                         // restart for looping animations
                         if(requires_restart)
                         {
-                            anim->StartAnimation(anim->GetActiveAnimation().action);
+                            anim->StartAnimation(anim->GetActiveAnimation()->action);
                         }
                     }
                 }
@@ -477,14 +477,14 @@ namespace AnimationEditor
                     anim->state = TimeState::Paused;
 
                     anim->frameIndex++;
-                    const ECS::Animation& active_animation = anim->GetActiveAnimation();
-                    anim->frameIndex = anim->frameIndex % active_animation.frameCount;
+                    const ECS::Animation* active_animation = anim->GetActiveAnimation();
+                    anim->frameIndex = anim->frameIndex % active_animation->frameCount;
 			    }
 
                 ECS::AnimationSystem::UpdateAnimator(*anim, fc.delta()); 	
                 
-                const ECS::Animation& active_animation = anim->GetActiveAnimation();
-                ImGui::Text("Frame %d / %d", anim->frameIndex + 1, active_animation.frameCount );
+                const ECS::Animation* active_animation = anim->GetActiveAnimation();
+                ImGui::Text("Frame %d / %d", anim->frameIndex + 1, active_animation->frameCount );
 	
                 Sprite& sprite = GetComponentRef(Sprite, s_state.configAnim.entity);
                 //anim->SetActiveSpriteFrame(sprite);
@@ -499,10 +499,10 @@ namespace AnimationEditor
                         sprite.params.flip = SDL_FLIP_HORIZONTAL;
                 }
 
-                const ECS::Animation& selected_animation = anim->GetActiveAnimation();
+                const ECS::Animation* selected_animation = anim->GetActiveAnimation();
 
-			    VectorF dim = selected_animation.image.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.frame.gridCount.toFloat();
+			    VectorF dim = selected_animation->image.texture->originalDimentions;
+                const VectorF real_frame_size = dim / selected_animation->frame.gridCount.toFloat();
             
                 // the visible size of the frame you're looking at, probably the yellow box
                 float x_spacing = y_spacing.y;
@@ -515,7 +515,7 @@ namespace AnimationEditor
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
-                RenderPack frame_pack(selected_animation.image.texture, 1);
+                RenderPack frame_pack(selected_animation->image.texture, 1);
                 frame_pack.rect = renderFrameRect;
                 frame_pack.subRect = anim->GetActiveSubRect();// //selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
                 frame_pack.flip =sprite.params.flip;
@@ -613,9 +613,9 @@ namespace AnimationEditor
             Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
             if( anim && anim->IsValid() )
             {
-                const ECS::Animation& selected_animation = anim->GetActiveAnimation();
-                const VectorF dim = selected_animation.image.texture->originalDimentions;
-                const VectorF real_frame_size = dim / selected_animation.frame.gridCount.toFloat(); 
+                const ECS::Animation* selected_animation = anim->GetActiveAnimation();
+                const VectorF dim = selected_animation->image.texture->originalDimentions;
+                const VectorF real_frame_size = dim / selected_animation->frame.gridCount.toFloat(); 
 
                 float x_spacing = y_spacing.y;
                 VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
