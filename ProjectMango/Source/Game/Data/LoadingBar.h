@@ -1,6 +1,6 @@
 #pragma once
 
-class STexture;
+struct STexture;
 
 class LoadingBar //: public Renderable
 {

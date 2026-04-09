@@ -8,12 +8,13 @@
 
 u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Health;
+	StringBuffer32 type_name = Health::TypeName();
+	ComponentID type_id = Health::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Health& health = GetComponentRef(Health, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 
 		ImGui::Text("Current: %.f", health.currentHealth);
 		ImGui::Text("Max: %.f", health.maxHealth);
@@ -35,17 +36,18 @@ u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::EntityData;
+	StringBuffer32 type_name = EntityState::TypeName();
+	ComponentID type_id = EntityState::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::EntityData& entity_data = GetComponentRef(EntityData, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 
 		ECS::EntityManager& em = ecs->entities;
 		const char* parent = entity_data.parent != ECS::EntityInvalid ? ECS::GetName(entity_data.parent) : "No parent";
@@ -60,17 +62,18 @@ u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::CoinStack;
+	StringBuffer32 type_name = CoinStack::TypeName();
+	ComponentID type_id = CoinStack::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 		
 		SColour col = ECS::Colour::s_typeToColour.at(coin_stack.colourType);
 		ECS::Colour::Type c_type = coin_stack.colourType;
@@ -113,17 +116,18 @@ u32 DebugMenu::DoCoinStackDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Inventory;
+	StringBuffer32 type_name = Inventory::TypeName();
+	ComponentID type_id = Inventory::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Inventory& inventory = GetComponentRef(Inventory, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 		
 		ImGui::Text("Points: %d", inventory.GetPoints());
 
@@ -133,21 +137,21 @@ u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 			ImGui::Text("%d: %d", i, inventory.coins[i]);
 		}
 
-
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoCardDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Card;
+	StringBuffer32 type_name = Card::TypeName();
+	ComponentID type_id = Card::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Card& card = GetComponentRef(Card, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 		
 		ImGui::Text("cost");
 		for( u32 i = 0; i < ECS::Colour::Count; i++ )
@@ -165,17 +169,18 @@ u32 DebugMenu::DoCardDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoFactionDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Faction;
+	StringBuffer32 type_name = Faction::TypeName();
+	ComponentID type_id = Faction::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Faction& faction = GetComponentRef(Faction, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 
 		const char* team = "None";
 		if(faction.team == Faction::Player)
@@ -188,5 +193,5 @@ u32 DebugMenu::DoFactionDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }

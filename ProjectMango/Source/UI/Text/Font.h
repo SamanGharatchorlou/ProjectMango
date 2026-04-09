@@ -38,20 +38,8 @@ public:
 	int GetPtSize() const { return ptSize; }
 	VectorI GetSize() const { return size; }
 
-	//Font& operator =(const Font& font) = delete;
-
 private:
 	void RenderTextSurface(SDL_Surface* textSurface);
 	void UpdateText(const char* text);
-
-	// Forbid copy to prevent shared ownership of gFont and
-	// it being destroyed by the destructor while still in use
-	//Font(Font& font);
-	//Font(const Font&) = delete;            // copy constructor
-	//Font(Font&&) noexcept = delete;        // move constructor
-	//Font& operator=(Font&) noexcept = delete;  // move assignment
-
-	//Font(const Font&) = delete;
-	//Font& operator=(const Font&) = delete;
 };
  

@@ -2,7 +2,7 @@
 
 #include "TextureMap.h"
 
-class STexture;
+struct STexture;
 
 struct TextureManager
 {

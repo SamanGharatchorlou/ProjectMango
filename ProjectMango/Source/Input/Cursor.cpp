@@ -5,10 +5,10 @@
 
 Cursor::Cursor() : mTexture(nullptr), mMoving(false), mVisibility(false), mMode(Cursor::None) { }
 
-void Cursor::render()
+void Cursor::render(SDL_Renderer* renderer)
 {
 	if(mTexture)
-		mTexture->render(mRect);
+		mTexture->render(renderer, mRect);
 }
 
 void Cursor::setButton(ButtonType type, Button button)

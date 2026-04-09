@@ -2,8 +2,6 @@
 #include "STexture.h"
 #include "Renderer.h"
 
-STexture::STexture() : texture(nullptr), renderer(nullptr) { }
-
 STexture::~STexture()
 {
 	if (texture)
@@ -12,18 +10,13 @@ STexture::~STexture()
 	}
 }
 
-bool STexture::loadFromFile(const BasicString& filePath)
+bool STexture::loadFromFile(const BasicString& filePath, SDL_Renderer* renderer)
 {
 	// remove any existing texture
 	if (texture)
 	{
 		SDL_DestroyTexture(texture);
 	}
-
-	// final texture
-	SDL_Texture* tempTexture = nullptr;
-
-	renderer = Renderer::Get()->sdlRenderer();
 
 	// load image
 	SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
@@ -41,10 +34,10 @@ bool STexture::loadFromFile(const BasicString& filePath)
 		}
 		else
 		{
-			tempTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+			texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 
 			// set image dimentions
-			if (!tempTexture)
+			if (!texture)
 			{
 				DebugPrint(Warning, "Unable to create texture from %s! SDL Error: %s", filePath.c_str(), SDL_GetError());
 			}
@@ -59,7 +52,6 @@ bool STexture::loadFromFile(const BasicString& filePath)
 	}
 
 	// return sucess
-	texture = tempTexture;
 	return texture != nullptr;
 }
 
@@ -87,7 +79,7 @@ void STexture::ResetColourMod()
 
 // Renders texture with the roation specified
 // NOTE: the about point is relative to the rect e.g. about the center would be rect.size()/2, not rect.center()
-void STexture::render(const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
+void STexture::render(SDL_Renderer* renderer, const RectF& rect, SDL_RendererFlip flip, double rotation, VectorF aboutPoint)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Point point = { (int)(aboutPoint.x + 0.5f), (int)(aboutPoint.y + 0.5f) };
@@ -102,7 +94,7 @@ void STexture::render(const RectF& rect, SDL_RendererFlip flip, double rotation,
 }
 
 // Renders part of the texture, e.g. a tile in a set with the roation specified
-void STexture::renderSubTexture(const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip)
+void STexture::renderSubTexture(SDL_Renderer* renderer, const RectF& rect, const RectF& subRect, double rotation, VectorF aboutPoint, SDL_RendererFlip flip)
 {
 	SDL_Rect renderQuad = rect.toSDLRect();
 	SDL_Rect subQuad = subRect.toSDLRect();
@@ -120,7 +112,7 @@ void STexture::renderSubTexture(const RectF& rect, const RectF& subRect, double 
 }
 
 // Render quad with an aboutpoint set.
-void STexture::render(const QuadF& quad)
+void STexture::render(SDL_Renderer* renderer, const QuadF& quad)
 {
 	SDL_Rect renderQuad = quad.getRect().toSDLRect();
 	SDL_Point point = quad.aboutPoint().toSDLPoint();

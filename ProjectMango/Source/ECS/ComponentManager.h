@@ -8,12 +8,13 @@ namespace ECS
 	{
 		ComponentManager()
 		{
-			memset(componentArrays, 0, sizeof(ComponentArrayBase*) * Component::Count);
+			// TODO: WARNING NEED TO UPDATE THIS U64
+			memset(componentArrays, 0, sizeof(ComponentArrayBase*) * MaxComponentIdCount);
 		}
 
 		void Close()
 		{
-			for( u32 i = 0; i < Component::Count; i++ )
+			for( u32 i = 0; i < MaxComponentIdCount; i++ )
 			{
 				if(componentArrays[i])
 				{
@@ -24,30 +25,34 @@ namespace ECS
 		}
 
 		template<class T>
-		void Register(Component::Type type, u32 reserve_size)
+		void Register(u32 reserve_size)
 		{
-			ASSERT(componentArrays[type] == nullptr, "Component (%d) hasnt been registered but has a component array already", (u32)type);
-			componentArrays[type] = new ComponentArray<T>(reserve_size);
+			ComponentID component_id = GetComponentID<T>();
+			ASSERT(componentArrays[component_id] == nullptr, "Component (%d) hasnt been registered but has a component array already", component_id);
+			componentArrays[component_id] = new ComponentArray<T>(reserve_size);
 		}
 
 		template<class T>
-		T& AddComponent(Entity entity, Component::Type type)
+		T& AddComponent(Entity entity)
 		{
-			return ((ComponentArray<T>*)componentArrays[type])->InsertComponent<T>(entity);
+			ComponentID component_id = GetComponentID<T>();
+			return ((ComponentArray<T>*)componentArrays[component_id])->InsertComponent<T>(entity);
 		}
 
 		template<class T>
-		void RemoveComponent(Entity entity, Component::Type type)
+		void RemoveComponent(Entity entity)
 		{
-			((ComponentArray<T>*)componentArrays[type])->RemoveComponent<T>(entity);
+			ComponentID component_id = GetComponentID<T>();
+			((ComponentArray<T>*)componentArrays[component_id])->RemoveComponent<T>(entity);
 		}
 
 		template<class T>
-		T& GetComponent(Entity entity, Component::Type type)
+		T& GetComponent(Entity entity)
 		{
-			return ((ComponentArray<T>*)componentArrays[type])->GetComponent(entity);
+			ComponentID component_id = GetComponentID<T>();
+			return ((ComponentArray<T>*)componentArrays[component_id])->GetComponent(entity);
 		}
 
-		ComponentArrayBase* componentArrays[Component::Type::Count];
+		ComponentArrayBase* componentArrays[MaxComponentIdCount];
 	};
 }

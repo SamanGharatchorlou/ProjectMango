@@ -27,7 +27,7 @@ namespace ECS
 
 		void KillEntity(Entity entity);
 
-		bool HasComponent(Entity entity, Component::Type component) const
+		bool HasComponent(Entity entity, ComponentID component_id) const
 		{
 			// there can be an issue here sometimes, no idea why... but again maybe because
 			// of the entity vector im using in the system update it might be reallocated mid way 
@@ -36,17 +36,17 @@ namespace ECS
 			if(entity > entityIdIndex)
 				return false;
 
-			return archetypes[entity] != ArchetypeInvalid && archetypes[entity] & ((u64)1 << component);
+			return archetypes[entity] != ArchetypeInvalid && archetypes[entity] & ((u64)1 << component_id);
 		}
 
-		void AddComponent(Entity entity, Component::Type component)
+		void AddComponent(Entity entity, ComponentID component_id)
 		{
-			archetypes[entity] |= ((u64)1 << component);
+			archetypes[entity] |= ((u64)1 << component_id);
 		}
 
-		void RemoveComponent(Entity entity, Component::Type component)
+		void RemoveComponent(Entity entity, ComponentID component_id)
 		{
-			archetypes[entity] &= ~((u64)1 << component);
+			archetypes[entity] &= ~((u64)1 << component_id);
 		}
 
 		Archetype GetAchetype(Entity entity) const

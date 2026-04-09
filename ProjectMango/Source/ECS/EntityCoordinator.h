@@ -24,7 +24,7 @@ namespace ECS
 		}
 
 		template<class T>
-		void RegisterComponent(Component::Type type, u32 reserve_size) { components.Register<T>(type, reserve_size); }
+		void RegisterComponent(u32 reserve_size) { components.Register<T>(reserve_size); }
 
 		template<class T>
 		void RegisterAndSystem(Archetype type) { systems.RegisterAnd<T>(type); }
@@ -36,20 +36,21 @@ namespace ECS
 
 		bool IsAlive(Entity entity) const { return entity != EntityInvalid && entities.GetAchetype(entity) != ArchetypeInvalid; }
 
-		bool HasComponent(Entity entity, Component::Type type) 
+		template<class T>
+		bool HasComponent(Entity entity)
 		{ 
-			return entity != EntityInvalid && entities.HasComponent(entity, type);
+			return entity != EntityInvalid && entities.HasComponent(entity, GetComponentID<T>());
 		}
 
 		template<class T>
-		T& AddComponent(Entity entity, Component::Type type)
+		T& AddComponent(Entity entity)
 		{
-			if(HasComponent(entity, type))
-				return components.GetComponent<T>(entity, type);
+			if(HasComponent<T>(entity))
+				return components.GetComponent<T>(entity);
 
 			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
-			T& comp = components.AddComponent<T>(entity, type);
-			entities.AddComponent(entity, type);
+			T& comp = components.AddComponent<T>(entity);
+			entities.AddComponent(entity, GetComponentID<T>());
 
 			Archetype archetype = entities.GetAchetype(entity);
 			systems.EntityAddType(entity, archetype);
@@ -58,47 +59,47 @@ namespace ECS
 		}
 		 
 		template<class T>
-		void RemoveComponent(Entity entity, Component::Type type)
+		void RemoveComponent(Entity entity)
 		{
-			if (entity == EntityInvalid || !HasComponent(entity, type))
+			if (entity == EntityInvalid || !HasComponent<T>(entity))
 				return;
 
-			if(const T* comp_ptr = GetComponent<T>(entity, type))
-			{
-				components.RemoveComponent<T>(entity, type);
-				entities.RemoveComponent(entity, type);
+			components.RemoveComponent<T>(entity);
 
-				systems.EntityRemoveType(entity, type);
-			}
+			ComponentID component_id = GetComponentID<T>();
+			entities.RemoveComponent(entity, component_id);
+			systems.EntityRemoveType(entity, component_id);
 		}
 
 		template<class T>
-		T& GetComponentRef(Entity entity, Component::Type type) 
+		T& GetComponentRef(Entity entity)
 		{
 			ASSERT(entity != EntityInvalid, "invaid entity, make sure to create a new one first");
-			return components.GetComponent<T>(entity, type); 
+			return components.GetComponent<T>(entity);
 		}
 
 		template<class T>
-		T* GetComponent(Entity entity, Component::Type type) 
-		{ 
-			if(entity != EntityInvalid && entities.HasComponent(entity, type))
-				return &components.GetComponent<T>(entity, type); 
+		T* GetComponent(Entity entity)
+		{
+			ComponentID component_id = GetComponentID<T>();
+			if(entity != EntityInvalid && entities.HasComponent(entity, component_id))
+				return &components.GetComponent<T>(entity);
 			
 			return nullptr;
 		}
 
 		template<class T>
-		T& GetOrAddComponent(Entity entity, Component::Type type) 
+		T& GetOrAddComponent(Entity entity)
 		{
-			if(entity != EntityInvalid && entities.HasComponent(entity, type))
-				return components.GetComponent<T>(entity, type);
+			ComponentID component_id = GetComponentID<T>();
+			if(entity != EntityInvalid && entities.HasComponent(entity, component_id))
+				return components.GetComponent<T>(entity);
 
-			return AddComponent<T>(entity, type);
+			return AddComponent<T>(entity);
 		}
 
 		template<class T>
-		ComponentArray<T>& GetComponents(Component::Type type) { return *static_cast<ComponentArray<T>*>(components.componentArrays[type]); }
+		ComponentArray<T>& GetComponents() { return *static_cast<ComponentArray<T>*>(components.componentArrays[GetComponentID<T>()]); }
 		
 		void InitSystems();
 		void UpdateSystems(float dt);
@@ -111,15 +112,15 @@ namespace ECS
 		SystemManager systems;
 	};
 
-#define RegisterComponent(compType, reserve) ecs->RegisterComponent<ECS::compType>(ECS::compType::type(), reserve)
+#define RegisterComponent(compType, reserve) ecs->RegisterComponent<ECS::compType>(reserve)
 
-#define AddComponent(compType, entity) ecs->AddComponent<ECS::compType>(entity, ECS::compType::type())
-#define RemoveComponent(compType, entity) ecs->RemoveComponent<ECS::compType>(entity, ECS::compType::type())
+#define AddComponent(compType, entity) ecs->AddComponent<ECS::compType>(entity)
+#define RemoveComponent(compType, entity) ecs->RemoveComponent<ECS::compType>(entity)
 
-#define HasComponent(compType, entity) ecs->HasComponent(entity, ECS::compType::type())
-#define GetComponent(compType, entity) ecs->GetComponent<ECS::compType>(entity, ECS::compType::type())
-#define GetComponentRef(compType, entity) ecs->GetComponentRef<ECS::compType>(entity, ECS::compType::type())
-#define GetOrAddComponent(compType, entity) ecs->GetOrAddComponent<ECS::compType>(entity, ECS::compType::type())
+#define HasComponent(compType, entity) ecs->HasComponent<ECS::compType>(entity)
+#define GetComponent(compType, entity) ecs->GetComponent<ECS::compType>(entity)
+#define GetComponentRef(compType, entity) ecs->GetComponentRef<ECS::compType>(entity)
+#define GetOrAddComponent(compType, entity) ecs->GetOrAddComponent<ECS::compType>(entity)
 
-#define GetAllComponents(compType) ecs->GetComponents<ECS::compType>(ECS::compType::type())
+#define GetAllComponents(compType) ecs->GetComponents<ECS::compType>()
 }

@@ -2,10 +2,87 @@
 #include "ComponentDebugMenu.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "Debugging/ImGui/ImGuiHelpers.h"
 #include "Graphics/RenderManager.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Components/SpacialComponents.h"
+#include "ECS/Components/IncludeComponents.h"
+#include "imgui-master/imgui.h"
+#include "Debugging/ImGui/ImGuiHelpers.h"
+
+
+
+
+bool s_displayRect = false;
+bool s_displayCharacterPosition = false;
+bool s_displayFlipPoint = false;
+bool s_outputPosition = false;
+
+u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
+{
+	StringBuffer32 type_name = Transform::TypeName();
+	ComponentID type_id = Transform::TypeId();
+
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
+	{
+		ECS::Transform& transform = GetComponentRef(Transform, entity);
+		ImGui::Text("World Position: %f, %f", transform.worldPosition.x, transform.worldPosition.y);
+
+		ImGui::Checkbox("Display Object Rect", &s_displayRect);
+		if (s_displayRect)
+		{
+			RectF rect(transform.worldPosition, transform.size);
+			DebugDraw::RectOutline(rect, SColour::Blue);
+		}
+
+		ImGui::Checkbox("Display Character Position", &s_displayCharacterPosition);
+		if (s_displayCharacterPosition)
+		{
+			VectorF position = transform.GetObjectCenter();
+			DebugDraw::Point(position, SColour::Green);
+		}
+
+		ImGui::Checkbox("Display Flip Point", &s_displayFlipPoint);
+		if (s_displayFlipPoint)
+		{
+			VectorF flip_point = transform.worldPosition + transform.size / 2.0f;
+			if(ECS::Sprite* sprite = GetComponent(Sprite, entity))
+			{
+				flip_point = transform.worldPosition + transform.GetHorizontalFlipPoint();
+			}
+
+			DebugDraw::Point(flip_point, SColour::Red);
+		}
+
+		ImGui::Checkbox("Output Position", &s_outputPosition);
+		if(s_outputPosition)
+		{
+			DebugPrint(PriorityLevel::Log, "Position: %f, %f", transform.worldPosition.x, transform.worldPosition.y);
+		}
+	}
+	ImGui::PopID();
+
+	return type_id;
+}
+
+u32 DebugMenu::DoPhysicsDebugMenu(ECS::Entity& entity)
+{
+	StringBuffer32 type_name = Physics::TypeName();
+	ComponentID type_id = Physics::TypeId();
+
+	ImGui::PushID(entity + type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
+	{
+		ECS::Physics& physics = GetComponentRef(Physics, entity);
+
+		ImGui::VectorText("Speed", physics.speed);
+		ImGui::Text("Max Speed: %f", physics.maxSpeed);
+		ImGui::Text("Acceleration: %f", physics.acceleration);
+		ImGui::Text("Is On Floor: %d", physics.onFloor);
+	}
+	ImGui::PopID();
+
+	return type_id;
+}
+
 
 void DebugMenu::DrawCollider(const ECS::Collider& collider)
 {
@@ -57,12 +134,13 @@ void DebugMenu::DrawCollider(const ECS::Collider& collider)
 
 u32 DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Collider;
+	StringBuffer32 type_name = Collider::TypeName();
+	ComponentID type_id = Collider::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Collider& collider = GetComponentRef(Collider, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 
         if (collider.HasFlag(ECS::Collider::Static))
 			ImGui::Text("Static");
@@ -117,5 +195,5 @@ u32 DebugMenu::DoColliderDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }

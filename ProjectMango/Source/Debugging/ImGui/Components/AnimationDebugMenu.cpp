@@ -26,13 +26,14 @@ std::vector<BasicString> s_animationLog;
 
 u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Animator;
+	StringBuffer32 type_name = Biome::TypeName();
+	ComponentID type_id = Biome::TypeId();
 
 	if (!HasComponent(Transform, entity))
-		return type;
+		return type_id;
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	ImGui::PushID(entity + type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		const ECS::Animator& animator = GetComponentRef(Animator, entity);
 
@@ -62,18 +63,19 @@ u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 
 	ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Sprite;
+	StringBuffer32 type_name = Biome::TypeName();
+	ComponentID type_id = Biome::TypeId();
 
 	if (!HasComponent(Transform, entity))
-		return (u32)type;
+		return type_id;
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	ImGui::PushID(entity + type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Sprite& sprite = GetComponentRef(Sprite, entity);
 			
@@ -138,5 +140,5 @@ u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 
 	ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }

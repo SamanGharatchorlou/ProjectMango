@@ -1,6 +1,6 @@
 #pragma once
 
-class STexture;
+struct STexture;
 struct Font;
 
 constexpr u32 c_RenderLayers = 10;

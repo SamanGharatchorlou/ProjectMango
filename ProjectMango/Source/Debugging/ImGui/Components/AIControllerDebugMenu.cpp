@@ -10,10 +10,11 @@ using namespace ECS;
 
 u32 DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::AIController;
+	StringBuffer32 type_name = AIController::TypeName();
+	ComponentID type_id = AIController::TypeId();
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::AIController& aic = GetComponentRef(AIController, entity);
 		
@@ -30,15 +31,16 @@ u32 DebugMenu::DoAIControllerDebugMenu(ECS::Entity& entity)
 		
 	ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Pathing;
+	StringBuffer32 type_name = Pathing::TypeName();
+	ComponentID type_id = Pathing::TypeId();
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Pathing& pathing = GetComponentRef(Pathing, entity);
 
@@ -46,33 +48,35 @@ u32 DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }
 
 u32 DebugMenu::DoBehaviourStateDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::BehaviourState;
+	//StringBuffer32 type_name = AIController::TypeName();
+	ComponentID type_id = BehaviourState::TypeId();
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
-	{
-		//ECS::BehaviourState& behav = GetComponentRef(BehaviourState, entity);
+	//ImGui::PushID(entity + (int)type);
+	//if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	//{
+	//	//ECS::BehaviourState& behav = GetComponentRef(BehaviourState, entity);
 
 
-		//ImGui::Text("Current: ", ActionToString(behav. );
-	}
-	ImGui::PopID();
+	//	//ImGui::Text("Current: ", ActionToString(behav. );
+	//}
+	//ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }
 
 
 u32 DebugMenu::DoEntityStateDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::EntityState;
+	StringBuffer32 type_name = EntityState::TypeName();
+	ComponentID type_id = EntityState::TypeId();
 
-	ImGui::PushID(entity + (int)type);
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::EntityState& state = GetComponentRef(EntityState, entity);
 
@@ -88,5 +92,5 @@ u32 DebugMenu::DoEntityStateDebugMenu(ECS::Entity& entity)
 	}
 	ImGui::PopID();
 
-	return (u32)type;
+	return type_id;
 }

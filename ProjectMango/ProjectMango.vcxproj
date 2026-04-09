@@ -192,11 +192,9 @@
     <ClCompile Include="Source\Debugging\DebugDraw.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AIControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\ColliderDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\PlayerControllerDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\BiomeDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\Components\SpacialDebugMenus.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp" />

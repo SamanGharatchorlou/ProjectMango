@@ -2,7 +2,7 @@
 
 #include "ComponentHelpers.h"
 
-class STexture;
+struct STexture;
 
 namespace ECS
 {

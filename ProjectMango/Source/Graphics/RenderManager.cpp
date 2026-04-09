@@ -78,11 +78,11 @@ void RenderManager::render()
 
 				if (render_packs[i].subRect.isValid())
 				{
-					render_packs[i].texture->renderSubTexture(render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
+					render_packs[i].texture->renderSubTexture(sdl_renderer, render_packs[i].rect, render_packs[i].subRect, render_packs[i].rotation, render_packs[i].flipPoint, render_packs[i].flip);
 				}
 				else
 				{
-					render_packs[i].texture->render(render_packs[i].rect, render_packs[i].flip, render_packs[i].rotation, render_packs[i].flipPoint);
+					render_packs[i].texture->render(sdl_renderer, render_packs[i].rect, render_packs[i].flip, render_packs[i].rotation, render_packs[i].flipPoint);
 				}
 			}
 

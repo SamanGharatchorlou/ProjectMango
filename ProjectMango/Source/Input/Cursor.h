@@ -2,7 +2,8 @@
 
 #include "Input/Button.h"
 
-class STexture;
+struct STexture;
+struct SDL_Renderer;
 
 class Cursor
 {
@@ -24,7 +25,7 @@ public:
 
 public:
 	Cursor();
-	void render();
+	void render(SDL_Renderer* renderer);
 
 	void setTexture(STexture* texture) { mTexture = texture; }
 

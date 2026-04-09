@@ -144,13 +144,13 @@ namespace ECS
 			}
 		}
 
-		void EntityRemoveType(Entity entity, Component::Type type)
+		void EntityRemoveType(Entity entity, ComponentID component_id)
 		{
 			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
 				// need to check if this entity could be part of this system, it might not even be
 				// possible but we cant know that so we need to check all of them
-				if ( (entAndSystems[i]->signature & (u64)1 << type ))
+				if ( (entAndSystems[i]->signature & (u64)1 << component_id))
 				{
 					const u32 ent_count = (u32)entAndSystems[i]->entities.size();
 					for (int ent = 0; ent < ent_count; ent++)
@@ -168,7 +168,7 @@ namespace ECS
 			for (u32 i = 0; i < entOrSystems.size(); i++)
 			{
 				// need to check if this entity could be part of this system
-				if ((entOrSystems[i]->signature & (u64)1 << type))
+				if ((entOrSystems[i]->signature & (u64)1 << component_id))
 				{
 					const u32 ent_count = (u32)entOrSystems[i]->entities.size();
 					for (int ent = 0; ent < ent_count; ent++)

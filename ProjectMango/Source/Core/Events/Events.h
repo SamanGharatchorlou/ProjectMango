@@ -2,7 +2,7 @@
 
 //class Enemy;
 class TargePositionAttackAbility;
-class STexture;
+struct STexture;
 
 
 enum class Event

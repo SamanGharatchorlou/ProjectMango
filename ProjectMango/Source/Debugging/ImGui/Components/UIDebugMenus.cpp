@@ -6,14 +6,13 @@
 #include "ECS/Components/UIComponents.h"
 #include "Input/InputManager.h"
 
-u32 DebugMenu::DoUIButtonDebugMenu(ECS::Entity& entity)
+ComponentID DebugMenu::DoUIButtonDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::UIButton;
-
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	StringBuffer32 type_name = UIButton::TypeName();
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::UIButton& ui_button = GetComponentRef(UIButton, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + (int)UIButton::TypeId());
 
 		ImGui::Text("Is Pressed %d", ui_button.IsPressed(c_inputBuffer));
 		ImGui::Text("callback: %s", ui_button.callback.c_str());
@@ -21,17 +20,16 @@ u32 DebugMenu::DoUIButtonDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return UIButton::TypeId();
 }
 
 u32 DebugMenu::DoUITextDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::UIText;
-
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	StringBuffer32 type_name = UIText::TypeName();
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::UIText& ui_text = GetComponentRef(UIText, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + (int)UIText::TypeId());
 
 		const char* text = ui_text.text.c_str() ? ui_text.text.c_str() : "no text";
 		ImGui::Text("%s", ui_text.text.c_str() );
@@ -42,5 +40,5 @@ u32 DebugMenu::DoUITextDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return UIText::TypeId();
 }

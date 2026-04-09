@@ -7,12 +7,13 @@
 
 u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 {
-	ECS::Component::Type type = ECS::Component::Biome;
+	StringBuffer32 type_name = Biome::TypeName();
+	ComponentID type_id = Biome::TypeId();
 
-	if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
+	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::Biome& biome = GetComponentRef(Biome, entity);
-		ImGui::PushID(entity + (int)type);
+		ImGui::PushID(entity + type_id);
 
 		if(ImGui::TreeNode("Display Entities"))
 		{
@@ -62,5 +63,5 @@ u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 		ImGui::PopID();
 	}
 
-	return (u32)type;
+	return type_id;
 }

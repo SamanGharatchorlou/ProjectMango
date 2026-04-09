@@ -42,12 +42,12 @@ static int id_numb = 0;
     if(ImGui::Button("-")) {\
         RemoveComponent(type, s_selectedEntity); do_dropdown = false; }\
     if(ImGui::IsItemHovered()) \
-        ImGui::SetTooltip("%s", ECS::ComponentNames[(int)ECS::Component::type]); \
+        ImGui::SetTooltip("%s", ECS::type::TypeName()); \
     ImGui::SameLine(); ImGui::PopID(); \
 
 #define ComponentDropdown(menu) \
     if(do_dropdown) \
-        SetFlag<u64>(type, ECS::archetypeBit((ECS::Component::Type)menu(s_selectedEntity)));
+        SetFlag<u64>(type, ECS::archetypeBit((ComponentID)menu(s_selectedEntity)));
 
 #define DoComponentDropdown(component) \
     if(HasComponent(component,s_selectedEntity)) {\
@@ -192,7 +192,6 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(Transform);
         DoComponentDropdown(Pathing);
         DoComponentDropdown(AIController);
-        DoComponentDropdown(PlayerController);
         DoComponentDropdown(Health);
         DoComponentDropdown(Biome);
         DoComponentDropdown(UIButton);
@@ -205,11 +204,11 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(Faction);
 
         ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
-        for (u32 i = 0; i < ECS::Component::Count; i++) 
+        for (u32 i = 0; i < ComponentCount; i++)
         {
-            if(entity_type & ECS::archetypeBit((ECS::Component::Type)i))
+            if(entity_type & ECS::archetypeBit(i))
             {
-                if(type & ECS::archetypeBit((ECS::Component::Type)i))
+                if(type & ECS::archetypeBit(i))
                     continue;
 
                 ImGui::Button("-");

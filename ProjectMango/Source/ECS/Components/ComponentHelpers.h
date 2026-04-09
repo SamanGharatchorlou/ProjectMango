@@ -3,9 +3,9 @@
 namespace ECS
 {
 	// types
-	static u64 archetypeBit(ECS::Component::Type type)
+	static u64 archetypeBit(ComponentID component_id)
 	{
-		return (u64)1 << type;
+		return (u64)1 << component_id;
 	}
 
 	// directions

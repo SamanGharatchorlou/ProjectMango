@@ -30,56 +30,12 @@
 #include "Entities/MonsterRegistry.h"
 #include "Entities/States/Behaviours.h"
 
-static constexpr u32 c_allEntities = 128;
-static constexpr u32 c_veryCommon = 64 ;
-static constexpr u32 c_common = 32;
-static constexpr u32 c_uncommon = 16;
-static constexpr u32 c_rare = 4;
+
+
 
 void ECS::RegisterAllComponents()
 {
-	// add an entry into EntityCommon.h
-	DEFINE_COMPONENT(Transform, c_allEntities);
-	DEFINE_COMPONENT(Sprite, c_allEntities);
-	DEFINE_COMPONENT(Collider, c_allEntities);
-
-	DEFINE_COMPONENT(Physics, c_veryCommon);
-	DEFINE_COMPONENT(Animator, c_veryCommon);
-	DEFINE_COMPONENT(Health, c_veryCommon);
-	DEFINE_COMPONENT(Audio, c_veryCommon);
-	DEFINE_COMPONENT(Card, c_uncommon);
-
-	DEFINE_COMPONENT(EntityData, c_common)
-	DEFINE_COMPONENT(EntityState, c_common);
-	DEFINE_COMPONENT(AIController, c_common);
-	DEFINE_COMPONENT(Pathing, c_common);
-	DEFINE_COMPONENT(Faction, c_common);
-	DEFINE_COMPONENT(AIIntent, c_common);
-	DEFINE_COMPONENT(BehaviourMap, c_common);
-	DEFINE_COMPONENT(BehaviourState, c_common);
-	DEFINE_COMPONENT(Damage, c_common);
-	DEFINE_COMPONENT(DeathScentence, c_common);
-	DEFINE_COMPONENT(UIText, c_uncommon);
-	DEFINE_COMPONENT(Callback, c_uncommon);
-	DEFINE_COMPONENT(Colour, c_uncommon);
-
-	DEFINE_COMPONENT(SpawnRequest, c_uncommon);
-	DEFINE_COMPONENT(UIButton, c_uncommon);
-	DEFINE_COMPONENT(LayeredSprite, c_uncommon);
-	DEFINE_COMPONENT(SpriteCycle, c_uncommon);
-	DEFINE_COMPONENT(SpriteSheet, c_uncommon);
-	
-	DEFINE_COMPONENT(CoinStack, Colour::Count);
-	
-	DEFINE_COMPONENT(Spawner, c_rare);
-	DEFINE_COMPONENT(PlayerController, c_rare);
-	DEFINE_COMPONENT(Biome, c_rare);
-	DEFINE_COMPONENT(Inventory, c_rare);
-	DEFINE_COMPONENT(TurnState, c_rare);
-	DEFINE_COMPONENT(ActionRequest, c_rare);
-	DEFINE_COMPONENT(Jiggler, c_rare);
-
-	DEFINE_COMPONENT(UICursor, 1);
+	COMPONENT_LIST(DEFINE_COMPONENT)
 
 	ComponentInitialiser::InitAll();
 }

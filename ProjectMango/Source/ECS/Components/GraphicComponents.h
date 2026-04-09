@@ -2,7 +2,7 @@
 
 #include "ComponentHelpers.h"
 
-class STexture;
+struct STexture;
 
 // all components related to graphics and rendering go here
 namespace ECS

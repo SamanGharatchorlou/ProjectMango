@@ -113,8 +113,9 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 	FileManager* fm = FileManager::Get();
 	STexture *texture = new STexture;
 
-	Renderer::Get()->lock();
-	if (texture->loadFromFile(filePath))
+	Renderer* renderer = Renderer::Get();
+	renderer->lock();
+	if (texture->loadFromFile(filePath, renderer->sdlRenderer()))
 	{
 		StringBuffer64 label = fm->getItemName(filePath);
 		textureMap.add(label.c_str(), texture);
@@ -132,7 +133,7 @@ bool TextureManager::loadTexture(TextureMap& textureMap, const char* filePath)
 		success = false;
 	}
 
-	Renderer::Get()->unlock();
+	renderer->unlock();
 	return success;
 }
 

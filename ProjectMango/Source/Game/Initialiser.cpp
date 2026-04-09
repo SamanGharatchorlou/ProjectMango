@@ -11,21 +11,18 @@ ComponentInitialiser::ComponentInitialiser()
 
 void ComponentInitialiser::InitAll()
 {
-	bool defined_components[ECS::Component::Count] = { false };
+	std::vector<int> defined_components;
 
 	for( u32 i = 0; i < s_compInitialisers.size(); i++ )
 	{
 		s_compInitialisers[i]->OnInit();
 
-		defined_components[s_compInitialisers[i]->GetType()] = true;
+		defined_components.push_back(s_compInitialisers[i]->GetType());
 	}
 
-	for (u32 i = 0; i < ECS::Component::Count; i++)
+	if (defined_components.size() != ECS::ComponentCount)
 	{
-		if (!defined_components[i])
-		{
-			DebugPrint(Warning, "%s component has not been defined, add this to ComponentsSetup.cpp", ECS::ComponentNames[i]);
-		}
+		DebugPrint(Warning, "a component has not been defined initialised properly");
 	}
 }
 

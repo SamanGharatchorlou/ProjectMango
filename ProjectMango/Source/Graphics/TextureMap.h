@@ -1,6 +1,6 @@
 #pragma once
 
-class STexture;
+struct STexture;
 
 using StringTextureMap = std::unordered_map<StringBuffer64, STexture*>;
 
