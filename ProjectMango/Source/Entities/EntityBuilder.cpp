@@ -520,7 +520,11 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	AddComponent(BehaviourState, entity);
 
 	Inventory& inventory = AddComponent(Inventory, entity);
-	if(ECS::Relic* relic = RelicRegistry::GetRelic("Reduced Card Cost"))
+	if(ECS::Relic* relic = RelicRegistry::GetRelic("DiscountCardCost"))
+	{
+		inventory.relics.push_back(*relic);
+	}
+	if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseDrawRate"))
 	{
 		inventory.relics.push_back(*relic);
 	}
@@ -662,9 +666,17 @@ void DrawCards()
 {
 	ComponentArray<Card>& cards =  GetAllComponents(Card);
 	
+	// [ entity, tier ] 
+	// push these into a list first, otherwise we can invalidat the iterator
+	std::vector< std::pair<Entity,int> > entities;
 	for( auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++ )
 	{
 		const Card& card = cards.GetComponentByIndex(iter->second);
-		CardRegistry::DrawRandomCard(iter->first, card.tier);
+		entities.push_back({iter->first, card.tier});
+	}
+
+	for( u32 i = 0; i < entities.size(); i++ )
+	{
+		CardRegistry::DrawRandomCard(entities[i].first, entities[i].second);
 	}
 }

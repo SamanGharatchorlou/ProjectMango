@@ -441,12 +441,16 @@ namespace ECS
 			for( u32 i = 0; i < inventory->relics.size(); i++ )
 			{
 				const Relic& relic = inventory->relics[i];
+
+				// skip over any disabled relics
+				if(Contains(inventory->disabledRelicIds, relic.id))
+					continue;
+
 				if(relic.trigger == event)
 				{
 					relic.effectFn(relic, entity);
 				}
 			}
-		
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace CardRegistry
 	const ECS::Card* LookupCard(int index);
 
 	void DiscardCard(ECS::Entity entity);
+	void ReturnCardToDrawPile(ECS::Entity entity);
+
 	void DrawCard( ECS::Entity entity, int index );
 	void DrawRandomCard( ECS::Entity entity, int tier );
 }

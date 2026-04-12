@@ -145,6 +145,8 @@ namespace ECS
 
 		// relics we own
 		std::vector<Relic> relics;
+		// disabled relics - these dont except events
+		std::vector<BasicString> disabledRelicIds;
 
 		// array size always Colour::Count
 		void GetCardPower(int array[]) const;
