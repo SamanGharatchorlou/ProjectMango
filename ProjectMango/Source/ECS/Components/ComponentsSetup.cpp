@@ -28,6 +28,7 @@
 #include "Game/Readers/AnimationReader.h"
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
+#include "Entities/Registries/RelicRegistry.h"
 #include "Entities/States/Behaviours.h"
 
 static constexpr u32 c_allEntities = 128;
@@ -206,6 +207,8 @@ void ECS::ParseComponentData()
 	CardRegistry::ReadomFromJson("Tier3Cards", 2);
 
 	MonsterRegistry::Build( "CardMonsters" );
+
+	RelicRegistry::PopulateRegistry();
 }
 
 void ECS::ClearComponentData()

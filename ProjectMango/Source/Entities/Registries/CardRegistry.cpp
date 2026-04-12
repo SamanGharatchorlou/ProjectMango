@@ -209,9 +209,11 @@ namespace CardRegistry
 	{
 		if(entity != EntityInvalid)
 		{
-			if(!HasComponent(Card, entity))
+
+
+			//if(!HasComponent(Card, entity))
 			{
-				Card& new_card = AddComponent(Card, entity);
+				Card& new_card = GetOrAddComponent(Card, entity);
 				CardRegistry::GetCard(new_card, index);
 
 				Sprite& sprite = GetComponentRef(Sprite, entity);
@@ -226,6 +228,8 @@ namespace CardRegistry
 						break;
 					}
 				}
+
+				TriggerGameEvent(GameEvent::CardDrawn, entity);
 			}
 		}
 	}

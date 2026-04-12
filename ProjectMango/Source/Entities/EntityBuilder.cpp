@@ -10,6 +10,8 @@
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "Graphics/Raycast.h"
 #include "Entities/Registries/ResourceBank.h"
+#include "Entities/Registries/RelicRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
 #include "Game/Readers/AnimationReader.h"
 #include "Core/Helpers.h"
 
@@ -516,7 +518,12 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	AddComponent(PlayerController, entity);
 	//AddComponent(AIIntent, entity);
 	AddComponent(BehaviourState, entity);
-	AddComponent(Inventory, entity);
+
+	Inventory& inventory = AddComponent(Inventory, entity);
+	if(ECS::Relic* relic = RelicRegistry::GetRelic("Reduced Card Cost"))
+	{
+		inventory.relics.push_back(*relic);
+	}
 
 	Collider& collider = GetComponentRef(Collider, entity);
 	collider.SetFlag(Collider::IsPlayer);
@@ -533,6 +540,17 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	//if(DebugMenu::GetSelectedEntity() == EntityInvalid)
 	//	DebugMenu::SelectEntity(entity);
 		
+	return entity;
+}
+
+// Card
+// ---------------------------------------------------------
+Entity CreateCardEntity(const EntityMetaData& emd)
+{
+	Entity entity = CreateBasicObject( emd );
+	Card& card = AddComponent(Card, entity);
+	card.tier = emd.data.GetInt("Tier");
+
 	return entity;
 }
 
@@ -594,6 +612,8 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 	ASSERT(GetComponentRef(Transform, entity).size.isPositive(), "%s: Invalid Transform, has size 0", GetName(entity));
 }
 
+
+
 void CreateEntities(Entity& biome_entity)
 {
 	srand ((u32)time(NULL));
@@ -635,5 +655,16 @@ void CreateEntities(Entity& biome_entity)
 				PostProcess(entity, entitiy_meta_data[e]);
 			}
 		}
+	}
+}
+
+void DrawCards()
+{
+	ComponentArray<Card>& cards =  GetAllComponents(Card);
+	
+	for( auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++ )
+	{
+		const Card& card = cards.GetComponentByIndex(iter->second);
+		CardRegistry::DrawRandomCard(iter->first, card.tier);
 	}
 }

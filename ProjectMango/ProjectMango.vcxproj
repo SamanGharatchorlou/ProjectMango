@@ -158,6 +158,7 @@
     <ClCompile Include="Source\Entities\Enemies\EnemyTurn.cpp" />
     <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerTurn.cpp" />
+    <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\ResourceBank.cpp" />
     <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Source\Entities\Enemies\EnemyTurn.h" />
     <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h" />
     <ClInclude Include="Source\Entities\Player\PlayerTurn.h" />
+    <ClInclude Include="Source\Entities\Registries\RelicRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\ResourceBank.h" />
     <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
     <ClInclude Include="Source\Audio\Audio.h" />

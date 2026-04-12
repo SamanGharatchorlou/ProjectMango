@@ -31,7 +31,7 @@ namespace AIStrategy
 		std::vector<Colour::Type> colours;
 		for( u32 i = 0; i < Colour::Count; i++ )
 		{
-			remaining_cost[i] = Maths::Max( card->cost[i] - buying_power[i], 0 );
+			remaining_cost[i] = Maths::Max( card->Cost(i) - buying_power[i], 0 );
 			if(remaining_cost[i] > 0)
 				colours.push_back((Colour::Type)i);
 		}
@@ -69,7 +69,7 @@ namespace AIStrategy
 			int remaining_cost[Colour::Count];
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				remaining_cost[i] = Maths::Max( card->cost[i] - buying_power[i], 0);
+				remaining_cost[i] = Maths::Max( card->Cost(i) - buying_power[i], 0);
 				total_remaining += remaining_cost[i];
 			}
 

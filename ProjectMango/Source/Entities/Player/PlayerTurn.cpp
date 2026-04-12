@@ -22,7 +22,7 @@ char turnLog[256] = { 0 };
 static void TakeCoins(Entity entity, Colour::Type colour, int amount)
 {
 	Inventory& inventory = GetComponentRef(Inventory, entity);
-	inventory.coins[colour] += amount;
+	inventory.coins[colour] = Maths::clamp(inventory.coins[colour] + amount, 0, 5);
 
 	// return coins to the stack
 	CoinStack& cs = GetCoinStack(Faction::None, (u32)colour);
@@ -35,8 +35,9 @@ static void TakeCoins(Entity entity, Colour::Type colour, int amount)
 
 static void TakeCard(Entity entity, const Card& card)
 {
-	int card_cost[Colour::Count];
-	memcpy(card_cost, card.cost, sizeof(int) * (int)Colour::Count);
+	//int card_cost[Colour::Count];
+
+	//memcpy(card_cost, card.cost, sizeof(int) * (int)Colour::Count);
 
 	Inventory& inventory = GetComponentRef(Inventory, entity);
 	int card_power[Colour::Count];
@@ -45,11 +46,13 @@ static void TakeCard(Entity entity, const Card& card)
 	// reduce cost of the card by the players card power
 	for( u32 i = 0; i < Colour::Count; i++ )
 	{
+		int cost = card.Cost(i);
+
 		Colour::Type type = (Colour::Type)i;
-		card_cost[i] = Maths::Max( 0, card_cost[i] - card_power[i]);
+		int card_cost = Maths::Max( 0, card.Cost(i) - card_power[i]);
 
 		// returning coins
-		TakeCoins(entity, type, -card_cost[i]);
+		TakeCoins(entity, type, -card_cost);
 	}
 
 	TurnState& turn = GetComponentRef(TurnState, entity);
@@ -201,12 +204,12 @@ void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 			snprintf(buffer, length, "\tCard Tier: %d, Points: %d, Power: %s, Cost: ", collected_card->tier, collected_card->points, power );
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				if(collected_card->cost[i] > 0)
+				if(collected_card->Cost(i) > 0)
 				{
 					int spent_coins = turn.collectedCoins[i];
 
 					char cost[32];
-					snprintf(cost, 32, " %s: %d(%d),", Colour::s_typeToString.at((Colour::Type)i).c_str(), collected_card->cost[i], spent_coins );
+					snprintf(cost, 32, " %s: %d(%d),", Colour::s_typeToString.at((Colour::Type)i).c_str(), collected_card->Cost(i), spent_coins );
 					strncat(buffer, cost, strlen(cost));
 				}
 			}

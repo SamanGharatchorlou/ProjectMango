@@ -35,6 +35,7 @@ void GameState::Init()
 	activeLevel = biome_entity;
 	
 	CreateEntities(biome_entity);
+	DrawCards();
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;

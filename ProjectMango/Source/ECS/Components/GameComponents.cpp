@@ -72,7 +72,7 @@ namespace ECS
 			inventory->GetBuyingPower(buying_power);
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				if(buying_power[i] < cost[i])
+				if( buying_power[i] < Cost(i) )
 					return false;
 			}
 
@@ -80,6 +80,11 @@ namespace ECS
 		}
 
 		return false;
+	}
+
+	int Card::Cost(u32 index) const
+	{
+		return cost[index] - discount[index];
 	}
 	
 	Entity Card::GetMonster() const
@@ -427,4 +432,21 @@ namespace ECS
 		}
 	}
 
+	
+	void TriggerGameEvent(GameEvent event, Entity entity)
+	{
+		Entity player = Faction::GetPlayer();
+		if(Inventory* inventory = GetComponent(Inventory, player))
+		{
+			for( u32 i = 0; i < inventory->relics.size(); i++ )
+			{
+				const Relic& relic = inventory->relics[i];
+				if(relic.trigger == event)
+				{
+					relic.effectFn(relic, entity);
+				}
+			}
+		
+		}
+	}
 }

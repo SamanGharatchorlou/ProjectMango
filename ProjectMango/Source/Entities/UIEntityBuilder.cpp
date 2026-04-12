@@ -59,14 +59,6 @@ Entity CreateUIText(const EntityMetaData& emd)
 	return entity;
 }
 
-Entity CreateCardEntity(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-	CardRegistry::DrawRandomCard(entity, emd.data.GetInt("Tier"));
-
-	return entity;
-}
-
 void CreateUIEntities()
 {
 	CreateUICursor();

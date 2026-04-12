@@ -378,6 +378,9 @@
     <ClCompile Include="Source\Entities\Enemies\AIStrategyCardPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Readers\AnimationReader.h">
@@ -1155,6 +1158,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Enemies\AIStrategyCardPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Registries\RelicRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

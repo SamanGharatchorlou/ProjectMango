@@ -10,6 +10,13 @@ namespace ECS
 	void CardSystem::Update(float dt)
 	{
 		UICursor* cursor = UICursor::Get();
+
+		int buying_power[Colour::Count];
+
+		Entity player = Faction::GetPlayer();
+		if(Inventory* inventory = GetComponent(Inventory, player))
+			inventory->GetBuyingPower(buying_power);
+
 		for (Entity entity : entities)
 		{
 			Card& card = GetComponentRef(Card, entity);
@@ -40,27 +47,49 @@ namespace ECS
 				}
 			}
 
-			Entity player = Faction::GetPlayer();
-			if(Inventory* inventory = GetComponent(Inventory, player))
+			for( int i = 0; i < Colour::Count; i++ )
 			{
-				int buying_power[Colour::Count];
-				inventory->GetBuyingPower(buying_power);
+				if(card.cost[i] == 0)
+					continue;
 
-				for( int i = 0; i < Colour::Count; i++ )
+				std::vector<Entity>& cost_entities = card.costEntities[i];
+				for( int j = 0; j < buying_power[i]; j++ )
 				{
-					if(card.cost[i] == 0)
-						continue;
-
-					std::vector<Entity>& cost_entities = card.costEntities[i];
-					for( int j = 0; j < buying_power[i]; j++ )
+					if(cost_entities.size() > j)
 					{
-						if(cost_entities.size() > j)
-						{
-							Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
-							sprite.SetTexture("cost_filled");
-						}
+						Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+						sprite.SetTexture("cost_filled");
 					}
 				}
+			}
+
+			for( int i = 0; i < Colour::Count; i++ )
+			{
+				if(card.discount[i] == 0)
+					continue;
+
+				std::vector<Entity>& cost_entities = card.costEntities[i];
+				
+				for( u32 j = 0; j < card.discount[i]; j++ )
+				{
+					int index = cost_entities.size() - 1;
+					index = index - j;
+					
+					if(cost_entities.size() > index)
+					{
+						Sprite& sprite = GetComponentRef(Sprite, cost_entities[index]);
+						sprite.SetTexture("cost_removed");
+					}
+				}
+				
+				//for( int j = 0; j < buying_power[i]; j++ )
+				//{
+				//	if(cost_entities.size() > j)
+				//	{
+				//		Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+				//		sprite.SetTexture("cost_filled");
+				//	}
+				//}
 			}
 		}
 	}

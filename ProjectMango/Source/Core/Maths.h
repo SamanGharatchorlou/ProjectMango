@@ -4,7 +4,7 @@ namespace Maths
 {
 	constexpr float pi = 3.14159f;
 
-	// including min, not max (min, max]
+	// including min, not max [min, max)
 	static int randomNumberBetween(int min, int max)
 	{
 		return (rand() % (max - min)) + min;

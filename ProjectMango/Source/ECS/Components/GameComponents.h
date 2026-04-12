@@ -81,10 +81,12 @@ namespace ECS
 
 		// what to pay to aquire the card
 		int cost[Colour::Count] { 0 };
+		int discount[Colour::Count] { 0 };
 
 		std::vector<Entity> costEntities[Colour::Count];
 
 		// how many coins it provides once owned
+		// turn into a simple colour, doesnt need to be an array
 		int power[Colour::Count] { 0 };
 
 		// points... for something, not sure yet
@@ -100,6 +102,8 @@ namespace ECS
 		void RegenerateChildDisplays();
 		bool CanAfford(Entity entity) const;
 		Entity GetMonster() const;
+
+		int Cost(u32 index) const;
 	};
 
 	enum class GameEvent
@@ -107,19 +111,25 @@ namespace ECS
 		None,
 		CoinCollected,
 		CardAquired,
+		CardDrawn,
 		MonsterSummoned,
 		TurnStart,
 		TurnEnd
 	};
 
-	typedef void(*RelicEffectFn)(ECS::Entity entity);
 
 	// turn into a component? does it need to be, dont think so
 	struct Relic
 	{
+		typedef void(*EffectFn)(const Relic& relic, ECS::Entity entity);
+
 		BasicString id;
+		BasicString description;
 		GameEvent trigger;
-		RelicEffectFn effectFn;
+		EffectFn effectFn;
+
+		// might only affect a specific colour
+		Colour::Type colour = Colour::Count;
 	};
 
 	struct Inventory
@@ -142,6 +152,8 @@ namespace ECS
 
 		int GetPoints() const;
 	};
+
+	void TriggerGameEvent(GameEvent event, Entity entity);
 
 	struct TurnState
 	{
