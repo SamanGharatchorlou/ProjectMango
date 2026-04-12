@@ -59,15 +59,13 @@ namespace ECS
 				Transform& child_transform = GetComponentRef(Transform, child);
 				VectorF child_world_pos = worldPosition + child_transform.localPosition;
 
-				if (facingDirection != SDL_FLIP_NONE)
+				if(child_transform.facingDirection != facingDirection)
 				{
+					// if the parent is flipped also flip the child about the parents flip point
 					VectorF flip_distance = child_transform.localPosition - GetHorizontalFlipPoint();
 					flip_distance.y = 0;
 					child_world_pos -= (flip_distance * 2.0f + VectorF(child_transform.size.x, 0.0f));
-				}
 
-				if(child_transform.facingDirection != facingDirection)
-				{
 					FlipFacingDirection(child);
 				}
 
@@ -101,7 +99,6 @@ namespace ECS
 			collider->UpdateFromTransform(*this);
 		}
 
-		
 		EntityData& entity_data = GetComponentRef(EntityData, entity);
 		if(entity_data.parent != EntityInvalid)
 		{

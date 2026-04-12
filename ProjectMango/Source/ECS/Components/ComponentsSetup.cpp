@@ -26,8 +26,8 @@
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 #include "Game/Readers/AnimationReader.h"
-#include "Entities/CardRegistry.h"
-#include "Entities/MonsterRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
+#include "Entities/Registries/MonsterRegistry.h"
 #include "Entities/States/Behaviours.h"
 
 static constexpr u32 c_allEntities = 128;
@@ -38,6 +38,9 @@ static constexpr u32 c_rare = 4;
 
 void ECS::RegisterAllComponents()
 {
+	DEFINE_COMPONENT(AIStrategy, c_uncommon);
+	DEFINE_COMPONENT(UIIntentIcon, c_uncommon);
+
 	// add an entry into EntityCommon.h
 	DEFINE_COMPONENT(Transform, c_allEntities);
 	DEFINE_COMPONENT(Sprite, c_allEntities);
@@ -94,7 +97,7 @@ void ECS::RegisterAllSystems()
 	// --------- input/UI systems ---------
 	
 	// UI
-	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton) | ArcheBit(Card);
+	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton);
 	ecs->RegisterOrSystem<UISystem>(UISignature);
 
 	// Input
@@ -134,16 +137,16 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<CardSystem>(cardSignature);
 
 	// todo: can remove this now?
-	// Compoenent Updates - runs all basic object component update function
-	Signature ComponentsSignature = ArcheBit(Jiggler);
+	// Compoenent Updates - run any random part update loops here if they dont need their own system
+	Signature ComponentsSignature = 0;
 	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 	
 	// --------- state systems ---------
 
 	// AI Controller
-	Signature AIControllerSignature = ArcheBit(AIController);
-	ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
+	//Signature AIControllerSignature = ArcheBit(AIController);
+	//ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
 
 	// State Resolution
 	Signature StateResolutionSignature = ArcheBit(EntityState) | ArcheBit(AIIntent) | ArcheBit(BehaviourState);

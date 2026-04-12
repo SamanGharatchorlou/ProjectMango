@@ -42,14 +42,6 @@ namespace ECS
 				}
 			}
 
-			// this breaks the attack recovery
-			//bool coolingdown_from_attack = (b_state.attackFinishedTimeMS + b_state.attackCooldownTimeMS) > GetTicksMS();
-			//if(coolingdown_from_attack)
-			//{
-			//	can_attack = false;
-			//	can_move = false;
-			//}
-
 			Action::Enum& next_state = state.next;
 			next_state = intent.wantsToBeInactive ? Action::Inactive : Action::Idle;
 

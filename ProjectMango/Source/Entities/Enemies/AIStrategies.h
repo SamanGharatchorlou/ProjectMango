@@ -1,21 +1,10 @@
 #pragma once
 
-namespace AIStrategy
+namespace ECS { struct AIIntent; }
+
+namespace AIStrategies
 {
-	enum Difficulty
-	{
-		Easy,
-		Medium,
-		Hard
-	};
+	void SimpleAttacker(ECS::Entity entity, ECS::AIIntent& intent);
 
-	void BuyCheapestCard(ECS::Entity entity);
-	void BuyBestCard(ECS::Entity entity);
-	void TakeRandomAction(ECS::Entity entity);
-
-	//enum Phase
-	//{
-	//	None,
-	//	Building,
-	//};
+	void ShockSweeper(ECS::Entity entity, ECS::AIIntent& intent);
 }

@@ -2938,9 +2938,9 @@
 									"params": ["AutoConfirmTurn"]
 								}] },
 								{ "__identifier": "Center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
-								{ "__identifier": "Sprite", "__type": "String", "__value": "cross", "__tile": null, "defUid": 47, "realEditorValues": [{
+								{ "__identifier": "Sprite", "__type": "String", "__value": "tick", "__tile": null, "defUid": 47, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["cross"]
+									"params": ["tick"]
 								}] }
 							],
 							"__worldX": 240,

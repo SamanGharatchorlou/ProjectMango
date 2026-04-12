@@ -23,6 +23,8 @@ static void UpdateCostIcons(Entity entity)
 	// there are more coins than we are showing
 	if(diff > 0)
 	{
+		// BUG: visible_cost = 5 and coin_stack.remaining = 6, that should never be 6 need to clamp it somewhere
+		// getting cards via debug though
 		for( int i = visible_cost; i < coin_stack.remaining; i++ )
 		{
 			Sprite& sprite = GetComponentRef(Sprite, costs[i]);

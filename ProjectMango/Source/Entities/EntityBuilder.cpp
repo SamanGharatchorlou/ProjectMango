@@ -9,7 +9,7 @@
 #include "Game/States/GameState.h"
 #include "Debugging/ImGui/ImGuiMainWindows.h"
 #include "Graphics/Raycast.h"
-#include "Entities/ResourceBank.h"
+#include "Entities/Registries/ResourceBank.h"
 #include "Game/Readers/AnimationReader.h"
 #include "Core/Helpers.h"
 
@@ -272,7 +272,8 @@ static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 
 	// Spawner
 	AddComponent(Spawner, entity);
-	AddComponent(EntityState, entity);
+	EntityState& state = AddComponent(EntityState, entity);
+	state.current = Action::Inactive;
 
 	Collider& collider = AddComponent(Collider, entity);
 	collider.SetFlag(Collider::GhostCollider);
@@ -280,6 +281,9 @@ static ECS::Entity CreateSpawner(const ECS::EntityMetaData& emd)
 
 	Transform& transform = GetComponentRef(Transform, entity);
 	transform.Init(&emd, collider);
+
+	Animator& animator = GetComponentRef(Animator, entity);
+	animator.state = TimeState::Stopped;
 
 	return entity;
 }
@@ -317,7 +321,7 @@ Entity CreateActor(const ECS::EntityMetaData& emd, const char* id_override)
 	// Sprite
 	Sprite& sprite = AddComponent(Sprite, entity);
 	sprite.Init(nullptr);
-	sprite.params.renderLayer = RenderLayer::Characters;
+	sprite.params.renderLayer = RenderLayer::Monsters;
 
 	// EntityState
 	EntityState& character_state = AddComponent(EntityState, entity);
@@ -345,6 +349,11 @@ Entity CreateMonster(const ECS::EntityMetaData& emd)
 
 	BehaviourMap& map = AddComponent(BehaviourMap, entity);
 	PopulateMonsterBehaviours(map);
+
+	// Turn
+	TurnState& turn = AddComponent(TurnState, entity);
+	// insert ourself after the player, before the enemy once we've been summond
+	turn.initiative = 8;
 
 	return entity;
 }
@@ -391,6 +400,38 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	return entity;
 }
 
+static void BuildIntentIconEntity(Entity icon_entity)
+{
+	UIIntentIcon& icon = AddComponent(UIIntentIcon, icon_entity);
+	UIIntentIcon::Display approach	{ "basic_approach_icon", EnemyPhase::Approach };
+	UIIntentIcon::Display attack	{ "basic_attack_icon", EnemyPhase::Attack };
+	UIIntentIcon::Display recovery	{ "basic_recovery_icon", EnemyPhase::Recover };
+	icon.displays.push_back(approach);
+	icon.displays.push_back(attack);
+	icon.displays.push_back(recovery);
+
+	// Transform
+	Transform& child_transform = AddComponent(Transform, icon_entity);
+	VectorF size = VectorF(16,16);
+	child_transform.size = AdjustToScreenSize(size);
+
+	
+	Entity parent = GetParent(icon_entity);
+	const Transform& parent_transform = GetComponentRef(Transform, parent);
+	VectorF object_tc = parent_transform.GetObjectRect().TopCenter();
+	VectorF top_left = parent_transform.GetRect().TopLeft();
+
+
+	VectorF local_position = VectorF(object_tc.x- top_left.x, (object_tc.y - top_left.y) * 0.25f );
+	child_transform.SetLocalPosition( local_position );
+
+	// Sprite
+	Sprite& child_sprite = AddComponent(Sprite, icon_entity);
+	child_sprite.params.renderLayer = RenderLayer::UI;
+	child_sprite.params.colourMod.setOpacity(0.85f);
+	//child_sprite.SetTexture( "basic_recovery_icon" );
+}
+
 // Enemy
 // ---------------------------------------------------------
 // create an actual enemy i.e. the thing the player fights
@@ -401,13 +442,53 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	
 	AddComponent(AIIntent, entity);
 	AddComponent(Inventory, entity);
+	
+	// AIStrategy
+	AIStrategy& strategy = AddComponent(AIStrategy, entity);
+	EnemyPhase recover { EnemyPhase::Recover, 1 };
+	EnemyPhase approach { EnemyPhase::Approach, 99 }; // once we reach the target
+	EnemyPhase attack { EnemyPhase::Attack, 1 };
+	
+	AttackPattern approach_pattern;
+	approach_pattern.name = "Approach";
+	approach_pattern.phases.push_back(recover);
+	approach_pattern.phases.push_back(approach);
 
+	AttackPattern attack_pattern; 
+	approach_pattern.name = "Attack";
+	attack_pattern.phases.push_back(recover);
+	attack_pattern.phases.push_back(attack);
+	attack_pattern.phases.push_back(recover);
+
+	strategy.attackPatterns.push_back(approach_pattern);
+	strategy.attackPatterns.push_back(attack_pattern);
+
+	strategy.currentPhase = 0;
+	strategy.turnsLeft = 1;
+	
+	// UIIntentIcon
+	Entity child_entity = CreateEntity("intent_icon");
+	EntityData::SetParent(child_entity, entity);
+	BuildIntentIconEntity(child_entity);
+
+	// Collider
 	Collider& collider = GetComponentRef(Collider, entity);
 	collider.SetFlag(Collider::IsEnemy);
 
+	// AIController
 	AIController& ai = AddComponent(AIController, entity);
-	ai.isDisabled = true;
+	ai.isDisabled = false;
 	
+	// BehaviourState
+	BehaviourState& state = AddComponent(BehaviourState, entity);
+	state.Init();
+
+	BehaviourMap& map = AddComponent(BehaviourMap, entity);
+	PopulateDefaultBehaviours(map);
+
+	// link this up the to kind of attack or phase
+	Damage& damage = AddComponent(Damage, entity);
+	damage.value = 1;
 
 	// Turn
 	TurnState& turn = AddComponent(TurnState, entity);
@@ -419,18 +500,21 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 		game_state->enemy = entity;
 	}
 		
+	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
+		DebugMenu::SelectEntity(entity);
+
 	return entity;
 }
 
-// Enemy
+// Player
 // ---------------------------------------------------------
-// create an actual enemy i.e. the thing the player fights
 Entity CreatePlayer(const ECS::EntityMetaData& emd)
 {	
 	ECS::Entity entity = CreateActor(emd, nullptr);
 
+	// todo(saman): does the player need all this stuff?
 	AddComponent(PlayerController, entity);
-	AddComponent(AIIntent, entity);
+	//AddComponent(AIIntent, entity);
 	AddComponent(BehaviourState, entity);
 	AddComponent(Inventory, entity);
 
@@ -442,8 +526,12 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	TurnState& turn = AddComponent(TurnState, entity);
 	turn.initiative = 5;
 
-	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
-		DebugMenu::SelectEntity(entity);
+	// edit the render layer from the default (Monsters)
+	Sprite& sprite = GetComponentRef(Sprite, entity);
+	sprite.params.renderLayer = RenderLayer::Player;
+
+	//if(DebugMenu::GetSelectedEntity() == EntityInvalid)
+	//	DebugMenu::SelectEntity(entity);
 		
 	return entity;
 }

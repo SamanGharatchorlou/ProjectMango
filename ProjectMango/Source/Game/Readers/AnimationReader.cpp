@@ -235,9 +235,9 @@ namespace AnimationReader
 							if(anims[i].HasMember("attack_vfx"))
 								hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
 							
-							hitbox_data.attackFrame = hitbox_data.hitFrame;
-							if(anims[i].HasMember("attack_frame"))
-								hitbox_data.attackFrame = anims[i]["attack_frame"].GetInt();
+							//hitbox_data.attackFrame = hitbox_data.hitFrame;
+							//if(anims[i].HasMember("attack_frame"))
+							//	hitbox_data.attackFrame = anims[i]["attack_frame"].GetInt();
 							
 							if(anims[i].HasMember("damage_ratio"))
 								hitbox_data.damageRatio = anims[i]["damage_ratio"].GetFloat();

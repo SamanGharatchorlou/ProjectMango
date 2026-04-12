@@ -98,7 +98,7 @@ namespace DebugMenu
 		ImGui::SameLine();
 		ImGui::Checkbox("Transforms", &s_transformWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("GameState", &s_gameStateWindow);
+		ImGui::Checkbox("Game State", &s_gameStateWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Tweakers", &s_tweakerWindow);
 		ImGui::SameLine();

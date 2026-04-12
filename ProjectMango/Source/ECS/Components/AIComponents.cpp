@@ -3,16 +3,57 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/SpacialComponents.h"
+#include "Game/FrameRateController.h"
 
 namespace ECS
 {	
+	void BehaviourState::Reset()
+	{
+		didHit = false;
+		playedAttackVfx = false;
+		playedHitVfx = false;
+	}
+
 	void BehaviourState::Init()
 	{
+		Reset();
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			accelleration = config->data.GetFloat("acceleration");
 			attackCooldownTimeMS = (u64)config->data.GetInt("attack_cooldown_time_ms");
 			//actionCooldownTimeMS = (u64)config->data.GetInt("action_cooldown_time_ms");
 		}
+	}
+
+	int AIStrategy::GetNextPhase() const
+	{
+		const AttackPattern& pattern = attackPatterns[currentAttackPattern];
+		return (currentPhase + 1) % (int)pattern.phases.size(); 
+	}
+
+	void AIStrategy::NextPhase() 
+	{
+		currentPhase = GetNextPhase(); 
+		turnsLeft = GetCurrentPhase().turnDuration;
+
+		const FrameRateController& frc = FrameRateController::Get();
+		currentPhaseEnteredFrame = FrameRateController::Get().frameCount;
+	}
+	
+	EnemyPhase& AIStrategy::GetCurrentPhase()
+	{
+		return attackPatterns[currentAttackPattern].phases[currentPhase];
+	}
+
+	const EnemyPhase& AIStrategy::GetCurrentPhase() const
+	{
+		return attackPatterns[currentAttackPattern].phases[currentPhase];
+	}
+
+	void AIStrategy::NextAttackPattern()
+	{
+		currentAttackPattern = (currentAttackPattern + 1) % (int)attackPatterns.size();
+		currentPhase = 0;
+		turnsLeft = GetCurrentPhase().turnDuration;
 	}
 }

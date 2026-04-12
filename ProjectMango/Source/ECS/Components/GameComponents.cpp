@@ -5,10 +5,10 @@
 #include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
-#include "Entities/CardRegistry.h"
-#include "Entities/MonsterRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
+#include "Entities/Registries/MonsterRegistry.h"
 #include "Entities/EntityBuilder.h"
-#include "Entities/ResourceBank.h"
+#include "Entities/Registries/ResourceBank.h"
 #include "Core/Helpers.h"
 #include "Game/States/GameState.h"
 
@@ -246,7 +246,9 @@ namespace ECS
 		memset(collectedCoins, 0, sizeof(int) * (int)Colour::Count);
 		collectedCardSource = EntityInvalid;
 		canEndTurn = false;
+		tryEndTurn = false;
 		collectedCardRegIndex = -1;
+		endTurnCooldownSecs = 0.0f;
 	}
 	
 	bool TurnState::CanAquireMoreResources() const

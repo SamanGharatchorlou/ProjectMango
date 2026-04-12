@@ -28,6 +28,8 @@ namespace ECS
 			// exit
 			if(state.justChanged)
 			{
+				b_state.Reset();
+
 				behaviours.attemptEnterFunction = true;
 
 				Action::Enum previous_state = state.backlog.back();

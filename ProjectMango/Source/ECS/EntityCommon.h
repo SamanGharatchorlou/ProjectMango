@@ -53,6 +53,8 @@ namespace ECS
 			_entry( Faction ) \
 			_entry( BehaviourMap ) \
 			_entry( BehaviourState ) \
+			_entry( AIStrategy ) \
+			_entry( UIIntentIcon ) \
 
 	struct Component
 	{

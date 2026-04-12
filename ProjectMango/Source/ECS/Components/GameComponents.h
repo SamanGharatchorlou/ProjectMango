@@ -102,6 +102,26 @@ namespace ECS
 		Entity GetMonster() const;
 	};
 
+	enum class GameEvent
+	{
+		None,
+		CoinCollected,
+		CardAquired,
+		MonsterSummoned,
+		TurnStart,
+		TurnEnd
+	};
+
+	typedef void(*RelicEffectFn)(ECS::Entity entity);
+
+	// turn into a component? does it need to be, dont think so
+	struct Relic
+	{
+		BasicString id;
+		GameEvent trigger;
+		RelicEffectFn effectFn;
+	};
+
 	struct Inventory
 	{
 		COMPONENT_TYPE(Inventory)
@@ -112,6 +132,9 @@ namespace ECS
 
 		// cards we own
 		std::vector<int> cards;
+
+		// relics we own
+		std::vector<Relic> relics;
 
 		// array size always Colour::Count
 		void GetCardPower(int array[]) const;
@@ -126,13 +149,15 @@ namespace ECS
 
 		int turnIndex = 0;
 		int initiative = 0;
+		
+		bool tryEndTurn = false;
 		bool canEndTurn = false;
-		bool isActiveTurn = false;;
 
-		u64 lastActionTimeMS = 0;
+		// a cooldown time between ending the turn and moving onto the next turn state
+		float endTurnCooldownSecs = 0;
 
+		// player specific state
 		int collectedCoins[Colour::Count] { 0 };
-
 		int collectedCardRegIndex = -1;
 		Entity collectedCardSource = EntityInvalid;
 

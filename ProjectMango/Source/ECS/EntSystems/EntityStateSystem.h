@@ -11,4 +11,8 @@ namespace ECS
 
 		void Update(float dt) override;
 	};
+
+	bool CanChangeState(Entity entity);
+	bool IsAttackState(Entity entity);
+	bool FinishedAttacking(Entity entity);
 }

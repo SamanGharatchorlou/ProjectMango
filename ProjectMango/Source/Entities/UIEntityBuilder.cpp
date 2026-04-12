@@ -4,7 +4,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "Input/InputManager.h"
 #include "EntityBuilder.h"
-#include "Entities/CardRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
 
 using namespace ECS;
 

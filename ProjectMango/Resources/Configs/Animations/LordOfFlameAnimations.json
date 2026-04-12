@@ -29,7 +29,6 @@
 					"hitbox_pos": [ 0.262, 0.151 ],
 					"hitbox_size": [ 0.320, 0.844 ],
 					"attack_vfx" : "LordOfFlameSlam",
-					"attack_frame" : 3,
 					"damage_ratio" : 0.8
 				}
 			]

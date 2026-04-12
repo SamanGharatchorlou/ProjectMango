@@ -5,7 +5,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "Entities/EntityBuilder.h"
 #include "Graphics/Raycast.h"
-#include "Entities/CardRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
 
 namespace ECS
 {
