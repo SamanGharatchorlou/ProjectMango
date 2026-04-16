@@ -35,6 +35,45 @@ namespace ECS
 		bool wantsToMove = false;
 		bool wantsToAttack = false;
 	};
+
+	struct EnemyPhase
+	{
+		enum Type
+		{
+			Approach, Attack, Recover
+		};
+
+		Type type;
+		int turnDuration = 1; // how many turns we stay in this phase
+	};
+
+	struct AttackPattern
+	{
+		BasicString name;
+		std::vector<EnemyPhase> phases;
+	};
+
+	struct AIStrategy
+	{
+		COMPONENT_TYPE(AIStrategy)
+
+		std::vector<AttackPattern> attackPatterns;
+
+		int currentAttackPattern = 0;
+		int currentPhase = 0;
+		int turnsLeft = 0;
+
+		int currentPhaseEnteredFrame = 0;
+
+		// phase
+		void NextPhase();
+		int GetNextPhase() const;
+		EnemyPhase& GetCurrentPhase();
+		const EnemyPhase& GetCurrentPhase() const;
+
+		// attack pattern
+		void NextAttackPattern();
+	};
 	
 	typedef void (*BehaviourFunction)( ECS::Entity );
 
@@ -65,13 +104,8 @@ namespace ECS
 		// how much of the total damage this does, i.e. attack + follow up attack can do 0.5 each
 		float damageRatio = 1.0f;
 
+		// the frame at which the actual hit occours, take damage, fire vfx etc
 		int hitFrame = 0;
-		int attackFrame = 0;
-
-		bool didHit = false;
-
-		bool playedAttackVfx = false;
-		bool playedHitVfx = false;
 	};
 
 	// pass/get this data when running behaviours from the behaviour map
@@ -84,9 +118,15 @@ namespace ECS
 		// time the last attack finished and the cooldown begins
 		u64 attackCooldownTimeMS = 0;
 		u64 attackFinishedTimeMS = 0;
+		
+		// reset when we enter a new state
+		bool didHit = false;
+		bool playedAttackVfx = false;
+		bool playedHitVfx = false;
 
 		std::unordered_map<Action::Enum, AttackStateData> attackData;
 
 		void Init();
+		void Reset();
 	};
 }

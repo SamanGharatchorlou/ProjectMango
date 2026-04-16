@@ -8,6 +8,13 @@
 			"spriteSheet": "warp 28x41",
 			"animations": [
 				{
+					"action": "Inactive",
+					"startIndex": 9,
+					"frameCount": 9,
+					"frameTime": 1,
+					"looping" : true
+				},
+				{
 					"action": "Active",
 					"startIndex": 0,
 					"frameCount": 9,

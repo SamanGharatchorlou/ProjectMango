@@ -20,7 +20,7 @@ namespace ECS
 
 				if(TurnState* turn = GetComponent(TurnState, entity))
 				{
-					intent->wantsToBeInactive = !turn->isActiveTurn;
+					//intent->wantsToBeInactive = !turn->isActiveTurn;
 				}
 			}
 		}

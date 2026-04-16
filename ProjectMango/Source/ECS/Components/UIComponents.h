@@ -58,4 +58,17 @@ namespace ECS
 
 		void Render();
 	};
+
+	struct UIIntentIcon
+	{
+		COMPONENT_TYPE(UIIntentIcon);
+
+		struct Display
+		{
+			BasicString icon;
+			u32 intent;
+		};
+
+		std::vector<Display> displays;
+	};
 }

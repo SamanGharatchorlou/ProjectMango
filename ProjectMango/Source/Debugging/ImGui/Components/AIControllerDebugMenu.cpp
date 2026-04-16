@@ -69,6 +69,53 @@ u32 DebugMenu::DoBehaviourStateDebugMenu(ECS::Entity& entity)
 	return type_id;
 }
 
+u32 DebugMenu::DoAIIntentDebugMenu(ECS::Entity& entity)
+{
+	StringBuffer32 type_name = AIIntent::TypeName();
+	ComponentID type_id = AIIntent::TypeId();
+
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
+	{
+		AIStrategy& strategy = GetComponentRef(AIStrategy, entity);
+
+		for( u32 i = 0; i < strategy.attackPatterns.size(); i++ )
+		{
+			for( u32 j = 0; j < strategy.attackPatterns[i].phases.size(); j++ )
+			{
+				const EnemyPhase& phase = strategy.attackPatterns[i].phases[j];
+				const char* phase_text = nullptr;
+				switch( phase.type )
+				{	
+					case EnemyPhase::Approach:
+						phase_text = "Approach";
+						break;
+					case EnemyPhase::Attack:
+						phase_text = "Attack";
+						break;
+					case EnemyPhase::Recover:
+						phase_text = "Recover";
+						break;
+					default:
+					break;
+				}
+
+				char buffer[32];
+				snprintf(buffer, 32, "%d: %s", i, phase_text);
+
+				if(strategy.currentPhase == j && strategy.currentAttackPattern == i)
+					ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), buffer);
+				else
+					ImGui::Text(buffer);
+			}
+
+		}
+	}
+	ImGui::PopID();
+
+	return (u32)type_id;
+}
+
 
 u32 DebugMenu::DoEntityStateDebugMenu(ECS::Entity& entity)
 {
@@ -87,7 +134,6 @@ u32 DebugMenu::DoEntityStateDebugMenu(ECS::Entity& entity)
 		for( u32 i = 0; i < state.backlog.size(); i++ )
 		{
 			ImGui::Text("%d: %s", i, ActionToString( state.backlog[i] ));
-
 		}
 	}
 	ImGui::PopID();

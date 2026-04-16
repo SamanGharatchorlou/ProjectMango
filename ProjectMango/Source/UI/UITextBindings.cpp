@@ -5,9 +5,9 @@
 #include "ECS/Components/GameComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/States/GameState.h"
-#include "Entities/CardRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
 #include "ECS/Components/AIComponents.h"
-#include "Entities/ResourceBank.h"
+#include "Entities/Registries/ResourceBank.h"
 
 using namespace ECS;
 

@@ -10,8 +10,19 @@ namespace ECS
 	void CardSystem::Update(float dt)
 	{
 		UICursor* cursor = UICursor::Get();
+
+		int buying_power[Colour::Count] = { 0 };
+
+		Entity player = Faction::GetPlayer();
+		if(Inventory* inventory = GetComponent(Inventory, player))
+			inventory->GetBuyingPower(buying_power);
+
 		for (Entity entity : entities)
 		{
+			// debug break point
+			if(IsSelectedDebugEntity(entity))
+				int a = 4;
+
 			Card& card = GetComponentRef(Card, entity);
 			Entity monster_entity = card.GetMonster();
 			if(monster_entity != EntityInvalid)
@@ -29,39 +40,91 @@ namespace ECS
 
 				state.next = Action::Inactive;
 			}
-								
+						
+			//// reset icons
+			//for( int i = 0; i < Colour::Count; i++ )
+			//{
+			//	std::vector<Entity>& cost_entities = card.costEntities[i];
+			//	for( int j = 0; j < cost_entities.size(); j++ )
+			//	{
+			//		Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+			//		sprite.SetTexture("cost_empty");
+			//	}
+			//}
+
+			//// fill in afforsable icons
+			//for( int i = 0; i < Colour::Count; i++ )
+			//{
+			//	if(card.Cost(i) == 0)
+			//		continue;
+
+			//	std::vector<Entity>& cost_entities = card.costEntities[i];
+			//	for( int j = 0; j < buying_power[i]; j++ )
+			//	{
+			//		if(cost_entities.size() > j)
+			//		{
+			//			Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
+			//			sprite.SetTexture("cost_filled");
+			//		}
+			//	}
+			//}
+
+			//// replace discounted icons
+			//for( int i = 0; i < Colour::Count; i++ )
+			//{
+			//	if(card.discount[i] == 0)
+			//		continue;
+
+			//	std::vector<Entity>& cost_entities = card.costEntities[i];
+			//	
+			//	for( u32 j = 0; j < card.discount[i]; j++ )
+			//	{
+			//		int index = cost_entities.size() - 1;
+			//		index = index - j;
+			//		
+			//		if(cost_entities.size() > index)
+			//		{
+			//			Sprite& sprite = GetComponentRef(Sprite, cost_entities[index]);
+			//			sprite.SetTexture("cost_removed");
+			//		}
+			//	}
+			//}
+
+
+
+			// fill in affordable icons
 			for( int i = 0; i < Colour::Count; i++ )
 			{
+				if(card.cost[i] == 0)
+					continue;
+
 				std::vector<Entity>& cost_entities = card.costEntities[i];
-				for( int j = 0; j < cost_entities.size(); j++ )
+
+				int cost = (int)cost_entities.size();
+				int b_power = buying_power[i];
+				int discounted = card.discount[i];
+
+				for( int j = cost -1; j >= 0; --j )
 				{
 					Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
-					sprite.SetTexture("cost_empty");
-				}
-			}
 
-			Entity player = Faction::GetPlayer();
-			if(Inventory* inventory = GetComponent(Inventory, player))
-			{
-				int buying_power[Colour::Count];
-				inventory->GetBuyingPower(buying_power);
-
-				for( int i = 0; i < Colour::Count; i++ )
-				{
-					if(card.cost[i] == 0)
-						continue;
-
-					std::vector<Entity>& cost_entities = card.costEntities[i];
-					for( int j = 0; j < buying_power[i]; j++ )
+					if(discounted > 0)
 					{
-						if(cost_entities.size() > j)
-						{
-							Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
-							sprite.SetTexture("cost_filled");
-						}
+						sprite.SetTexture("cost_discount");
+						discounted--;
+					}
+					else if(b_power > 0)
+					{
+						sprite.SetTexture("cost_filled");
+						b_power--;
+					}
+					else
+					{
+						sprite.SetTexture("cost_empty");
 					}
 				}
 			}
+
 		}
 	}
 }

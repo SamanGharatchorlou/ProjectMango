@@ -52,6 +52,9 @@ namespace ECS
 		std::vector<Action::Enum> backlog;
 
 		bool justChanged = false;
+
+		// forces the state into the backlog
+		bool pushStateToBacklog = false;
 	};
 
 	struct Faction

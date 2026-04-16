@@ -192,6 +192,23 @@ namespace CardRegistry
 		RemoveComponent(Card, entity);
 	}
 
+	void ReturnCardToDrawPile(ECS::Entity entity)
+	{
+		const Card& card = GetComponentRef(Card, entity);
+		
+		// place into discard pile
+		std::vector<int>& draw_pile = s_cardRegistryDrawPile[card.tier];
+		draw_pile.push_back(card.registryIndex);
+		
+		// remove the child displays
+		DestroyChildren(entity);
+		
+		Sprite& sprite = GetComponentRef(Sprite, entity);
+		sprite.params.disabled = true;
+
+		// remove the component
+		RemoveComponent(Card, entity);
+	}
 	
 	void DrawRandomCard(Entity entity, int tier)
 	{
@@ -209,24 +226,23 @@ namespace CardRegistry
 	{
 		if(entity != EntityInvalid)
 		{
-			if(!HasComponent(Card, entity))
+			Card& new_card = GetOrAddComponent(Card, entity);
+			CardRegistry::GetCard(new_card, index);
+
+			Sprite& sprite = GetComponentRef(Sprite, entity);
+			sprite.params.disabled = false;
+
+			std::vector<int>& draw_pile = s_cardRegistryDrawPile[new_card.tier];
+			for( auto iter = draw_pile.begin(); iter != draw_pile.end(); iter++ )
 			{
-				Card& new_card = AddComponent(Card, entity);
-				CardRegistry::GetCard(new_card, index);
-
-				Sprite& sprite = GetComponentRef(Sprite, entity);
-				sprite.params.disabled = false;
-
-				std::vector<int>& draw_pile = s_cardRegistryDrawPile[new_card.tier];
-				for( auto iter = draw_pile.begin(); iter != draw_pile.end(); iter++ )
+				if(*iter == new_card.registryIndex)
 				{
-					if(*iter == new_card.registryIndex)
-					{
-						draw_pile.erase(iter);
-						break;
-					}
+					draw_pile.erase(iter);
+					break;
 				}
 			}
+
+			TriggerGameEvent(GameEvent::CardDrawn, entity);
 		}
 	}
 }

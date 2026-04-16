@@ -183,7 +183,7 @@ Window* GameSetup::createWindow()
 		
 		VectorI screen_size(rect.w, rect.h);
 		// account for the top bar
-		screen_size.y -= 32.0f;
+		screen_size.y -= 32;
 
 		VectorF default_ratio(-1.0f, -1.0f);
 		VectorF screen_ratio = gs->data.GetVector("screen_ratio", default_ratio);

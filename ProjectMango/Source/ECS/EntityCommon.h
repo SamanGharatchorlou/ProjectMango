@@ -49,6 +49,8 @@ namespace ECS
 	_entry(Physics,           c_veryCommon) \
 	_entry(Collider,          c_allEntities) \
 	_entry(AIController,      c_common) \
+	_entry(AIStrategy,		  c_rare) \
+	_entry(UIIntentIcon,	  c_rare) \
 	_entry(Pathing,           c_common) \
 	_entry(Damage,            c_common) \
 	_entry(Health,            c_veryCommon) \

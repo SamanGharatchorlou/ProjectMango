@@ -37,7 +37,6 @@ namespace Actor
 		physics.acceleration = 0;
 	}
 
-	
 	static void PlayHitAnimationVFX(Entity entity)
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
@@ -48,7 +47,7 @@ namespace Actor
 		{
 			AttackStateData& asd = state.attackData[action];
 			bool hit_frame = animator.frameIndex == asd.hitFrame;
-			if( hit_frame && !asd.playedHitVfx && !asd.hitVfx.empty())
+			if( hit_frame && !state.playedHitVfx && !asd.hitVfx.empty())
 			{
 				const Faction& faction = GetComponentRef(Faction, entity);
 				Entity target_entity = faction.GetTarget();
@@ -64,7 +63,7 @@ namespace Actor
 					}
 				}
 				
-				asd.playedHitVfx = true;
+				state.playedHitVfx = true;
 			}
 		}
 	}
@@ -89,8 +88,8 @@ namespace Actor
 		if(state.attackData.contains(action))
 		{
 			AttackStateData& asd = state.attackData[action];
-			bool hit_frame = animator.frameIndex == asd.attackFrame;	
-			if(hit_frame && !asd.playedAttackVfx && !asd.attackVfx.empty())
+			bool hit_frame = animator.frameIndex == asd.hitFrame;	
+			if(hit_frame && !state.playedAttackVfx && !asd.attackVfx.empty())
 			{
 				const Transform& transform = GetComponentRef(Transform, entity);
 				const VectorF pos =  transform.worldPosition + transform.size * asd.hitBoxPos;
@@ -99,7 +98,7 @@ namespace Actor
 
 				CreateVFX(asd.attackVfx.c_str(), attack_rect);
 
-				asd.playedAttackVfx = true;
+				state.playedAttackVfx = true;
 			}
 		}
 	}
@@ -121,9 +120,9 @@ namespace Actor
 		{
 			AttackStateData& asd = state.attackData[attack];
 			bool hit_frame = animator.frameIndex == asd.hitFrame;
-			if( hit_frame && !asd.didHit)
+			if( hit_frame && !state.didHit)
 			{
-				asd.didHit = true;
+				state.didHit = true;
 
 				const Faction& faction = GetComponentRef(Faction, entity);
 				Entity target_entity = faction.GetTarget();
@@ -167,20 +166,11 @@ namespace Actor
 		AttackUpdate(entity, Action::FollowUpAttack);
 	}
 
-	static void BasicAttackExit(ECS::Entity entity)
-	{
-		BehaviourState& state = GetComponentRef(BehaviourState, entity);
-		if(state.attackData.contains(Action::BasicAttack))
-		{
-			AttackStateData& asd = state.attackData[Action::BasicAttack];
-			asd.didHit = false;
-		}
-	}
-
 	// Death
 	static void DeathEnter(ECS::Entity entity)
 	{
 		RemoveComponent(Collider, entity);
+		RemoveComponent(TurnState, entity);
 	}
 }
 

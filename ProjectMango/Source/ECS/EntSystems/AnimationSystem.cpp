@@ -76,7 +76,15 @@ namespace ECS
 
 			EntityState* entity_state = GetComponent(EntityState, entity);
 			if( entity_state && (entity_state->current != active_action) )
-				StartAnimation(animator, entity_state->current);
+			{
+				Action::Enum next_animation = entity_state->current;
+				if(!animator.HasAnimation(next_animation))
+				{
+					next_animation = Action::Inactive;
+				}
+
+				StartAnimation(animator, next_animation);
+			}
 			else
 				UpdateAnimator(animator, dt);
 		}

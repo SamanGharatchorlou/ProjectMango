@@ -34,7 +34,7 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 	button_bindings[ "EndTurnButton" ] =  [](ECS::Entity entity) {
 		if(TurnState* turn_state = GetComponent(TurnState, Faction::GetPlayer()))
 		{
-			turn_state->canEndTurn = true;
+			turn_state->tryEndTurn = true;
 
 			Sprite& sprite = GetComponentRef(Sprite, entity);
 			sprite.params.disabled = true;

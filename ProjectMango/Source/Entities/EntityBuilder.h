@@ -15,3 +15,5 @@ Entity CreateActor(const EntityMetaData& emd, const char* id_override);
 Entity CreateCardActor(const char* monster, Entity card_entity);
 Entity CreateMonster(const EntityMetaData& emd);
 Entity CreateVFX(const char* vfx, const RectF& rect);
+
+void DrawCards();

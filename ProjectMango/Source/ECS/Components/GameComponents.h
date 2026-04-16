@@ -81,10 +81,12 @@ namespace ECS
 
 		// what to pay to aquire the card
 		int cost[Colour::Count] { 0 };
+		int discount[Colour::Count] { 0 };
 
 		std::vector<Entity> costEntities[Colour::Count];
 
 		// how many coins it provides once owned
+		// turn into a simple colour, doesnt need to be an array
 		int power[Colour::Count] { 0 };
 
 		// points... for something, not sure yet
@@ -100,6 +102,34 @@ namespace ECS
 		void RegenerateChildDisplays();
 		bool CanAfford(Entity entity) const;
 		Entity GetMonster() const;
+
+		int Cost(u32 index) const;
+	};
+
+	enum class GameEvent
+	{
+		None,
+		CoinCollected,
+		CardAquired,
+		CardDrawn,
+		MonsterSummoned,
+		TurnStart,
+		TurnEnd
+	};
+
+
+	// turn into a component? does it need to be, dont think so
+	struct Relic
+	{
+		typedef void(*EffectFn)(const Relic& relic, ECS::Entity entity);
+
+		BasicString id;
+		BasicString description;
+		GameEvent trigger;
+		EffectFn effectFn;
+
+		// might only affect a specific colour
+		Colour::Type colour = Colour::Count;
 	};
 
 	struct Inventory
@@ -113,6 +143,11 @@ namespace ECS
 		// cards we own
 		std::vector<int> cards;
 
+		// relics we own
+		std::vector<Relic> relics;
+		// disabled relics - these dont except events
+		std::vector<BasicString> disabledRelicIds;
+
 		// array size always Colour::Count
 		void GetCardPower(int array[]) const;
 		void GetBuyingPower(int array[]) const;
@@ -120,19 +155,23 @@ namespace ECS
 		int GetPoints() const;
 	};
 
+	void TriggerGameEvent(GameEvent event, Entity entity);
+
 	struct TurnState
 	{
 		COMPONENT_TYPE(TurnState)
 
 		int turnIndex = 0;
 		int initiative = 0;
+		
+		bool tryEndTurn = false;
 		bool canEndTurn = false;
-		bool isActiveTurn = false;;
 
-		u64 lastActionTimeMS = 0;
+		// a cooldown time between ending the turn and moving onto the next turn state
+		float endTurnCooldownSecs = 0;
 
+		// player specific state
 		int collectedCoins[Colour::Count] { 0 };
-
 		int collectedCardRegIndex = -1;
 		Entity collectedCardSource = EntityInvalid;
 

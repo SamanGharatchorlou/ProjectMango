@@ -19,7 +19,7 @@ public:
 	ECS::Entity activeLevel = ECS::EntityInvalid;
 
 	int turnIndex = 0;
-	bool autoConfirmTurn = false;
+	bool autoConfirmTurn = true;
 	bool gameOver = false;
 
 	ECS::Entity enemy = ECS::EntityInvalid;

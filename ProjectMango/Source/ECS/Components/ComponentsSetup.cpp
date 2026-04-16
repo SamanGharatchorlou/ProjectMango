@@ -26,8 +26,9 @@
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
 
 #include "Game/Readers/AnimationReader.h"
-#include "Entities/CardRegistry.h"
-#include "Entities/MonsterRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
+#include "Entities/Registries/MonsterRegistry.h"
+#include "Entities/Registries/RelicRegistry.h"
 #include "Entities/States/Behaviours.h"
 
 
@@ -50,7 +51,7 @@ void ECS::RegisterAllSystems()
 	// --------- input/UI systems ---------
 	
 	// UI
-	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton) | ArcheBit(Card);
+	Signature UISignature = ArcheBit(UIText) | ArcheBit(UIButton);
 	ecs->RegisterOrSystem<UISystem>(UISignature);
 
 	// Input
@@ -90,16 +91,16 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<CardSystem>(cardSignature);
 
 	// todo: can remove this now?
-	// Compoenent Updates - runs all basic object component update function
-	Signature ComponentsSignature = ArcheBit(Jiggler);
+	// Compoenent Updates - run any random part update loops here if they dont need their own system
+	Signature ComponentsSignature = 0;
 	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 	
 	// --------- state systems ---------
 
 	// AI Controller
-	Signature AIControllerSignature = ArcheBit(AIController);
-	ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
+	//Signature AIControllerSignature = ArcheBit(AIController);
+	//ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
 
 	// State Resolution
 	Signature StateResolutionSignature = ArcheBit(EntityState) | ArcheBit(AIIntent) | ArcheBit(BehaviourState);
@@ -159,6 +160,8 @@ void ECS::ParseComponentData()
 	CardRegistry::ReadomFromJson("Tier3Cards", 2);
 
 	MonsterRegistry::Build( "CardMonsters" );
+
+	RelicRegistry::PopulateRegistry();
 }
 
 void ECS::ClearComponentData()

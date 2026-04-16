@@ -200,8 +200,8 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(Inventory);
         DoComponentDropdown(Card);
         DoComponentDropdown(BehaviourState);
-        DoComponentDropdown(EntityState);
         DoComponentDropdown(Faction);
+        DoComponentDropdown(AIIntent);
 
         ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
         for (u32 i = 0; i < ComponentCount; i++)
@@ -557,6 +557,41 @@ void DebugMenu::DoGameStateWindow()
         ImGui::TreePop();
     }
 
+    if( ImGui::TreeNode("Turn Order") )
+    {
+       if(GameState* game_state = GameState::GetActive())
+		{
+           ImGui::Text("Game State turn index: %d", game_state->turnIndex);
+		}
+       
+		std::vector<Entity> turn_order;
+       	ComponentArray<TurnState>& turn_states =  GetAllComponents(TurnState);
+		for( auto iter = turn_states.entityToComponent.begin(); iter != turn_states.entityToComponent.end(); iter++ )
+		{
+			turn_order.push_back(iter->first);
+		}
+
+		std::sort(turn_order.begin(), turn_order.end(), [](Entity a, Entity b) { 
+			TurnState& turn_A = GetComponentRef(TurnState, a);
+			TurnState& turn_B = GetComponentRef(TurnState, b);
+			return turn_A.initiative < turn_B.initiative;
+		});
+
+        TurnState* active_state = TurnState::GetActive();
+
+        for( u32 i = 0; i < turn_order.size(); i++ )
+        {
+            TurnState& turn = GetComponentRef(TurnState, turn_order[i]);
+
+            if(active_state && active_state->entity == turn.entity )
+                ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Turn(%d): %s", turn.initiative, GetName(turn_order[i]));
+            else
+                ImGui::Text("Turn(%d): %s", turn.initiative, GetName(turn_order[i]));
+        }
+
+        ImGui::TreePop();
+    }
+
 }
 
 static bool s_debugCamera = false;
@@ -618,10 +653,10 @@ void DebugMenu::DoTweakerWindow()
         s_state.turnLog.clear();
     }
 
-    if(ImGui::TreeNode("AI Strategy"))
-    {
+    //if(ImGui::TreeNode("AI Strategy"))
+    //{
 
-    }
+    //}
 }
 
 

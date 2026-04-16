@@ -5,10 +5,10 @@
 #include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
-#include "Entities/CardRegistry.h"
-#include "Entities/MonsterRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
+#include "Entities/Registries/MonsterRegistry.h"
 #include "Entities/EntityBuilder.h"
-#include "Entities/ResourceBank.h"
+#include "Entities/Registries/ResourceBank.h"
 #include "Core/Helpers.h"
 #include "Game/States/GameState.h"
 
@@ -72,7 +72,7 @@ namespace ECS
 			inventory->GetBuyingPower(buying_power);
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				if(buying_power[i] < cost[i])
+				if( buying_power[i] < Cost(i) )
 					return false;
 			}
 
@@ -80,6 +80,11 @@ namespace ECS
 		}
 
 		return false;
+	}
+
+	int Card::Cost(u32 index) const
+	{
+		return cost[index] - discount[index];
 	}
 	
 	Entity Card::GetMonster() const
@@ -246,7 +251,9 @@ namespace ECS
 		memset(collectedCoins, 0, sizeof(int) * (int)Colour::Count);
 		collectedCardSource = EntityInvalid;
 		canEndTurn = false;
+		tryEndTurn = false;
 		collectedCardRegIndex = -1;
+		endTurnCooldownSecs = 0.0f;
 	}
 	
 	bool TurnState::CanAquireMoreResources() const
@@ -425,4 +432,25 @@ namespace ECS
 		}
 	}
 
+	
+	void TriggerGameEvent(GameEvent event, Entity entity)
+	{
+		Entity player = Faction::GetPlayer();
+		if(Inventory* inventory = GetComponent(Inventory, player))
+		{
+			for( u32 i = 0; i < inventory->relics.size(); i++ )
+			{
+				const Relic& relic = inventory->relics[i];
+
+				// skip over any disabled relics
+				if(Contains(inventory->disabledRelicIds, relic.id))
+					continue;
+
+				if(relic.trigger == event)
+				{
+					relic.effectFn(relic, entity);
+				}
+			}
+		}
+	}
 }

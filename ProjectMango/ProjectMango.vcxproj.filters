@@ -306,7 +306,7 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\UIDebugMenus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\CardRegistry.cpp">
+    <ClCompile Include="Source\Entities\Registries\CardRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\EntSystems\TurnActionSystem.cpp">
@@ -348,7 +348,7 @@
     <ClCompile Include="Source\Graphics\FontManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\MonsterRegistry.cpp">
+    <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp">
@@ -363,10 +363,22 @@
     <ClCompile Include="Source\UI\UITextBindings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\ResourceBank.cpp">
+    <ClCompile Include="Source\Entities\Registries\ResourceBank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Enemies\AIStrategies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Player\PlayerTurn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Enemies\EnemyTurn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Enemies\AIStrategyCardPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1082,7 +1094,7 @@
     <ClInclude Include="Source\UI\UIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\CardRegistry.h">
+    <ClInclude Include="Source\Entities\Registries\CardRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\TurnActionSystem.h">
@@ -1118,7 +1130,7 @@
     <ClInclude Include="Source\Graphics\FontManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\MonsterRegistry.h">
+    <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntSystems\CardSystem.h">
@@ -1133,10 +1145,22 @@
     <ClInclude Include="Source\ECS\Components\SpacialComponents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Entities\ResourceBank.h">
+    <ClInclude Include="Source\Entities\Registries\ResourceBank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Enemies\AIStrategies.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Player\PlayerTurn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Enemies\EnemyTurn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Enemies\AIStrategyCardPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Registries\RelicRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

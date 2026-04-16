@@ -4,7 +4,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "Input/InputManager.h"
 #include "EntityBuilder.h"
-#include "Entities/CardRegistry.h"
+#include "Entities/Registries/CardRegistry.h"
 
 using namespace ECS;
 
@@ -55,14 +55,6 @@ Entity CreateUIText(const EntityMetaData& emd)
 		Colour& colour = AddComponent(Colour, entity);
 		colour.colour = colour_type;
 	}
-
-	return entity;
-}
-
-Entity CreateCardEntity(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-	CardRegistry::DrawRandomCard(entity, emd.data.GetInt("Tier"));
 
 	return entity;
 }
