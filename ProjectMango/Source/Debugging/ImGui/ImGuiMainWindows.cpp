@@ -82,9 +82,6 @@ void DebugMenu::DoEntitySystemWindow()
         {
             s_selectedEntity = number;
         }
-        else
-        {
-        }
     }
 
     if(!ecs->IsAlive(s_selectedEntity))
@@ -219,6 +216,15 @@ void DebugMenu::DoEntitySystemWindow()
     }
 
     ImGui::End();
+}
+
+void DebugMenu::DoPartViewerWindow() 
+{
+	ImGui::Text("Hello");
+
+    do a dropdown for every part and display information on how many there are
+    allow inspection into each one, and be able to go do the entity and open up the
+    entity window view with that entity selected
 }
 
 void DebugMenu::DoInputWindow()
@@ -652,11 +658,6 @@ void DebugMenu::DoTweakerWindow()
     {
         s_state.turnLog.clear();
     }
-
-    //if(ImGui::TreeNode("AI Strategy"))
-    //{
-
-    //}
 }
 
 

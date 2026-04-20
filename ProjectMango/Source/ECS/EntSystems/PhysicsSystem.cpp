@@ -41,7 +41,7 @@ namespace ECS
 			for( u32 i = 0; i < ray_count; i++ )
 			{
 				RaycastResult result;
-				Raycast(start_rays[i], VectorF(0,1.0f), 4.0f, result, &self, &collider_flags);
+				Raycast(start_rays[i], VectorF(0,1.0f), c_minRayIncrement, result, &self, &collider_flags);
 				if(result.hasHit)
 				{
 					physics.onFloor = true;

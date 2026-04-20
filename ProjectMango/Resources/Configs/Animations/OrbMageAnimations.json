@@ -1,0 +1,92 @@
+{
+	"id": "OrbMage",
+	"frameSize_x": 119,
+	"frameSize_y": 34,
+	"spriteSheets" : 
+	[
+		{
+			"spriteSheet": "OrbMage_attack",
+			"animations": [
+				{
+					"action": "BasicAttack",
+					"startIndex": 0,
+					"frameCount": 16,
+					"frameTime": 0.1,
+					"looping" : false,
+					"hit_frame" : 8,
+					"hitbox_pos": [ 0.175, 0.052 ],
+					"hitbox_size": [ 0.818, 0.465 ],
+					"hit_vfx" : "HitBlood1"
+				}
+			]
+		},
+		{
+			"spriteSheet": "OrbMage_idle",
+			"animations": [
+				{
+					"action": "Inactive",
+					"startIndex": 0,
+					"frameCount": 1,
+					"frameTime": 1.00
+				},
+				{
+					"action": "Idle",
+					"startIndex": 0,
+					"frameCount": 3,
+					"frameTime": 0.15
+				}
+			]
+		},
+		{
+			"spriteSheet": "OrbMage_death",
+			"animations": [
+				{
+					"action": "Death",
+					"startIndex": 0,
+					"frameCount": 7,
+					"frameTime": 0.15,
+					"looping" : false
+				}
+			]
+		},
+		{
+			"spriteSheet": "OrbMage_hit",
+			"animations": [
+				{
+					"action": "TakeHit",
+					"startIndex": 0,
+					"frameCount": 3,
+					"frameTime": 0.1,
+					"looping" : false
+				}
+			]
+		},
+		{
+			"spriteSheet": "OrbMage_move",
+			"animations": [
+				{
+					"action": "Run",
+					"startIndex": 0,
+					"frameCount": 6,
+					"frameTime": 0.1
+				}
+			]
+		},
+		{
+			"spriteSheet": "OrbMage_heal",
+			"animations": [
+				{
+					"action": "DebuffAttack",
+					"startIndex": 0,
+					"frameCount": 13,
+					"frameTime": 0.15,
+					"looping" : false,					
+					"hit_frame" : 10,
+					"hitbox_pos": [ 0.175, 0.052 ],
+					"hitbox_size": [ 0.818, 0.465 ],
+					"hit_vfx" : "HitLightningPop1"
+				}
+			]
+		}
+	]
+}

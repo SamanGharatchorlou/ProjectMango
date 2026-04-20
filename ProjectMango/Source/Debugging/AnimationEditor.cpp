@@ -10,12 +10,12 @@
 #include "Input/InputManager.h"
 #include "Game/FrameRateController.h"
 #include "Game/Readers/AnimationReader.h"
-#include "ECS/Components/SpacialComponents.h"
-#include "ECS/Components/GraphicComponents.h"
+#include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntSystems/AnimationSystem.h"
 
 #include "Core/Helpers.h"
 #include "imgui.h"
+#include "ImGui/ImGuiMainWindows.h"
 
 using namespace ECS;
 
@@ -74,6 +74,11 @@ namespace AnimationEditor
             s_state.configAnim.entity = CreateEntity("Editor");
             AddComponent(Animator, s_state.configAnim.entity);
             AddComponent(Sprite, s_state.configAnim.entity);
+            AddComponent(Transform, s_state.configAnim.entity);
+            AddComponent(Collider, s_state.configAnim.entity);
+            AddComponent(EntityData, s_state.configAnim.entity);
+
+            DebugMenu::SelectEntity(s_state.configAnim.entity);
         }
 
         s_targetWindowSize = GameData::Get().window->size() * 1.0f;
@@ -329,6 +334,7 @@ namespace AnimationEditor
                         RenderPack frame_pack(selected_tx, 1);
                         frame_pack.rect = renderFrameRect;
                         frame_pack.subRect = frameSubRect;
+                        frame_pack.entity = s_state.configAnim.entity;
 			            rm->AddRenderPacket(frame_pack);
 
                         DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);
@@ -377,10 +383,10 @@ namespace AnimationEditor
 
                         RemoveComponent(Animator, s_state.configAnim.entity);
                         AddComponent(Animator, s_state.configAnim.entity);
-
-
-
                         AnimationReader::BuildAnimator(s_state.configAnim.entity, c.selected.c_str());
+
+                        EntityData& ed = GetComponentRef(EntityData, s_state.configAnim.entity);
+			            ed.id = c.selected.c_str();
                     }
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -510,29 +516,39 @@ namespace AnimationEditor
                 frame_texture_size *= s_state.screenSizeFactor;
                 frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
                 frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
-
-
+                
                 RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
+                
+                // todo: remove all these rect and use transform instead?
+                // then i can use the collider to properly get the flip point etc
+
+
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
                 RenderPack frame_pack(selected_animation->image.texture, 1);
                 frame_pack.rect = renderFrameRect;
                 frame_pack.subRect = anim->GetActiveSubRect();// //selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
-                frame_pack.flip =sprite.params.flip;
+                frame_pack.flip = sprite.params.flip;
 
                 const RectF& selection_rect = s_state.cursorSelection.selectionRect;
                 if(!selection_rect.Size().isZero())
                 {
-                    float flip_x = selection_rect.Center().x - draw_point_TL.x;
+                    float flip_x = selection_rect.Center().x - renderFrameRect.LeftPoint();
                     frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
                 }
                 // todo: remove object center from here, moved it to collider using relative rect
-                //else
-                //{
-                //    float flip_x = selected_animation.objectCenter.x * frame_texture_size.x - draw_point_TL.x;
-                //    frame_pack.flipPoint = VectorF(flip_x, frame_texture_size.y * 0.5f);
-                //}
+                else if(const Config* config = ConfigManager::Get()->GetConfig( c.selected.c_str() ))
+                {
+                    Transform& transform = GetComponentRef(Transform, s_state.configAnim.entity);
+                    transform.SetWorldRect(renderFrameRect.TopLeft(), renderFrameRect.Size());
+                        
+                    Collider& collider = GetComponentRef(Collider, s_state.configAnim.entity);
+                    collider.Init();
 
+                    frame_pack.flipPoint = transform.GetHorizontalFlipPoint();
+                }
+
+                frame_pack.entity = s_state.configAnim.entity;
 			    rm->AddRenderPacket(frame_pack);
 
                 DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);

@@ -10,7 +10,7 @@
 
 namespace ECS
 {
-	static const float c_colliderGap = 1.0f;
+	static const float c_colliderGap = 2.0f;
 
 	static VectorF BumpCollider( const ECS::Collider& colliderA, const ECS::Collider& colliderB )
 	{

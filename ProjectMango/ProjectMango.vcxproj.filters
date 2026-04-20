@@ -72,19 +72,10 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\AnimationDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\ColliderDebugMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\PlayerControllerDebugMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\SimpleDebugMenus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\BiomeDebugMenu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\Components\TransformDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp">
@@ -379,6 +370,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\Components\SpacialDebugMenus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Registries\StatusEffectRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1161,6 +1158,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Registries\RelicRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Registries\StatusEffectRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

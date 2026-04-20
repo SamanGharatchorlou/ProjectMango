@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "RelicRegistry.h"
+
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "CardRegistry.h"
 #include "Core/Helpers.h"
-//#include "ECS/Components/ComponentHelpers.h"
 
 using namespace ECS;
 

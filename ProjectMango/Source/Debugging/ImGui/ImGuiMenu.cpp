@@ -68,6 +68,7 @@ namespace DebugMenu
 	}
 
 	static bool s_entitySystemWindow = false;
+	static bool s_partViewerWindow = false;
 	static bool s_inputWindow = false;
 	static bool s_transformWindow = false;
 	static bool s_gameStateWindow = false;
@@ -94,6 +95,8 @@ namespace DebugMenu
 		ImGui::Begin("MainWindow", 0, ImGuiWindowFlags_MenuBar);
 		ImGui::Checkbox("Entity System", &s_entitySystemWindow);
 		ImGui::SameLine();
+		ImGui::Checkbox("Part Viewer", &s_partViewerWindow);
+		ImGui::SameLine();
 		ImGui::Checkbox("Input", &s_inputWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Transforms", &s_transformWindow);
@@ -102,8 +105,6 @@ namespace DebugMenu
 		ImGui::SameLine();
 		ImGui::Checkbox("Tweakers", &s_tweakerWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Animation Editor", &s_editorWindow);
-		ImGui::SameLine();
 		ImGui::Checkbox("Demo Window", &s_demoWindow);
 		ImGui::SameLine();
 		ImGui::End();
@@ -111,6 +112,11 @@ namespace DebugMenu
 		if (s_entitySystemWindow)
 		{
 			DoEntitySystemWindow();
+		}
+
+		if(s_partViewerWindow)
+		{
+			DoPartViewerWindow();
 		}
 
 		if (s_inputWindow)

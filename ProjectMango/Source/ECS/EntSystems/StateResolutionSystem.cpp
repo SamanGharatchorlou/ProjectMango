@@ -7,7 +7,8 @@
 
 namespace ECS
 {
-	// reads intent and set the next state
+	// reads intent and set the next state - the desire
+	// "what should this entity be trying to do?"
 	void StateResolutionSystem::Update(float dt)
 	{
  		for (Entity entity : entities)
@@ -44,67 +45,10 @@ namespace ECS
 
 			Action::Enum& next_state = state.next;
 			next_state = intent.wantsToBeInactive ? Action::Inactive : Action::Idle;
-
-			if(Health* health = GetComponent(Health, entity))
-			{
-				if(health->currentHealth <= 0)
-					next_state = Action::Death; 
-				else if( (health->currentHealth / health->maxHealth) <= 0.2f)
-					next_state = Action::Hurting;
-			}
-
+			
+			// waiting to die
 			DeathScentence* death = GetComponent(DeathScentence, entity);
 			bool waiting_to_die = death != nullptr;
-			
-			if(intent.wantsToAttack && can_attack)
-			{
-				// can only start a new attack once we complete an attack and 
-				// we're not about to die, however we can finish an attack
-				bool can_begin_new_attack = 
-					state.current != Action::AttackWindUp && 
-					state.current != Action::BasicAttack && 
-					state.current != Action::FollowUpAttack && 
-					state.current != Action::AttackRecovery &&
-					!waiting_to_die;
-
-				if(can_begin_new_attack)
-				{
-					const Animator& animator = GetComponentRef(Animator, entity);
-					bool has_attack_wind_up = animator.HasAnimation(Action::AttackWindUp);
-					if(has_attack_wind_up)
-						next_state = Action::AttackWindUp;
-					else
-						next_state = Action::BasicAttack;
-				}
-				else
-				{
-					if(state.current == Action::AttackWindUp)
-					{
-						next_state = Action::BasicAttack;
-					}
-					else if(state.current == Action::BasicAttack || state.current == Action::FollowUpAttack)
-					{
-						const Animator& animator = GetComponentRef(Animator, entity);			
-						bool has_attack_follow_up = animator.HasAnimation(Action::FollowUpAttack);
-						bool has_attack_recovery = animator.HasAnimation(Action::AttackRecovery);
-
-						if(has_attack_follow_up)
-						{
-							next_state = Action::FollowUpAttack;
-						}
-						else if(has_attack_recovery)
-						{
-							next_state = Action::AttackRecovery;
-						}
-					}
-				}
-			}
-			else if(intent.wantsToMove && can_move)
-			{
-				next_state = Action::Run;
-			}
-						
-			// death
 			if(waiting_to_die)
 			{
 				// actually die
@@ -114,6 +58,28 @@ namespace ECS
 				// else waiting to die
 				continue;
 			}
+
+			// getting hurt or dying
+			if(Health* health = GetComponent(Health, entity))
+			{
+				if(health->currentHealth <= 0)
+					next_state = Action::Death; 
+				else if( (health->currentHealth / health->maxHealth) <= 0.2f)
+					next_state = Action::Hurting;
+			}
+
+			// attack
+			if(intent.wantsToAttack && can_attack)
+			{
+				next_state = Action::AttackWindUp;
+			}
+			// move
+			else if(intent.wantsToMove && can_move)
+			{
+				next_state = Action::Run;
+			}
+						
+
 		}
 	}
 }

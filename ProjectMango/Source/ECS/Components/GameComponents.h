@@ -121,7 +121,7 @@ namespace ECS
 	// turn into a component? does it need to be, dont think so
 	struct Relic
 	{
-		typedef void(*EffectFn)(const Relic& relic, ECS::Entity entity);
+		typedef void(*EffectFn)(const Relic& relic, Entity entity);
 
 		BasicString id;
 		BasicString description;
@@ -131,6 +131,32 @@ namespace ECS
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
 	};
+
+	struct StatusEffect
+	{
+		enum Type
+		{
+			DisableBoardCard,
+			DisableCoinStack
+		};
+
+		
+		Type type;
+		//OnApplyEffectFn onApplyFn;
+		int duration; // in turns
+
+		// might only affect a specific colour
+		Colour::Type colour = Colour::Count;
+	};
+
+	struct StatusEffects
+	{
+		COMPONENT_TYPE(StatusEffects)
+
+		std::vector<StatusEffect> effects;
+	};
+
+	void ApplyStatusEffect(Entity receiver, const StatusEffect& effect);
 
 	struct Inventory
 	{
@@ -145,7 +171,7 @@ namespace ECS
 
 		// relics we own
 		std::vector<Relic> relics;
-		// disabled relics - these dont except events
+		// disabled relics - these dont accept events
 		std::vector<BasicString> disabledRelicIds;
 
 		// array size always Colour::Count

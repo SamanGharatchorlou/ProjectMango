@@ -453,4 +453,15 @@ namespace ECS
 			}
 		}
 	}
+
+	void ApplyStatusEffect(Entity receiver, const StatusEffect& effect)
+	{
+		StatusEffects* effects = GetComponent(StatusEffects, receiver);
+		if(!effects)
+		{
+			effects = &AddComponent(StatusEffects, receiver);
+		}
+
+		effects->effects.push_back(effect);
+	}
 }

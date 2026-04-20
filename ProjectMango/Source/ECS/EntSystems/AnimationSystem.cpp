@@ -68,6 +68,9 @@ namespace ECS
 			Action::Enum active_action = Action::None;
 
 			Animator& animator = GetComponentRef(Animator, entity);
+			if(!animator.animations)
+				continue;
+
 			if(animator.IsValid())
 			{
 				const Animation& active_animation = animator.animations->at(animator.activeAnimation);

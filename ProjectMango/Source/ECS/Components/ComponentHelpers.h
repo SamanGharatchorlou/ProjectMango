@@ -30,41 +30,35 @@ namespace ECS
 		Count = 10
 	};
 
+#define ACTION_LIST \
+    X(None) \
+    X(Active) \
+    X(Inactive) \
+    X(Open) \
+    X(Close) \
+    X(Idle) \
+    X(Walk) \
+    X(Run) \
+    X(Fall) \
+    X(Jump) \
+    X(AttackWindUp) \
+    X(BasicAttack) \
+    X(FollowUpAttack) \
+    X(AttackRecovery) \
+    X(Hurting) \
+    X(TakeHit) \
+    X(Death) \
+    X(Spawning) \
+    X(DebuffAttack) \
+    X(Count)
+
 	struct Action
 	{
 		enum Enum
 		{
-			None,
-
-			Active,
-			Inactive,
-
-			Open,
-			Close,
-
-			Idle,
-			Walk,
-			Run,
-	
-			Fall,
-			Jump,
-			Hover,
-
-			Roll,
-			Crouch,
-
-			AttackWindUp,
-			BasicAttack,
-			FollowUpAttack,
-			AttackRecovery,
-
-			Hurting,
-			TakeHit,
-			Death,
-
-			Spawning,
-
-			Count
+			#define X(name) name,
+			ACTION_LIST
+			#undef X
 		};
 	};
 

@@ -68,6 +68,8 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 
 	// assume here that nothing is narrower than 4 pixles
 	const float ray_increment = 4.0f;
+	if(distance <= ray_increment)
+		DebugPrintOnce(Warning, "Passing in a ray increment of %f, this is <=%f, it may as well be 0", distance, ray_increment);
 
 	while( ray_distance < distance )
 	{
@@ -149,73 +151,85 @@ bool RaycastToFloor(const VectorF& start, RaycastResult& result)
 	const ECS::Level& level = ECS::Biome::GetLevel(start);
 
 	Raycast(start, VectorF(0.0f, 1.0f), level.size.y, result, nullptr, &collider_flags);
+
+
+
 	return result.hasHit;
 }
 
-bool RaycastToFloor(ECS::Entity entity, float& out_distance)
+bool RaycastToFloor(ECS::Entity entity, RaycastResult& out_result)
 {
 	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
-		ASSERT(!transform->GetRect().Size().isZero(), "cant raycast to floor if the size hasnt been set");
+		ASSERT(!transform->GetRect().Size().isZero(), "cant raycast if the size hasnt been set");
 
-		// shift it a little right so we dont raycast of an edge (since we're using the world pos i.e. top left)
-		// using the x center would make more sense but large sprites can cause it to fall off an edge
+		// test 3 points, left, mid, right - from the top in case we're already in the floor and need to shift up
 		RectF object_rect = transform->GetRect();
 		VectorF test_points[3] { object_rect.TopLeft(), object_rect.TopCenter(), object_rect.TopRight() };
+		float top_to_bottom = object_rect.Size().y;
 
-		bool has_hit = false;
+		std::vector<ECS::Entity> self;
+		self.push_back(entity);
+
+		std::vector<u32> collider_flags;
+		collider_flags.push_back(ECS::Collider::IsFloor);
+			
+		const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
 		for( u32 i = 0; i < 3; i++ )
 		{
-			std::vector<ECS::Entity> self;
-			self.push_back(entity);
-
-			std::vector<u32> collider_flags;
-			collider_flags.push_back(ECS::Collider::IsFloor);
-			
-			const ECS::Level& level = ECS::Biome::GetLevel(entity);
-
 			RaycastResult result;
 			Raycast(test_points[i], VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
 
 			if(result.hasHit)
 			{
-				float top_to_bottom = transform->GetObjectRect().BotPoint() - test_points[i].y;
-				float distance = result.distance - top_to_bottom;
-				out_distance = Maths::Min(distance, out_distance);
-
-				has_hit = true;
+				// we're testing the top point of the object
+				// so once we get the distance we need to shift it back down to the bottom
+				result.distance = result.distance - top_to_bottom;
+				if(result.distance < out_result.distance)
+				{
+					out_result = result;
+				}
 			}
 		}
 
-		//std::vector<ECS::Entity> self;
-		//self.push_back(entity);
-
-		//std::vector<u32> collider_flags;
-		//collider_flags.push_back(ECS::Collider::IsFloor);
-		//	
-		//const ECS::Level& level = ECS::Biome::GetLevel(entity);
-
-		//RaycastResult result;
-		//Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
-
-		//if(result.hasHit)
-		//{
-		//	float top_to_bottom = transform->GetObjectRect().BotPoint() - top.y;
-		//	out_distance = result.distance - top_to_bottom;
-		//}
-
-		return has_hit;
+		return out_result.hasHit;
 	}
 
 	return false;
 }
 
-bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance)
+bool RaycastToWall(ECS::Entity entity, VectorF direction, RaycastResult& out_result)
 {
+	//if(const ECS::Transform* transform = GetComponent(Transform, entity))
+	//{
+	//	VectorF bot = transform->GetRect().BotCenter();
+	//		
+	//	std::vector<ECS::Entity> self;
+	//	self.push_back(entity);
+
+	//	std::vector<u32> collider_flags;
+	//	collider_flags.push_back(ECS::Collider::IsWall);
+	//		
+	//	const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+	//	RaycastResult result;
+	//	Raycast(bot, direction, level.size.y, result, &self, &collider_flags);
+
+	//	out_distance = result.distance;
+	//	return result.hasHit;
+	//}
+
+
 	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
-		VectorF bot = transform->GetRect().BotCenter();
-			
+		ASSERT(!transform->GetRect().Size().isZero(), "cant raycast if the size hasnt been set");
+
+		// test 3 points, left, mid, right - from the center in case we're already in the wall and need to shift away
+		RectF object_rect = transform->GetObjectRect();
+		VectorF test_points[3] { object_rect.TopCenter(), object_rect.Center(), object_rect.BotCenter() };
+		float center_shift = object_rect.Size().x * 0.5f;
+
 		std::vector<ECS::Entity> self;
 		self.push_back(entity);
 
@@ -224,11 +238,24 @@ bool RaycastToWall(ECS::Entity entity, VectorF direction, float& out_distance)
 			
 		const ECS::Level& level = ECS::Biome::GetLevel(entity);
 
-		RaycastResult result;
-		Raycast(bot, direction, level.size.y, result, &self, &collider_flags);
+		for( u32 i = 0; i < 3; i++ )
+		{
+			RaycastResult result;
+			Raycast(test_points[i], direction, level.size.y, result, &self, &collider_flags);
 
-		out_distance = result.distance;
-		return result.hasHit;
+			if(result.hasHit)
+			{
+				// we're testing the top point of the object
+				// so once we get the distance we need to shift it back down to the bottom
+				result.distance = result.distance - center_shift;
+				if(result.distance < out_result.distance)
+				{
+					out_result = result;
+				}
+			}
+		}
+
+		return out_result.hasHit;
 	}
 
 	return false;

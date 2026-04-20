@@ -18,6 +18,45 @@ namespace ECS
 		return attack_action;
 	}
 
+	static Action::Enum ResolveAttackChain(Entity entity, EntityState& state)
+	{
+		// not in an attack chain, just use whatever resolution set
+		if(!IsAttackState(state.current))
+			return state.next;
+				
+		const Animator& animator = GetComponentRef(Animator, entity);
+		    
+		// we're mid chain - progress it regardless of what next is
+		switch(state.current)
+		{
+			case Action::AttackWindUp:
+			{
+				return Action::BasicAttack;
+			}
+			case Action::BasicAttack:
+			{
+				if( animator.HasAnimation(Action::FollowUpAttack) )
+					return Action::FollowUpAttack;
+
+				__fallthrough;
+			}
+			case Action::FollowUpAttack:
+			{
+				if(animator.HasAnimation(Action::AttackRecovery))
+					return Action::AttackRecovery;
+
+				__fallthrough;
+			}
+			case Action::AttackRecovery:
+			{
+				return Action::Idle;
+			}
+
+			default:
+				return state.next;
+		}
+	}
+
 	bool CanChangeState(Entity entity)
 	{
 		EntityState& state = GetComponentRef(EntityState, entity);
@@ -29,6 +68,9 @@ namespace ECS
 		{
 			if(Animator* animator = GetComponent(Animator, entity))
 			{
+				if(!animator->HasAnimation(state.current))
+					return true;
+
 				can_change_state = animator->loopCount > 0;
 			}
 		}
@@ -47,6 +89,7 @@ namespace ECS
 	}
 
 	// commits the state data i.e. applies the current state, respecting any blocks
+	// "given what we're trying to do and what state we're currently in, what's the actual next state?"
 	void EntityStateSystem::Update(float dt)
 	{
  		for (Entity entity : entities)
@@ -74,8 +117,12 @@ namespace ECS
 
 			state.justChanged = false;
 
+
 			if(CanChangeState(entity))
-			{
+			{	
+				// if we're in an attack chain that overrides the state as we must finish it
+				state.next = ResolveAttackChain(entity, state);
+
 				if(state.current != state.next)
 				{
 					state.backlog.push_back(state.current);
@@ -90,7 +137,6 @@ namespace ECS
 				state.backlog.push_back(state.current);
 				state.pushStateToBacklog = false;
 			}
-
 		}
 	}
 }

@@ -231,55 +231,29 @@ namespace ECS
 		}
 	}
 
-		// todo: move this file somewhere better
-	static std::unordered_map<StringBuffer32, Action::Enum> s_stateMap;
-
-	static void initActionMap()
-	{
-		s_stateMap.reserve(Action::Count);
-
-		s_stateMap["None"] = Action::None;
-		s_stateMap["Active"] = Action::Active;
-		s_stateMap["Inactive"] = Action::Inactive;
-		s_stateMap["Open"] = Action::Open;
-		s_stateMap["Close"] = Action::Close;
-		s_stateMap["Idle"] = Action::Idle;
-		s_stateMap["Walk"] = Action::Walk;
-		s_stateMap["Run"] = Action::Run;
-		s_stateMap["Fall"] = Action::Fall;
-		s_stateMap["Jump"] = Action::Jump;
-		s_stateMap["Hover"] = Action::Hover;
-		s_stateMap["Roll"] = Action::Roll;
-		s_stateMap["Crouch"] = Action::Crouch;
-		s_stateMap["AttackWindUp"] = Action::AttackWindUp;
-		s_stateMap["BasicAttack"] = Action::BasicAttack;
-		s_stateMap["FollowUpAttack"] = Action::FollowUpAttack;
-		s_stateMap["AttackRecovery"] = Action::AttackRecovery;
-		s_stateMap["TakeHit"] = Action::TakeHit;
-		s_stateMap["Death"] = Action::Death;
-		s_stateMap["Spawning"] = Action::Spawning;
-		s_stateMap["Hurting"] = Action::Hurting;
-	}
-
-	Action::Enum StringToAction(const char* action)
-	{
-		if (s_stateMap.empty())
-			initActionMap();
-
-		return s_stateMap.at(action);
-	}
-
+	// Actions
 	const char* ActionToString(Action::Enum action)
 	{
-		if (s_stateMap.empty())
-			initActionMap();
+		static const char* names[] = {
+			#define X(name) #name,
+			ACTION_LIST
+			#undef X
+		};
+		return names[action];
+	}
 
-		for (auto iter = s_stateMap.begin(); iter != s_stateMap.end(); iter++)
-		{
-			if (iter->second == action)
-				return iter->first.c_str();
-		}
+	Action::Enum StringToAction(const char* str)
+	{
+		static const char* names[] = {
+			#define X(name) #name,
+			ACTION_LIST
+			#undef X
+		};
 
-		return nullptr;
+		for(int i = 0; i < Action::Count; i++)
+			if(strcmp(names[i], str) == 0)
+				return (Action::Enum)i;
+
+		return Action::None;
 	}
 }

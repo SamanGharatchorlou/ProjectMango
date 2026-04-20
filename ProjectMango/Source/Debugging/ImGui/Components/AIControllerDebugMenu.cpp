@@ -53,18 +53,18 @@ u32 DebugMenu::DoPathingDebugMenu(ECS::Entity& entity)
 
 u32 DebugMenu::DoBehaviourStateDebugMenu(ECS::Entity& entity)
 {
-	//StringBuffer32 type_name = AIController::TypeName();
+	StringBuffer32 type_name = BehaviourState::TypeName();
 	ComponentID type_id = BehaviourState::TypeId();
 
-	//ImGui::PushID(entity + (int)type);
-	//if (ImGui::CollapsingHeader(ECS::ComponentNames[type]))
-	//{
-	//	//ECS::BehaviourState& behav = GetComponentRef(BehaviourState, entity);
+	ImGui::PushID(entity + (int)type_id);
+	if (ImGui::CollapsingHeader(type_name.c_str()))
+	{
+		//ECS::BehaviourState& behav = GetComponentRef(BehaviourState, entity);
 
 
-	//	//ImGui::Text("Current: ", ActionToString(behav. );
-	//}
-	//ImGui::PopID();
+		//ImGui::Text("Current: ", ActionToString(behav. );
+	}
+	ImGui::PopID();
 
 	return type_id;
 }

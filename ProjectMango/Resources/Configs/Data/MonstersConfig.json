@@ -27,6 +27,19 @@
 			"max_health": 10
 		},
 		{
+			"id": "OrbMage",
+			"object_pos": [ 0.144, 0.265 ],
+			"object_size": [ 0.083, 0.733 ],
+			"size": [352, 120],
+			"gravity": true,
+			"snap_to_floor": true,
+			"acceleration": 80,
+			"max_run_speed": 80,
+			"attack_cooldown_time_ms" : 1000,
+			"action_cooldown_time_ms" : 500,
+			"max_health": 10
+		},
+		{
 			"id": "PandaHero",
 			"object_pos": [ 0.38, 0.42 ],
 			"object_size": [ 0.0889, 0.457 ],

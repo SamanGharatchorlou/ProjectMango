@@ -440,7 +440,8 @@ static void BuildIntentIconEntity(Entity icon_entity)
 Entity CreateEnemy(const ECS::EntityMetaData& emd)
 {	
 	// pick random enemy create enemy registry
-	Entity entity = CreateActor(emd, "ShockSweeper");
+	const char* enemy_type = emd.data.GetString("EnemyType");
+	Entity entity = CreateActor(emd, enemy_type);
 	
 	AddComponent(AIIntent, entity);
 	AddComponent(Inventory, entity);
@@ -605,11 +606,27 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 	
 	if( emd.data.GetBool("SnapToFloor") )
 	{
-		float distance = 0.0f;
-		if( RaycastToFloor(entity, distance) )
+		RaycastResult result;
+		if( RaycastToFloor(entity, result) )
 		{
 			Transform& transform = GetComponentRef(Transform, entity);
-			transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, distance));
+			transform.SetWorldPosition( transform.worldPosition + VectorF(0.0f, result.distance));
+		}
+	}
+	if( emd.data.GetBool("SnapToWall_Right") )
+	{
+		VectorF direction(1.0f,0.0f);
+		RaycastResult result;
+		if( RaycastToWall(entity, direction, result) )
+		{
+			Transform& transform = GetComponentRef(Transform, entity);
+			VectorF position = transform.worldPosition + VectorF(result.distance, 0.0f);
+
+			// they will be hugging the wall, so leave a gap
+			if(result.distance > 0.0f)
+				position = position - VectorF(25.0f, 0.0f);
+
+			transform.SetWorldPosition( position );
 		}
 	}
 

@@ -6,6 +6,7 @@
 #include "Entities/Player/PlayerTurn.h"
 #include "Entities/Enemies/EnemyTurn.h"
 #include "ECS/EntityCoordinator.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -62,6 +63,25 @@ namespace ECS
 					TurnState& turn_state = turn_states.GetComponentByIndex(iter->second);
 					turn_state.ResetState();
 				}
+
+				
+				// StatusEffects
+				//ComponentArray<StatusEffects>& status_effects_comps =  GetAllComponents(StatusEffects);
+				//for( auto iter = status_effects_comps.entityToComponent.begin(); iter != status_effects_comps.entityToComponent.end(); iter++ )
+				//{
+				//	StatusEffects& status_effects = status_effects_comps.GetComponentByIndex(iter->second);
+				//	Entity entity = iter->first;
+
+				//	for( int i = 0; i < (int)status_effects.effects.size(); i++ )
+				//	{
+				//		status_effects.effects[i].duration--;
+				//		if(status_effects.effects[i].duration <= 0)
+				//		{
+				//			Erase(status_effects.effects, status_effects.effects[i]);
+				//			--i;
+				//		}
+				//	}
+				//}
 			}
 		}
 	}

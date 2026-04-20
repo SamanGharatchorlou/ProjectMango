@@ -81,6 +81,19 @@ namespace ECS
 			}
 		}
 
+		// StatusEffects
+		ComponentArray<StatusEffects>& status_effects_comps =  GetAllComponents(StatusEffects);
+		for( auto iter = status_effects_comps.entityToComponent.begin(); iter != status_effects_comps.entityToComponent.end(); iter++ )
+		{
+			StatusEffects& status_effects = status_effects_comps.GetComponentByIndex(iter->second);
+			Entity entity = iter->first;
+
+			for( u32 i = 0; i < status_effects.effects.size(); i++ )
+			{
+
+			}
+		}
+
 		for( u32 i = 0; i < entities_to_destroy.size(); i++ )
 		{			
 			if(Sprite* sprite = GetComponent(Sprite, entities_to_destroy[i]))

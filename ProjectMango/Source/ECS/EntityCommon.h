@@ -71,19 +71,9 @@ namespace ECS
 	_entry(AIIntent,          c_common) \
 	_entry(Faction,           c_common) \
 	_entry(BehaviourMap,      c_common) \
-	_entry(BehaviourState,    c_common)
+	_entry(BehaviourState,    c_common) \
+	_entry(StatusEffects,	  c_rare)
 
-
-//#define ENUM_ENTRY(name, _) name,
-//
-//	struct Component
-//	{
-//		enum Type : u64
-//		{
-//			COMPONENT_LIST(ENUM_ENTRY)
-//			Count
-//		};
-//	};
 
 #define STRING_ENTRY(name, _) #name,
 
@@ -93,7 +83,9 @@ namespace ECS
 	};
 
 #define COMPONENT_TYPE(comp) Entity entity = EntityInvalid; \
-	static StringBuffer32 TypeName() { return typeid(comp).name(); } \
+	static StringBuffer32 TypeName() { const char* full_name = typeid(comp).name();  \
+										const char* short_name = strrchr(full_name, ':'); \
+										return short_name ? short_name + 1 : full_name; } \
 	static ComponentID TypeId() { return GetComponentID<comp>(); }
 							 
 #define DEFINE_COMPONENT(component, size) \

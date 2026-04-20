@@ -1,9 +1,5 @@
 #pragma once
 
-#include "ECS/Components/ComponentHelpers.h"
-
-//void BuildBehaviourMap();
-
 namespace ECS
 {
 	struct BehaviourMap;
