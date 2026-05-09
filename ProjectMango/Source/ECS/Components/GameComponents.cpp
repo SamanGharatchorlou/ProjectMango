@@ -14,6 +14,7 @@
 
 namespace ECS
 {
+{
 	// Inventory
 	// ------------------------------------------------------------------
 	Inventory::Inventory() { }
@@ -452,6 +453,13 @@ namespace ECS
 				}
 			}
 		}
+	}
+
+
+	void StatusEffect::Create(const char* effect, StatusEffect& out_effect)
+	{
+		out_effect.type = effect;
+		out_effect.duration = 0; // end on use
 	}
 
 	void ApplyStatusEffect(Entity receiver, const StatusEffect& effect)

@@ -134,18 +134,13 @@ namespace ECS
 
 	struct StatusEffect
 	{
-		enum Type
-		{
-			DestroyBoardCard
-		};
-
-		
-		Type type;
-		//OnApplyEffectFn onApplyFn;
+		BasicString type;
 		int duration; // in turns
 
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
+
+		static void Create(const char* effect, StatusEffect& out_effect);
 	};
 
 	struct StatusEffects

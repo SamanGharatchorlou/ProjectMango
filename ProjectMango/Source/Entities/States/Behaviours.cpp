@@ -147,6 +147,9 @@ namespace Actor
 						DebugPrint(Log, "Apply debuff %s", asd.debuff.c_str());
 
 
+						StatusEffect status_effect;
+						StatusEffect::Create(asd.debuff.c_str(), status_effect);
+						ApplyStatusEffect(target_entity, status_effect)
 					}
 				}
 			}
