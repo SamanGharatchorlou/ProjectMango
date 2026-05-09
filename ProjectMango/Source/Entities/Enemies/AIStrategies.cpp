@@ -15,7 +15,7 @@ namespace AIStrategies
 		// move to the next phase
 		if(strategy.turnsLeft <= 0 || force_phase_change)
 		{
-			strategy.NextPhase();
+			strategy.NextStrategy();
 		}
 		
 		// decrement turns AFTER
@@ -25,12 +25,15 @@ namespace AIStrategies
 			turn->tryEndTurn = true;
 	}
 
-	static void ProgressAttackPattern(AIStrategy& strategy, TurnState* turn, bool force_phase_change)
+	static void ProgressPhase(AIStrategy& strategy, TurnState* turn, bool force_phase_change)
 	{
 		// move to the next phase
 		if(strategy.turnsLeft <= 0 || force_phase_change)
 		{
-			strategy.NextAttackPattern();
+			strategy.NextPhase();
+
+			if(strategy.currentPhase == 0)
+				ProgressStrategy(strategy, turn, true);
 		}
 		
 		// decrement turns AFTER
@@ -121,7 +124,7 @@ namespace AIStrategies
 				Entity target = Faction::GetTarget(entity);
 				if( WithinAttackRange(entity, target, Action::BasicAttack) )
 				{
-					ProgressAttackPattern(strategy, turn, true);
+					ProgressStrategy(strategy, turn, true);
 					return;
 				}
 						
@@ -129,14 +132,19 @@ namespace AIStrategies
 				break;
 			}
 			case EnemyPhase::Attack:
+			case EnemyPhase::Debuff:
 			{
 				if( FinishedAttacking(entity) )
 				{
-					ProgressStrategy(strategy, turn, false);
+					ProgressPhase(strategy, turn, false);
 					return;
 				}
 
-				intent.wantsToAttack = true;
+				if(phase.type == EnemyPhase::Attack)
+					intent.wantsToAttack = true;
+				else if(phase.type == EnemyPhase::Debuff)
+					intent.wantsToDebuff = true;
+
 				break;
 			}
 			case EnemyPhase::Recover:
@@ -146,7 +154,7 @@ namespace AIStrategies
 				EntityState& state = GetComponentRef(EntityState, entity);
 				state.pushStateToBacklog = true;
 
-				ProgressStrategy(strategy, turn, false);
+				ProgressPhase(strategy, turn, false);
 				break;
 			}
 			default:

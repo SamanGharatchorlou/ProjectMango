@@ -170,8 +170,8 @@ namespace AnimationReader
 						animation.frame.frameSize.y = vfx_data["frameSize"][1].GetFloat();
 						animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
 						animation.frameTime = vfx_data["frameTime"].GetFloat();
-						animation.startIndex = vfx_data["startIndex"].GetInt();;
-						animation.frameCount = vfx_data["frameCount"].GetInt();;
+						animation.startIndex = vfx_data["startIndex"].GetInt();
+						animation.frameCount = vfx_data["frameCount"].GetInt();
 					}
 				}
 			}
@@ -235,12 +235,11 @@ namespace AnimationReader
 							if(anims[i].HasMember("attack_vfx"))
 								hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
 							
-							//hitbox_data.attackFrame = hitbox_data.hitFrame;
-							//if(anims[i].HasMember("attack_frame"))
-							//	hitbox_data.attackFrame = anims[i]["attack_frame"].GetInt();
-							
-							if(anims[i].HasMember("damage_ratio"))
-								hitbox_data.damageRatio = anims[i]["damage_ratio"].GetFloat();
+							if(anims[i].HasMember("damage"))
+								hitbox_data.damage = anims[i]["damage"].GetFloat();
+
+							if(anims[i].HasMember("debuff"))
+								hitbox_data.debuff = anims[i]["debuff"].GetString();
 
 							s_animationData[id].attackStateData.insert( {animation.action, hitbox_data } );
 						}

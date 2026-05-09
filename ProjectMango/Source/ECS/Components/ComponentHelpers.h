@@ -45,11 +45,11 @@ namespace ECS
     X(BasicAttack) \
     X(FollowUpAttack) \
     X(AttackRecovery) \
+    X(Debuff) \
     X(Hurting) \
     X(TakeHit) \
     X(Death) \
     X(Spawning) \
-    X(DebuffAttack) \
     X(Count)
 
 	struct Action

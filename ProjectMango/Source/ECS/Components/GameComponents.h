@@ -136,8 +136,7 @@ namespace ECS
 	{
 		enum Type
 		{
-			DisableBoardCard,
-			DisableCoinStack
+			DestroyBoardCard
 		};
 
 		

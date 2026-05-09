@@ -27,7 +27,7 @@ namespace ECS
 
 	int AIStrategy::GetNextPhase() const
 	{
-		const AttackPattern& pattern = attackPatterns[currentAttackPattern];
+		const Strategy& pattern = strategies[currentStrategy];
 		return (currentPhase + 1) % (int)pattern.phases.size(); 
 	}
 
@@ -42,17 +42,17 @@ namespace ECS
 	
 	EnemyPhase& AIStrategy::GetCurrentPhase()
 	{
-		return attackPatterns[currentAttackPattern].phases[currentPhase];
+		return strategies[currentStrategy].phases[currentPhase];
 	}
 
 	const EnemyPhase& AIStrategy::GetCurrentPhase() const
 	{
-		return attackPatterns[currentAttackPattern].phases[currentPhase];
+		return strategies[currentStrategy].phases[currentPhase];
 	}
 
-	void AIStrategy::NextAttackPattern()
+	void AIStrategy::NextStrategy()
 	{
-		currentAttackPattern = (currentAttackPattern + 1) % (int)attackPatterns.size();
+		currentStrategy = (currentStrategy + 1) % (int)strategies.size();
 		currentPhase = 0;
 		turnsLeft = GetCurrentPhase().turnDuration;
 	}

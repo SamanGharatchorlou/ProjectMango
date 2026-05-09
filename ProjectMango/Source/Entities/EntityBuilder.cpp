@@ -405,12 +405,10 @@ Entity CreateCardActor(const char* monster, Entity parent)
 static void BuildIntentIconEntity(Entity icon_entity)
 {
 	UIIntentIcon& icon = AddComponent(UIIntentIcon, icon_entity);
-	UIIntentIcon::Display approach	{ "basic_approach_icon", EnemyPhase::Approach };
-	UIIntentIcon::Display attack	{ "basic_attack_icon", EnemyPhase::Attack };
-	UIIntentIcon::Display recovery	{ "basic_recovery_icon", EnemyPhase::Recover };
-	icon.displays.push_back(approach);
-	icon.displays.push_back(attack);
-	icon.displays.push_back(recovery);
+	icon.displays.push_back({ "basic_approach_icon"	, EnemyPhase::Approach });
+	icon.displays.push_back({ "basic_attack_icon"	, EnemyPhase::Attack });
+	icon.displays.push_back({ "basic_recovery_icon"	, EnemyPhase::Recover });
+	icon.displays.push_back({ "debuff_icon"			, EnemyPhase::Debuff });
 
 	// Transform
 	Transform& child_transform = AddComponent(Transform, icon_entity);
@@ -451,20 +449,28 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	EnemyPhase recover { EnemyPhase::Recover, 1 };
 	EnemyPhase approach { EnemyPhase::Approach, 99 }; // once we reach the target
 	EnemyPhase attack { EnemyPhase::Attack, 1 };
+	EnemyPhase debuff { EnemyPhase::Debuff, 1 };
 	
-	AttackPattern approach_pattern;
+	Strategy approach_pattern;
 	approach_pattern.name = "Approach";
 	approach_pattern.phases.push_back(recover);
 	approach_pattern.phases.push_back(approach);
 
-	AttackPattern attack_pattern; 
-	approach_pattern.name = "Attack";
+	Strategy attack_pattern; 
+	attack_pattern.name = "Attack";
 	attack_pattern.phases.push_back(recover);
 	attack_pattern.phases.push_back(attack);
 	attack_pattern.phases.push_back(recover);
 
-	strategy.attackPatterns.push_back(approach_pattern);
-	strategy.attackPatterns.push_back(attack_pattern);
+	Strategy debuff_pattern; 
+	debuff_pattern.name = "Debuff";
+	debuff_pattern.phases.push_back(recover);
+	debuff_pattern.phases.push_back(debuff);
+	debuff_pattern.phases.push_back(recover);
+
+	//strategy.strategies.push_back(approach_pattern);
+	//strategy.strategies.push_back(attack_pattern);
+	strategy.strategies.push_back(debuff_pattern);
 
 	strategy.currentPhase = 0;
 	strategy.turnsLeft = 1;
@@ -490,8 +496,8 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	PopulateDefaultBehaviours(map);
 
 	// link this up the to kind of attack or phase
-	Damage& damage = AddComponent(Damage, entity);
-	damage.value = 1;
+	//Damage& damage = AddComponent(Damage, entity);
+	//damage.value = 1;
 
 	// Turn
 	TurnState& turn = AddComponent(TurnState, entity);
@@ -624,7 +630,7 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 
 			// they will be hugging the wall, so leave a gap
 			if(result.distance > 0.0f)
-				position = position - VectorF(25.0f, 0.0f);
+				position = position - VectorF(50.0f, 0.0f);
 
 			transform.SetWorldPosition( position );
 		}

@@ -73,6 +73,10 @@ namespace ECS
 			{
 				next_state = Action::AttackWindUp;
 			}
+			else if(intent.wantsToDebuff && can_attack)
+			{
+				next_state = Action::Debuff;
+			}
 			// move
 			else if(intent.wantsToMove && can_move)
 			{

@@ -128,16 +128,25 @@ namespace Actor
 				Entity target_entity = faction.GetTarget();
 				if(target_entity != EntityInvalid)
 				{
-					if(const Damage* damage = GetComponent(Damage, entity))
+					//if(const Damage* damage = GetComponent(Damage, entity))
 					{
 						if(Health* health = GetComponent(Health, target_entity))
 						{
-							bool did_hit = health->ApplyDamage(damage->value * asd.damageRatio);
+							bool did_hit = health->ApplyDamage(asd.damage);
 							if(did_hit)
 							{
-								ApplyCameraShake(entity, damage->value * asd.damageRatio * 0.2f);
+								ApplyCameraShake(entity, asd.damage * 0.2f);
 							}
 						}
+					}
+
+					// should i check for the correct attack here?
+					// if(debuff component) do the debuff thing
+					if(!asd.debuff.empty())
+					{
+						DebugPrint(Log, "Apply debuff %s", asd.debuff.c_str());
+
+
 					}
 				}
 			}
@@ -164,6 +173,12 @@ namespace Actor
 	static void FollowUpAttackUpdate(ECS::Entity entity)
 	{
 		AttackUpdate(entity, Action::FollowUpAttack);
+	}
+
+	// Debuff
+	static void DebuffAttackUpdate(ECS::Entity entity)
+	{
+		AttackUpdate(entity, Action::Debuff);
 	}
 
 	// Death
@@ -210,6 +225,9 @@ void PopulateDefaultBehaviours(ECS::BehaviourMap& map)
 			case ECS::Action::AttackWindUp:
 			case ECS::Action::AttackRecovery:
 				map.updates[state] = Actor::PlayAttackVFX;
+				break;
+			case ECS::Action::Debuff:
+				map.updates[state] = Actor::DebuffAttackUpdate;
 				break;
 			case ECS::Action::Death:
 				map.enters[state] = Actor::DeathEnter;

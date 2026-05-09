@@ -13,7 +13,8 @@ namespace ECS
 			state == Action::AttackWindUp || 
 			state == Action::BasicAttack || 
 			state == Action::FollowUpAttack || 
-			state == Action::AttackRecovery;
+			state == Action::AttackRecovery ||
+			state == Action::Debuff;
 
 		return attack_action;
 	}
@@ -48,6 +49,10 @@ namespace ECS
 				__fallthrough;
 			}
 			case Action::AttackRecovery:
+			{
+				return Action::Idle;
+			}
+			case Action::Debuff:
 			{
 				return Action::Idle;
 			}

@@ -141,7 +141,7 @@ namespace CardRegistry
 		return &s_cardRegistry[index];
 	}
 
-	static void GetCard(Card& card, int index)
+	static void CreateCard(Card& card, int index)
 	{
 		if(index >= 0 && index < s_cardRegistry.size())
 		{
@@ -227,7 +227,7 @@ namespace CardRegistry
 		if(entity != EntityInvalid)
 		{
 			Card& new_card = GetOrAddComponent(Card, entity);
-			CardRegistry::GetCard(new_card, index);
+			CreateCard(new_card, index);
 
 			Sprite& sprite = GetComponentRef(Sprite, entity);
 			sprite.params.disabled = false;

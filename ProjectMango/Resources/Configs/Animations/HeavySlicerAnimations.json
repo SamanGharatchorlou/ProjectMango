@@ -36,7 +36,7 @@
 					"hitbox_size": [ 1.2, 1.2 ],
 					"hit_vfx" : "HitBloodPop",
 					"attack_vfx" : "HeavySlice",
-					"damage_ratio" : 0.6
+					"damage" : 1.0
 				},
 				{
 					"action": "FollowUpAttack",
@@ -48,7 +48,7 @@
 					"hitbox_size": [ 1.2, 1.2 ],
 					"hit_vfx" : "HitBlood1",
 					"attack_vfx" : "HeavyDice",
-					"damage_ratio" : 0.4
+					"damage" : 1.0
 				},
 				{
 					"action": "Death",

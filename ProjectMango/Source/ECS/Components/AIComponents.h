@@ -34,20 +34,22 @@ namespace ECS
 		bool wantsToFaceTarget = false;
 		bool wantsToMove = false;
 		bool wantsToAttack = false;
+		bool wantsToDebuff = false;
 	};
+
 
 	struct EnemyPhase
 	{
 		enum Type
 		{
-			Approach, Attack, Recover
+			Approach, Attack, Debuff, Recover
 		};
 
 		Type type;
 		int turnDuration = 1; // how many turns we stay in this phase
 	};
 
-	struct AttackPattern
+	struct Strategy
 	{
 		BasicString name;
 		std::vector<EnemyPhase> phases;
@@ -57,9 +59,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(AIStrategy)
 
-		std::vector<AttackPattern> attackPatterns;
+		std::vector<Strategy> strategies;
 
-		int currentAttackPattern = 0;
+		int currentStrategy = 0;
 		int currentPhase = 0;
 		int turnsLeft = 0;
 
@@ -71,8 +73,8 @@ namespace ECS
 		EnemyPhase& GetCurrentPhase();
 		const EnemyPhase& GetCurrentPhase() const;
 
-		// attack pattern
-		void NextAttackPattern();
+		// strategy
+		void NextStrategy();
 	};
 	
 	typedef void (*BehaviourFunction)( ECS::Entity );
@@ -102,7 +104,9 @@ namespace ECS
 		VectorF hitBoxSize = VectorF(1.0f, 1.0f);
 		
 		// how much of the total damage this does, i.e. attack + follow up attack can do 0.5 each
-		float damageRatio = 1.0f;
+		float damage = 0.0f;
+
+		BasicString debuff;
 
 		// the frame at which the actual hit occours, take damage, fire vfx etc
 		int hitFrame = 0;
