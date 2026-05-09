@@ -40,57 +40,6 @@ namespace ECS
 
 				state.next = Action::Inactive;
 			}
-						
-			//// reset icons
-			//for( int i = 0; i < Colour::Count; i++ )
-			//{
-			//	std::vector<Entity>& cost_entities = card.costEntities[i];
-			//	for( int j = 0; j < cost_entities.size(); j++ )
-			//	{
-			//		Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
-			//		sprite.SetTexture("cost_empty");
-			//	}
-			//}
-
-			//// fill in afforsable icons
-			//for( int i = 0; i < Colour::Count; i++ )
-			//{
-			//	if(card.Cost(i) == 0)
-			//		continue;
-
-			//	std::vector<Entity>& cost_entities = card.costEntities[i];
-			//	for( int j = 0; j < buying_power[i]; j++ )
-			//	{
-			//		if(cost_entities.size() > j)
-			//		{
-			//			Sprite& sprite = GetComponentRef(Sprite, cost_entities[j]);
-			//			sprite.SetTexture("cost_filled");
-			//		}
-			//	}
-			//}
-
-			//// replace discounted icons
-			//for( int i = 0; i < Colour::Count; i++ )
-			//{
-			//	if(card.discount[i] == 0)
-			//		continue;
-
-			//	std::vector<Entity>& cost_entities = card.costEntities[i];
-			//	
-			//	for( u32 j = 0; j < card.discount[i]; j++ )
-			//	{
-			//		int index = cost_entities.size() - 1;
-			//		index = index - j;
-			//		
-			//		if(cost_entities.size() > index)
-			//		{
-			//			Sprite& sprite = GetComponentRef(Sprite, cost_entities[index]);
-			//			sprite.SetTexture("cost_removed");
-			//		}
-			//	}
-			//}
-
-
 
 			// fill in affordable icons
 			for( int i = 0; i < Colour::Count; i++ )
@@ -124,7 +73,6 @@ namespace ECS
 					}
 				}
 			}
-
 		}
 	}
 }

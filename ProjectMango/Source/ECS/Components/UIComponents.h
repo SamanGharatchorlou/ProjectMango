@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UI/Text/Font.h"
+#include "ECS/EntityCommon.h"
 
 class Cursor;
 

@@ -49,9 +49,10 @@ static bool entity_view = true;
         SetFlag<u64>(type, ECS::archetypeBit((ComponentID)menu(s_state.selectedEntity)));
 
 #define DoComponentView(component) \
+    SetFlag<u64>(type, ECS::archetypeBit(component::TypeId())); \
     ComponentArray<component>& components = GetAllComponents(component); \
     ImGui::PushID(id_numb++); \
-    ImGui::Text("%s: %d", ECS::component::TypeName(), components.Count() ); \
+    ImGui::Text("%s: %d", components.TypeName(), components.Count() ); \
     ImGui::PopID(); \
     
 
@@ -216,6 +217,7 @@ void DebugMenu::DoEntityPartSystemWindow(bool entity_view)
         DoComponentDropdown(Faction);
         DoComponentDropdown(AIIntent);
 
+        // for menus we havent defined yet at least show something
         if (entity_view)
         {
             ECS::Archetype entity_type = em.GetAchetype(s_state.selectedEntity);
@@ -234,38 +236,20 @@ void DebugMenu::DoEntityPartSystemWindow(bool entity_view)
         }
         else
         {
-            ECS::Archetype entity_type = em.GetAchetype(s_state.selectedEntity);
             for (u32 i = 0; i < ComponentCount; i++)
             {
                 if (type & ECS::archetypeBit(i))
                     continue;
 
-                ImGui::Button("-");
-                ImGui::SameLine();
+                const char* name = ecs->components.componentArrays[i]->TypeName();
+                u32 count = ecs->components.componentArrays[i]->Count();
 
-                ecs->components.componentArrays[i]
-
-                //DoComponentTestView(ECS::ComponentNames[i]);
+                ImGui::Text("%s: %d", name, count);
             }
         }
     }
 
     ImGui::End();
-}
-
-void DebugMenu::DoPartViewerWindow() 
-{
-	ImGui::Text("Hello");
-
-    DoComponentView(Card)
-
-    //do a dropdown for every part and display information on how many there are
-    //allow inspection into each one, and be able to go do the entity and open up the
-    //entity window view with that entity selected
-    //for (u32 i = 0; i < ComponentCount; i++)
-    //{
-
-    //}
 }
 
 void DebugMenu::DoInputWindow()

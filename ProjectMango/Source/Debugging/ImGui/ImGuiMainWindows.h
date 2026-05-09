@@ -9,7 +9,6 @@ namespace DebugMenu
 	void DoTransformWindow();
 	void DoGameStateWindow();
 	void DoTweakerWindow();
-	void DoPartViewerWindow();
 
 	u32 GetSelectedEntity();
 	void SelectEntity(ECS::Entity entity);

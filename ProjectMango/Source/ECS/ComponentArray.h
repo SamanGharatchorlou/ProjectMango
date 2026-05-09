@@ -13,6 +13,8 @@ namespace ECS
 	struct ComponentArrayBase
 	{
 		virtual ~ComponentArrayBase() = default;
+		virtual u32 Count() const = 0;
+		virtual const char* TypeName() const = 0;
 	};
 		
 	template<class T>	
@@ -62,6 +64,12 @@ namespace ECS
 		{
 			entityToComponent.clear();
 			componentToEntity.clear();
+		}
+		
+		const char* TypeName() const override
+		{
+			//return "";
+			return T::TypeName().c_str();
 		}
 		
 		template<class T>
@@ -168,7 +176,7 @@ namespace ECS
 			return entityToComponent.at(entity);
 		}
 
-		u32 Count() const
+		u32 Count() const override
 		{
 			return (u32)entityToComponent.size();
 		}
