@@ -67,18 +67,16 @@ namespace DebugMenu
 		return is_window_hovered;
 	}
 
-	static bool s_entitySystemWindow = false;
-	static bool s_partViewerWindow = false;
-	static bool s_inputWindow = false;
-	static bool s_transformWindow = false;
-	static bool s_gameStateWindow = false;
-	static bool s_tweakerWindow = false;
-	static bool s_editorWindow = false;
-	static bool s_demoWindow = false;
+	DebugState s_debugState;
+
+	DebugState& DebugState::Get()
+	{
+		return s_debugState;
+	}
 
 	void OpenEditorWindow()
 	{
-		s_editorWindow = true;
+		s_debugState.editorWindow = true;
 
 		hidden = false;
 	}
@@ -93,58 +91,56 @@ namespace DebugMenu
 		ImGui::NewFrame();
 
 		ImGui::Begin("MainWindow", 0, ImGuiWindowFlags_MenuBar);
-		ImGui::Checkbox("Entity System", &s_entitySystemWindow);
+		if (ImGui::Checkbox("Entity System", &s_debugState.entitySystemWindow))
+			if (s_debugState.entitySystemWindow) s_debugState.partViewerWindow = false;
 		ImGui::SameLine();
-		ImGui::Checkbox("Part Viewer", &s_partViewerWindow);
+		if (ImGui::Checkbox("Part Viewer", &s_debugState.partViewerWindow))
+			if (s_debugState.partViewerWindow) s_debugState.entitySystemWindow = false;
 		ImGui::SameLine();
-		ImGui::Checkbox("Input", &s_inputWindow);
+		ImGui::Checkbox("Input", &s_debugState.inputWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Transforms", &s_transformWindow);
+		ImGui::Checkbox("Transforms", &s_debugState.transformWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Game State", &s_gameStateWindow);
+		ImGui::Checkbox("Game State", &s_debugState.gameStateWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Tweakers", &s_tweakerWindow);
+		ImGui::Checkbox("Tweakers", &s_debugState.tweakerWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Demo Window", &s_demoWindow);
+		ImGui::Checkbox("Demo Window", &s_debugState.demoWindow);
 		ImGui::SameLine();
 		ImGui::End();
 
-		if (s_entitySystemWindow)
+		// these two are the same panel
+		if (s_debugState.entitySystemWindow || s_debugState.partViewerWindow)
 		{
-			DoEntitySystemWindow();
+			DoEntityPartSystemWindow(s_debugState.entitySystemWindow);
 		}
 
-		if(s_partViewerWindow)
-		{
-			DoPartViewerWindow();
-		}
-
-		if (s_inputWindow)
+		if (s_debugState.inputWindow)
 		{
 			DoInputWindow();
 		}
 
-		if(s_transformWindow) 
+		if(s_debugState.transformWindow) 
 		{
 			DoTransformWindow();
 		}
 
-		if(s_gameStateWindow)
+		if(s_debugState.gameStateWindow)
 		{
 			DoGameStateWindow();
 		}
 
-		if(s_tweakerWindow)
+		if(s_debugState.tweakerWindow)
 		{
 			DoTweakerWindow();
 		}
 
-		if(s_editorWindow)
+		if(s_debugState.editorWindow)
 		{
 			AnimationEditor::DoEditor();
 		}
 
-		if(s_demoWindow)
+		if(s_debugState.demoWindow)
 			ImGui::ShowDemoWindow();
 
 		ImGui::Render();

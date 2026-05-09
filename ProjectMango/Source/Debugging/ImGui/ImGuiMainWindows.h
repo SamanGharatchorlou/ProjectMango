@@ -4,7 +4,7 @@ struct RenderPack;
 
 namespace DebugMenu
 {
-	void DoEntitySystemWindow();
+	void DoEntityPartSystemWindow(bool entity_view);
 	void DoInputWindow();
 	void DoTransformWindow();
 	void DoGameStateWindow();
@@ -16,11 +16,20 @@ namespace DebugMenu
 
 	struct TweakerState
 	{
+		// entity / component window
+		ECS::Entity selectedEntity = -1;
+		bool ignoreTerrain = true;
+		StringBuffer64 filterBuffer;
+
+
+		// tweakers
 		bool drawRaycasts = false;
 		bool canBuyAnyCard = false;
 
 		bool turnLogActive = true;
 		std::vector<BasicString> turnLog;
+
+
 	};
 
 	TweakerState& GetState();

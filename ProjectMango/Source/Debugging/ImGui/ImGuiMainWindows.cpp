@@ -9,6 +9,8 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntityManager.h"
+#include "ECS/ComponentManager.h"
+#include "ECS/ComponentArray.h"
 #include "Game/Camera/Camera.h"
 #include "Game/FrameRateController.h"
 #include "Game/States/GameState.h"
@@ -28,45 +30,59 @@ TweakerState& DebugMenu::GetState()
     return s_state;
 }
 
-static ECS::Entity s_selectedEntity = EntityInvalid;
-static bool s_ignoreTerrain = true;
-static StringBuffer64 filterBuffer;
-
-u32 DebugMenu::GetSelectedEntity() { return s_selectedEntity; }
-void DebugMenu::SelectEntity(ECS::Entity entity) { s_selectedEntity = entity; }
+u32 DebugMenu::GetSelectedEntity() { return s_state.selectedEntity; }
+void DebugMenu::SelectEntity(ECS::Entity entity) { s_state.selectedEntity = entity; }
 
 static int id_numb = 0;
+static bool entity_view = true;
 
 #define DoRemoveButton(type) \
     ImGui::PushID(id_numb++); do_dropdown = true; \
     if(ImGui::Button("-")) {\
-        RemoveComponent(type, s_selectedEntity); do_dropdown = false; }\
+        RemoveComponent(type, s_state.selectedEntity); do_dropdown = false; }\
     if(ImGui::IsItemHovered()) \
         ImGui::SetTooltip("%s", ECS::type::TypeName()); \
     ImGui::SameLine(); ImGui::PopID(); \
 
 #define ComponentDropdown(menu) \
     if(do_dropdown) \
-        SetFlag<u64>(type, ECS::archetypeBit((ComponentID)menu(s_selectedEntity)));
+        SetFlag<u64>(type, ECS::archetypeBit((ComponentID)menu(s_state.selectedEntity)));
+
+#define DoComponentView(component) \
+    ComponentArray<component>& components = GetAllComponents(component); \
+    ImGui::PushID(id_numb++); \
+    ImGui::Text("%s: %d", ECS::component::TypeName(), components.Count() ); \
+    ImGui::PopID(); \
+    
 
 #define DoComponentDropdown(component) \
-    if(HasComponent(component,s_selectedEntity)) {\
-        DoRemoveButton(component); ComponentDropdown(Do##component##DebugMenu); }
+    if(entity_view) { \
+        if(HasComponent(component,s_state.selectedEntity)) { \
+            DoRemoveButton(component); ComponentDropdown(Do##component##DebugMenu); } } \
+    else { \
+        DoComponentView(component); } \
+
+#define DoComponentTestView(component_name) \
+    ComponentArray<component>& components = GetAllComponents(component_name); \
+    ImGui::PushID(id_numb++); \
+    ImGui::Text("%s: %d", component_name, components.Count()); \
+    ImGui::PopID(); \
 
 // Entity Window
-void DebugMenu::DoEntitySystemWindow()
+void DebugMenu::DoEntityPartSystemWindow(bool entity_view)
 {
     ImGui::Begin("Entity Window", nullptr, ImGuiWindowFlags_MenuBar);
     
     ECS::EntityManager& em = ecs->entities;
 
-    ImGui::Text("Selected Entity: %d", (int)s_selectedEntity);
-    ImGui::InputText("Entity Filter", filterBuffer.buffer(), filterBuffer.bufferLength());
+    StringBuffer64& filter = s_state.filterBuffer;
+    ImGui::Text("Selected Entity: %d", (int)s_state.selectedEntity);
+    ImGui::InputText("Entity Filter", filter.buffer(), filter.bufferLength());
 
-    bool is_number = filterBuffer.length() > 0;
-    for( u32 i = 0; i < filterBuffer.length(); i++ )
+    bool is_number = filter.length() > 0;
+    for( u32 i = 0; i < filter.length(); i++ )
     {
-        char* c = filterBuffer.buffer() + i;
+        char* c = filter.buffer() + i;
         int value = *c;
         if(!std::isdigit(value))
         {
@@ -77,19 +93,19 @@ void DebugMenu::DoEntitySystemWindow()
 
     if(is_number)
     {
-        int number = std::atoi(filterBuffer.c_str());
+        int number = std::atoi(filter.c_str());
         if(ecs->IsAlive(number))
         {
-            s_selectedEntity = number;
+            s_state.selectedEntity = number;
         }
     }
 
-    if(!ecs->IsAlive(s_selectedEntity))
+    if(!ecs->IsAlive(s_state.selectedEntity))
     {
-        ImGui::Text("Entity %d is dead", s_selectedEntity);
+        ImGui::Text("Entity %d is dead", s_state.selectedEntity);
     }
 
-    const char* selected = ECS::GetName(s_selectedEntity);
+    const char* selected = ECS::GetName(s_state.selectedEntity);
     if (!selected)
         selected = "";
     
@@ -100,7 +116,7 @@ void DebugMenu::DoEntitySystemWindow()
     for (auto iter = transforms.entityToComponent.begin(); iter != transforms.entityToComponent.end(); iter++)
     {
         Entity entity = iter->first;
-        if(s_ignoreTerrain && IsTerrain(entity))
+        if(s_state.ignoreTerrain && IsTerrain(entity))
         {
             continue;
         }
@@ -116,7 +132,7 @@ void DebugMenu::DoEntitySystemWindow()
         }
     }
 
-    ImGui::Checkbox("Ignore Terrain Entities", &s_ignoreTerrain);
+    ImGui::Checkbox("Ignore Terrain Entities", &s_state.ignoreTerrain);
 
     if (ImGui::BeginCombo("Entities", selected, 0))
     {
@@ -126,24 +142,24 @@ void DebugMenu::DoEntitySystemWindow()
             const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
             StringBuffer64 entity_name = StringBuffer64(ed.id.c_str()).to_lower();
 
-            if (filterBuffer.length() > 0 && !is_number)
+            if (filter.length() > 0 && !is_number)
             {
-                StringBuffer64 filter = filterBuffer.to_lower();
+                StringBuffer64 filter = filter.to_lower();
                 const char* value = strstr( entity_name.c_str(), filter.c_str() );
                 if ( !value )
                     continue;
             }
 
-            if(s_ignoreTerrain && IsTerrain(ed.entity))
+            if(s_state.ignoreTerrain && IsTerrain(ed.entity))
             {
                 continue;
             }
 
             ImGui::PushID(iter->first);
 
-            const bool is_selected = iter->first == s_selectedEntity;
+            const bool is_selected = iter->first == s_state.selectedEntity;
             if (ImGui::Selectable(entity_name.c_str(), is_selected))
-                s_selectedEntity = iter->first;
+                s_state.selectedEntity = iter->first;
 
             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
             if (is_selected)
@@ -155,15 +171,15 @@ void DebugMenu::DoEntitySystemWindow()
         ImGui::EndCombo();
     }
 
-    if (ecs->IsAlive(s_selectedEntity))
+    if (ecs->IsAlive(s_state.selectedEntity))
     {		    
-        if(const ECS::Transform* transform = GetComponent(Transform, s_selectedEntity))
+        if(const ECS::Transform* transform = GetComponent(Transform, s_state.selectedEntity))
         {      
 		    RectF rect(transform->worldPosition, transform->size);
 		    DebugDraw::RectOutline(rect, SColour::Blue);
         }
 
-		ECS::Health* health = GetComponent(Health, s_selectedEntity);
+		ECS::Health* health = GetComponent(Health, s_state.selectedEntity);
         if(ImGui::ActiveButton("Kill Entity", health != nullptr))
         {
             health->currentHealth = 0;
@@ -171,7 +187,7 @@ void DebugMenu::DoEntitySystemWindow()
 
         if(ImGui::Button("Destroy Entity"))
         {
-            em.KillEntity(s_selectedEntity);
+            em.KillEntity(s_state.selectedEntity);
             ImGui::End();
             return;
         }
@@ -200,17 +216,36 @@ void DebugMenu::DoEntitySystemWindow()
         DoComponentDropdown(Faction);
         DoComponentDropdown(AIIntent);
 
-        ECS::Archetype entity_type = em.GetAchetype(s_selectedEntity);
-        for (u32 i = 0; i < ComponentCount; i++)
+        if (entity_view)
         {
-            if(entity_type & ECS::archetypeBit(i))
+            ECS::Archetype entity_type = em.GetAchetype(s_state.selectedEntity);
+            for (u32 i = 0; i < ComponentCount; i++)
             {
-                if(type & ECS::archetypeBit(i))
+                if (entity_type & ECS::archetypeBit(i))
+                {
+                    if (type & ECS::archetypeBit(i))
+                        continue;
+
+                    ImGui::Button("-");
+                    ImGui::SameLine();
+                    ImGui::Text(ECS::ComponentNames[i]);
+                }
+            }
+        }
+        else
+        {
+            ECS::Archetype entity_type = em.GetAchetype(s_state.selectedEntity);
+            for (u32 i = 0; i < ComponentCount; i++)
+            {
+                if (type & ECS::archetypeBit(i))
                     continue;
 
                 ImGui::Button("-");
                 ImGui::SameLine();
-		        ImGui::Text(ECS::ComponentNames[i]);
+
+                ecs->components.componentArrays[i]
+
+                //DoComponentTestView(ECS::ComponentNames[i]);
             }
         }
     }
@@ -222,9 +257,15 @@ void DebugMenu::DoPartViewerWindow()
 {
 	ImGui::Text("Hello");
 
-    do a dropdown for every part and display information on how many there are
-    allow inspection into each one, and be able to go do the entity and open up the
-    entity window view with that entity selected
+    DoComponentView(Card)
+
+    //do a dropdown for every part and display information on how many there are
+    //allow inspection into each one, and be able to go do the entity and open up the
+    //entity window view with that entity selected
+    //for (u32 i = 0; i < ComponentCount; i++)
+    //{
+
+    //}
 }
 
 void DebugMenu::DoInputWindow()
