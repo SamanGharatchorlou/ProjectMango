@@ -3,6 +3,9 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
+#include "Entities/Registries/StatusEffectRegistry.h"
+#include "Game/States/GameState.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -81,6 +84,8 @@ namespace ECS
 			}
 		}
 
+		int turn_index = GameState::GetTurnIndex();
+
 		// StatusEffects
 		ComponentArray<StatusEffects>& status_effects_comps =  GetAllComponents(StatusEffects);
 		for( auto iter = status_effects_comps.entityToComponent.begin(); iter != status_effects_comps.entityToComponent.end(); iter++ )
@@ -88,9 +93,23 @@ namespace ECS
 			StatusEffects& status_effects = status_effects_comps.GetComponentByIndex(iter->second);
 			Entity entity = iter->first;
 
-			for( u32 i = 0; i < status_effects.effects.size(); i++ )
+			for( int i = 0; i < (int)status_effects.effects.size(); i++ )
 			{
+				StatusEffect& effect = status_effects.effects[i];
 
+				// trigger the on apply effect on first call
+				if(!effect.onApplied)
+				{
+					StatusEffectRegistry::OnApply(effect, status_effects.entity);
+					effect.onApplied = true;
+				}
+
+				// remove once duration has expired (relative to number of turns taken)
+				if(effect.turnApplied + effect.turnDuration <= turn_index)
+				{
+					Erase(status_effects.effects, effect);
+					--i;
+				}
 			}
 		}
 

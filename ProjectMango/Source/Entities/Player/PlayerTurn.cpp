@@ -14,6 +14,9 @@
 
 #include "Input/InputManager.h"
 
+// temp
+#include "Entities/EntityBuilder.h"
+
 using namespace ECS;
 
 char turnLog[256] = { 0 };
@@ -71,6 +74,11 @@ static void TakeCard(Entity entity, const Card& card)
 		sr.owner = turn.entity;
 		sr.cardRegistryIndex = card.registryIndex;
 	}
+	
+	Entity target = Faction::GetTarget(entity);
+	RectF rect = GetRect(target);
+
+	CreateVFX( "Lightning1", rect );
 
 	// destroys all children
 	CardRegistry::DiscardCard(card.entity);

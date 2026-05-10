@@ -29,6 +29,7 @@
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
 #include "Entities/Registries/RelicRegistry.h"
+#include "Entities/Registries/StatusEffectRegistry.h"
 #include "Entities/States/Behaviours.h"
 
 
@@ -162,6 +163,7 @@ void ECS::ParseComponentData()
 	MonsterRegistry::Build( "CardMonsters" );
 
 	RelicRegistry::PopulateRegistry();
+	StatusEffectRegistry::PopulateRegistry();
 }
 
 void ECS::ClearComponentData()

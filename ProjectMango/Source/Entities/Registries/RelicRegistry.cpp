@@ -34,7 +34,7 @@ namespace RelicRegistry
 		}
 	}
 
-	static void IncreaseDrawRate(const Relic& relic, ECS::Entity entity)
+	static void IncreaseColourDrawRate(const Relic& relic, ECS::Entity entity)
 	{
 		if(Card* card = GetComponent(Card, entity))
 		{
@@ -70,11 +70,11 @@ namespace RelicRegistry
 		
 		s_relicRegistry.push_back(Relic());
 		Relic& relic_2 = s_relicRegistry.back();
-		relic_2.id = "IncreaseDrawRate";
+		relic_2.id = "IncreaseColourDrawRate";
 		relic_2.description = "Increase the draw rate of the specified coloured card";
 		relic_2.trigger = GameEvent::CardDrawn;
 		relic_2.colour = Colour::White;
-		relic_2.effectFn = IncreaseDrawRate;
+		relic_2.effectFn = IncreaseColourDrawRate;
 	}
 
 	

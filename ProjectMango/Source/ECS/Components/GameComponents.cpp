@@ -14,7 +14,6 @@
 
 namespace ECS
 {
-{
 	// Inventory
 	// ------------------------------------------------------------------
 	Inventory::Inventory() { }
@@ -433,7 +432,6 @@ namespace ECS
 		}
 	}
 
-	
 	void TriggerGameEvent(GameEvent event, Entity entity)
 	{
 		Entity player = Faction::GetPlayer();
@@ -458,18 +456,22 @@ namespace ECS
 
 	void StatusEffect::Create(const char* effect, StatusEffect& out_effect)
 	{
-		out_effect.type = effect;
-		out_effect.duration = 0; // end on use
+
 	}
 
-	void ApplyStatusEffect(Entity receiver, const StatusEffect& effect)
+	void ApplyStatusEffect(const char* effect, Entity target)
 	{
-		StatusEffects* effects = GetComponent(StatusEffects, receiver);
+		StatusEffects* effects = GetComponent(StatusEffects, target);
 		if(!effects)
 		{
-			effects = &AddComponent(StatusEffects, receiver);
+			effects = &AddComponent(StatusEffects, target);
 		}
 
-		effects->effects.push_back(effect);
+		StatusEffect status_effect;
+		status_effect.type = effect;
+		status_effect.turnDuration = 0; // end on use, where to set this?
+		status_effect.turnApplied = GameState::GetTurnIndex();
+
+		effects->effects.push_back(status_effect);
 	}
 }

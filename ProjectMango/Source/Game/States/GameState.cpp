@@ -22,6 +22,11 @@ GameState* GameState::GetActive()
 	return dynamic_cast<GameState*>(&state);
 }
 
+int GameState::GetTurnIndex()
+{
+	return GetActive()->turnIndex;
+}
+
 void GameState::Init()
 {
 	ECS::RegisterAllComponents();

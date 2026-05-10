@@ -468,8 +468,8 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 	debuff_pattern.phases.push_back(debuff);
 	debuff_pattern.phases.push_back(recover);
 
-	//strategy.strategies.push_back(approach_pattern);
-	//strategy.strategies.push_back(attack_pattern);
+	strategy.strategies.push_back(approach_pattern);
+	strategy.strategies.push_back(attack_pattern);
 	strategy.strategies.push_back(debuff_pattern);
 
 	strategy.currentPhase = 0;
@@ -531,7 +531,7 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	{
 		inventory.relics.push_back(*relic);
 	}
-	if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseDrawRate"))
+	if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseColourDrawRate"))
 	{
 		inventory.relics.push_back(*relic);
 	}

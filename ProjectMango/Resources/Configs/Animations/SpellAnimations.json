@@ -1,0 +1,12 @@
+{
+	"vfx" : [
+		{
+			"id": "Lightning1",
+			"spriteSheet": "Lightning-bolt",
+			"frameSize": [72, 72],
+			"frameTime": 0.06,
+			"startIndex": 0,
+			"frameCount": 10
+		}
+	]
+}

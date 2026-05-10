@@ -135,12 +135,24 @@ namespace ECS
 	struct StatusEffect
 	{
 		BasicString type;
-		int duration; // in turns
+		
+		int turnDuration = 0; 
+		int turnApplied = 0; 
+
+		bool onApplied = false;
 
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
 
 		static void Create(const char* effect, StatusEffect& out_effect);
+
+		bool operator==(const StatusEffect& rhs) const = default;
+		//bool operator == (const StatusEffect& rhs)
+		//{
+		//	return type == rhs.type && 
+		//			turnDuration == rhs.turnDuration &&
+		//			turnApplied == rhs.turnApplied;
+		//}
 	};
 
 	struct StatusEffects
@@ -150,7 +162,7 @@ namespace ECS
 		std::vector<StatusEffect> effects;
 	};
 
-	void ApplyStatusEffect(Entity receiver, const StatusEffect& effect);
+	void ApplyStatusEffect(const char* effect, Entity target);
 
 	struct Inventory
 	{
