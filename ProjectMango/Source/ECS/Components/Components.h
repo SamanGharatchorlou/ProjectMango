@@ -100,6 +100,9 @@ namespace ECS
 		// which entity we've already applied to, dont apply again
 		std::vector<Entity> appliedTo;
 
+		Entity sourceEntity = EntityInvalid;
+		int hitFrame = -1;
+
 		// may apply a force
 		VectorF source;
 		float force;

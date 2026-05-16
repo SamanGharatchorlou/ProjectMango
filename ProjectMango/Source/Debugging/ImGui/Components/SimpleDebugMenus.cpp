@@ -3,6 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GameComponents.h"
 
@@ -41,8 +42,8 @@ u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 
 u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
-	StringBuffer32 type_name = EntityState::TypeName();
-	ComponentID type_id = EntityState::TypeId();
+	StringBuffer32 type_name = EntityData::TypeName();
+	ComponentID type_id = EntityData::TypeId();
 
 	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
@@ -50,13 +51,23 @@ u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		ImGui::PushID(entity + type_id);
 
 		ECS::EntityManager& em = ecs->entities;
-		const char* parent = entity_data.parent != ECS::EntityInvalid ? ECS::GetName(entity_data.parent) : "No parent";
-		ImGui::Text("Parent: %s", parent);
+		bool has_parent = entity_data.parent != ECS::EntityInvalid;
+		const char* parent = has_parent ? ECS::GetName(entity_data.parent) : "No parent";
+
+		char buffer[32];
+		snprintf(buffer, 32, "Parent: %s", parent);
+		if (ImGui::ActiveButton(buffer, has_parent))
+		{
+			DebugMenu::SelectEntity(entity_data.parent);
+		}
 
 		for( u32 i = 0; i < entity_data.children.size(); i++ )
 		{
-			const char* child = ECS::GetName(entity_data.children[i]);
-			ImGui::Text("Child: %s", child);
+			snprintf(buffer, 32, "Child: %s", ECS::GetName(entity_data.children[i]));
+			if ( ImGui::ActiveButton(buffer, ecs->IsAlive(entity_data.children[i])) )
+			{
+				DebugMenu::SelectEntity(entity_data.children[i]);
+			}
 		}
 
 		ImGui::PopID();

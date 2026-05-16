@@ -81,9 +81,6 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -378,6 +375,27 @@
     <ClCompile Include="Source\Entities\Registries\StatusEffectRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\Registries\SpellRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTweakerWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugGameStateWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugEntityWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugInputWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTransformWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Readers\AnimationReader.h">
@@ -477,9 +495,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debugging\ImGui\ImGuiHelpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Debugging\ImGui\ImGuiMainWindows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debugging\ImGui\ImGuiMenu.h">
@@ -1161,6 +1176,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Registries\StatusEffectRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Registries\SpellRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

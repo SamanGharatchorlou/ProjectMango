@@ -97,7 +97,8 @@ namespace ECS
 
 		int registryIndex = 0;
 
-		int monsterRegistryIndex = -1;
+		//int monsterRegistryIndex = -1;
+		BasicString spell;
 
 		void RegenerateChildDisplays();
 		bool CanAfford(Entity entity) const;

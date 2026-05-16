@@ -11,7 +11,7 @@ namespace ECS
 {
 	void ComponentUpdateSystem::Update(float dt)
 	{
-		std::vector<Entity> entities_to_destroy;
+		std::vector<Entity> jigglers_to_remove;
 
 		// Jiggler
 		ComponentArray<Jiggler>& jigglers =  GetAllComponents(Jiggler);
@@ -51,7 +51,16 @@ namespace ECS
 			}
 
 			if(decay < 0.1f)
-				entities_to_destroy.push_back(entity);
+				jigglers_to_remove.push_back(entity);
+		}
+
+		for (u32 i = 0; i < jigglers_to_remove.size(); i++)
+		{
+			if (Sprite* sprite = GetComponent(Sprite, jigglers_to_remove[i]))
+			{
+				sprite->params.renderOffset.x = 0.0f;
+			}
+			RemoveComponent(Jiggler, jigglers_to_remove[i]);
 		}
 
 		// UIIntentIcon
@@ -113,16 +122,76 @@ namespace ECS
 			}
 		}
 
-		for( u32 i = 0; i < entities_to_destroy.size(); i++ )
-		{			
-			if(Sprite* sprite = GetComponent(Sprite, entities_to_destroy[i]))
+		// DeathScentence
+		std::vector<Entity> entities_to_destroy;
+
+		ComponentArray<DeathScentence>& death_scentences = GetAllComponents(DeathScentence);
+		for (auto iter = death_scentences.entityToComponent.begin(); iter != death_scentences.entityToComponent.end(); iter++)
+		{
+			DeathScentence& death_scentence = death_scentences.GetComponentByIndex(iter->second);
+			if (death_scentence.deathTimer != -FLT_MAX)
 			{
-				sprite->params.renderOffset.x = 0.0f;
+				death_scentence.deathTimer -= dt;
 			}
-			RemoveComponent(Jiggler, entities_to_destroy[i]);	
+
+			if (!death_scentence.CanDie())
+				continue;
+
+			bool destroy_entity = false;
+
+			// animator trigger
+			if (death_scentence.deathLoops != -1)
+			{
+				bool animate_on_exit = false;
+
+				const Animator* animator = GetComponent(Animator, iter->first);
+				if (animator)
+				{
+					animate_on_exit = animator->GetAnimation(death_scentence.action) != nullptr;
+				}
+
+				if (animate_on_exit)
+				{
+					if (animator->GetActiveAnimation()->action == death_scentence.action)
+					{
+						if (animator->loopCount >= death_scentence.deathLoops)
+						{
+							destroy_entity = true;
+						}
+					}
+				}
+				else
+				{
+					destroy_entity = true;
+				}
+			}
+
+			if (destroy_entity)
+			{
+				float fade_out_time = death_scentence.fadeOutTime;
+				if (fade_out_time > 0.0f && fade_out_time > death_scentence.fadeOutTimer)
+				{
+					death_scentence.fadeOutTimer += dt;
+
+					if (Sprite* sprite = GetComponent(Sprite, iter->first))
+					{
+						float progress = death_scentence.fadeOutTimer / fade_out_time;
+						float alpha = 1.0f - Maths::EaseOutCubic(progress);
+
+						sprite->params.colourMod.setOpacity(alpha);
+					}
+				}
+				else
+				{
+					entities_to_destroy.push_back(iter->first);
+				}
+			}
 		}
 
-		entities_to_destroy.clear();
+		for (u32 i = 0; i < entities_to_destroy.size(); i++)
+		{
+			ecs->entities.KillEntity(entities_to_destroy[i]);
+		}
 	}
 }
 	

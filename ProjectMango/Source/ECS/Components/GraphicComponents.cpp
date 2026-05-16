@@ -197,7 +197,7 @@ namespace ECS
 	
 	bool Animator::HasAnimation(Action::Enum action) const
 	{
-		for( u32 i = 0; i < animations->size(); i++ )
+		for( u32 i = 0; animations && i < animations->size(); i++ )
 		{
 			if( (*animations)[i].action == action)
 			{

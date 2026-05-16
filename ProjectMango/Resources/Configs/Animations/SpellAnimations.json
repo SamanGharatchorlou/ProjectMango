@@ -1,12 +1,277 @@
 {
-	"vfx" : [
+	"vfx": [
 		{
 			"id": "Lightning1",
 			"spriteSheet": "Lightning-bolt",
-			"frameSize": [72, 72],
-			"frameTime": 0.06,
+			"frameSize": [ 72, 72 ],
+			"frameTime": 0.05,
 			"startIndex": 0,
-			"frameCount": 10
+			"frameCount": 10,
+			"inactiveFrame": 6
+		},
+		{
+			"id": "SunStrike",
+			"spriteSheet": "Sun-strike",
+			"frameSize": [ 72, 72 ],
+			"frameTime": 0.05,
+			"startIndex": 0,
+			"frameCount": 10,
+			"inactiveFrame": 3
+		},
+
+		{
+			"id": "green_spell_1",
+			"spriteSheet": "green_spell_1",
+			"frameSize": [ 128, 64 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 10,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "green_spell_2",
+			"spriteSheet": "green_spell_2",
+			"frameSize": [ 160, 160 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 6,
+			"hit_frame": 5
+		},
+		{
+			"id": "green_spell_3",
+			"spriteSheet": "green_spell_3",
+			"frameSize": [ 92, 117 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 4,
+			"hit_frame": 2
+		},
+		{
+			"id": "green_spell_4",
+			"spriteSheet": "green_spell_4",
+			"frameSize": [ 96, 144 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 16,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "green_spell_5",
+			"spriteSheet": "green_spell_5",
+			"frameSize": [ 160, 166 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 21,
+			"inactiveFrame": 6,
+			"hit_frame": 4
+		},
+
+		{
+			"id": "blue_spell_1",
+			"spriteSheet": "blue_spell_1",
+			"frameSize": [ 128, 64 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 10,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "blue_spell_2",
+			"spriteSheet": "blue_spell_2",
+			"frameSize": [ 160, 160 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 6,
+			"hit_frame": 5
+		},
+		{
+			"id": "blue_spell_3",
+			"spriteSheet": "blue_spell_3",
+			"frameSize": [ 92, 117 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 4,
+			"hit_frame": 2
+		},
+		{
+			"id": "blue_spell_4",
+			"spriteSheet": "blue_spell_4",
+			"frameSize": [ 96, 144 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 16,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "blue_spell_5",
+			"spriteSheet": "blue_spell_5",
+			"frameSize": [ 160, 166 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 21,
+			"inactiveFrame": 6,
+			"hit_frame": 4
+		},
+
+		{
+			"id": "red_spell_1",
+			"spriteSheet": "red_spell_1",
+			"frameSize": [ 128, 64 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 10,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "red_spell_2",
+			"spriteSheet": "red_spell_2",
+			"frameSize": [ 160, 160 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 6,
+			"hit_frame": 5
+		},
+		{
+			"id": "red_spell_3",
+			"spriteSheet": "red_spell_3",
+			"frameSize": [ 92, 117 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 4,
+			"hit_frame": 2
+		},
+		{
+			"id": "red_spell_4",
+			"spriteSheet": "red_spell_4",
+			"frameSize": [ 96, 144 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 16,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "red_spell_5",
+			"spriteSheet": "red_spell_5",
+			"frameSize": [ 160, 166 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 21,
+			"inactiveFrame": 6,
+			"hit_frame": 4
+		},
+
+		{
+			"id": "black_spell_1",
+			"spriteSheet": "black_spell_1",
+			"frameSize": [ 128, 64 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 10,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "black_spell_2",
+			"spriteSheet": "black_spell_2",
+			"frameSize": [ 160, 160 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 6,
+			"hit_frame": 5
+		},
+		{
+			"id": "black_spell_3",
+			"spriteSheet": "black_spell_3",
+			"frameSize": [ 92, 117 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 14,
+			"inactiveFrame": 4,
+			"hit_frame": 2
+		},
+		{
+			"id": "black_spell_4",
+			"spriteSheet": "black_spell_4",
+			"frameSize": [ 96, 144 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 16,
+			"inactiveFrame": 1,
+			"hit_frame": 1
+		},
+		{
+			"id": "black_spell_5",
+			"spriteSheet": "black_spell_5",
+			"frameSize": [ 160, 166 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 21,
+			"inactiveFrame": 6,
+			"hit_frame": 4
+		},
+
+		{
+			"id": "white_spell_1",
+			"spriteSheet": "white_spell_1",
+			"frameSize": [ 256, 256 ],
+			"frameTime": 0.07,
+			"startIndex": 0,
+			"frameCount": 20,
+			"inactiveFrame": 14,
+			"hit_frame": 19
+		},
+		{
+			"id": "white_spell_2",
+			"spriteSheet": "white_spell_2",
+			"frameSize": [ 256, 256 ],
+			"frameTime": 0.07,
+			"startIndex": 0,
+			"frameCount": 26,
+			"inactiveFrame": 12,
+			"hit_frame": 13
+		},
+		{
+			"id": "white_spell_3",
+			"spriteSheet": "white_spell_3",
+			"frameSize": [ 256, 256 ],
+			"frameTime": 0.07,
+			"startIndex": 0,
+			"frameCount": 25,
+			"inactiveFrame": 13,
+			"hit_frame": 13
+		},
+		{
+			"id": "white_spell_4",
+			"spriteSheet": "white_spell_4",
+			"frameSize": [ 256, 256 ],
+			"frameTime": 0.07,
+			"startIndex": 0,
+			"frameCount": 26,
+			"inactiveFrame": 9,
+			"hit_frame": 17
+		},
+		{
+			"id": "white_spell_5",
+			"spriteSheet": "white_spell_5",
+			"frameSize": [ 128, 224 ],
+			"frameTime": 0.1,
+			"startIndex": 0,
+			"frameCount": 15,
+			"inactiveFrame": 9,
+			"hit_frame": 5
 		}
 	]
 }

@@ -62,6 +62,20 @@ namespace AnimationReader
 		return s_animationData.contains(animiation_id);
 	}
 
+
+	VectorF GetAnimationFrameSize(const char* animiation_id)
+	{
+		if (AnimationExists(animiation_id))
+		{
+			if (s_animationData.at(animiation_id).animations.size() > 0)
+			{
+				return s_animationData.at(animiation_id).animations[0].frame.frameSize;
+			}
+		}
+
+		return VectorF::zero();
+	}
+
 	static void AddAttackData(Entity entity, const AnimatorData& animator_data, Action::Enum action)
 	{
 		if(animator_data.attackStateData.contains(action))
@@ -70,11 +84,10 @@ namespace AnimationReader
 			beviour_state.attackData.insert( { action, animator_data.attackStateData.at(action) } );
 		}
 	}
-
-	// this runs every time i fire a spell, lets not...
+	
 	void BuildAnimator(Entity entity, const char* animator_id)
 	{
-		if(animator_id && !s_animationData.contains(animator_id))
+		if(!animator_id || !s_animationData.contains(animator_id))
 			return;
 
 		const AnimatorData& animator_data = s_animationData.at(animator_id);
@@ -120,6 +133,77 @@ namespace AnimationReader
 		}
 	}
 
+	static bool PopulateFrameData(const Value& data, const Animation& defaults, Animation& out_animation)
+	{
+		const char* sprite_sheet_id = defaults.image.id.c_str();
+		if (data.HasMember("spriteSheet"))
+			sprite_sheet_id = data["spriteSheet"].GetString();
+
+		STexture* texture = TextureManager::Get()->getTexture(sprite_sheet_id, FileManager::Folder::Image_Animations);
+		if (!texture)
+		{
+			DebugPrint(Error, "No Sprite sheet named %s found for this animation", sprite_sheet_id);
+			return false;
+		}
+
+		out_animation.action = data.HasMember("action") ? StringToAction(data["action"].GetString()) : defaults.action;
+
+		// sprite sheet image
+		out_animation.image.texture = texture;
+		out_animation.image.id = sprite_sheet_id;
+
+		// frames
+		out_animation.frame.frameSize.x = data.HasMember("frameSize") ? data["frameSize"][0].GetFloat() : defaults.frame.frameSize.x;
+		out_animation.frame.frameSize.y = data.HasMember("frameSize") ? data["frameSize"][1].GetFloat() : defaults.frame.frameSize.y;
+		out_animation.frame.gridCount = (texture->originalDimentions / out_animation.frame.frameSize).toInt();
+		out_animation.frameTime = data["frameTime"].GetFloat();
+		out_animation.startIndex = data["startIndex"].GetInt();
+		out_animation.frameCount = data["frameCount"].GetInt();
+
+		// format
+		out_animation.looping = data.HasMember("looping") ? data["looping"].GetBool() : defaults.looping;
+		out_animation.reversing = data.HasMember("reverse") ? data["reverse"].GetBool() : defaults.reversing;
+
+		return true;
+	}
+
+	static bool PopulateAttackStateData(const Value& data, AttackStateData& asd)
+	{		
+		// attack data
+		bool has_attack_data = PopulateColliderData("hitbox", data, &asd.hitBoxPos, &asd.hitBoxSize);
+
+		if (data.HasMember("hit_frame"))
+		{
+			asd.hitFrame = data["hit_frame"].GetInt();
+			has_attack_data = true;
+		}
+
+		if (data.HasMember("hit_vfx"))
+		{
+			asd.hitVfx = data["hit_vfx"].GetString();
+			has_attack_data = true;
+		}
+
+		if (data.HasMember("attack_vfx"))
+		{
+			asd.attackVfx = data["attack_vfx"].GetString();
+			has_attack_data = true;
+		}
+
+		if (data.HasMember("damage"))
+		{
+			asd.damage = data["damage"].GetFloat();
+			has_attack_data = true;
+		}
+
+		if (data.HasMember("debuff"))
+		{
+			asd.debuff = data["debuff"].GetString();
+			has_attack_data = true;
+		}
+
+		return has_attack_data;
+	}
 
 	// gets each individual animation and puts it into the map
 	// problem is i need them packaged up into lists so i can make an animator out of it
@@ -137,41 +221,54 @@ namespace AnimationReader
 			
 			if(parser.document.HasMember("vfx"))
 			{
-				Value& types = parser.document["vfx"];
-				if (types.IsArray())
+				const Value& types = parser.document["vfx"];
+				if (!types.IsArray())
+					continue;
+
+				//if (types.IsArray())
 				{
+					Animation defaults;
+					defaults.action = Action::Active;
+					defaults.looping = false;
+
 					for (u32 i = 0; i < types.Size(); i++)
 					{
-						Value& vfx_data = types[i];
-						const char* id = vfx_data["id"].GetString();
+						const Value& vfx_data = types[i];
 
-						const char* spriteSheet_id = vfx_data["spriteSheet"].GetString();
-						STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
-						if (!texture)
-						{
-							DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
-							continue;
-						}
-					
+						//const char* spriteSheet_id = vfx_data["spriteSheet"].GetString();
+						//STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+						//if (!texture)
+						//{
+						//	DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
+						//	continue;
+						//}
+
+						const char* id = vfx_data["id"].GetString();
 						std::vector<Animation>& animations = s_animationData[id].animations;
 						animations.push_back( Animation() );
 						Animation& animation = animations.back();
 
-						// vfx defaults
-						animation.looping = false;
-						animation.action =  Action::Active;
-					
-						// sprite sheet image
-						animation.image.texture = texture;
-						animation.image.id = spriteSheet_id;
+						PopulateFrameData(vfx_data, defaults, animation);
 
-						// frames
-						animation.frame.frameSize.x = vfx_data["frameSize"][0].GetFloat();
-						animation.frame.frameSize.y = vfx_data["frameSize"][1].GetFloat();
-						animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
-						animation.frameTime = vfx_data["frameTime"].GetFloat();
-						animation.startIndex = vfx_data["startIndex"].GetInt();
-						animation.frameCount = vfx_data["frameCount"].GetInt();
+						//// vfx defaults
+						//animation.looping = false;
+						//animation.action =  Action::Active;
+
+						AttackStateData asd;
+						if (PopulateAttackStateData(vfx_data, asd))
+						{
+							s_animationData[id].attackStateData.insert({ animation.action, asd });
+						}
+
+						if (vfx_data.HasMember("inactiveFrame"))
+						{
+							animations.push_back(animation);
+
+							Animation& inactive_animation = animations.back();
+							inactive_animation.action = Action::Inactive;
+							inactive_animation.startIndex = vfx_data["inactiveFrame"].GetInt();
+							inactive_animation.frameCount = 1;
+						}
 					}
 				}
 			}
@@ -180,21 +277,26 @@ namespace AnimationReader
 				const char* id = parser.document["id"].GetString();
 				std::vector<Animation>& animations = s_animationData[id].animations;
 
-				float frame_size_x = parser.document["frameSize_x"].GetFloat();
-				float frame_size_y = parser.document["frameSize_y"].GetFloat();
+				//float frame_size_x = parser.document["frameSize_x"].GetFloat();
+				//float frame_size_y = parser.document["frameSize_y"].GetFloat();
+
+				Animation defaults;
+				defaults.frame.frameSize.x = parser.document["frameSize_x"].GetFloat();
+				defaults.frame.frameSize.y = parser.document["frameSize_y"].GetFloat();
 
 				const Value::Array& sprite_sheets = parser.document["spriteSheets"].GetArray();
-				for( u32 i = 0; i < sprite_sheets.Size(); i++ )
+				for( u32 j = 0; j < sprite_sheets.Size(); j++ )
 				{
-					const Value& sprite_sheet = sprite_sheets[i];
+					const Value& sprite_sheet = sprite_sheets[j];
 
-					const char* spriteSheet_id = sprite_sheet["spriteSheet"].GetString();
-					STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
-					if (!texture)
-					{
-						DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
-						continue;
-					}
+					defaults.image.id = sprite_sheet["spriteSheet"].GetString();
+					//const char* sprite_sheet_id = sprite_sheet["spriteSheet"].GetString();
+					//STexture* texture = TextureManager::Get()->getTexture(spriteSheet_id, FileManager::Folder::Image_Animations);
+					//if (!texture)
+					//{
+					//	DebugPrint(Error, "No Sprite sheet named %s found for this animation", spriteSheet_id);
+					//	continue;
+					//}
 
 					const Value& anims = sprite_sheet["animations"];
 					for( u32 i = 0; i < anims.Size(); i++ )
@@ -202,47 +304,68 @@ namespace AnimationReader
 						animations.push_back( Animation() );
 						Animation& animation = animations.back();
 
-						// image data
-						animation.image.id = spriteSheet_id;
-						animation.image.texture = texture;
+						PopulateFrameData(anims[i], defaults, animation);
 
-						// frame data
-						animation.frame.frameSize.x = frame_size_x;
-						animation.frame.frameSize.y = frame_size_y;
-						animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
-				
-						// animation data
-						animation.action = anims[i].HasMember("action") ? StringToAction(anims[i]["action"].GetString()) : Action::None;
-						animation.startIndex = anims[i]["startIndex"].GetInt();
-						animation.frameCount = anims[i]["frameCount"].GetInt();
-						animation.frameTime = anims[i]["frameTime"].GetFloat();
-						animation.looping = anims[i].HasMember("looping") ? anims[i]["looping"].GetBool() : true;
-						animation.reversing = anims[i].HasMember("reverse") ? anims[i]["reverse"].GetBool() : false;
-
-						// attack data
-						bool has_attack_data = anims[i].HasMember("hitbox_size");
-						if( has_attack_data )
+						AttackStateData asd;
+						if (PopulateAttackStateData(anims[i], asd))
 						{
-							AttackStateData hitbox_data;
-							PopulateColliderData("hitbox", anims[i], &hitbox_data.hitBoxPos, &hitbox_data.hitBoxSize);
-					
-							if(anims[i].HasMember("hit_frame"))
-								hitbox_data.hitFrame = anims[i]["hit_frame"].GetInt();
-
-							if(anims[i].HasMember("hit_vfx"))
-								hitbox_data.hitVfx = anims[i]["hit_vfx"].GetString();
-							
-							if(anims[i].HasMember("attack_vfx"))
-								hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
-							
-							if(anims[i].HasMember("damage"))
-								hitbox_data.damage = anims[i]["damage"].GetFloat();
-
-							if(anims[i].HasMember("debuff"))
-								hitbox_data.debuff = anims[i]["debuff"].GetString();
-
-							s_animationData[id].attackStateData.insert( {animation.action, hitbox_data } );
+							s_animationData[id].attackStateData.insert({ animation.action, asd });
 						}
+
+						//// image data
+						//animation.image.id = spriteSheet_id;
+						//animation.image.texture = texture;
+
+						//// frame data
+						//animation.frame.frameSize.x = frame_size_x;
+						//animation.frame.frameSize.y = frame_size_y;
+						//animation.frame.gridCount = (texture->originalDimentions / animation.frame.frameSize).toInt();
+				
+						//// animation data
+						//animation.action = anims[i].HasMember("action") ? StringToAction(anims[i]["action"].GetString()) : Action::None;
+						//animation.startIndex = anims[i]["startIndex"].GetInt();
+						//animation.frameCount = anims[i]["frameCount"].GetInt();
+						//animation.frameTime = anims[i]["frameTime"].GetFloat();
+						//animation.looping = anims[i].HasMember("looping") ? anims[i]["looping"].GetBool() : true;
+						//animation.reversing = anims[i].HasMember("reverse") ? anims[i]["reverse"].GetBool() : false;
+
+						//// attack data
+						//AttackStateData hitbox_data;
+						//bool has_attack_data = 
+						//	PopulateColliderData("hitbox", anims[i], &hitbox_data.hitBoxPos, &hitbox_data.hitBoxSize);
+					
+						//if (anims[i].HasMember("hit_frame"))
+						//{
+						//	hitbox_data.hitFrame = anims[i]["hit_frame"].GetInt();
+						//	has_attack_data = true;
+						//}
+
+						//if(anims[i].HasMember("hit_vfx"))
+						//{
+						//	hitbox_data.hitVfx = anims[i]["hit_vfx"].GetString();
+						//	has_attack_data = true;
+						//}
+						//	
+						//if(anims[i].HasMember("attack_vfx"))
+						//{
+						//	hitbox_data.attackVfx = anims[i]["attack_vfx"].GetString();
+						//	has_attack_data = true;
+						//}
+						//	
+						//if(anims[i].HasMember("damage"))
+						//{
+						//	hitbox_data.damage = anims[i]["damage"].GetFloat();
+						//	has_attack_data = true;
+						//}
+
+						//if(anims[i].HasMember("debuff"))
+						//{
+						//	hitbox_data.debuff = anims[i]["debuff"].GetString();
+						//	has_attack_data = true;
+						//}
+
+						//if(has_attack_data)
+						//	s_animationData[id].attackStateData.insert( {animation.action, hitbox_data } );
 					}
 				}
 			}

@@ -20,14 +20,10 @@ u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 			for( u32 l = 0; l < biome.levels.size(); l++ )
 			{
 				const ECS::Level& level = biome.levels[l];
-				for( auto iter = level.entities.begin(); iter != level.entities.end(); iter++ )
+				for (u32 i = 0; i < level.entityMetaData.size(); i++)
 				{
-					const std::vector<ECS::EntityMetaData>& entity_positions = iter->second;
-					for( u32 e = 0; e < entity_positions.size(); e++ )
-					{
-						VectorF pos = entity_positions[e].data.GetVector("Position");
-						DebugDraw::Point(pos, SColour::Green);
-					}
+					VectorF pos = level.entityMetaData[i].data.GetVector("Position");
+					DebugDraw::Point(pos, SColour::Green);
 				}
 			}
 

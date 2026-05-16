@@ -9,13 +9,14 @@
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
 #include "Game/FrameRateController.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "Entities/Registries/ResourceBank.h"
 
+#include "Game/Camera/Camera.h"
 #include "Input/InputManager.h"
 
 // temp
-#include "Entities/EntityBuilder.h"
+#include "Entities/Registries/SpellRegistry.h"
 
 using namespace ECS;
 
@@ -63,22 +64,10 @@ static void TakeCard(Entity entity, const Card& card)
 	turn.collectedCardSource = card.entity;
 
 	inventory.cards.push_back(card.registryIndex); 
-
-	if(card.monsterRegistryIndex != -1)
-	{
-		// spawn
-		Entity spawn_requst = CreateEntity("SpawnRequest");
-		SpawnRequest& sr = AddComponent(SpawnRequest, spawn_requst);
-		sr.frameTime = FrameRateController::Get().frameCount;
-		sr.emd.data.strings["Id"] = MonsterRegistry::GetMonster(card.monsterRegistryIndex);
-		sr.owner = turn.entity;
-		sr.cardRegistryIndex = card.registryIndex;
-	}
 	
 	Entity target = Faction::GetTarget(entity);
-	RectF rect = GetRect(target);
-
-	CreateVFX( "Lightning1", rect );
+	if(target != EntityInvalid)
+		SpellRegistry::CreateSpell(card.spell.c_str(), target);
 
 	// destroys all children
 	CardRegistry::DiscardCard(card.entity);
@@ -177,9 +166,9 @@ void PlayerTurn::Update(ECS::TurnState& turn)
 
 void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 {
-	if(DebugMenu::GetState().turnLogActive)
+	if(DebugMenu::GetSharedState().turnLogActive)
 	{
-		std::vector<BasicString>& turn_log = DebugMenu::GetState().turnLog;
+		std::vector<BasicString>& turn_log = DebugMenu::GetSharedState().turnLog;
 
 		char header[32];
 		snprintf(header, 32, "\n%s Turn %d", Faction::GetTeam(turn.entity) == Faction::Player ? "Player" : "Enemy", turn.turnIndex );

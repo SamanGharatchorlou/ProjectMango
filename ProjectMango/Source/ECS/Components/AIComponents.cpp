@@ -25,6 +25,18 @@ namespace ECS
 		}
 	}
 
+
+	int BehaviourState::GetHitFrame(Action::Enum action)
+	{
+		if (attackData.contains(action))
+		{
+			AttackStateData& asd = attackData[action];
+			return attackData[action].hitFrame;
+		}
+
+		return 0;
+	}
+
 	int AIStrategy::GetNextPhase() const
 	{
 		const Strategy& pattern = strategies[currentStrategy];

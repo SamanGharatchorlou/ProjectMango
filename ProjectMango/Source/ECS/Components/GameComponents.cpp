@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "GameComponents.h"
 
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/EntityCommon.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
+#include "Entities/Registries/SpellRegistry.h"
 #include "Entities/EntityBuilder.h"
 #include "Entities/Registries/ResourceBank.h"
 #include "Core/Helpers.h"
@@ -62,7 +63,7 @@ namespace ECS
 	{
 		if(Inventory* inventory = GetComponent(Inventory, entity))
 		{
-			if(DebugMenu::GetState().canBuyAnyCard)
+			if(DebugMenu::GetSharedState().canBuyAnyCard)
 			{
 				if(Faction::GetTeam(entity) == Faction::Player)
 					return true;
@@ -237,10 +238,18 @@ namespace ECS
 
 		GenerateCostIcons(entity );
 
-		if(monsterRegistryIndex != -1)
+		//if(monsterRegistryIndex != -1)
+		//{
+		//	const char* monster = MonsterRegistry::GetMonster(monsterRegistryIndex);
+		//	CreateCardActor(monster, entity);
+		//}
+
+		if (!spell.empty())
 		{
-			const char* monster = MonsterRegistry::GetMonster(monsterRegistryIndex);
-			CreateCardActor(monster, entity);
+			EntityMetaData spell_data;
+			SpellRegistry::GetSpellMetaData(spell.c_str(), spell_data);
+			CreateCardSpell(spell_data, entity);
+			// 7OFFMAY
 		}
 	}
 

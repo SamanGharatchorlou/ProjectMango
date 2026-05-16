@@ -49,7 +49,8 @@ namespace ECS
 	{
 		if (const EntityData* ed = GetComponent(EntityData, entity))
 		{
-			return ConfigManager::Get()->GetConfig(ed->id.c_str());
+			if(!ed->id.empty())
+				return ConfigManager::Get()->GetConfig(ed->id.c_str());
 		}
 
 		return nullptr;
@@ -200,6 +201,18 @@ namespace ECS
 		VectorF self = GetPosition(entity);
 		VectorF target = GetPosition(target_entity);
 		return (target.x > self.x) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+	}
+
+	void Resize(RectF& rect_a, const RectF& rect_b)
+	{
+		if (!rect_a.isValid() || !rect_b.isValid())
+			return;
+
+		float width_ratio = rect_a.Width() / rect_b.Width();
+		float height_ratio = rect_a.Height() / rect_b.Height();
+
+		VectorF size = rect_a.Size() / Maths::Max(width_ratio, height_ratio);
+		rect_a.SetSize(size);
 	}
 
 	bool IsInLevel(const Level& level, const Transform& transform)

@@ -4,6 +4,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GraphicComponents.h"
+#include "Game/Camera/Camera.h"
 
 namespace ECS
 {
@@ -13,64 +14,26 @@ namespace ECS
 	{
  		for (Entity entity : entities)
 		{
-			if (DeathScentence* ds = GetComponent(DeathScentence, entity))
+			Health& health = GetComponentRef(Health, entity);
+
+			if (Damage* damage = GetComponent(Damage, entity))
 			{
-				if(ds->deathTimer != -FLT_MAX)
+				bool hit_frame = true;
+				if (Animator* animator = GetComponent(Animator, damage->sourceEntity))
+					hit_frame = animator->frameIndex == damage->hitFrame || damage->hitFrame == 0;
+				
+				if (hit_frame)
 				{
-					ds->deathTimer -= dt;
+					bool did_hit = health.ApplyDamage(damage->value);
+					if (did_hit)
+					{
+						VectorF position = GetPosition(entity);
+						Camera::Get()->AddShake(damage->value * 0.5f, position);
+					}
+
+					RemoveComponent(Damage, entity);
 				}
 
-				if(!ds->CanDie())
-					return;
-
-				bool destroy_entity = false;
-
-				// animator trigger
-				if( ds->deathLoops != -1)
-				{
-					bool animate_on_exit = false;
-
-					const Animator* animator = GetComponent(Animator, entity);
-					if(animator)
-					{
-						animate_on_exit = animator->GetAnimation(ds->action) != nullptr;
-					}
-
-					if(animate_on_exit)
-					{
-						if(animator->GetActiveAnimation()->action == ds->action)
-						{
-							if(animator->loopCount >= ds->deathLoops)
-							{
-								destroy_entity = true;
-							}
-						}
-					}
-					else
-					{
-						destroy_entity = true;
-					}
-				}
-
-				if(destroy_entity)
-				{
-					if(ds->fadeOutTime > 0.0f && ds->fadeOutTime > ds->fadeOutTimer)
-					{
-						ds->fadeOutTimer += dt;
-
-						if(Sprite* sprite = GetComponent(Sprite, entity))
-						{
-							float progress = ds->fadeOutTimer / ds->fadeOutTime;
-							float alpha = 1.0f - Maths::EaseOutCubic(progress);
-
-							sprite->params.colourMod.setOpacity(alpha);
-						}
-					}
-					else
-					{
-						ecs->entities.KillEntity(entity);
-					}
-				}
 			}
 		}
 	}

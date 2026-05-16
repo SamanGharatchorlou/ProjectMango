@@ -26,8 +26,8 @@ std::vector<BasicString> s_animationLog;
 
 u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 {
-	StringBuffer32 type_name = Biome::TypeName();
-	ComponentID type_id = Biome::TypeId();
+	StringBuffer32 type_name = Animator::TypeName();
+	ComponentID type_id = Animator::TypeId();
 
 	if (!HasComponent(Transform, entity))
 		return type_id;
@@ -68,8 +68,8 @@ u32 DebugMenu::DoAnimatorDebugMenu(ECS::Entity& entity)
 
 u32 DebugMenu::DoSpriteDebugMenu(ECS::Entity& entity)
 {
-	StringBuffer32 type_name = Biome::TypeName();
-	ComponentID type_id = Biome::TypeId();
+	StringBuffer32 type_name = Sprite::TypeName();
+	ComponentID type_id = Sprite::TypeId();
 
 	if (!HasComponent(Transform, entity))
 		return type_id;

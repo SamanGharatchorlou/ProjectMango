@@ -212,9 +212,8 @@ namespace ECS
 
 		Grid<int> walkableTiles;
 
-		// can i assign the entity a value? do i care? a string is probably fine
-
-		std::unordered_map<BasicString, std::vector<EntityMetaData>> entities;
+		// [type, list of entities of said type]
+		std::vector<EntityMetaData> entityMetaData;
 
 		VectorI GetTileIndex(VectorF position) const;
 		RectF GetWalkableTileRect(VectorI index) const;

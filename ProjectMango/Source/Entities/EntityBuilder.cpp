@@ -7,7 +7,7 @@
 #include "UIEntityBuilder.h"
 #include "Entities/States/Behaviours.h"
 #include "Game/States/GameState.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "Graphics/Raycast.h"
 #include "Entities/Registries/ResourceBank.h"
 #include "Entities/Registries/RelicRegistry.h"
@@ -195,6 +195,8 @@ static void SetupPowerIcons(Entity entity, int count)
 
 		// Transform
 		VectorF size = VectorF(15,15);
+		size = AdjustToScreenSize(size);
+
 		Transform& child_transform = AddComponent(Transform, child_entity);
 		child_transform.size = size;
 
@@ -384,6 +386,45 @@ Entity CreateCardActor(const char* monster, Entity parent)
 	Transform& parent_transform = GetComponentRef(Transform, parent);
 	VectorF anchor = parent_transform.worldPosition + parent_transform.size * 0.65f;
 	transform.SetObjectCenter(anchor);
+
+	// Animator
+	Animator& animation = AddComponent(Animator, entity);
+	animation.Init();
+
+	// Sprite
+	Sprite& sprite = AddComponent(Sprite, entity);
+	sprite.Init(nullptr);
+
+	const Sprite& parent_sprite = GetComponentRef(Sprite, parent);
+	sprite.params.renderLayer = (RenderLayer)((int)parent_sprite.params.renderLayer + 1);
+
+	// EntityState
+	AddComponent(EntityState, entity);
+
+	return entity;
+}
+
+// the thing on the card, mostly just an animated object
+Entity CreateCardSpell(const EntityMetaData& emd, Entity parent)
+{
+	// adding everything something NEEDS to be an enemy... pretty much anyway
+	Entity entity = ECS::CreateEntity(emd);
+
+	// set card as parent
+	EntityData::SetParent(entity, parent);
+
+	// Transform
+	Transform& transform = AddComponent(Transform, entity);
+	transform.Init(&emd);
+
+	Transform& parent_transform = GetComponentRef(Transform, parent);
+	VectorF anchor = parent_transform.worldPosition + parent_transform.size * 0.65f;
+	transform.SetObjectCenter(parent_transform.GetObjectCenter());
+
+	RectF rect = transform.GetRect();
+	Resize(rect, parent_transform.GetRect());
+	transform.size = rect.Size();
+	transform.SetObjectCenter(parent_transform.GetObjectCenter());
 
 	// Animator
 	Animator& animation = AddComponent(Animator, entity);
@@ -639,24 +680,48 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 	ASSERT(GetComponentRef(Transform, entity).size.isPositive(), "%s: Invalid Transform, has size 0", GetName(entity));
 }
 
+static std::unordered_map<BasicString, CreateEntityFn> s_createEntitiyFunctions;
 
+static void InitEntityFunctions()
+{
+	// game object entities
+	s_createEntitiyFunctions["Card"] = CreateCardEntity;
+	s_createEntitiyFunctions["CoinStack"] = CreateCoinStack;
+	s_createEntitiyFunctions["CoinPile"] = CreateCoinPile;
+	s_createEntitiyFunctions["CardPower"] = CreateCardPower;
+	s_createEntitiyFunctions["Text"] = CreateUIText;
+	s_createEntitiyFunctions["HealthBar"] = CreateHealthBar;
+	s_createEntitiyFunctions["Enemy"] = CreateEnemy;
+	s_createEntitiyFunctions["Spawner"] = CreateSpawner;
+	s_createEntitiyFunctions["Player"] = CreatePlayer;
+}
+
+void CreateEntitiesFromData(const std::vector<EntityMetaData>& meta_data, std::vector<Entity>& entities)
+{
+	if (s_createEntitiyFunctions.size() == 0)
+		InitEntityFunctions();
+
+	for (u32 i = 0; i < meta_data.size(); i++)
+	{
+		const EntityMetaData& emd = meta_data[i];
+		const char* type = emd.GetID();
+
+		// create game object
+		CreateEntityFn create_fn = CreateBasicObject;
+		if (s_createEntitiyFunctions.contains(type))
+		{
+			create_fn = s_createEntitiyFunctions.at(type);
+		}
+
+		Entity entity = create_fn(emd);
+		PostProcess(entity, emd);
+
+		entities.push_back(entity);
+	}
+}
 
 void CreateEntities(Entity& biome_entity)
 {
-	srand ((u32)time(NULL));
-
-	// game object entities
-	std::unordered_map<BasicString, CreateEntityFn> CreateEntitiyFunctions;
-	CreateEntitiyFunctions["Card"] = CreateCardEntity;
-	CreateEntitiyFunctions["CoinStack"] = CreateCoinStack;
-	CreateEntitiyFunctions["CoinPile"] = CreateCoinPile;
-	CreateEntitiyFunctions["CardPower"] = CreateCardPower;
-	CreateEntitiyFunctions["Text"] = CreateUIText;
-	CreateEntitiyFunctions["HealthBar"] = CreateHealthBar;
-	CreateEntitiyFunctions["Enemy"] = CreateEnemy;
-	CreateEntitiyFunctions["Spawner"] = CreateSpawner;
-	CreateEntitiyFunctions["Player"] = CreatePlayer;
-
 	// UI entities
 	CreateUIEntities();
 
@@ -664,24 +729,9 @@ void CreateEntities(Entity& biome_entity)
 	for (u32 i = 0; i < biome.levels.size(); i++)
 	{
 		const Level& level = biome.levels[i];
-		for (auto iter = level.entities.begin(); iter != level.entities.end(); iter++)
-		{
-			const char* type = iter->first.c_str();
 
-			// create game object
-			CreateEntityFn create_fn = CreateBasicObject;
-			if(CreateEntitiyFunctions.contains(type))
-			{
-				create_fn = CreateEntitiyFunctions.at(type);
-			}
-
-			const std::vector<EntityMetaData>& entitiy_meta_data = iter->second;
-			for( u32 e = 0; e < entitiy_meta_data.size(); e++ )
-			{
-				Entity entity = create_fn(entitiy_meta_data[e]);
-				PostProcess(entity, entitiy_meta_data[e]);
-			}
-		}
+		std::vector<Entity> entites;
+		CreateEntitiesFromData(level.entityMetaData, entites);
 	}
 }
 

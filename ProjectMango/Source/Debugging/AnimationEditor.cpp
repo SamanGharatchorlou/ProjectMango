@@ -15,7 +15,7 @@
 
 #include "Core/Helpers.h"
 #include "imgui.h"
-#include "ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 
 using namespace ECS;
 

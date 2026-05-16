@@ -5,19 +5,34 @@
 #if IMGUI
 namespace DebugMenu
 {
-	struct DebugState
-	{
-		bool entitySystemWindow = false;
-		bool partViewerWindow = false;
-		bool inputWindow = false;
-		bool transformWindow = false;
-		bool gameStateWindow = false;
-		bool tweakerWindow = false;
-		bool editorWindow = false;
-		bool demoWindow = false;
+	u32 GetSelectedEntity();
+	void SelectEntity(ECS::Entity entity);
 
-		static DebugState& Get();
+	struct SharedState
+	{
+		// entity / component window
+		ECS::Entity selectedEntity = -1;
+
+		// tweakers
+		bool drawRaycasts = false;
+		bool canBuyAnyCard = false;
+
+		bool turnLogActive = true;
+		std::vector<BasicString> turnLog;
+
+		// camera
+		bool displayCameraInfo = false;
+
+		// game state
+		bool isActive = false;
+		bool nextFrame = true;
+
 	};
+
+	SharedState& GetSharedState();
+
+	//void SendRenderLayerInfo(const std::vector<RenderPack>* render_packs);
+
 
 	void Init();
 	bool HandleInput(SDL_Event& event);

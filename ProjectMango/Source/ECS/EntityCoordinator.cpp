@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "EntityCoordinator.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 
 namespace ECS
 {
 	void EntityCoordinator::UpdateSystems(float dt)
 	{
 		bool game_state_active = false;
-		if(DebugMenu::GetGamePlayerState().isActive)
+		if(DebugMenu::GetSharedState().isActive)
 		{
-			game_state_active = !DebugMenu::GetGamePlayerState().nextFrame;
-			DebugMenu::GetGamePlayerState().nextFrame = false;
+			game_state_active = !DebugMenu::GetSharedState().nextFrame;
+			DebugMenu::GetSharedState().nextFrame = false;
 			dt = 1.0f / 60.0f;
 		}
 

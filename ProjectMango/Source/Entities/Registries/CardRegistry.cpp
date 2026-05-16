@@ -6,6 +6,7 @@
 #include "System/Files/TextFileReader.h"
 #include "ECS/EntityCoordinator.h"
 #include "MonsterRegistry.h"
+#include "SpellRegistry.h"
 
 using namespace ECS;
 
@@ -154,8 +155,9 @@ namespace CardRegistry
 			AddColourPostfix(sprite.image.id.c_str(), card.colour, coloured_sprite);
 			sprite.SetTexture(coloured_sprite.c_str());
 
-			int monster_index = MonsterRegistry::GetRandomMonsterIndex(card.points);
-			card.monsterRegistryIndex = monster_index;
+			//int monster_index = MonsterRegistry::GetRandomMonsterIndex(card.points);
+			//card.monsterRegistryIndex = monster_index;
+			card.spell = SpellRegistry::GetSpell(card.points, card.colour);
 
 			card.RegenerateChildDisplays();
 		}

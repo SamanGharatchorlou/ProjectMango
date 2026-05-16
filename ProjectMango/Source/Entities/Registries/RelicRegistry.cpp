@@ -73,7 +73,7 @@ namespace RelicRegistry
 		relic_2.id = "IncreaseColourDrawRate";
 		relic_2.description = "Increase the draw rate of the specified coloured card";
 		relic_2.trigger = GameEvent::CardDrawn;
-		relic_2.colour = Colour::White;
+		relic_2.colour = Colour::Green;
 		relic_2.effectFn = IncreaseColourDrawRate;
 	}
 

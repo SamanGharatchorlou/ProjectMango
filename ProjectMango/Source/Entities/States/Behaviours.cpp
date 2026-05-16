@@ -3,7 +3,6 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Game/Camera/Camera.h"
 
 //temp
 #include "Entities/EntityBuilder.h"
@@ -37,49 +36,7 @@ namespace Actor
 		physics.acceleration = 0;
 	}
 
-	static void PlayHitAnimationVFX(Entity entity)
-	{
-		Animator& animator = GetComponentRef(Animator, entity);
-		BehaviourState& state = GetComponentRef(BehaviourState, entity);
-		Action::Enum action = animator.GetActiveAnimation()->action;
-
-		if(state.attackData.contains(action))
-		{
-			AttackStateData& asd = state.attackData[action];
-			bool hit_frame = animator.frameIndex == asd.hitFrame;
-			if( hit_frame && !state.playedHitVfx && !asd.hitVfx.empty())
-			{
-				const Faction& faction = GetComponentRef(Faction, entity);
-				Entity target_entity = faction.GetTarget();
-				if(target_entity != EntityInvalid)
-				{
-					if(!asd.hitVfx.empty())
-					{
-						RectF rect;
-						rect.SetSize(123.0f,97.5f);
-						rect.SetCenter(GetPosition(target_entity));
-
-						CreateVFX(asd.hitVfx.c_str(), rect);
-					}
-				}
-				
-				state.playedHitVfx = true;
-			}
-		}
-	}
-
-	void ApplyCameraShake(Entity entity, float impact)
-	{
-		const Faction& faction = GetComponentRef(Faction, entity);
-		Entity target_entity = faction.GetTarget();
-		if(target_entity != EntityInvalid)
-		{
-			VectorF position = GetPosition(target_entity);
-			Camera::Get()->AddShake(impact, position);
-		}
-	}
-
-	static void PlayAttackAnimationVFX(Entity entity)
+	static void PlayAttackVFX(Entity entity)
 	{
 		Animator& animator = GetComponentRef(Animator, entity);
 		BehaviourState& state = GetComponentRef(BehaviourState, entity);
@@ -91,6 +48,7 @@ namespace Actor
 			bool hit_frame = animator.frameIndex == asd.hitFrame;	
 			if(hit_frame && !state.playedAttackVfx && !asd.attackVfx.empty())
 			{
+				// attack vfx e.g. fire coming of your sword
 				const Transform& transform = GetComponentRef(Transform, entity);
 				const VectorF pos =  transform.worldPosition + transform.size * asd.hitBoxPos;
 				const VectorF size = transform.size * asd.hitBoxSize;
@@ -99,14 +57,22 @@ namespace Actor
 				CreateVFX(asd.attackVfx.c_str(), attack_rect);
 
 				state.playedAttackVfx = true;
+
+				// hit vfx e.g. blood splatter
+				const Faction& faction = GetComponentRef(Faction, entity);
+				Entity target_entity = faction.GetTarget();
+				if (target_entity != EntityInvalid)
+				{
+					RectF rect;
+					rect.SetSize(123.0f, 97.5f); // todo: fix
+					rect.SetCenter(GetPosition(target_entity));
+
+					CreateVFX(asd.hitVfx.c_str(), rect);
+				}
+
+				state.playedHitVfx = true;
 			}
 		}
-	}
-
-	static void PlayAttackVFX(ECS::Entity entity)
-	{		
-		PlayAttackAnimationVFX(entity);
-		PlayHitAnimationVFX(entity);
 	}
 
 	static void AttackUpdate(ECS::Entity entity, Action::Enum attack)
@@ -128,16 +94,13 @@ namespace Actor
 				Entity target_entity = faction.GetTarget();
 				if(target_entity != EntityInvalid)
 				{
-					//if(const Damage* damage = GetComponent(Damage, entity))
+					// todo: should be able to move this hit frame stuff into HealthSystem
+					if(Health* health = GetComponent(Health, target_entity))
 					{
-						if(Health* health = GetComponent(Health, target_entity))
-						{
-							bool did_hit = health->ApplyDamage(asd.damage);
-							if(did_hit)
-							{
-								ApplyCameraShake(entity, asd.damage * 0.2f);
-							}
-						}
+						Damage& damage = AddComponent(Damage, target_entity);
+						damage.value = asd.damage;
+						//damage.hitFrame = asd.hitFrame;
+						//damage.sourceEntity = entity;
 					}
 
 					// should i check for the correct attack here?

@@ -5,7 +5,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Game/Camera/Camera.h"
 #include "Graphics/RenderManager.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -44,7 +44,7 @@ namespace ECS
  		for (Entity entity : entities)
 		{
 			// debug break point
-			if (DebugMenu::GetSelectedEntity() == entity)
+			if (IsSelectedDebugEntity(entity))
 				int a = 4;
 
 			const Transform& transform = GetComponentRef(Transform, entity);

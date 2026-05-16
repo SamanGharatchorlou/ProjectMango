@@ -9,20 +9,48 @@
 
 #include "Graphics/Renderer.h"
 #include "System/Window.h"
-
-#include "ImguiMainWindows.h"
 #include "Debugging/AnimationEditor.h"
 
 #if IMGUI
 namespace DebugMenu
 {
-	static bool hidden = false;
+	void DoEntityPartSystemWindow(bool entity_view);
+	void DoTweakerWindow();
+	void DoGameStateWindow();
+	void DoInputWindow();
+	void DoTransformWindow();
+
+	struct DebugState
+	{
+		bool entitySystemWindow = false;
+		bool partViewerWindow = false;
+		bool inputWindow = false;
+		bool transformWindow = false;
+		bool gameStateWindow = false;
+		bool tweakerWindow = false;
+		bool editorWindow = false;
+		bool demoWindow = false;
+
+		bool hidden = false;
+	};
+
+	static DebugState s_debugState;
+
+	SharedState& DebugMenu::GetSharedState()
+	{
+		static SharedState s_state;
+		return s_state;
+	}
+
+	u32 GetSelectedEntity() { return GetSharedState().selectedEntity; }
+	void DebugMenu::SelectEntity(ECS::Entity entity) { GetSharedState().selectedEntity = entity; }
+
 
 	void ToggleShow()
 	{
-		hidden = !hidden;
+		s_debugState.hidden = !s_debugState.hidden;
 
-		if(!hidden)
+		if(!s_debugState.hidden)
 		{
 			SDL_ShowCursor(SDL_ENABLE);
 		}
@@ -57,7 +85,7 @@ namespace DebugMenu
 
 	bool HandleInput(SDL_Event& event)
 	{
-		if(hidden)
+		if(s_debugState.hidden)
 			return false;
 
 		ImGui_ImplSDL2_ProcessEvent(&event);
@@ -67,23 +95,15 @@ namespace DebugMenu
 		return is_window_hovered;
 	}
 
-	DebugState s_debugState;
-
-	DebugState& DebugState::Get()
-	{
-		return s_debugState;
-	}
-
 	void OpenEditorWindow()
 	{
 		s_debugState.editorWindow = true;
-
-		hidden = false;
+		s_debugState.hidden = false;
 	}
 
 	void Draw()
 	{
-		if(hidden)
+		if(s_debugState.hidden)
 			return;
 
 		ImGui_ImplSDLRenderer2_NewFrame();

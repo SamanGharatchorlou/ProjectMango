@@ -6,11 +6,15 @@
 #include "Renderer.h"
 #include "System/Window.h"
 #include "Game/Camera/Camera.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
 
 // WARNING: dont remove this, it doesnt complain except remove all the imgi stuff.. weird
 #include "Debugging/ImGui/ImGuiMenu.h"
 
+namespace DebugMenu
+{
+	void SendRenderLayerInfo(const std::vector<RenderPack>* render_packs);
+}
 
 RenderManager::RenderManager() { }
 
@@ -60,7 +64,7 @@ void RenderManager::render()
 		for (u32 i = 0; i < render_packs.size(); i++)
 		{
 			// debug break point
-			if (DebugMenu::GetSelectedEntity() == render_packs[i].entity)
+			if (IsSelectedDebugEntity(render_packs[i].entity))
 				int a = 4;
 			
 			if(render_packs[i].flip == SDL_FLIP_HORIZONTAL)

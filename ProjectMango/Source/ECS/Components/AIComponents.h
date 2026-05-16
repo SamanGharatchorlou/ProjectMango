@@ -132,5 +132,7 @@ namespace ECS
 
 		void Init();
 		void Reset();
+
+		int GetHitFrame(Action::Enum action);
 	};
 }

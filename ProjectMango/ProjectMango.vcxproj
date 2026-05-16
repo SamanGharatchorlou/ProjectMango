@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\include;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\include;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\include;$(ProjectDir)ThirdParty;$(ProjectDir)ThirdParty\imgui-master;$(ProjectDir)ThirdParty\imgui_sdl-master;$(ProjectDir)Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)ThirdParty\SDL2\SDL2-2.30.5\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_image-2.8.2\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_mixer-2.8.0\lib\x64;$(ProjectDir)ThirdParty\SDL2\SDL2_ttf-2.22.0\lib\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)ThirdParty;C:\Users\saman\Documents\Code\ProjectMango\ProjectMango\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
@@ -150,12 +150,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugEntityWindow.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugGameStateWindow.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTransformWindow.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTweakerWindow.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugInputWindow.cpp" />
     <ClCompile Include="Source\ECS\Components\GraphicComponents.cpp" />
     <ClCompile Include="Source\ECS\Components\SpacialComponents.cpp" />
     <ClCompile Include="Source\ECS\EntSystems\CardSystem.cpp" />
     <ClCompile Include="Source\Entities\Enemies\AIStrategies.cpp" />
     <ClCompile Include="Source\Entities\Enemies\AIStrategyCardPlayer.cpp" />
     <ClCompile Include="Source\Entities\Enemies\EnemyTurn.cpp" />
+    <ClCompile Include="Source\Entities\Registries\SpellRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerTurn.cpp" />
     <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp" />
@@ -201,7 +207,6 @@
     <ClCompile Include="Source\Debugging\ImGui\Components\BiomeDebugMenu.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\SpacialDebugMenus.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\Components\PhysicsDebugMenu.cpp" />
-    <ClCompile Include="Source\Debugging\ImGui\ImGuiMainWindows.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\ImGuiMenu.cpp" />
     <ClCompile Include="Source\Debugging\Logging.cpp" />
     <ClCompile Include="Source\Debugging\MemTrack.cpp" />
@@ -265,6 +270,7 @@
     <ClCompile Include="Source\UI\Text\Text.cpp" />
     <ClCompile Include="Source\UI\UIButtonBindings.cpp" />
     <ClCompile Include="Source\UI\UIManager.cpp" />
+    <ClCompile Include="Source\UI\UIScreen.cpp" />
     <ClCompile Include="Source\UI\UITextBindings.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
     <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
@@ -283,6 +289,7 @@
     <ClInclude Include="Source\Entities\Enemies\AIStrategies.h" />
     <ClInclude Include="Source\Entities\Enemies\AIStrategyCardPlayer.h" />
     <ClInclude Include="Source\Entities\Enemies\EnemyTurn.h" />
+    <ClInclude Include="Source\Entities\Registries\SpellRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h" />
     <ClInclude Include="Source\Entities\Player\PlayerTurn.h" />
     <ClInclude Include="Source\Entities\Registries\RelicRegistry.h" />
@@ -336,7 +343,6 @@
     <ClInclude Include="Source\Debugging\DebugDraw.h" />
     <ClInclude Include="Source\Debugging\ImGui\Components\ComponentDebugMenu.h" />
     <ClInclude Include="Source\Debugging\ImGui\ImGuiHelpers.h" />
-    <ClInclude Include="Source\Debugging\ImGui\ImGuiMainWindows.h" />
     <ClInclude Include="Source\Debugging\ImGui\ImGuiMenu.h" />
     <ClInclude Include="Source\Debugging\Logging.h" />
     <ClInclude Include="Source\Debugging\MemTrack.h" />
@@ -401,6 +407,7 @@
     <ClInclude Include="Source\UI\Text\Font.h" />
     <ClInclude Include="Source\UI\Text\Text.h" />
     <ClInclude Include="Source\UI\UIManager.h" />
+    <ClInclude Include="Source\UI\UIScreen.h" />
     <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
     <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
     <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />

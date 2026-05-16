@@ -5,7 +5,7 @@
 #include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/Raycast.h"
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Core/Helpers.h"
 
 namespace ECS
 {
@@ -14,7 +14,7 @@ namespace ECS
 		for (Entity entity : entities)
 		{			
 			// debug break point
-			if (DebugMenu::GetSelectedEntity() == entity)
+			if (IsSelectedDebugEntity(entity))
 				int a = 4;
 
 			Physics& physics = GetComponentRef(Physics, entity);

@@ -28,6 +28,7 @@
 #include "Game/Readers/AnimationReader.h"
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
+#include "Entities/Registries/SpellRegistry.h"
 #include "Entities/Registries/RelicRegistry.h"
 #include "Entities/Registries/StatusEffectRegistry.h"
 #include "Entities/States/Behaviours.h"
@@ -80,7 +81,7 @@ void ECS::RegisterAllSystems()
 	// --------- gameplay-logic systems ---------
 
 	// Health
-	Signature HealthSignature = ArcheBit(Health) | ArcheBit(DeathScentence);
+	Signature HealthSignature = ArcheBit(Health);
 	ecs->RegisterOrSystem<HealthSystem>(HealthSignature);
 
 	// Spawn
@@ -161,6 +162,7 @@ void ECS::ParseComponentData()
 	CardRegistry::ReadomFromJson("Tier3Cards", 2);
 
 	MonsterRegistry::Build( "CardMonsters" );
+	SpellRegistry::Build("CardSpells");
 
 	RelicRegistry::PopulateRegistry();
 	StatusEffectRegistry::PopulateRegistry();

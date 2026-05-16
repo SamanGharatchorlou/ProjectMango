@@ -6,6 +6,7 @@
 #include "System/Window.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
+#include "UI/UIManager.h"
 
 namespace Scene
 {
@@ -98,26 +99,21 @@ namespace Scene
 
 	void ParseUILayer(Value& ui_layer, VectorF level_to_window)
 	{
+		const char* id = ui_layer["identifier"].GetString();
+		UIScreenMetaData& screen_meta_data = UIManager::Get().screenMetaData[BasicString(id)];
+
 		Value& layers = ui_layer["layerInstances"];
 		for (SizeType i = 0; i < layers.Size(); i++)
 		{
-			Value& layer = layers[i];
-			const char* layer_id = layer["__identifier"].GetString();
-			if (StringCompare(layer_id, "UI"))
+			const Value::Array& entities = layers[i]["entityInstances"].GetArray();
+			for (u32 e = 0; e < entities.Size(); e++)
 			{
-				std::unordered_map<BasicString, std::vector<ECS::EntityMetaData>> elements;
+				Value& entry = entities[e];
 
-				const Value::Array& entities = layer["entityInstances"].GetArray();
-				for (u32 e = 0; e < entities.Size(); e++)
-				{
-					Value& entry = entities[e];
+				ECS::EntityMetaData emd;
+				ReadMetaData(entry, emd, level_to_window, VectorF());
 
-					ECS::EntityMetaData emd;
-					ReadMetaData(entry, emd, level_to_window, VectorF());
-
-					std::vector<ECS::EntityMetaData>& entity_data = elements[emd.GetID()];
-					entity_data.push_back(emd);
-				}
+				screen_meta_data.push_back(emd);
 			}
 		}
 	}
@@ -164,11 +160,17 @@ namespace Scene
 			level.index = level_index;
 			level.id = levels[i]["identifier"].GetString();
 
-			if (StringCompare(level.id.c_str(), "PlayerHUD"))
+			if (strncmp(level.id.c_str(), "UI_", 3) == 0)
 			{
 				ParseUILayer(levels[i], level_to_window);
 				continue;
 			}
+
+			//if (StringCompare(level.id.c_str(), "RewardScreen"))
+			//{
+			//	ParseUILayer(levels[i], level_to_window);
+			//	continue;
+			//}
 
 			// bump the level index
 			level_index++;
@@ -206,8 +208,8 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
-						entity_data.push_back(emd);
+						//std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
+						level.entityMetaData.push_back(emd);
 					}
 				}
 				else if( StringCompare(layer_id, "TerrainColliders" ) )
@@ -413,8 +415,7 @@ namespace Scene
 						ECS::EntityMetaData emd;
 						ReadMetaData(entry, emd, level_to_window, level.worldPos);
 
-						std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
-						entity_data.push_back(emd);
+						level.entityMetaData.push_back(emd);
 					}
 				}
 			}

@@ -24,22 +24,6 @@ namespace ECS
 				int a = 4;
 
 			Card& card = GetComponentRef(Card, entity);
-			Entity monster_entity = card.GetMonster();
-			if(monster_entity != EntityInvalid)
-			{
-				EntityState& state = GetComponentRef(EntityState, monster_entity);
-				if(cursor)
-				{
-					Transform& transform = GetComponentRef(Transform, entity);
-					if(Contains(transform.GetRect(), cursor->Position()))
-					{
-						state.next = Action::Idle;
-						continue;
-					}
-				}
-
-				state.next = Action::Inactive;
-			}
 
 			// fill in affordable icons
 			for( int i = 0; i < Colour::Count; i++ )

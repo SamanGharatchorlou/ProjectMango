@@ -11,7 +11,7 @@
 	"iid": "a502b8e0-73f0-11ef-8eb1-af7ce018d269",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 137,
+	"nextUid": 138,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -116,11 +116,11 @@
 		},
 		{
 			"__type": "Entities",
-			"identifier": "Text_Layer",
+			"identifier": "UIComponents",
 			"type": "Entities",
 			"uid": 27,
 			"doc": null,
-			"uiColor": "#0099DB",
+			"uiColor": "#F77622",
 			"gridSize": 16,
 			"guideGridWid": 0,
 			"guideGridHei": 0,
@@ -2697,6 +2697,41 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "RewardPanel",
+			"uid": 137,
+			"tags": ["UI"],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#D77643",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 9,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 9, "x": 304, "y": 48, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -3953,7 +3988,7 @@
 					]
 				},
 				{
-					"__identifier": "Text_Layer",
+					"__identifier": "UIComponents",
 					"__type": "Entities",
 					"__cWid": 16,
 					"__cHei": 16,
@@ -3968,7 +4003,7 @@
 					"layerDefUid": 27,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
@@ -4339,7 +4374,7 @@
 			"__neighbours": [ { "levelIid": "1490e8e0-d380-11f0-83f7-71b8a72a29ed", "dir": "w" }, { "levelIid": "183fe720-d380-11f0-83f7-37a91df44187", "dir": "e" } ]
 		},
 		{
-			"identifier": "PlayerHUD",
+			"identifier": "UI_RewardScreen",
 			"iid": "df0d7d30-e920-11ef-8704-4772af75049e",
 			"uid": 26,
 			"worldX": 0,
@@ -4419,7 +4454,7 @@
 					"entityInstances": []
 				},
 				{
-					"__identifier": "Text_Layer",
+					"__identifier": "UIComponents",
 					"__type": "Entities",
 					"__cWid": 16,
 					"__cHei": 16,
@@ -4434,7 +4469,7 @@
 					"layerDefUid": 27,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": false,
+					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
@@ -4443,25 +4478,52 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "Card",
-							"__grid": [1,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "096782a0-e920-11ef-8704-33ac418dfee8",
-							"width": 30,
-							"height": 40,
-							"defUid": 28,
-							"px": [16,224],
-							"fieldInstances": [
-								{ "__identifier": "Sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
-								{ "__identifier": "Random", "__type": "Bool", "__value": true, "__tile": null, "defUid": 42, "realEditorValues": [] },
-								{ "__identifier": "ButtonCallback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
-								{ "__identifier": "Tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [] }
-							],
-							"__worldX": 16,
-							"__worldY": -144
+							"__identifier": "RewardPanel",
+							"__grid": [2,7],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 304, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "5ae69330-48b0-11f1-846d-25ac17061b91",
+							"width": 16,
+							"height": 16,
+							"defUid": 137,
+							"px": [32,112],
+							"fieldInstances": [],
+							"__worldX": 32,
+							"__worldY": -256
+						},
+						{
+							"__identifier": "RewardPanel",
+							"__grid": [5,7],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 304, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "61482e50-48b0-11f1-846d-7330abd06e7c",
+							"width": 16,
+							"height": 16,
+							"defUid": 137,
+							"px": [80,112],
+							"fieldInstances": [],
+							"__worldX": 80,
+							"__worldY": -256
+						},
+						{
+							"__identifier": "RewardPanel",
+							"__grid": [8,7],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 304, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "61f05530-48b0-11f1-846d-8fe3c2783cc8",
+							"width": 16,
+							"height": 16,
+							"defUid": 137,
+							"px": [128,112],
+							"fieldInstances": [],
+							"__worldX": 128,
+							"__worldY": -256
 						}
 					]
 				},

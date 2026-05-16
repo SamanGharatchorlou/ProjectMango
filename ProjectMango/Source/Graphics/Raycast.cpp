@@ -6,7 +6,7 @@
 #include "ECS/ComponentArray.h"
 #include "Core/Helpers.h"
 
-#include "Debugging/ImGui/ImGuiMainWindows.h"
+#include "Debugging/ImGui/MainWindows/ImGuiMainWindows.h"
 
 void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {
@@ -104,7 +104,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 						result.hitPosition = ray_point;
 						result.hasHit = true;
 
-						if(DebugMenu::GetState().drawRaycasts)
+						if(DebugMenu::GetSharedState().drawRaycasts)
 							DebugDraw::Line(from, ray_point, SColour::Red);
 
 						return;
@@ -117,7 +117,7 @@ void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& res
 		ray_distance += ray_increment;
 	}
 	
-	if(DebugMenu::GetState().drawRaycasts)
+	if(DebugMenu::GetSharedState().drawRaycasts)
 		DebugDraw::Line(from, from + ray_direction * distance, SColour::Green);
 }
 

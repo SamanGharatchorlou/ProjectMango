@@ -145,7 +145,7 @@ namespace ECS
 		float decayTime = 0.0f;
 
 		// number of loops before the decay kicks in
-		int undisturbedLoops;
+		int undisturbedLoops = 0;
 
 		//float GetXOffset() const;
 	};

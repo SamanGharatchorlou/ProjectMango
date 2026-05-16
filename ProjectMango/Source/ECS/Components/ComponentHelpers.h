@@ -97,6 +97,8 @@ namespace ECS
 	SDL_RendererFlip FlipFacingDirection(Entity entity);
 	SDL_RendererFlip GetDesiredFacingDirection(Entity entity, Entity target);
 
+	void Resize(RectF& rect_a, const RectF& rect_b);
+
 	template<class T>
 	void CopyComponent( T& to, const T& from )
 	{
