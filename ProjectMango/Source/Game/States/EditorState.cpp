@@ -1,0 +1,92 @@
+#include "pch.h"
+#include "EditorState.h"
+#include "System/Window.h"
+#include "Graphics/TextureManager.h"
+#include "Graphics/RenderManager.h"
+#include "Input/InputManager.h"
+#include "ECS/EntityCoordinator.h"
+#include "ECS/EntSystems/RenderSystem.h"
+
+#include "Debugging/AnimationEditor.h"
+#include "Debugging/UIEditor.h"
+#include "Graphics/STexture.h"
+#include "Game/SystemStateManager.h"
+#include "Core/Timer.h"
+#include "Game/Camera/Camera.h"
+#include "Entities/UIEntityBuilder.h"
+
+
+void EditorState::OpenAnimationEditor()
+{
+	AnimationEditor::Open();
+}
+void EditorState::OpenUIEditor()
+{
+	UIEditor::Open();
+}
+
+void EditorState::Init()
+{	
+	// create cursor
+	CreateUIEntities();
+
+	SDL_ShowCursor(true);
+
+	timer.Start();
+
+	RectF rect = Camera::Get()->GetRect();
+	rect.SetTopLeft(VectorF::zero());
+	Camera::Get()->SetRect(rect);
+}
+
+void EditorState::HandleInput()
+{
+
+}
+
+void EditorState::Update(float dt) 
+{
+	if (InputManager* im = GameData::Get().inputManager)
+	{
+		if (im->isPressed(Button::Tab))
+		{
+			if ( UIEditor::IsOpen() )
+			{
+				UIEditor::Close();
+				AnimationEditor::Open();
+			}
+			else if (AnimationEditor::IsOpen())
+			{
+				AnimationEditor::Close();
+				UIEditor::Open();
+			}
+		}
+
+		bool esc = im->isPressed(Button::Esc);
+		if (esc && timer.GetSeconds() > 1.0f )
+		{
+			GameData::Get().systemStateManager->mStates.popState();
+			return;
+		}
+	}
+
+	if (AnimationEditor::IsOpen())
+		AnimationEditor::Render();
+	else if(UIEditor::IsOpen())
+		UIEditor::Render();
+
+	ECS::RenderSystem* render_sys = ecs->systems.GetSystem<ECS::RenderSystem>();
+	render_sys->Update(dt);
+}
+
+void EditorState::Exit()
+{
+	SDL_ShowCursor(false);
+	
+	if (AnimationEditor::IsOpen())
+		AnimationEditor::Close();
+	else if (UIEditor::IsOpen())
+		UIEditor::Close();
+
+	timer.Stop();
+}

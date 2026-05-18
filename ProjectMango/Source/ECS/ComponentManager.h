@@ -24,6 +24,17 @@ namespace ECS
 			}
 		}
 
+		void RemoveAllEntities()
+		{
+			for (u32 i = 0; i < MaxComponentIdCount; i++)
+			{
+				if (componentArrays[i])
+				{
+					componentArrays[i]->Clear();
+				}
+			}
+		}
+
 		template<class T>
 		void Register(u32 reserve_size)
 		{

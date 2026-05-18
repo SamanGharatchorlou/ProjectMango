@@ -10,6 +10,7 @@
 #include "Graphics/Renderer.h"
 #include "System/Window.h"
 #include "Debugging/AnimationEditor.h"
+#include "Debugging/UIEditor.h"
 
 #if IMGUI
 namespace DebugMenu
@@ -19,6 +20,7 @@ namespace DebugMenu
 	void DoGameStateWindow();
 	void DoInputWindow();
 	void DoTransformWindow();
+	void DoUIWindow();
 
 	struct DebugState
 	{
@@ -28,7 +30,9 @@ namespace DebugMenu
 		bool transformWindow = false;
 		bool gameStateWindow = false;
 		bool tweakerWindow = false;
-		bool editorWindow = false;
+		bool uiWindow = false;
+		bool animationEditor = false;
+		bool uiEditor = false;
 		bool demoWindow = false;
 
 		bool hidden = false;
@@ -95,10 +99,28 @@ namespace DebugMenu
 		return is_window_hovered;
 	}
 
-	void OpenEditorWindow()
+	void ToggleAnimationWindow(bool open)
 	{
-		s_debugState.editorWindow = true;
-		s_debugState.hidden = false;
+		s_debugState.animationEditor = open;
+		s_debugState.uiEditor = false;
+
+		s_debugState.hidden = !open;
+	}
+	void ToggleUIWindow(bool open)
+	{
+		s_debugState.uiEditor = open;
+		s_debugState.animationEditor = false;
+
+		s_debugState.hidden = !open;
+	}
+
+	bool IsAnimationEditorActive()
+	{
+		return s_debugState.animationEditor;
+	}	
+	bool IsUIEditorActive()
+	{
+		return s_debugState.uiEditor;
 	}
 
 	void Draw()
@@ -110,23 +132,23 @@ namespace DebugMenu
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::Begin("MainWindow", 0, ImGuiWindowFlags_MenuBar);
+		ImGui::Begin("MainWindow", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize);
 		if (ImGui::Checkbox("Entity System", &s_debugState.entitySystemWindow))
 			if (s_debugState.entitySystemWindow) s_debugState.partViewerWindow = false;
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Part Viewer", &s_debugState.partViewerWindow))
 			if (s_debugState.partViewerWindow) s_debugState.entitySystemWindow = false;
 		ImGui::SameLine();
+		ImGui::Checkbox("Tweakers", &s_debugState.tweakerWindow);
 		ImGui::Checkbox("Input", &s_debugState.inputWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Transforms", &s_debugState.transformWindow);
 		ImGui::SameLine();
 		ImGui::Checkbox("Game State", &s_debugState.gameStateWindow);
+		//ImGui::SameLine();
+		//ImGui::Checkbox("Demo Window", &s_debugState.demoWindow);
 		ImGui::SameLine();
-		ImGui::Checkbox("Tweakers", &s_debugState.tweakerWindow);
-		ImGui::SameLine();
-		ImGui::Checkbox("Demo Window", &s_debugState.demoWindow);
-		ImGui::SameLine();
+		ImGui::Checkbox("UI", &s_debugState.uiWindow);
 		ImGui::End();
 
 		// these two are the same panel
@@ -155,9 +177,18 @@ namespace DebugMenu
 			DoTweakerWindow();
 		}
 
-		if(s_debugState.editorWindow)
+		if (s_debugState.uiWindow)
 		{
-			AnimationEditor::DoEditor();
+			DoUIWindow();
+		}
+
+		if(s_debugState.animationEditor)
+		{
+			AnimationEditor::Update();
+		}
+		else if (s_debugState.uiEditor)
+		{
+			UIEditor::Update();
 		}
 
 		if(s_debugState.demoWindow)

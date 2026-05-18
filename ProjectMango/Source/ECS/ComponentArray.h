@@ -13,8 +13,10 @@ namespace ECS
 	struct ComponentArrayBase
 	{
 		virtual ~ComponentArrayBase() = default;
+		virtual void Clear() = 0;
 		virtual u32 Count() const = 0;
 		virtual const char* TypeName() const = 0;
+
 	};
 		
 	template<class T>	
@@ -23,8 +25,8 @@ namespace ECS
 		Page() : components(nullptr), pageSize(0), size(0), pageIndex(0) { }
 		
 		~Page() 
-		{ 
-			delete[] components; 
+		{
+			Close();
 		}
 
 		Page(u32 page_size, u32 page_index) : pageSize(page_size), size(0),	pageIndex(page_index)
@@ -39,20 +41,30 @@ namespace ECS
 			size = 0; 
 			pageIndex = page_index;
 		}
+		void Close()
+		{
+			delete[] components;
+			components = nullptr;
+			size = 0;
+			pageSize = 0;
+		}
 
 		bool Unused() const { return components == nullptr; }
 		bool HasSpace() const { return size < pageSize; }
 
 		T* components;
 
-		// the size of the page, cant be adjusted
+		// the size of the page, cant be adjusted once set
 		u32 pageSize;
 
 		// how much of the page is currently used up
 		u32 size;
 
+		// todo: remove this - dont need it
 		// which page is this, the first = 0 etc.
 		u32 pageIndex;
+
+		Page& operator=(const Page&) = delete;
 	};
 
 	template<class T>
@@ -64,6 +76,16 @@ namespace ECS
 		{
 			entityToComponent.clear();
 			componentToEntity.clear();
+		}
+
+		void Clear() override
+		{
+			entityToComponent.clear();
+			componentToEntity.clear();
+			for (u32 i = 0; i < c_pageLimit; i++)
+			{
+				componentPages[i].Close();
+			}
 		}
 		
 		const char* TypeName() const override

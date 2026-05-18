@@ -23,6 +23,13 @@ namespace ECS
 			systems.Close();
 		}
 
+		void DestroyAllEntities()
+		{
+			entities.Close();
+			components.RemoveAllEntities();
+			systems.RemoveAllEntities();
+		}
+
 		template<class T>
 		void RegisterComponent(u32 reserve_size) { components.Register<T>(reserve_size); }
 

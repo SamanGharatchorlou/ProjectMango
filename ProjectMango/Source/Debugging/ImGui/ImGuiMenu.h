@@ -31,14 +31,15 @@ namespace DebugMenu
 
 	SharedState& GetSharedState();
 
-	//void SendRenderLayerInfo(const std::vector<RenderPack>* render_packs);
-
-
 	void Init();
 	bool HandleInput(SDL_Event& event);
 	void Draw();
 
-	void OpenEditorWindow();
+	void ToggleAnimationWindow(bool open);
+	void ToggleUIWindow(bool open);
+
+	bool IsAnimationEditorActive();
+	bool IsUIEditorActive();
 
 	void ToggleShow();
 }

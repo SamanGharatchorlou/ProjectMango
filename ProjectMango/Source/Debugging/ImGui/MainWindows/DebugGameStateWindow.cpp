@@ -3,7 +3,7 @@
 #include "imgui-master/imgui.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "Game/States/GameState.h"
 #include "Game/SystemStateManager.h"
 #include "Game/FrameRateController.h"

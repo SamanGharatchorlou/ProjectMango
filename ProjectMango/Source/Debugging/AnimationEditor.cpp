@@ -1,21 +1,20 @@
 #include "pch.h"
 #include "AnimationEditor.h"
 
-#include "ECS/EntityCoordinator.h"
-#include "ImGui/ImGuiHelpers.h"
-#include "Graphics/TextureManager.h"
-#include "Graphics/STexture.h"
-#include "System/Window.h"
-#include "Graphics/RenderManager.h"
-#include "Input/InputManager.h"
-#include "Game/FrameRateController.h"
-#include "Game/Readers/AnimationReader.h"
+#include "Core/Helpers.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntSystems/AnimationSystem.h"
-
-#include "Core/Helpers.h"
+#include "ECS/EntityCoordinator.h"
+#include "Game/FrameRateController.h"
+#include "Game/Readers/AnimationReader.h"
+#include "Graphics/RenderManager.h"
+#include "Graphics/STexture.h"
+#include "Graphics/TextureManager.h"
+#include "ImGui/ImGuiHelpers.h"
+#include "Input/InputManager.h"
+#include "System/Window.h"
 #include "imgui.h"
-#include "Debugging/ImGui/ImGuiMenu.h"
 
 using namespace ECS;
 
@@ -24,21 +23,23 @@ namespace AnimationEditor
     struct AnimationState
 	{
 		StringBuffer64 selectedSpriteSheet;
-		VectorI frameCounts = VectorI(9,13);
+		VectorI frameCounts = VectorI(10,1);
 
         VectorI previousSelectedFrameIndex;
 		std::vector<VectorI> selectedFrameIndexes;
 
-        float drawHeight = 0.0f;
-        float screenSizeFactor = 1.0f;
+        VectorF drawSize;
+        float screenSizeFactor = 0.98f;
+
+        bool autoSize = true;
         
         struct Config
         {
             StringBuffer64 selected;
             ECS::Entity entity = ECS::EntityInvalid;
 
-            TimeState state;
-            int pausedFrame;
+            TimeState state = TimeState::Running;
+            int pausedFrame = 0;
         };
 
         struct CursorSelection
@@ -55,7 +56,6 @@ namespace AnimationEditor
         CursorSelection cursorSelection;
 
         Config configAnim;
-        //Entity entity;
 
 		int targetFrame = 0;
 		float frameTime = 0.1f;
@@ -67,7 +67,18 @@ namespace AnimationEditor
     static AnimationState s_state;
     static VectorF s_targetWindowSize = VectorF(640, 640);
 
-	void DoEditor()
+    static VectorF CalcFrameTextureSize(VectorF real_frame_size, VectorF y_spacing, VectorF window_size)
+    {
+        float x_spacing = y_spacing.y;
+
+        VectorF size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
+        size *= s_state.screenSizeFactor;
+        size.y -= y_spacing.y * 2.0f;
+        size.x -= x_spacing * 2.0f;
+        return size;
+    };
+
+	void Update()
 	{
         if(!ecs->IsAlive(s_state.configAnim.entity))
         {
@@ -83,7 +94,7 @@ namespace AnimationEditor
 
         s_targetWindowSize = GameData::Get().window->size() * 1.0f;
 
-		ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Animation Editor", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize);
                 
         FrameRateController& fc = FrameRateController::Get();
 	    RenderManager* rm = GameData::Get().renderManager;
@@ -91,9 +102,25 @@ namespace AnimationEditor
         const VectorF window_size = s_targetWindowSize;
         const VectorF y_spacing = window_size * VectorF(0.0f, 0.025f);
 
-        VectorF draw_point_TL = y_spacing;
+        VectorF draw_point_TL = window_size * 0.01f;
 
-        ImGui::DragFloat("Resize Window", &s_state.screenSizeFactor);
+        ImGui::Checkbox("Auto size", &s_state.autoSize);
+        if(!s_state.autoSize)
+            ImGui::DragFloat("Resize Window", &s_state.screenSizeFactor);
+        else
+        {
+            if (!im->isCursorHeld(Cursor::ButtonType::Left))
+            {
+                float y_ratio = s_state.drawSize.y / window_size.y;
+                float x_ratio = s_state.drawSize.x / window_size.x;
+
+                // scale down
+                if (y_ratio > 1.0f || x_ratio > 1.0f)
+                    s_state.screenSizeFactor -= 0.01f;
+                else if (y_ratio < 0.98f && x_ratio < 0.98f)
+                    s_state.screenSizeFactor += 0.01f;
+            }
+        }
         
         if( ImGui::TreeNode("Show Frame Split") )
         {
@@ -105,10 +132,6 @@ namespace AnimationEditor
 
                 std::sort(file_names.begin(), file_names.end(), [](const BasicString& a, const BasicString& b) {
                     int index = 0;
-
-                    const char* aa = a.c_str();
-                    const char* bb = b.c_str();
-
                     StringBuffer64 str_a(a.c_str());
                     str_a = str_a.to_lower();                    
                     StringBuffer64 str_b(b.c_str());
@@ -158,7 +181,7 @@ namespace AnimationEditor
 			        rm->AddRenderPacket(pack);
 
 			        DebugDraw::RectOutline(animation, SColour::Yellow);
-                    s_state.drawHeight = texture_size.y;
+                    s_state.drawSize = texture_size;
 
                     ImGui::VectorText("Texture Size", texture_size);
                     ImGui::InputVectorI("Frame Counts", s_state.frameCounts);
@@ -228,22 +251,15 @@ namespace AnimationEditor
                         s_state.targetFrame = s_state.targetFrame % s_state.selectedFrameIndexes.size();
                     }
 
-
-                    bool down = im->isPressed(Button::DownArrow);
-                    bool up = im->isPressed(Button::UpArrow);
-                    if (down)
+                    if (im->isPressed(Button::DownArrow))
                     {
                         for (u32 i = 0; i < s_state.selectedFrameIndexes.size(); i++)
-                        {
                             s_state.selectedFrameIndexes[i] = s_state.selectedFrameIndexes[i] + VectorI(0, 1);
-                        }
                     }                   
-                    if (up)
+                    if (im->isPressed(Button::UpArrow))
                     {
                         for (u32 i = 0; i < s_state.selectedFrameIndexes.size(); i++)
-                        {
                             s_state.selectedFrameIndexes[i] = s_state.selectedFrameIndexes[i] + VectorI(0, -1);
-                        }
                     }
 
                     for( u32 f = 0; f < s_state.selectedFrameIndexes.size(); f++ )
@@ -270,9 +286,7 @@ namespace AnimationEditor
 
                         // Display selected frames
                         const VectorF real_frame_size = dim / VectorI(frame_split_x,frame_split_y).toFloat();
-
-                        VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
-                        frame_texture_size *= s_state.screenSizeFactor;
+                        VectorF frame_texture_size = CalcFrameTextureSize(real_frame_size, VectorF::zero(), window_size);
                         VectorF adjusted_frame_texture_size = frame_texture_size;
                         adjusted_frame_texture_size.y /= selected_count;
 
@@ -292,7 +306,7 @@ namespace AnimationEditor
 			            rm->AddRenderPacket(pack);
 
                         DebugDraw::RectOutline(renderRect, SColour::Yellow);
-                        s_state.drawHeight = renderRect.BotPoint();
+                        s_state.drawSize = renderRect.BotRight();
 
                         // display the frame on the row showing the active render frame
                         VectorF render_row_frame_size = VectorF(renderRect.Width() / (float)selected_count, renderRect.Height());
@@ -338,7 +352,7 @@ namespace AnimationEditor
 			            rm->AddRenderPacket(frame_pack);
 
                         DebugDraw::RectOutline(renderFrameRect, SColour::Yellow);
-                        s_state.drawHeight = renderFrameRect.BotPoint();
+                        s_state.drawSize = renderFrameRect.BotRight();
 
                         if(s_state.isPlayingFrames)
                         {
@@ -369,7 +383,7 @@ namespace AnimationEditor
             if (ImGui::BeginCombo("Build Animator From Config", c.selected.c_str()))
             {
                 FileManager* fm = FileManager::Get();
-                std::vector<BasicString> file_names;// = fm->fileNamesInFolder(FileManager::Config_Animations);
+                std::vector<BasicString> file_names;
 
                 AnimationReader::Debug_GetAnimationIDs(file_names);
 
@@ -409,7 +423,6 @@ namespace AnimationEditor
                     for( u32 i = 0; i < anim->animations->size(); i++ )
                     {
                         const char* action_string = ActionToString(anim->animations->at(i).action);
-
                         const bool is_selected =  StringCompare(action_string, select_animation_string);
 
                         if (ImGui::Selectable(action_string, is_selected))
@@ -443,20 +456,9 @@ namespace AnimationEditor
 
                 StringBuffer32 play_pause_button_text;
                 if(is_playing)
-                {
                     play_pause_button_text = "Pause";
-                }
                 else
-                {
-                    if(requires_restart)
-                    {
-                        play_pause_button_text = "Restart";
-                    }
-                    else
-                    {
-                        play_pause_button_text = "Play";
-                    }
-                }
+                    play_pause_button_text = requires_restart ? "Restart" : "Player";
 
                 ImGui::SameLine();
                 if( ImGui::Button(play_pause_button_text.c_str()) )
@@ -471,9 +473,7 @@ namespace AnimationEditor
 
                         // restart for looping animations
                         if(requires_restart)
-                        {
                             anim->StartAnimation(anim->GetActiveAnimation()->action);
-                        }
                     }
                 }
 
@@ -493,7 +493,6 @@ namespace AnimationEditor
                 ImGui::Text("Frame %d / %d", anim->frameIndex + 1, active_animation->frameCount );
 	
                 Sprite& sprite = GetComponentRef(Sprite, s_state.configAnim.entity);
-                //anim->SetActiveSpriteFrame(sprite);
 
                 // FLIP
                 if(ImGui::Button("Flip Sprite"))
@@ -509,25 +508,14 @@ namespace AnimationEditor
 
 			    VectorF dim = selected_animation->image.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation->frame.gridCount.toFloat();
-            
-                // the visible size of the frame you're looking at, probably the yellow box
-                float x_spacing = y_spacing.y;
-                VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
-                frame_texture_size *= s_state.screenSizeFactor;
-                frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
-                frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
-                
-                RectF renderFrameRect(draw_point_TL + VectorF(x_spacing,0), frame_texture_size);
-                
-                // todo: remove all these rect and use transform instead?
-                // then i can use the collider to properly get the flip point etc
-
+                VectorF frame_texture_size = CalcFrameTextureSize(real_frame_size, y_spacing, window_size);
+                RectF renderFrameRect(draw_point_TL + VectorF(y_spacing.y,0), frame_texture_size);
 
                 draw_point_TL += VectorF(0, frame_texture_size.y) + y_spacing;
 
                 RenderPack frame_pack(selected_animation->image.texture, 1);
                 frame_pack.rect = renderFrameRect;
-                frame_pack.subRect = anim->GetActiveSubRect();// //selected_animation.frame.GetFrameRect(anim->frameIndex);// sprite.params.subRect;
+                frame_pack.subRect = anim->GetActiveSubRect();
                 frame_pack.flip = sprite.params.flip;
 
                 const RectF& selection_rect = s_state.cursorSelection.selectionRect;
@@ -608,9 +596,7 @@ namespace AnimationEditor
             }
 
             if(cs.movingSelection)
-            {
                 cs.selectionRect.SetTopLeft( cursor_pos + cs.cursorOffset );
-            }
         }
         else
         {
@@ -622,8 +608,6 @@ namespace AnimationEditor
         if(!selection_rect.Size().isZero())
         {
             DebugDraw::RectOutline( selection_rect, SColour::Green);
-            //ImGui::VectorText("Absolute Position", selection_rect.TopLeft());
-            //ImGui::VectorText("Absolute Size", selection_rect.Size());
 
             // display relative position to the whole sprite
             Animator* anim = GetComponent(Animator, s_state.configAnim.entity );
@@ -632,24 +616,13 @@ namespace AnimationEditor
                 const ECS::Animation* selected_animation = anim->GetActiveAnimation();
                 const VectorF dim = selected_animation->image.texture->originalDimentions;
                 const VectorF real_frame_size = dim / selected_animation->frame.gridCount.toFloat(); 
-
-                float x_spacing = y_spacing.y;
-                VectorF frame_texture_size(window_size.x, (window_size.x * real_frame_size.y) / real_frame_size.x);
-                frame_texture_size *= s_state.screenSizeFactor;
-                frame_texture_size.y = frame_texture_size.y - (y_spacing.y * 2.0f);
-                frame_texture_size.x = frame_texture_size.x - (x_spacing * 2.0f);
+                VectorF frame_texture_size = CalcFrameTextureSize(real_frame_size, y_spacing, window_size);
 
                 VectorF relative_pos = (selection_rect.TopLeft() - relative_selection_top_left) / frame_texture_size;
                 VectorF relative_size = selection_rect.Size() / frame_texture_size;
 
                 ImGui::VectorText("Relative Position", relative_pos);
                 ImGui::VectorText("Relative Size", relative_size);
-                            
-                float x_center = selection_rect.Center().x - draw_point_TL.x;
-                float y_center = selection_rect.Center().y - draw_point_TL.y;
-                VectorF relaive_center = relative_pos + relative_size * 0.5;
-
-                //ImGui::VectorText("Relative Center", relaive_center );
             }
         }
 
@@ -669,12 +642,23 @@ namespace AnimationEditor
 	    rm->AddRenderPacket(pack);
     }
 
-    
-	void Exit()
+    bool IsOpen()
+    {
+        return DebugMenu::IsAnimationEditorActive();
+    }
+
+    void Open()
+    {
+        DebugMenu::ToggleAnimationWindow(true);
+    }
+
+	void Close()
     {
         if(ecs->IsAlive(s_state.configAnim.entity))
         {
             ecs->entities.KillEntity(s_state.configAnim.entity);
         }
+
+        DebugMenu::ToggleAnimationWindow(false);
     }
 }

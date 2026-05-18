@@ -38,6 +38,7 @@ public:
 		Ctrl = SDLK_LCTRL,
 		Space = SDLK_SPACE,
 		Shift = SDLK_LSHIFT,
+		Tab = SDLK_TAB,
 
 		// Keys
 		E = SDLK_e,

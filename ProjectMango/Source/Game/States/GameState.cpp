@@ -9,7 +9,7 @@
 #include "Entities/UIEntityBuilder.h"
 #include "Game/Camera/Camera.h"
 #include "Game/Readers/SceneReader.h"
-#include "Game/States/AnimationEditorState.h"
+#include "Game/States/EditorState.h"
 #include "Game/SystemStateManager.h"
 #include "Input/InputManager.h"
 #include "System/Window.h"
@@ -24,7 +24,10 @@ GameState* GameState::GetActive()
 
 int GameState::GetTurnIndex()
 {
-	return GetActive()->turnIndex;
+	if(GetActive())
+		return GetActive()->turnIndex;
+
+	return 0;
 }
 
 void GameState::Init()
@@ -50,8 +53,8 @@ void GameState::Init()
 	camera->InitShakeyCam(5.0f, VectorF(12.0,0));
 
 	// Start Audio
-	AudioManager* audio = AudioManager::Get();
-	audio->PlayMusic("Game");
+	//AudioManager* audio = AudioManager::Get();
+	//audio->PlayMusic("Game");
 
 	SoundController* sc = AudioManager::GetController();
 	sc->SetMusicVolume(0);//0.05f);
@@ -72,17 +75,24 @@ void GameState::HandleInput()
 	InputManager* input = InputManager::Get();
 	if(input->isPressed(Button::Zero))
 	{
-		GameData::Get().systemStateManager->mStates.addState(new AnimationEditorState);
+		EditorState* editor = new EditorState();
+		editor->OpenAnimationEditor();
+		GameData::Get().systemStateManager->mStates.replaceState(editor);
 	}
+	if (input->isPressed(Button::Nine))
+	{
+		EditorState* editor = new EditorState();
+		editor->OpenUIEditor();
+		GameData::Get().systemStateManager->mStates.replaceState(editor);
+	}
+
 	if(input->isPressed(Button::Esc))
 	{
 		GameData::Get().systemStateManager->mQuit = true;
 	}
 	if(input->isPressed(Button::R))
 	{
-		
 		GameData::Get().systemStateManager->mRestart = true;
-        //GameData::Get().systemStateManager->mStates.replaceState(new GameState);
 		return;
 	}
 
@@ -157,7 +167,11 @@ void GameState::Exit()
 	//mGameData->scoreManager->reset();
 	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
 	
-	ecs->Close();// systems.Close();
+
+	ecs->DestroyAllEntities();
+	//ecs->components.Close();
+
+	//ecs->Close();// systems.Close();
 }
 
 

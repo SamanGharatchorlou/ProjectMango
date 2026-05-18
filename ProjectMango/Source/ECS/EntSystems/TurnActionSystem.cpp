@@ -13,6 +13,8 @@ namespace ECS
 	void TurnActionSystem::Update(float dt)
 	{
 		GameState* game_state = GameState::GetActive();
+		if (!game_state)
+			return;
 
 		if(TurnState* turn = TurnState::GetActive())
 		{

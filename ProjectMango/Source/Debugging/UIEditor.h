@@ -1,6 +1,6 @@
 #pragma once
 
-namespace AnimationEditor
+namespace UIEditor
 {
 	void Update();
 	void Render();

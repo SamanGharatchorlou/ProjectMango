@@ -255,7 +255,7 @@
     <ClCompile Include="Source\Game\Readers\SceneReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\States\AnimationEditorState.cpp">
+    <ClCompile Include="Source\Game\States\EditorState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\AnimationEditor.cpp">
@@ -394,6 +394,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTransformWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugUIWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugging\UIEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1073,7 +1079,7 @@
     <ClInclude Include="Source\Game\Readers\SceneReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\States\AnimationEditorState.h">
+    <ClInclude Include="Source\Game\States\EditorState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debugging\AnimationEditor.h">
@@ -1182,6 +1188,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\UI\UIScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Debugging\UIEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,8 +5,7 @@
 #include "ECS/Components/SpacialComponents.h"
 #include "ECS/ComponentArray.h"
 #include "Core/Helpers.h"
-
-#include "Debugging/ImGui/MainWindows/ImGuiMainWindows.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 
 void Raycast(VectorF from, VectorF direction, float distance, RaycastResult& result, const std::vector<ECS::Entity>* ignored, std::vector<u32>* collider_flags)
 {

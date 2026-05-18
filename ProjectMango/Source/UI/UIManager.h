@@ -17,4 +17,5 @@ struct UIManager
 
 	void OpenScreen(const char* screen_name);
 	void CloseScreen(const char* screen_name);
+	void RefreshScreen(const char* screen_name);
 };

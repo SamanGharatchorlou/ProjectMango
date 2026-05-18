@@ -570,11 +570,11 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	Inventory& inventory = AddComponent(Inventory, entity);
 	if(ECS::Relic* relic = RelicRegistry::GetRelic("DiscountCardCost"))
 	{
-		inventory.relics.push_back(*relic);
+		//inventory.relics.push_back(*relic);
 	}
 	if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseColourDrawRate"))
 	{
-		inventory.relics.push_back(*relic);
+		//inventory.relics.push_back(*relic);
 	}
 
 	Collider& collider = GetComponentRef(Collider, entity);

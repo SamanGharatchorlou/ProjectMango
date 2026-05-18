@@ -15,7 +15,7 @@ namespace ECS
 		std::vector<Entity> entities;
 		Signature signature = 0;
 
-		const char* id = nullptr;
+		BasicString id;
 
 		int orderIndex = -1;
 
@@ -48,6 +48,20 @@ namespace ECS
 			orderCounter = 0;
 		}
 
+		void RemoveAllEntities()
+		{
+			// shut down all systems
+			for (u32 i = 0; i < entAndSystems.size(); i++)
+			{
+				entAndSystems[i]->entities.clear();
+			}
+			// shut down all systems
+			for (u32 i = 0; i < entOrSystems.size(); i++)
+			{
+				entOrSystems[i]->entities.clear();
+			}
+		}
+
 		template<class T>
 		void RegisterAnd(Signature type)
 		{
@@ -61,8 +75,16 @@ namespace ECS
 				}
 			}
 
-			entAndSystems.emplace_back(new T(type));
-			entAndSystems.back()->orderIndex = orderCounter++;
+
+			T* system = new T(type);
+			system->orderIndex = orderCounter++;
+			system->id = typeid(T).name();
+
+			entAndSystems.push_back(system);
+
+			//entAndSystems.emplace_back(new T(type));
+			//entAndSystems.back()->orderIndex = orderCounter++;
+			//entAndSystems.back()->id = typeid(T).name();
 		}
 
 		template<class T>
@@ -78,23 +100,30 @@ namespace ECS
 				}
 			}
 
-			entOrSystems.emplace_back(new T(type));
-			entOrSystems.back()->orderIndex = orderCounter++;
+			T* system = new T(type);
+			system->orderIndex = orderCounter++;
+			system->id = typeid(T).name();
+
+			entOrSystems.push_back(system);
+
+			//entOrSystems.emplace_back(new T(type));
+			//entOrSystems.back()->orderIndex = orderCounter++;
+			//entAndSystems.back()->id = typeid(T).name();
 		}
 
 		template<class T>
-		const T* GetSystem()
+		T* GetSystem()
 		{
 			const char* id = typeid(T).name();
 			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
-				if( StringCompare(entAndSystems[i]->id, id) )
-					return &entAndSystems[i];
+				if( StringCompare(entAndSystems[i]->id.c_str(), id))
+					return (T*)entAndSystems[i];
 			}
 			for (u32 i = 0; i < entOrSystems.size(); i++)
 			{				
-				if( StringCompare(entOrSystems[i]->id, id) )
-					return &entOrSystems[i];
+				if( StringCompare(entOrSystems[i]->id.c_str(), id))
+					return (T*)entOrSystems[i];
 			}
 
 			return nullptr;

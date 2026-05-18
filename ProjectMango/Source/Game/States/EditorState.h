@@ -1,7 +1,7 @@
 #pragma once
 #include "Game/States/State.h"
 
-class AnimationEditorState : public State
+class EditorState : public State
 {
 public:
 	void Init() override;
@@ -13,4 +13,9 @@ public:
 	void Resume() { };
 	
 	TimerF timer;
+
+	void OpenAnimationEditor();
+	void OpenUIEditor();
+	//bool animationEditor = false;
+	//bool UiEditor = false;
 };

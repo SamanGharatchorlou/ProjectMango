@@ -6,18 +6,18 @@
 
 using namespace ECS;
 
-static void SetupCoinBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings)
-{
-	button_bindings[ "CoinStack" ] =  [](ECS::Entity entity) {
-			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
-			action_request.request = ActionRequest::CollectCoin;
-			action_request.target = entity; 
-		};
-}
+//static void SetupCoinBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings)
+//{
+//	button_bindings[ "CoinStack" ] =  [](ECS::Entity entity) {
+//			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
+//			action_request.request = ActionRequest::CollectCoin;
+//			action_request.target = entity; 
+//		};
+//}
 
 void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings)
 {
-	SetupCoinBindings(button_bindings);
+	//SetupCoinBindings(button_bindings);
 
 	button_bindings[ "RequestCoin" ] =  [](ECS::Entity entity) {
 			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
