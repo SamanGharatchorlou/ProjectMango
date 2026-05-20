@@ -5,8 +5,8 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/EntityBuilder.h"
-#include "Entities/UIEntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
+#include "Entities/Factory/UIEntityBuilder.h"
 #include "Game/Camera/Camera.h"
 #include "Game/Readers/SceneReader.h"
 #include "Game/States/EditorState.h"
@@ -14,6 +14,7 @@
 #include "Input/InputManager.h"
 #include "System/Window.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
+#include "Entities/Registries/CardRegistry.h"
 
 
 GameState* GameState::GetActive()
@@ -43,7 +44,7 @@ void GameState::Init()
 	activeLevel = biome_entity;
 	
 	CreateEntities(biome_entity);
-	DrawCards();
+	CardRegistry::DrawCards();
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;

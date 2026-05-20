@@ -13,7 +13,7 @@
 #include "Game/SystemStateManager.h"
 #include "Core/Timer.h"
 #include "Game/Camera/Camera.h"
-#include "Entities/UIEntityBuilder.h"
+#include "Entities/Factory/UIEntityBuilder.h"
 
 
 void EditorState::OpenAnimationEditor()

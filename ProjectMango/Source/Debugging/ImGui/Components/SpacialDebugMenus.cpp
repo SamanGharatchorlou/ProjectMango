@@ -1,14 +1,14 @@
 #include "pch.h"
 #include "ComponentDebugMenu.h"
 
+#include "Core/Helpers.h"
 #include "ECS/EntityCoordinator.h"
 #include "Graphics/RenderManager.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "imgui-master/imgui.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
 
-
-
+#include "Input/InputManager.h"
 
 bool s_displayRect = false;
 bool s_displayCharacterPosition = false;
@@ -23,8 +23,19 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 	ImGui::PushID(entity + (int)type_id);
 	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
+		ImGui::Text("Click-drag to reposition");
+		ImGui::Text("Hold-Space and using arrows to resize");
+
 		ECS::Transform& transform = GetComponentRef(Transform, entity);
-		ImGui::Text("World Position: %f, %f", transform.worldPosition.x, transform.worldPosition.y);
+
+		// input values
+		float pos[2]{ transform.worldPosition.x, transform.worldPosition.y };
+		if (ImGui::InputFloat2("World Pos", pos))
+			transform.worldPosition = VectorF(pos[0], pos[1]);
+
+		float size[2]{ transform.size.x, transform.size.y };
+		if (ImGui::InputFloat2("Size", size))
+			transform.size = VectorF(size[0], size[1]);
 
 		ImGui::Checkbox("Display Object Rect", &s_displayRect);
 		if (s_displayRect)
@@ -33,6 +44,7 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			DebugDraw::RectOutline(rect, SColour::Blue);
 		}
 
+		ImGui::SameLine();
 		ImGui::Checkbox("Display Character Position", &s_displayCharacterPosition);
 		if (s_displayCharacterPosition)
 		{
@@ -40,6 +52,7 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			DebugDraw::Point(position, SColour::Green);
 		}
 
+		ImGui::SameLine();
 		ImGui::Checkbox("Display Flip Point", &s_displayFlipPoint);
 		if (s_displayFlipPoint)
 		{
@@ -50,12 +63,6 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 			}
 
 			DebugDraw::Point(flip_point, SColour::Red);
-		}
-
-		ImGui::Checkbox("Output Position", &s_outputPosition);
-		if(s_outputPosition)
-		{
-			DebugPrint(PriorityLevel::Log, "Position: %f, %f", transform.worldPosition.x, transform.worldPosition.y);
 		}
 	}
 	ImGui::PopID();

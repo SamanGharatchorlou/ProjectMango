@@ -7,6 +7,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "UI/UIManager.h"
+#include "Entities/Factory/EntitySerialiser.h"
 
 namespace Scene
 {
@@ -42,62 +43,7 @@ namespace Scene
 		}
 	}
 		
-	static void ReadMetaData(Value& data_in, ECS::EntityMetaData& data_out, VectorF level_to_window, VectorF level_world_pos)
-	{
-		float width = data_in["width"].GetFloat();
-		float height = data_in["height"].GetFloat();
-
-		const char* id = data_in["__identifier"].GetString();
-		data_out.data.strings["Id"] = id;
-
-		Value& px = data_in["px"];
-		float px_x = px[0].GetFloat(); // + (width * 0.5f);
-		float px_y = px[1].GetFloat(); // - (height);
-		data_out.data.vectors["Position"] = (VectorF(px_x, px_y) * level_to_window) + level_world_pos;
-		data_out.data.vectors["Size"] = (VectorF(width, height) * level_to_window);
-
-		Value& pivot = data_in["__pivot"];
-		float pivot_x = pivot[0].GetFloat();
-		float pivot_y = pivot[1].GetFloat();
-		data_out.data.vectors["PivotPoint"] = VectorF(pivot_x, pivot_y);
-
-		if (data_in.HasMember("fieldInstances"))
-		{
-			const Value::Array& field_instances = data_in["fieldInstances"].GetArray();
-			for (u32 i = 0; i < field_instances.Size(); i++)
-			{
-				Value& field_instance = field_instances[i];
-
-				const char* field_id = field_instance["__identifier"].GetString();
-				kJsonType field_type = (kJsonType)field_instance["__value"].GetType();
-				Value& field_value = field_instance["__value"];
-
-				bool did_populate = PopulateSettingByType(field_value, field_id, field_type, data_out.data);
-				if(!did_populate)
-				{
-					DebugPrint(Warning, "Failed to populate field %s", field_id);
-				}
-			}
-
-			// custom data
-			if(data_out.data.Contains("SizeOverride"))
-			{
-				VectorF size = data_out.data.GetVector("SizeOverride");
-				data_out.data.vectors["Size"] = (size * level_to_window);
-			}
-			else if(data_out.data.Contains("ColourType"))
-			{
-				const char* colour_string = data_out.data.GetString("ColourType");
-				StringBuffer32 string(colour_string);
-				StringBuffer32 lower_string = string.to_lower();
-
-				ECS::Colour::Type colour_type = ECS::Colour::s_stringToType.at(lower_string);
-				data_out.data.values["ColourType"] = (float)colour_type;
-			}
-		}
-	}
-
-	void ParseUILayer(Value& ui_layer, VectorF level_to_window)
+	void ParseUILayer(Value& ui_layer, LevelSizeInfo& size_info)
 	{
 		const char* id = ui_layer["identifier"].GetString();
 		UIScreenMetaData& screen_meta_data = UIManager::Get().screenMetaData[BasicString(id)];
@@ -111,7 +57,7 @@ namespace Scene
 				Value& entry = entities[e];
 
 				ECS::EntityMetaData emd;
-				ReadMetaData(entry, emd, level_to_window, VectorF());
+				ReadMetaDataFromJson(entry, size_info, emd);
 
 				screen_meta_data.push_back(emd);
 			}
@@ -127,12 +73,15 @@ namespace Scene
 		if(!parser.IsValid())
 			return;
 
+		ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
+
 		const VectorF window_size = GameData::Get().window->size();
 
 		// base screen level width is 256, i.e. thats the non-streched size of the screen
 		const float level_to_window_x = window_size.x / parser.document["defaultLevelWidth"].GetFloat();;
 		const float level_to_window_y = window_size.y / parser.document["defaultLevelHeight"].GetFloat();
 		VectorF level_to_window(level_to_window_x, level_to_window_y);
+		GameData::Get().window->windowToLevel = VectorF( 1.0f / level_to_window_x, 1.0f / level_to_window_y);
 
 		std::unordered_map<int, const char*> value_defines;
 
@@ -160,17 +109,15 @@ namespace Scene
 			level.index = level_index;
 			level.id = levels[i]["identifier"].GetString();
 
+			LevelSizeInfo size_info;
+			size_info.LevelWorldPos = level.worldPos;
+			size_info.windowToLevel = GameData::Get().window->windowToLevel;
+
 			if (strncmp(level.id.c_str(), "UI_", 3) == 0)
 			{
-				ParseUILayer(levels[i], level_to_window);
+				ParseUILayer(levels[i], size_info);
 				continue;
 			}
-
-			//if (StringCompare(level.id.c_str(), "RewardScreen"))
-			//{
-			//	ParseUILayer(levels[i], level_to_window);
-			//	continue;
-			//}
 
 			// bump the level index
 			level_index++;
@@ -187,7 +134,6 @@ namespace Scene
 			level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat() * level_to_window;
 			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
-			ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
 			biome.aabb[0].x = Maths::Min(biome.aabb[0].x, level.worldPos.x);
 			biome.aabb[0].y = Maths::Min(biome.aabb[0].y, level.worldPos.y);
 			biome.aabb[1].x = Maths::Max(biome.aabb[1].x, level.worldPos.x + level.size.x);
@@ -206,9 +152,8 @@ namespace Scene
 						Value& entry = entities[e];
 
 						ECS::EntityMetaData emd;
-						ReadMetaData(entry, emd, level_to_window, level.worldPos);
+						ReadMetaDataFromJson(entry, size_info, emd);
 
-						//std::vector<ECS::EntityMetaData>& entity_data = level.entities[emd.GetID()];
 						level.entityMetaData.push_back(emd);
 					}
 				}
@@ -407,13 +352,18 @@ namespace Scene
 				// handle all other entities
 				else
 				{
+
+					LevelSizeInfo size_info;
+					size_info.LevelWorldPos = level.worldPos;
+					size_info.windowToLevel = GameData::Get().window->windowToLevel;
+
 					const Value::Array& entities = layer["entityInstances"].GetArray();
 					for( u32 e = 0; e < entities.Size(); e++ )
 					{
 						Value& entry = entities[e];
 
 						ECS::EntityMetaData emd;
-						ReadMetaData(entry, emd, level_to_window, level.worldPos);
+						ReadMetaDataFromJson(entry, size_info, emd);
 
 						level.entityMetaData.push_back(emd);
 					}

@@ -1,0 +1,114 @@
+[
+    {
+        "__identifier": "Unknown",
+        "iid": "",
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            98.80000305175781,
+            35.60000228881836
+        ],
+        "__pivot": [
+            0.5,
+            0.5
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "Sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "Text",
+                "__type": "String",
+                "__value": "hello",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "PtSize",
+                "__type": "Float",
+                "__value": 21.0,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "Unknown",
+        "iid": "",
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            20.0,
+            20.0
+        ],
+        "__pivot": [
+            0.5,
+            0.5
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "Sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "Unknown",
+        "iid": "",
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            98.80000305175781,
+            35.60000228881836
+        ],
+        "__pivot": [
+            0.5,
+            0.5
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "Sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "Unknown",
+        "iid": "",
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            20.0,
+            20.0
+        ],
+        "__pivot": [
+            0.5,
+            0.5
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "Sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    }
+]

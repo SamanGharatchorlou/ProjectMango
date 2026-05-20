@@ -3,7 +3,7 @@
 
 #include "System/Files/JSONParser.h"
 
-#include "Entities/EntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "Game/Readers/AnimationReader.h"
 #include "ECS/EntityCoordinator.h"

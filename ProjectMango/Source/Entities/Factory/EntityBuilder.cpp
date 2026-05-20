@@ -14,6 +14,7 @@
 #include "Entities/Registries/CardRegistry.h"
 #include "Game/Readers/AnimationReader.h"
 #include "Core/Helpers.h"
+#include "Entities/Factory/ComponentAssembler.h"
 
 using namespace ECS;
 
@@ -35,6 +36,9 @@ Entity CreateBasicObject(const char* id, VectorF size)
 
 Entity CreateBasicObject(const EntityMetaData& emd)
 {
+	Entity entityy = AssembleEntity(emd);
+	return entityy;
+
 	Entity entity = CreateEntity(emd);
 
 	if(StringCompare(emd.GetID(), "Flower"))
@@ -46,11 +50,10 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 	
 	// Sprite
 	bool has_sprite = emd.data.Contains("Sprite");
-	bool is_sprite_sheet = emd.data.Contains("SpriteSheet");
 	bool is_animator = emd.data.Contains("Animator");
 
 	const Config* config = GetConfigFromEntity(entity);
-	if(config || has_sprite || is_sprite_sheet || is_animator)
+	if(config || has_sprite || is_animator)
 	{
 		Sprite& sprite = AddComponent(Sprite, entity);
 		if (config)
@@ -61,10 +64,6 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 		{
 			sprite.Init(emd.data.GetString("Sprite"));
 		}		
-		else if(is_sprite_sheet)
-		{
-			sprite.Init(emd.data.GetString("SpriteSheet"));
-		}
 
 		if(sprite.image.texture && transform.size.isZero())
 			DebugPrint(Warning, "CreateBasicObject - Has Sprite, but has no size");
@@ -81,17 +80,14 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 			{
 				AddColourPostfix(emd.data.GetString("Sprite"), colour_type, coloured_sprite);
 			}		
-			else if(is_sprite_sheet)
-			{
-				AddColourPostfix(emd.data.GetString("SpriteSheet"), colour_type, coloured_sprite);
-			}
 
 			sprite.Init(coloured_sprite.c_str());
 		}
 
+		bool is_sprite_sheet = emd.data.Contains("SpriteSheetFrames");
 		if(sprite.image.texture && is_sprite_sheet)
 		{
-			ASSERT( emd.data.GetVector("SpriteSheetFrames").lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.data.GetString( "SpriteSheet" ), emd.GetID() );
+			ASSERT( emd.data.GetVector("SpriteSheetFrames").lengthSquared() > 0, "Sprite sheet %d has frames counts == 0 (entity %s)", emd.data.GetString( "Sprite" ), emd.GetID() );
 
 			SpriteSheet& ss = AddComponent(SpriteSheet, entity);
 			ss.Init( emd.data.GetVector("SpriteSheetFrames").toInt() );
@@ -213,6 +209,8 @@ static void SetupPowerIcons(Entity entity, int count)
 	}
 }
 
+//static void BuildCoinStack(CoinStack& coin_stack, bool is_inventory, int ca)
+
 Entity CreateCoinPile(const EntityMetaData& emd)
 {
 	Entity entity = CreateBasicObject( emd );
@@ -329,6 +327,12 @@ Entity CreateActor(const ECS::EntityMetaData& emd, const char* id_override)
 
 	// EntityState
 	EntityState& character_state = AddComponent(EntityState, entity);
+
+	if (emd.data.Contains("Faction"))
+	{
+		Faction& faction = GetOrAddComponent(Faction, entity);
+		faction.team = Faction::GetTeam(emd.data.GetString("Faction"));
+	}
 
 	return entity;
 }
@@ -633,6 +637,7 @@ Entity CreateVFX(const char* vfx, const RectF& rect)
 
 static void PostProcess(Entity entity, const EntityMetaData& emd)
 {
+	// todo: remove these
 	if( emd.data.Contains("ButtonCallback") )
 	{
 		UIButton& button = GetOrAddComponent(UIButton, entity);
@@ -696,32 +701,32 @@ static void InitEntityFunctions()
 	s_createEntitiyFunctions["Player"] = CreatePlayer;
 }
 
-void CreateEntitiesFromData(const std::vector<EntityMetaData>& meta_data, std::vector<Entity>& entities)
+
+Entity CreateEntityFromData(const EntityMetaData& meta_data)
 {
 	if (s_createEntitiyFunctions.size() == 0)
 		InitEntityFunctions();
 
-	for (u32 i = 0; i < meta_data.size(); i++)
+	const char* type = meta_data.GetID();
+
+	// create game object`
+	CreateEntityFn create_fn = CreateBasicObject;
+	if (s_createEntitiyFunctions.contains(type))
 	{
-		const EntityMetaData& emd = meta_data[i];
-		const char* type = emd.GetID();
-
-		// create game object
-		CreateEntityFn create_fn = CreateBasicObject;
-		if (s_createEntitiyFunctions.contains(type))
-		{
-			create_fn = s_createEntitiyFunctions.at(type);
-		}
-
-		Entity entity = create_fn(emd);
-		PostProcess(entity, emd);
-
-		entities.push_back(entity);
+		create_fn = s_createEntitiyFunctions.at(type);
 	}
+
+	Entity entity = create_fn(meta_data);
+	PostProcess(entity, meta_data);
+
+	return entity;
 }
 
 void CreateEntities(Entity& biome_entity)
 {
+	if (s_createEntitiyFunctions.size() == 0)
+		InitEntityFunctions();
+
 	// UI entities
 	CreateUIEntities();
 
@@ -730,26 +735,10 @@ void CreateEntities(Entity& biome_entity)
 	{
 		const Level& level = biome.levels[i];
 
-		std::vector<Entity> entites;
-		CreateEntitiesFromData(level.entityMetaData, entites);
-	}
-}
-
-void DrawCards()
-{
-	ComponentArray<Card>& cards =  GetAllComponents(Card);
-	
-	// [ entity, tier ] 
-	// push these into a list first, otherwise we can invalidat the iterator
-	std::vector< std::pair<Entity,int> > entities;
-	for( auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++ )
-	{
-		const Card& card = cards.GetComponentByIndex(iter->second);
-		entities.push_back({iter->first, card.tier});
-	}
-
-	for( u32 i = 0; i < entities.size(); i++ )
-	{
-		CardRegistry::DrawRandomCard(entities[i].first, entities[i].second);
+		for (u32 i = 0; i < level.entityMetaData.size(); i++)
+		{
+			const EntityMetaData& emd = level.entityMetaData[i];
+			Entity entity = CreateEntityFromData(emd);
+		}
 	}
 }

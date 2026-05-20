@@ -2,7 +2,7 @@
 
 #include "imgui-master/imgui.h"
 #include "UI/UIManager.h"
-#include "Entities/EntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
 
 namespace DebugMenu
 {

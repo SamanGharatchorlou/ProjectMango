@@ -20,7 +20,7 @@ public:
 
 	void setTitle(const char* title);
 
-
+	VectorF windowToLevel;
 private:
 	SDL_Window* mWindow;
 };

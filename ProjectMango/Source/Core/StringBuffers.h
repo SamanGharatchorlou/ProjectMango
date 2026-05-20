@@ -95,6 +95,9 @@ public:
 
 	void set(const char* string) 
 	{
+		if (!string)
+			return;
+
 #if DEBUG_MODE
 		if (strlen(string) > bufferLength())
 			DebugPrint(Error, "Attempting to set StringBuffer%d with string of size %d, will drop overflow characters", bufferLength(), strlen(string));
@@ -141,7 +144,7 @@ public:
 	}
 
 private:
-	char mBuffer[64];
+	char mBuffer[64] = { 0 };
 };
 
 

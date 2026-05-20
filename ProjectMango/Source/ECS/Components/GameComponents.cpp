@@ -8,7 +8,7 @@
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
 #include "Entities/Registries/SpellRegistry.h"
-#include "Entities/EntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
 #include "Entities/Registries/ResourceBank.h"
 #include "Core/Helpers.h"
 #include "Game/States/GameState.h"

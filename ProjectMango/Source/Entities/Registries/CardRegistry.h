@@ -18,4 +18,7 @@ namespace CardRegistry
 
 	void DrawCard( ECS::Entity entity, int index );
 	void DrawRandomCard( ECS::Entity entity, int tier );
+
+	// setup the board
+	void DrawCards();
 }

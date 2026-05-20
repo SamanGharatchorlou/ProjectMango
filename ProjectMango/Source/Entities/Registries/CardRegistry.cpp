@@ -247,4 +247,23 @@ namespace CardRegistry
 			TriggerGameEvent(GameEvent::CardDrawn, entity);
 		}
 	}
+
+	void DrawCards()
+	{
+		ComponentArray<Card>& cards = GetAllComponents(Card);
+
+		// [ entity, tier ] 
+		// push these into a list first, otherwise we can invalidat the iterator
+		std::vector< std::pair<Entity, int> > entities;
+		for (auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++)
+		{
+			const Card& card = cards.GetComponentByIndex(iter->second);
+			entities.push_back({ iter->first, card.tier });
+		}
+
+		for (u32 i = 0; i < entities.size(); i++)
+		{
+			CardRegistry::DrawRandomCard(entities[i].first, entities[i].second);
+		}
+	}
 }

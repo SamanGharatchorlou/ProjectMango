@@ -34,6 +34,11 @@ Entity CreateUICursor()
 	return entity;
 }
 
+static bool RequiresUIText(const EntityMetaData& emd)
+{
+	return emd.data.Contains("TextCallback") || emd.data.Contains("Text");
+}
+
 Entity CreateUIText(const EntityMetaData& emd)
 {
 	Entity entity = CreateEntity(emd.GetID());
@@ -49,7 +54,13 @@ Entity CreateUIText(const EntityMetaData& emd)
 	ui_text.SetSize(emd.data.GetInt("PtSize"));
 	ui_text.SetColour(emd.data.GetColour("Colour"));
 
-	Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);;
+	// todo: do i need this? should usually be a text callbacl?
+	if (emd.data.GetString("Text"))
+	{
+		ui_text.SetText(emd.data.GetString("Text"));
+	}
+
+	Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("ColourType" , -1.0f);
 	if(colour_type != -1)
 	{
 		Colour& colour = AddComponent(Colour, entity);

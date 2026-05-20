@@ -7,8 +7,8 @@
 #include "Input/Cursor.h"
 #include "Game/FrameRateController.h"
 #include "Core/Helpers.h"
-
-#include "Entities/EntityBuilder.h"
+// todo: remove
+#include "Entities/Factory/EntityBuilder.h"
 
 void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings);
 

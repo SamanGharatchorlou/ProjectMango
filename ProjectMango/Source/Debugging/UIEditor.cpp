@@ -2,18 +2,19 @@
 #include "UiEditor.h"
 
 #include "Core/Helpers.h"
+#include "Debugging/ImGui/Components/ComponentDebugMenu.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
+#include "Entities/Factory/EntityBuilder.h"
 #include "Graphics/RenderManager.h"
 #include "Graphics/STexture.h"
 #include "Graphics/TextureManager.h"
-#include "ImGui/ImGuiHelpers.h"
-#include "System/Window.h"
-#include "imgui.h"
-
 #include "Input/InputManager.h"
+#include "System/Window.h"
 #include "UI/UIManager.h"
+#include "imgui.h"
+#include "Entities/Factory/EntitySerialiser.h"
 
 namespace UIEditor
 {
@@ -29,9 +30,8 @@ namespace UIEditor
 
     static UIState s_state;
 
-    static bool UIEntityBuilder()
+    static void UIEntityBuilder()
     {
-        bool did_add = false;
         if (ImGui::TreeNode("Entity Builder"))
         {
             UIManager& ui_manager = UIManager::Get();
@@ -40,8 +40,13 @@ namespace UIEditor
             {
                 ECS::EntityMetaData meta_data;
 
+                static int index = 0;
+
+                char buffer[32];
+                snprintf(buffer, 32, "element %d", ++index);
+
                 //transform
-                meta_data.data.strings["Id"] = "quad";
+                meta_data.data.strings["Id"] = buffer;
                 meta_data.data.vectors["Size"] = VectorF(100.0f, 100.0f);
                 meta_data.data.vectors["Position"] = VectorF(100.0f, 100.0f);
 
@@ -50,14 +55,13 @@ namespace UIEditor
                 
                 // add to screen meta data
                 ui_manager.screenMetaData[s_state.activeScreen].push_back(meta_data);
-                
-                did_add = true;
+
+                Entity entity = CreateEntityFromData(meta_data);
+                ui_manager.screenEntities[s_state.activeScreen].push_back(entity);
             }
 
             ImGui::TreePop();
         }
-
-        return did_add;
     }
 
     static ECS::Entity SelectableUIEntityList()
@@ -78,6 +82,8 @@ namespace UIEditor
                 {
                     selected_entity = screen_entities[i];
                 }
+                ImGui::SameLine();
+
                 if (s_state.selectedEntity == screen_entities[i])
                 {
                     ImGui::SameLine(); ImGui::Text(" <--");
@@ -90,14 +96,12 @@ namespace UIEditor
         return selected_entity;
     }
 
-    static void UIEntityControls()
+    static void UITransformEditor(ECS::Entity entity)
     {
-        ImGui::Begin("Entity Controls", nullptr, 0);
+        ECS::Transform& transform = GetComponentRef(Transform, entity);
 
         ImGui::Text("Click-drag to reposition");
-        ImGui::Text("Hold-Space and using arrows to resize");
-
-        ECS::Transform& transform = GetComponentRef(Transform, s_state.selectedEntity);
+        ImGui::Text("Hold-Shift and using arrows to resize");
 
         // input values
         float pos[2]{ transform.worldPosition.x, transform.worldPosition.y };
@@ -110,6 +114,92 @@ namespace UIEditor
 
         // input controls
         InputManager* im = GameData::Get().inputManager;
+        bool is_held = false;
+
+        // edit quad position
+        if (im->isCursorHeld(Cursor::Left) && !s_state.cursorOffset.isZero())
+        {
+            const VectorF cursor_pos = im->cursorScreenPosition();
+            if (Contains(transform.GetRect(), cursor_pos))
+            {
+                is_held = true;
+                transform.SetWorldPosition(cursor_pos + s_state.cursorOffset);
+            }
+        }
+
+        // edit quad size
+        if (im->isHeld(Button::Shift))
+        {
+            VectorF& size = transform.size;
+            if (im->isHeld(Button::UpArrow))
+                size.y += 0.5;
+            if (im->isHeld(Button::DownArrow))
+                size.y -= 0.5;
+
+            if (im->isHeld(Button::RightArrow))
+                size.x += 0.5;
+            if (im->isHeld(Button::LeftArrow))
+                size.x -= 0.5;
+        }
+
+        DebugDraw::RectOutline(transform.GetRect(), is_held ? SColour::Green : SColour::Yellow);
+    }
+
+    static void UISpriteEditor(ECS::Entity entity)
+    {
+        if (ECS::Sprite* sprite = GetComponent(Sprite, entity))
+        {
+            if (ImGui::Button("Remove Sprite"))
+            {
+                RemoveComponent(Sprite, entity);
+            }
+
+            DebugMenu::DoSpriteDebugMenu(entity);
+        }
+        else
+        {
+            if (ImGui::Button("Add Sprite"))
+            {
+                AddComponent(Sprite, entity);
+            }
+        }
+    }
+
+    static ECS::Entity GetEntityAtCursor()
+    {
+        InputManager* im = GameData::Get().inputManager;
+        if (im->isCursorPressed(Cursor::Left))
+        {
+            const VectorF cursor_pos = im->cursorScreenPosition();
+            const UIScreenEntities& screen_entities = UIManager::Get().screenEntities[s_state.activeScreen];
+            for (u32 i = 0; i < screen_entities.size(); i++)
+            {
+                ECS::Transform& transform = GetComponentRef(Transform, screen_entities[i]);
+                if (Contains(transform.GetRect(), cursor_pos))
+                    return screen_entities[i];
+            }
+        }
+
+        return ECS::EntityInvalid;
+    }
+
+    static void CursorControls(ECS::Entity entity)
+    {
+        ECS::Transform& transform = GetComponentRef(Transform, entity);
+
+        // set cursor offset from quad and cursor
+        InputManager* im = GameData::Get().inputManager;
+        if (im->isCursorPressed(Cursor::Left))
+        {
+            const VectorF cursor_pos = im->cursorScreenPosition();
+            s_state.cursorOffset = transform.worldPosition - cursor_pos;
+        }
+        if (im->isCursorReleased(Cursor::Left))
+        {
+            s_state.cursorOffset = VectorF::zero();
+        }
+
+        // input controls
         bool is_held = false;
 
         // edit quad position
@@ -139,26 +229,6 @@ namespace UIEditor
         }
 
         DebugDraw::RectOutline(transform.GetRect(), is_held ? SColour::Green : SColour::Yellow);
-
-        ImGui::End();
-    }
-
-    static ECS::Entity GetEntityAtCursor()
-    {
-        InputManager* im = GameData::Get().inputManager;
-        if (im->isCursorPressed(Cursor::Left))
-        {
-            const VectorF cursor_pos = im->cursorScreenPosition();
-            const UIScreenEntities& screen_entities = UIManager::Get().screenEntities[s_state.activeScreen];
-            for (u32 i = 0; i < screen_entities.size(); i++)
-            {
-                ECS::Transform& transform = GetComponentRef(Transform, screen_entities[i]);
-                if (Contains(transform.GetRect(), cursor_pos))
-                    return screen_entities[i];
-            }
-        }
-
-        return ECS::EntityInvalid;
     }
 
     void Update()
@@ -168,12 +238,60 @@ namespace UIEditor
         UIManager& ui_manager = UIManager::Get();
         InputManager* im = GameData::Get().inputManager;
 
-        // refresh screen entities when something was added
-        if (UIEntityBuilder())
+        if (ImGui::Button("Save Entities to File"))
+        {
+            std::vector<ECS::EntityMetaData*> meta_data;
+
+            UIScreenMetaData& meta_datas = ui_manager.screenMetaData[s_state.activeScreen];
+            meta_datas.clear();
+
+            UIScreenEntities& entities = ui_manager.screenEntities[s_state.activeScreen];
+            for (u32 i = 0; i < entities.size(); i++)
+            {
+                meta_datas.push_back(ECS::EntityMetaData());
+                ECS::EntityMetaData& md = meta_datas.back();
+
+                ReadMetaDataFromEntity(entities[i], md);
+            }
+
+            const UIScreenMetaData& screen_metas = ui_manager.screenMetaData[s_state.activeScreen];
+
+            LevelSizeInfo size_info;
+            size_info.windowToLevel = GameData::Get().window->windowToLevel;
+
+            const char* fp = "C:/Users/saman/Documents/Code/ProjectMango/ProjectMango/Resources/Maps/data.dat";
+            SaveEntityToJson(fp, size_info, screen_metas);
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Load Entities from File"))
+        {
+            LevelSizeInfo size_info;
+            size_info.windowToLevel = GameData::Get().window->windowToLevel;
+
+            const char* fp = "C:/Users/saman/Documents/Code/ProjectMango/ProjectMango/Resources/Maps/data.dat";
+
+            UIScreenEntities& screen_entities = ui_manager.screenEntities[s_state.activeScreen];
+            for (u32 i = 0; i < screen_entities.size(); i++)
+            {
+                ecs->entities.KillEntity(screen_entities[i]);
+            }
+            screen_entities.clear();
+
+            UIScreenMetaData& screen_metas = ui_manager.screenMetaData[s_state.activeScreen];
+            LoadEntityFromJson(fp, size_info, screen_metas);
+
+            ui_manager.CloseScreen(s_state.activeScreen.c_str());
+            ui_manager.OpenScreen(s_state.activeScreen.c_str());
+        }
+
+        if (ImGui::Button("Regenerate Entities from MetaData"))
         {
             ui_manager.CloseScreen(s_state.activeScreen.c_str());
             ui_manager.OpenScreen(s_state.activeScreen.c_str());
         }
+
+        UIEntityBuilder();
 
         s_state.selectedEntity = SelectableUIEntityList();
 
@@ -185,19 +303,14 @@ namespace UIEditor
         // handle controls for positioning/sizing etc.
         else
         {
-            // set cursor offset from quad and cursor
-            if (im->isCursorPressed(Cursor::Left))
-            {
-                const VectorF cursor_pos = im->cursorScreenPosition();
-                ECS::Transform& transform = GetComponentRef(Transform, s_state.selectedEntity);
-                s_state.cursorOffset = transform.worldPosition - cursor_pos;
-            }
-            if (im->isCursorReleased(Cursor::Left))
-            {
-                s_state.cursorOffset = VectorF::zero();
-            }
+            ImGui::Begin("Entity Controls", nullptr, 0);
 
-            UIEntityControls();
+            CursorControls(s_state.selectedEntity);
+            DebugMenu::DoTransformDebugMenu(s_state.selectedEntity);
+            DebugMenu::DoSpriteDebugMenu(s_state.selectedEntity);
+            DebugMenu::DoUITextDebugMenu(s_state.selectedEntity);
+
+            ImGui::End();
         }
 
         if (im->isCursorPressed(Cursor::Right))

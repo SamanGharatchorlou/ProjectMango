@@ -5,7 +5,7 @@
 #include "ECS/EntityCoordinator.h"
 
 //temp
-#include "Entities/EntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
 
 using namespace ECS;
 

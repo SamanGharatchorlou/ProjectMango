@@ -96,8 +96,10 @@ namespace ECS
 	{
 		if(EntityData* ed = GetComponent(EntityData, parent))
 		{
-			// create a copy so the list doesnt change as we're looping it
-			children = ed->children;
+			for (u32 i = 0; i < ed->children.size(); i++)
+			{
+				children.push_back(ed->children[i]);
+			}
 		}
 	}
 

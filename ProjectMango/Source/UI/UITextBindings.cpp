@@ -199,9 +199,4 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 					
 		return BasicString(""); 
 	};
-
-	text_bindings[ "AutoConfirmText" ] =  [](Entity entity) {				
-		return BasicString("Auto-confirm End Turn"); 
-	};
-
 }

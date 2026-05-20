@@ -228,6 +228,9 @@ namespace ECS
 		Biome();
 
 		std::vector<Level> levels;
+		
+		VectorF LevelToWindow;
+
 
 		VectorF aabb[2];
 

@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Debugging\ImGui\Components\SpriteDebugMenu.cpp" />
+    <ClCompile Include="Source\Debugging\ImGui\ImGuiHelpers.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugEntityWindow.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugGameStateWindow.cpp" />
     <ClCompile Include="Source\Debugging\ImGui\MainWindows\DebugTransformWindow.cpp" />
@@ -163,6 +165,8 @@
     <ClCompile Include="Source\Entities\Enemies\AIStrategies.cpp" />
     <ClCompile Include="Source\Entities\Enemies\AIStrategyCardPlayer.cpp" />
     <ClCompile Include="Source\Entities\Enemies\EnemyTurn.cpp" />
+    <ClCompile Include="Source\Entities\Factory\ComponentAssembler.cpp" />
+    <ClCompile Include="Source\Entities\Factory\EntitySerialiser.cpp" />
     <ClCompile Include="Source\Entities\Registries\SpellRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerTurn.cpp" />
@@ -259,9 +263,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Entities\EntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\Factory\EntityBuilder.cpp" />
     <ClCompile Include="Source\Game\Readers\SceneReader.cpp" />
-    <ClCompile Include="Source\Entities\UIEntityBuilder.cpp" />
+    <ClCompile Include="Source\Entities\Factory\UIEntityBuilder.cpp" />
     <ClCompile Include="Source\System\Files\ConfigManager.cpp" />
     <ClCompile Include="Source\System\Files\FileManager.cpp" />
     <ClCompile Include="Source\System\Files\JSONParser.cpp" />
@@ -292,6 +296,8 @@
     <ClInclude Include="Source\Entities\Enemies\AIStrategies.h" />
     <ClInclude Include="Source\Entities\Enemies\AIStrategyCardPlayer.h" />
     <ClInclude Include="Source\Entities\Enemies\EnemyTurn.h" />
+    <ClInclude Include="Source\Entities\Factory\ComponentAssembler.h" />
+    <ClInclude Include="Source\Entities\Factory\EntitySerialiser.h" />
     <ClInclude Include="Source\Entities\Registries\SpellRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h" />
     <ClInclude Include="Source\Entities\Player\PlayerTurn.h" />
@@ -398,9 +404,9 @@
     <ClInclude Include="Source\Input\Cursor.h" />
     <ClInclude Include="Source\Input\InputManager.h" />
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\Entities\EntityBuilder.h" />
+    <ClInclude Include="Source\Entities\Factory\EntityBuilder.h" />
     <ClInclude Include="Source\Game\Readers\SceneReader.h" />
-    <ClInclude Include="Source\Entities\UIEntityBuilder.h" />
+    <ClInclude Include="Source\Entities\Factory\UIEntityBuilder.h" />
     <ClInclude Include="Source\System\Files\ConfigManager.h" />
     <ClInclude Include="Source\System\Files\FileManager.h" />
     <ClInclude Include="Source\System\Files\JSONParser.h" />

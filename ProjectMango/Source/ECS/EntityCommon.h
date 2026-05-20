@@ -35,7 +35,7 @@ namespace ECS
 	static constexpr u32 c_rare = 4;
 
 #define COMPONENT_LIST(_entry) \
-	_entry(EntityData,        c_common) \
+	_entry(EntityData,        c_allEntities) \
 	_entry(Transform,         c_allEntities) \
 	_entry(Sprite,            c_allEntities) \
 	_entry(SpriteSheet,       c_uncommon) \

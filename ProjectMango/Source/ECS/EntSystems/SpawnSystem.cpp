@@ -3,7 +3,7 @@
 
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
-#include "Entities/EntityBuilder.h"
+#include "Entities/Factory/EntityBuilder.h"
 #include "Graphics/Raycast.h"
 #include "Entities/Registries/CardRegistry.h"
 
