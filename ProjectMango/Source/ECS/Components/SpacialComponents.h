@@ -52,6 +52,9 @@ namespace ECS
 	struct Collider
 	{
 		COMPONENT_TYPE(Collider)
+
+		static constexpr const char* kRequirement = "object_size";
+
 		Collider();
 
 		enum Flags
@@ -108,6 +111,7 @@ namespace ECS
 
 		// assumes the rect size has been set
 		void Init();
+		void Init(const EntityMetaData& emd);
 		void UpdateFromTransform(const Transform& transform);
 
 		void RollBackPosition();
@@ -162,6 +166,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Physics)
 
+		static constexpr const char* kRequirement = "max_speed";
+
 		VectorF speed;
 		float maxSpeed = 0.0f;	
 		float acceleration = 0.0f;
@@ -173,6 +179,7 @@ namespace ECS
 		bool onFloor = false;
 
 		void Init();
+		void Init(const EntityMetaData& emd);
 	};
 
 

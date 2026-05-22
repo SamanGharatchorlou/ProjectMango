@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "StartupState.h"
 
+#include <thread>
 #include "Game/GameSetup.h"
 #include "Game/SystemStateManager.h"
 #include "Audio/AudioManager.h"
-
-#include <thread>
+#include "ECS/Components/ComponentsSetup.h"
 
 
 StartupState::StartupState(GameData& gd)
@@ -77,6 +77,12 @@ void StartupState::Init()
 	//loadingscreen.join();
 
 	loader.exit();
+
+	DebugPrint(Log, "- Register Components -");
+	ECS::RegisterAllComponents();
+
+	DebugPrint(Log, "- Register Systems -");
+	ECS::RegisterAllSystems();
 }
 
 void StartupState::Update(float dt)

@@ -7,6 +7,6 @@ namespace ECS
 
 	void RemoveAllComponents(Entity entity);
 
-	void ParseComponentData();
-	void ClearComponentData();
+	void ParseGameFileData();
+	void ClearGameFileData();
 }

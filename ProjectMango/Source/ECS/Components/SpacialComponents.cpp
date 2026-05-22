@@ -23,8 +23,8 @@ namespace ECS
 	{
 		if(emd)
 		{	
-			size = emd->data.GetVector("Size");
-			SetWorldPosition(emd->data.GetVector("Position") - (size * emd->data.GetVector("PivotPoint")));
+			size = emd->data.GetVector("size");
+			SetWorldPosition(emd->data.GetVector("position") - (size * emd->data.GetVector("pivot_point")));
 		}
 
 		if(const Config* config = GetConfigFromEntity(entity))
@@ -316,6 +316,21 @@ namespace ECS
 		initialised = true;
 	}
 
+	void Collider::Init(const EntityMetaData& emd)
+	{
+		const Transform& transform = GetComponentRef(Transform, entity);
+		ASSERT(!transform.size.isZero(), "cannot init collider when transform has no size");
+
+		SetBaseRect(RectF(transform.worldPosition, transform.size));
+		UpdateFromTransform(transform);
+
+		VectorF object_position = emd.data.GetVector("object_pos");
+		VectorF object_size = emd.data.GetVector(kRequirement, VectorF(1, 1));
+		SetRelativeRect(object_position, object_size);
+
+		initialised = true;
+	}
+
 	void Collider::UpdateFromTransform(const Transform& transform)
 	{
 		back = transform.worldPosition;
@@ -388,9 +403,17 @@ namespace ECS
 		if(const Config* config = GetConfigFromEntity(entity))
 		{
 			applyGravity = config->data.GetBool("gravity");	
-			maxSpeed = config->data.GetFloat("max_run_speed");
+			maxSpeed = config->data.GetFloat("max_speed");
 		}
 
+		drag = 5.0f;
+		speed = VectorF::zero();
+	}
+
+	void Physics::Init(const EntityMetaData& emd)
+	{
+		maxSpeed = emd.data.GetFloat(kRequirement);
+		applyGravity = emd.data.GetBool("gravity");
 		drag = 5.0f;
 		speed = VectorF::zero();
 	}

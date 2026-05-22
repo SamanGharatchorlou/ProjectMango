@@ -1,7 +1,7 @@
 {
 	"id": "Player",
-	"animation": "Tree",
-	"size": [224, 256],
+	"animator": "Tree",
+	"size": [ 224, 256 ],
 	"object_pos": [ 0.36, 0.74 ],
 	"object_size": [ 0.16, 0.255 ],
 	"max_health": 10

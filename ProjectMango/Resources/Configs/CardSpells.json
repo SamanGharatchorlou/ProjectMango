@@ -1,16 +1,10 @@
 {
 	"Spells": [
-		//{
-		//	"id": "Lightning1",
-		//	"damage": 1,
-		//	"size": 1.25,
-		//	"colour": "white"
-		//},
-		//{
-		//	"id": "SunStrike",
-		//	"damage": 1,
-		//	"size": 1.25,
-		//	"colour": "red"
-		//}
+		{
+			//"id": "Lightning1",
+			//"damage": 1,
+			//"size": 1.25,
+			//"colour": "white"
+		}
 	]
 }

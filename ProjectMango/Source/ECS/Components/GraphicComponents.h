@@ -31,9 +31,12 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Sprite)
 
+		static constexpr const char* kRequirement = "sprite";
+
 		SpriteImage image;
 		SpriteParameters params;
-		
+
+		void Init(const EntityMetaData& emd);
 		void Init(const char* sprite_id);
 		bool IsValid() const;
 
@@ -51,10 +54,13 @@ namespace ECS
 	struct SpriteSheet
 	{
 		COMPONENT_TYPE(SpriteSheet)
+
+		static constexpr const char* kRequirement = "sprite_sheet_frames";
 			
 		SpriteSheetFrame frame;
 		int index = 0;
 
+		void Init(const EntityMetaData& emd);
 		void Init(VectorI frame_counts);
 		bool HasValidFrameIndex() const;
 	};
@@ -101,6 +107,8 @@ namespace ECS
 	struct Animator
 	{
 		COMPONENT_TYPE(Animator)
+
+		static constexpr const char* kRequirement = "animator";
 
 		const std::vector<Animation>* animations = nullptr;
 

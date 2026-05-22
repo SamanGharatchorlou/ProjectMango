@@ -59,6 +59,11 @@ namespace ECS
 
 	// Card
 	// ------------------------------------------------------------------
+	void Card::Init(const EntityMetaData& emd)
+	{
+		tier = emd.data.GetInt(kRequirement);
+	}
+	
 	bool Card::CanAfford(Entity entity) const
 	{
 		if(Inventory* inventory = GetComponent(Inventory, entity))
@@ -238,18 +243,11 @@ namespace ECS
 
 		GenerateCostIcons(entity );
 
-		//if(monsterRegistryIndex != -1)
-		//{
-		//	const char* monster = MonsterRegistry::GetMonster(monsterRegistryIndex);
-		//	CreateCardActor(monster, entity);
-		//}
-
 		if (!spell.empty())
 		{
 			EntityMetaData spell_data;
 			SpellRegistry::GetSpellMetaData(spell.c_str(), spell_data);
 			CreateCardSpell(spell_data, entity);
-			// 7OFFMAY
 		}
 	}
 

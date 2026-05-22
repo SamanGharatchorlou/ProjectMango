@@ -33,9 +33,7 @@ int GameState::GetTurnIndex()
 
 void GameState::Init()
 {
-	ECS::RegisterAllComponents();
-	ECS::RegisterAllSystems();
-	ECS::ParseComponentData();
+	ECS::ParseGameFileData();
 
 	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
 
@@ -118,12 +116,10 @@ void GameState::HandleInput()
 #endif
 }
 
-
 void GameState::FastUpdate(float dt)
 {
 	//Camera::Get()->fastUpdate(dt);
 }
-
 
 void GameState::Update(float dt)
 {
@@ -173,6 +169,7 @@ void GameState::Exit()
 	//ecs->components.Close();
 
 	//ecs->Close();// systems.Close();
+	ECS::ClearGameFileData();
 }
 
 

@@ -101,6 +101,11 @@ namespace ECS
 	
 	// Target
 	// ------------------------------------------------------------------
+	void Faction::Init(const EntityMetaData& emd)
+	{
+		team = Faction::GetTeam(emd.data.GetString(kRequirement));
+	}
+	
 	Entity Faction::GetTarget() const
 	{
 		Entity target_entity = EntityInvalid;
@@ -266,6 +271,12 @@ namespace ECS
 		currentHealth = maxHealth;
 	}
 
+	void Health::Init(const EntityMetaData& emd)
+	{
+		maxHealth = emd.data.GetFloat(kRequirement);
+		currentHealth = maxHealth;
+	}
+
 	bool Health::ApplyDamage(float damage)
 	{
 		if(invulnerable)
@@ -295,5 +306,12 @@ namespace ECS
 		}
 
 		return true;
+	}
+	
+	// Callback
+	// ------------------------------------------------------------------
+	void Callback::Init(const EntityMetaData& emd)
+	{
+		callback = emd.data.GetString(kRequirement);
 	}
 }

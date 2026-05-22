@@ -1,16 +1,17 @@
 {
 	"types": [
 		{
-			"id" :  "BlindingSpider",
+			"id": "BlindingSpider",
+			"id": "BlindingSpider",
 			"object_pos": [ 0.05, 0.75 ],
 			"object_size": [ 0.33, 0.25 ],
-			"size": [64, 64],
+			"size": [ 64, 64 ],
 			"snap_to_floor": true,
 			"gravity": true,
 			"acceleration": 80,
-			"max_run_speed": 80,
-			"attack_cooldown_time_ms" : 1000,
-			"action_cooldown_time_ms" : 500,
+			"max_speed": 80,
+			"attack_cooldown_time_ms": 1000,
+			"action_cooldown_time_ms": 500,
 			"max_health": 10
 		},
 		{
@@ -21,22 +22,23 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 80,
+			"max_speed": 80,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
 		},
 		{
 			"id": "OrbMage",
+			"animator": "OrbMage",
 			"object_pos": [ 0.144, 0.265 ],
 			"object_size": [ 0.083, 0.733 ],
-			"size": [352, 120],
+			"size": [ 352, 120 ],
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 80,
-			"attack_cooldown_time_ms" : 1000,
-			"action_cooldown_time_ms" : 500,
+			"max_speed": 80,
+			"attack_cooldown_time_ms": 1000,
+			"action_cooldown_time_ms": 500,
 			"max_health": 10
 		},
 		{
@@ -47,7 +49,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 120,
+			"max_speed": 120,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -60,7 +62,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 80,
+			"max_speed": 80,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -73,7 +75,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 50,
+			"max_speed": 50,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -86,7 +88,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 50,
+			"max_speed": 50,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -100,7 +102,7 @@
 			"flipped": true,
 			"snap_to_floor": false,
 			"acceleration": 80,
-			"max_run_speed": 80,
+			"max_speed": 80,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -113,7 +115,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 60,
+			"max_speed": 60,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10
@@ -126,7 +128,7 @@
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
-			"max_run_speed": 50,
+			"max_speed": 50,
 			"attack_cooldown_time_ms" : 1000,
 			"action_cooldown_time_ms" : 500,
 			"max_health": 10

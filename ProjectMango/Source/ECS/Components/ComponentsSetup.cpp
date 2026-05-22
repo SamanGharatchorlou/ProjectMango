@@ -151,8 +151,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterOrSystem<RenderSystem>(renderSignature);
 }
 
-
-void ECS::ParseComponentData()
+void ECS::ParseGameFileData()
 {
 	// parse all the animation data here too, bank it, then read from it rather than parse it everytime
 	AnimationReader::ReadAnimationData();
@@ -168,7 +167,7 @@ void ECS::ParseComponentData()
 	StatusEffectRegistry::PopulateRegistry();
 }
 
-void ECS::ClearComponentData()
+void ECS::ClearGameFileData()
 {
 	AnimationReader::ClearAnimationData();
 	CardRegistry::ClearAll();

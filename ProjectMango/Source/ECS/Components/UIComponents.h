@@ -7,6 +7,8 @@ class Cursor;
 
 namespace ECS
 {
+	struct EntityMetaData;
+
 	struct UICursor
 	{
 		COMPONENT_TYPE(UICursor)
@@ -23,6 +25,8 @@ namespace ECS
 	struct UIButton
 	{
 		COMPONENT_TYPE(UIButton);
+
+		static constexpr const char* kRequirement = "button_callback";
 		
 		BasicString callback;
 
@@ -31,12 +35,17 @@ namespace ECS
 		bool toggle;
 		
 		UIButton();
+		void Init(const EntityMetaData& emd);
+
 		bool IsPressed(int frame_buffer = 0) const;
 	};
 
 	struct UIText
 	{
 		COMPONENT_TYPE(UIText);
+
+		static constexpr const char* kRequirement = "text";
+		void Init(const EntityMetaData& emd);
 
 		BasicString callback;
 

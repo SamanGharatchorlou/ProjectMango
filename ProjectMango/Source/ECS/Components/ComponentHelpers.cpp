@@ -11,13 +11,13 @@ namespace ECS
 {
 	const char* EntityMetaData::GetID() const
 	{
-		return data.GetString("Id");
+		return data.GetString("id");
 	}
 
 	Entity CreateEntity(const ECS::EntityMetaData& emd)
 	{
 		Entity entity = ecs->CreateNewEntity();
-		if ( emd.data.Contains("Id") )
+		if ( emd.data.Contains("id") )
 		{ 
 			EntityData& ed = AddComponent(EntityData, entity); 
 			ed.id = emd.GetID();

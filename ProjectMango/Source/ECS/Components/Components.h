@@ -61,6 +61,9 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Faction)
 			
+		static constexpr const char* kRequirement = "faction";
+		void Init(const EntityMetaData& emd);
+
 		enum Team
 		{
 			None,
@@ -119,6 +122,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Health)
 
+		static constexpr const char* kRequirement = "max_health";
+
 		Health();
 
 		float maxHealth;
@@ -127,6 +132,7 @@ namespace ECS
 		bool invulnerable;
 		
 		void Init();
+		void Init(const EntityMetaData& emd);
 		bool ApplyDamage(float damage);
 	};
 
@@ -151,6 +157,9 @@ namespace ECS
 	struct Callback
 	{
 		COMPONENT_TYPE(Callback)
+
+		static constexpr const char* kRequirement = "callback";
+		void Init(const EntityMetaData& emd);
 
 		BasicString callback;
 	};

@@ -15,6 +15,7 @@
 #include "UI/UIManager.h"
 #include "imgui.h"
 #include "Entities/Factory/EntitySerialiser.h"
+#include "Entities/Factory/ComponentAssembler.h"
 
 namespace UIEditor
 {
@@ -46,12 +47,12 @@ namespace UIEditor
                 snprintf(buffer, 32, "element %d", ++index);
 
                 //transform
-                meta_data.data.strings["Id"] = buffer;
-                meta_data.data.vectors["Size"] = VectorF(100.0f, 100.0f);
-                meta_data.data.vectors["Position"] = VectorF(100.0f, 100.0f);
+                meta_data.data.strings["id"] = buffer;
+                meta_data.data.vectors["size"] = VectorF(100.0f, 100.0f);
+                meta_data.data.vectors["position"] = VectorF(100.0f, 100.0f);
 
                 // sprite
-                meta_data.data.strings["Sprite"] = "EditorBg_black";
+                meta_data.data.strings["sprite"] = "EditorBg_black";
                 
                 // add to screen meta data
                 ui_manager.screenMetaData[s_state.activeScreen].push_back(meta_data);
@@ -251,24 +252,18 @@ namespace UIEditor
                 meta_datas.push_back(ECS::EntityMetaData());
                 ECS::EntityMetaData& md = meta_datas.back();
 
-                ReadMetaDataFromEntity(entities[i], md);
+                PopulateMetaData(entities[i], md);
             }
 
             const UIScreenMetaData& screen_metas = ui_manager.screenMetaData[s_state.activeScreen];
 
-            LevelSizeInfo size_info;
-            size_info.windowToLevel = GameData::Get().window->windowToLevel;
-
             const char* fp = "C:/Users/saman/Documents/Code/ProjectMango/ProjectMango/Resources/Maps/data.dat";
-            SaveEntityToJson(fp, size_info, screen_metas);
+            SaveEntityToJson(fp, screen_metas);
         }
 
         ImGui::SameLine();
         if (ImGui::Button("Load Entities from File"))
         {
-            LevelSizeInfo size_info;
-            size_info.windowToLevel = GameData::Get().window->windowToLevel;
-
             const char* fp = "C:/Users/saman/Documents/Code/ProjectMango/ProjectMango/Resources/Maps/data.dat";
 
             UIScreenEntities& screen_entities = ui_manager.screenEntities[s_state.activeScreen];
@@ -279,7 +274,7 @@ namespace UIEditor
             screen_entities.clear();
 
             UIScreenMetaData& screen_metas = ui_manager.screenMetaData[s_state.activeScreen];
-            LoadEntityFromJson(fp, size_info, screen_metas);
+            LoadEntityFromJson(fp, screen_metas);
 
             ui_manager.CloseScreen(s_state.activeScreen.c_str());
             ui_manager.OpenScreen(s_state.activeScreen.c_str());

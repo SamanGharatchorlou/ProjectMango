@@ -77,6 +77,9 @@ namespace ECS
 
 		COMPONENT_TYPE(Card)
 
+		static constexpr const char* kRequirement = "card_tier";
+		void Init(const EntityMetaData& emd);
+
 		Colour::Type colour;
 
 		// what to pay to aquire the card

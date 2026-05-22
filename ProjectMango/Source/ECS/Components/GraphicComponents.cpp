@@ -6,6 +6,8 @@
 #include "Graphics/STexture.h"
 #include "Core/Helpers.h"
 #include "Game/Readers/AnimationReader.h"
+#include "GameComponents.h"
+#include "Components.h"
 
 
 namespace ECS
@@ -27,6 +29,30 @@ namespace ECS
 		SetTexture(image.id.c_str());
 	}
 
+	void Sprite::Init(const ECS::EntityMetaData& emd)
+	{
+		params.renderLayer = RenderLayer::BasicObject;
+		params.colourMod = emd.data.GetColour("colour");
+
+		const char* id = emd.data.GetString(kRequirement);
+		if (!id)
+			return;
+
+		image.id = id;
+		SetTexture(image.id.c_str());
+
+		// no sprite yet, try get a coloured version
+		Colour::Type colour_type = (Colour::Type)emd.data.GetInt("colour_type", -1);
+		if (!image.texture && colour_type != -1)
+		{
+			StringBuffer64 coloured_sprite;
+			AddColourPostfix(id, colour_type, coloured_sprite);
+
+			image.id = coloured_sprite.c_str();
+			SetTexture(image.id.c_str());
+		}
+	}
+
 	void Sprite::SetTexture(const char* label)
 	{
 		image.texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
@@ -45,6 +71,18 @@ namespace ECS
 		Sprite* sprite = GetComponent(Sprite, entity);
 		if(sprite && sprite->image.texture)
 			frame.frameSize = sprite->image.texture->originalDimentions / frame_counts.toFloat();
+	}
+
+
+	void SpriteSheet::Init(const ECS::EntityMetaData& emd)
+	{
+		ASSERT(emd.data.GetVector(kRequirement).lengthSquared() > 0,
+			"Sprite sheet %d has frames counts == 0 (entity %s)", emd.data.GetString(Sprite::kRequirement), emd.GetID());
+
+		frame.gridCount = emd.data.GetVector(kRequirement).toInt();
+		Sprite& sprite = GetOrAddComponent(Sprite, entity);
+		if (sprite.image.texture)
+			frame.frameSize = sprite.image.texture->originalDimentions / frame.gridCount.toFloat();
 	}
 
 	bool SpriteSheet::HasValidFrameIndex() const
@@ -106,27 +144,40 @@ namespace ECS
 
 	void Animator::Init(const EntityMetaData& emd)
 	{
-		AnimationReader::BuildAnimator( entity, emd.data.GetString("Animator") );		
+		AnimationReader::BuildAnimator( entity, emd.data.GetString(kRequirement) );		
 		
 		activeAnimation = 0;
 		state = TimeState::Running;
 
-		if (emd.data.Contains("RandomiseFrameStart") && IsValid())
+		if (!IsValid())
+		{
+			DebugPrint(Log, "Entity %s has invalid animaton", GetName(entity));
+			return;
+		}
+
+		if (emd.data.Contains("randomise_frame_start") && IsValid())
 		{
 			int frame_start = (rand() % GetActiveAnimation()->frameCount) + 1;
 			frameIndex = frame_start;
 		}
 		
-		if (emd.data.Contains("RandomiseFrameSpeed"))
+		if (emd.data.Contains("randomise_frame_speed"))
 		{
-			float variation = emd.data.GetFloat("RandomiseFrameSpeed");
+			float variation = emd.data.GetFloat("randomise_frame_speed");
 			int var_range = (int)(variation * 100.0f);
 			int value = rand() % (int)(var_range * 2);
 			randomisedFrameTimeVariation = (float)(value - var_range) / 100.0f;
 		}
 
-		if(!IsValid())
-			DebugPrint(Log, "Entity %s has invalid animaton", GetName(entity) );
+		if (emd.data.Contains("randomise_animation"))
+		{
+			activeAnimation = Maths::randomNumberBetween(0, (int)animations->size());
+		}
+
+		Sprite& sprite = GetOrAddComponent(Sprite, entity);
+		sprite.Init(emd);
+
+		EntityState& es = GetOrAddComponent(EntityState, entity);
 	}
 
 	bool Animator::IsValid() const

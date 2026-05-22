@@ -7,6 +7,7 @@
 #include "ECS/Components/Components.h"
 #include "ECS/Components/SpacialComponents.h"
 #include "Core/Helpers.h"
+#include "GameComponents.h"
 
 namespace ECS
 {
@@ -35,7 +36,12 @@ namespace ECS
 	// UIButton
 	// ------------------------------------------------------------------
 	UIButton::UIButton() : lastPressedFrameCount(-100), toggle(false) { }
-	
+
+	void UIButton::Init(const EntityMetaData& emd)
+	{
+		callback = emd.data.GetString(kRequirement);
+	}
+
 	bool UIButton::IsPressed(int frame_buffer) const
 	{
 		const FrameRateController& frc = FrameRateController::Get();
@@ -45,12 +51,30 @@ namespace ECS
 	}
 	
 
-	// UIButton
+	// UIText
 	// ------------------------------------------------------------------
 	UIText::UIText() : center(false)
 	{
 		// default to white
 		SetColour(SColour::White);
+	}
+
+
+	void UIText::Init(const EntityMetaData& emd)
+	{
+		center = emd.data.GetBool("center");
+		SetSize(emd.data.GetInt("pt_size"));
+		SetColour(emd.data.GetColour("colour"));
+
+		SetText(emd.data.GetString(kRequirement));
+		callback = emd.data.GetString("text_callback");
+
+		Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("colour_type", -1.0f);
+		if (colour_type != -1)
+		{
+			Colour& colour = AddComponent(Colour, entity);
+			colour.colour = colour_type;
+		}
 	}
 
 	void UIText::SetText(const char* _text) 

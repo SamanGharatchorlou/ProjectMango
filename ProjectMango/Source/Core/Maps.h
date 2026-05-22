@@ -80,6 +80,21 @@ struct Settings
 			vectors.data.contains(key) || floatArrays.data.contains(key); 
 	}
 
+	void Merge(const Settings& other)
+	{
+		for (auto& [key, val] : other.strings.data)
+			strings.data[key] = val;
+
+		for (auto& [key, val] : other.values.data)
+			values.data[key] = val;
+
+		for (auto& [key, val] : other.vectors.data)
+			vectors.data[key] = val;
+
+		for (auto& [key, val] : other.floatArrays.data)
+			floatArrays.data[key] = val;
+	}
+
 	SettingValues<BasicString> strings;
 	SettingValues<float> values;
 	SettingValues<VectorF> vectors;

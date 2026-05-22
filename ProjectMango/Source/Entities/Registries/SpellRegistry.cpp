@@ -4,6 +4,7 @@
 #include "System/Files/JSONParser.h"
 
 #include "Entities/Factory/EntityBuilder.h"
+#include "Entities/Factory/ComponentAssembler.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "Game/Readers/AnimationReader.h"
 #include "ECS/EntityCoordinator.h"
@@ -87,44 +88,42 @@ namespace SpellRegistry
 		}
 	}
 
-	void GetSpellMetaData(const char* spell_id, ECS::EntityMetaData& emd)
+	bool GetSpellMetaData(const char* spell_id, ECS::EntityMetaData& emd)
 	{
 		if (!spell_id || !AnimationReader::AnimationExists(spell_id))
-			return;
+			return false;
 
 		const CardSpell& spell = s_spellsRegistry.at(spell_id);
 
 		VectorF size = AnimationReader::GetAnimationFrameSize(spell_id);
 		size = size * spell.size;
 
-		emd.data.strings["Id"] = spell_id;
-		emd.data.strings["Sprite"] = spell_id;
-		emd.data.vectors["Size"] = size;
-		emd.data.values["Damage"] = (float)spell.damage;
+		//emd.data.strings["id"] = spell_id;
+		//emd.data.strings["sprite"] = spell_id;
+		//emd.data.vectors["size"] = size;
+
+		//EntityMetaData meta_data;
+		PopulateMetaData(spell_id, RectF(VectorF::zero(), size), emd);
+
+		emd.data.values["damage"] = (float)spell.damage;
 		emd.data.values["colour"] = (float)spell.colour;
+
+		return true;
 	}
 
 	Entity CreateSpell(const char* spell_id, ECS::Entity target)
 	{
-		if (!spell_id || !AnimationReader::AnimationExists(spell_id))
+		EntityMetaData meta_data;
+		bool exists = GetSpellMetaData(spell_id, meta_data);
+		if (!exists)
 			return EntityInvalid;
 
-		const CardSpell& spell = s_spellsRegistry.at(spell_id);
-
 		VectorF size = AnimationReader::GetAnimationFrameSize(spell_id);
-		size = size * spell.size;
-
-		RectF target_rect = GetRect(target);
 		float tl_x = GetPosition(target).x - size.x * 0.5f;
-		float tl_y = target_rect.BotPoint() - size.y;
+		float tl_y = GetRect(target).BotPoint() - size.y;
+		meta_data.data.vectors["position"] = VectorF(tl_x, tl_y);
 
-		EntityMetaData data;
-		data.data.strings["Id"] = spell_id;
-		data.data.vectors["Position"] = VectorF(tl_x, tl_y);
-		data.data.vectors["Size"] = size;
-		data.data.strings["Sprite"] = spell_id;
-
-		Entity entity = CreateBasicObject(data);
+		Entity entity = CreateBasicObject(meta_data);
 
 		Action::Enum action = Action::Active;
 
@@ -139,7 +138,7 @@ namespace SpellRegistry
 		ds.action = action;
 
 		Damage& damage = AddComponent(Damage, target);
-		damage.value = (float)spell.damage;
+		damage.value = meta_data.data.GetFloat("damage");
 		damage.sourceEntity = entity;
 
 		if (BehaviourState* bs = GetComponent(BehaviourState, entity))

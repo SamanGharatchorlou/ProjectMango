@@ -7,5 +7,5 @@ namespace ECS
 
 void CreateUIEntities();
 
-ECS::Entity CreateUIText(const ECS::EntityMetaData& emd);
+//ECS::Entity CreateUIText(const ECS::EntityMetaData& emd);
 ECS::Entity CreateUIButton(const ECS::EntityMetaData& emd);
