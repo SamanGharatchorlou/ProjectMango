@@ -24,6 +24,8 @@ namespace ECS
 				int a = 4;
 
 			Card& card = GetComponentRef(Card, entity);
+			if (card.registryIndex == -1)
+				continue;
 
 			// fill in affordable icons
 			for( int i = 0; i < Colour::Count; i++ )

@@ -22,7 +22,7 @@ namespace ECS
 
 	bool IsValid(const RenderPack& pack)
 	{
-		return (pack.texture || pack.font) && pack.layer > 0;
+		return (pack.texture || pack.font) && pack.layer > 0 && pack.layer <= (u32)RenderLayer::Top;
 	}
 
 	void RenderSystem::Init()
@@ -50,14 +50,13 @@ namespace ECS
 			const Transform& transform = GetComponentRef(Transform, entity);
 			RectF render_rect(transform.worldPosition, transform.size);
 			
-			RenderPack pack;
-			pack.entity = entity;
-			
 			if(const Sprite* sprite = GetComponent(Sprite, entity))
 			{
 				render_rect.Translate(sprite->params.renderOffset);
 				if(!sprite->params.disabled && camera_rect.Intersect(render_rect))
 				{
+					RenderPack pack;
+					pack.entity = entity;
 					pack.rect = render_rect;
 					pack.flipPoint = transform.GetHorizontalFlipPoint();
 					GenerateRenderPack(*sprite, pack);
@@ -82,10 +81,17 @@ namespace ECS
 							pack.subRect = animator->GetActiveSubRect();
 						}
 					}
+
+					if (IsValid(pack))
+					{
+						renderer->AddRenderPacket(pack);
+					}
 				}
 			}
 			
 			// can have a UIText in addition to the other types
+			// todo: if it has the same render layer as the texture it can be drawn below and not appear
+			// does it need its own render layer? or just make it +1 of the texture
 			if(const UIText* ui_text = GetComponent(UIText, entity))
 			{
 				if(!ui_text->text.empty())
@@ -93,18 +99,19 @@ namespace ECS
 					render_rect.Translate(ui_text->renderOffset);				
 					if(camera_rect.Intersect(render_rect))
 					{
+						RenderPack pack;
+						pack.entity = entity;
 						pack.rect = render_rect;
 						pack.flipPoint = transform.GetHorizontalFlipPoint();
 						pack.font = &ui_text->font;
 						pack.layer = (u32)RenderLayer::UI;
+
+						if (IsValid(pack))
+						{
+							renderer->AddRenderPacket(pack);
+						}
 					}
 				}
-			}
-
-			
-			if(IsValid(pack))
-			{
-				renderer->AddRenderPacket(pack);
 			}
 			
 			// can have a LayeredSprite in addition to the other types
@@ -119,6 +126,8 @@ namespace ECS
 
 						if(camera_rect.Intersect(render_rect))
 						{
+							RenderPack pack;
+							pack.entity = entity;
 							pack.rect = render_rect;
 							pack.flipPoint = transform.GetHorizontalFlipPoint();
 

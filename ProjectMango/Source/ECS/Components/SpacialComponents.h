@@ -12,6 +12,8 @@ namespace ECS
 	{
 		COMPONENT_TYPE(Transform)
 
+		static constexpr const char* kRequirement = "size";
+
 		Transform();
 
 		// top left
@@ -28,6 +30,8 @@ namespace ECS
 		
 		void Init(const EntityMetaData* emd, Collider& collider);
 		void Init(const EntityMetaData* emd);
+		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
 
 		void SetLocalPosition(VectorF pos);
 		void SetWorldPosition(VectorF pos);
@@ -205,50 +209,32 @@ namespace ECS
 		TileSet* tileSet = nullptr;
 	};
 
-	struct Level
+	struct Biome
 	{
-		VectorF worldPos;
-		VectorF size;
-
-		u32 index = 0;
-
-		BasicString id;
+		COMPONENT_TYPE(Biome)
+		Biome() { }
 
 		std::vector<Layer> layers;
 		std::vector<ECS::Entity> colliders;
-
 		Grid<int> walkableTiles;
 
 		// [type, list of entities of said type]
 		std::vector<EntityMetaData> entityMetaData;
+
+		VectorF biomeToWindow;
+		//VectorF worldPos;
+		VectorF size;
+
+		u32 biomeIndex;
+
+		BasicString id;
 
 		VectorI GetTileIndex(VectorF position) const;
 		RectF GetWalkableTileRect(VectorI index) const;
 		RectF GetBounds() const;
 
 		bool IsPointInBounds(VectorF world_position) const;
-	};
 
-	struct Biome
-	{
-		COMPONENT_TYPE(Biome)
-		Biome();
-
-		std::vector<Level> levels;
-		
-		VectorF LevelToWindow;
-
-
-		VectorF aabb[2];
-
-		static const Level* GetLevelFromIndex(u32 level_index);
-		static const Level& GetLevel(ECS::Entity entity);
-		static const Level& GetLevel(VectorF position);
-		static const Level& GetVisibleLevel();
-
-		static const Entity GetActive();
-		static const Biome& GetActiveBiome();
-
-		//static bool GetLevelSpawnPos(const char* spawn_id, VectorF& out_pos);
+		static const Biome& GetActive();
 	};
 }

@@ -18,14 +18,10 @@ u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 
 		if(ImGui::TreeNode("Display Entities"))
 		{
-			for( u32 l = 0; l < biome.levels.size(); l++ )
+			for (u32 i = 0; i < biome.entityMetaData.size(); i++)
 			{
-				const ECS::Level& level = biome.levels[l];
-				for (u32 i = 0; i < level.entityMetaData.size(); i++)
-				{
-					VectorF pos = level.entityMetaData[i].data.GetVector("Position");
-					DebugDraw::Point(pos, SColour::Green);
-				}
+				VectorF pos = biome.entityMetaData[i].data.GetVector("Position");
+				DebugDraw::Point(pos, SColour::Green);
 			}
 
 			ImGui::TreePop();
@@ -33,23 +29,16 @@ u32 DebugMenu::DoBiomeDebugMenu(ECS::Entity& entity)
 
 		if(ImGui::TreeNode("Display Walkable Tiles"))
 		{
-			for( u32 l = 0; l < biome.levels.size(); l++ )
+			for( u32 y = 0; y < biome.walkableTiles.yCount(); y++ )
 			{
-				const ECS::Level& level = biome.levels[l];
-
-				for( u32 y = 0; y < level.walkableTiles.yCount(); y++ )
+				for( u32 x = 0; x < biome.walkableTiles.xCount(); x++ )
 				{
-					for( u32 x = 0; x < level.walkableTiles.xCount(); x++ )
+					VectorI index = VectorI(x,y);
+					int traversal_value = biome.walkableTiles.get( index );
+					if(traversal_value == 1)
 					{
-						VectorI index = VectorI(x,y);
-						int traversal_value = level.walkableTiles.get( index );
-						if(traversal_value == 1)
-						{
-							
-							RectF rect = level.GetWalkableTileRect(index);
-
-							DebugDraw::RectOutline(rect, SColour::Green);
-						}
+						RectF rect = biome.GetWalkableTileRect(index);
+						DebugDraw::RectOutline(rect, SColour::Green);
 					}
 				}
 			}

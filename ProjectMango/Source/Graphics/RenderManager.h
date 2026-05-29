@@ -3,7 +3,8 @@
 struct STexture;
 struct Font;
 
-constexpr u32 c_RenderLayers = 10;
+// todo - make this adjust to render layers better?
+constexpr u32 c_RenderLayers = 13 + 1;
 
 struct RenderPack
 {
@@ -19,7 +20,7 @@ struct RenderPack
 	RectF subRect = InvalidRectF;
 	VectorF flipPoint;
 	double rotation = 0.0;
-	u32 layer = c_RenderLayers;
+	u32 layer = -1;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SColour colourMod;
 };

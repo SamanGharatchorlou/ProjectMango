@@ -41,15 +41,29 @@ u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 	return type_id;
 }
 
+struct EntityDataState
+{
+	StringBuffer64 filterBuffer;
+	Entity selected = EntityInvalid;
+};
+
+static EntityDataState s_state;
+
 u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 {
-	StringBuffer32 type_name = EntityData::TypeName();
-	ComponentID type_id = EntityData::TypeId();
+	COMPONENT_PREAMBLE(EntityData);
 
 	if (ImGui::CollapsingHeader(type_name.c_str()))
 	{
 		ECS::EntityData& entity_data = GetComponentRef(EntityData, entity);
 		ImGui::PushID(entity + type_id);
+
+		ImGui::Text("UID: (0x%08X)", entity_data.iid);
+		ImGui::SameLine();
+		if (ImGui::Button("Regenerate UID"))
+		{
+			entity_data.iid = Maths::randomNumberBetween(0, INT_MAX);
+		}
 
 		ECS::EntityManager& em = ecs->entities;
 		bool has_parent = entity_data.parent != ECS::EntityInvalid;
@@ -70,6 +84,61 @@ u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 				DebugMenu::SelectEntity(entity_data.children[i]);
 			}
 		}
+
+
+		StringBuffer64& filter = s_state.filterBuffer;
+		ImGui::InputText("Entity Filter", filter.buffer(), filter.bufferLength());
+
+		bool is_number = filter.length() > 0;
+		for (u32 i = 0; i < filter.length(); i++)
+		{
+			char* c = filter.buffer() + i;
+			int value = *c;
+			if (!std::isdigit(value))
+			{
+				is_number = false;
+				break;
+			}
+		}
+
+		const char* selected = ECS::GetName(s_state.selected);
+		if (!selected)
+			selected = "";
+
+		if (ImGui::BeginCombo("Add child", selected, 0))
+		{
+			int number = std::atoi(filter.c_str());
+
+			const ECS::ComponentArray<ECS::EntityData>& entity_data = GetAllComponents(EntityData);
+			for (auto iter = entity_data.entityToComponent.begin(); iter != entity_data.entityToComponent.end(); iter++)
+			{
+				const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
+				StringBuffer64 entity_name = StringBuffer64(ed.id.c_str()).to_lower();
+
+				if (is_number && iter->first != number)
+				{
+					continue;
+				}
+				else if (filter.length() > 0 && !is_number)
+				{
+					StringBuffer64 filter_lower = filter.to_lower();
+					const char* value = strstr(entity_name.c_str(), filter_lower.c_str());
+					if (!value)
+						continue;
+				}
+
+				const bool is_selected = iter->first == s_state.selected;
+				if (ImGui::Selectable(entity_name.c_str(), is_selected))
+				{
+					s_state.selected = iter->first;
+
+					EntityData::SetParent(iter->first, entity);
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
 
 		ImGui::PopID();
 	}
@@ -146,7 +215,13 @@ u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 		ImGui::Text("Owned coins");
 		for( u32 i = 0; i < ECS::Colour::Count; i++ )
 		{
-			ImGui::Text("%d: %d", i, inventory.coins[i]);
+			const char* colour_string = Colour::s_typeToString.at((Colour::Type)i).c_str();
+			ImGui::Text("%s: %d", colour_string, inventory.coins[i]);
+		}
+
+		for (u32 i = 0; i < inventory.relics.size(); i++)
+		{
+			ImGui::Text(inventory.relics[i].id.c_str());
 		}
 
 		ImGui::PopID();
@@ -201,6 +276,27 @@ u32 DebugMenu::DoFactionDebugMenu(ECS::Entity& entity)
 			team = "Enemy";
 
 		ImGui::Text("%s", team );
+
+		ImGui::PopID();
+	}
+
+	return type_id;
+}
+
+ComponentID DebugMenu::DoCallbackDebugMenu(ECS::Entity& entity)
+{
+	COMPONENT_PREAMBLE(Callback);
+
+	if (ImGui::CollapsingHeader(type_name.c_str()))
+	{
+		ECS::Callback& callback = GetComponentRef(Callback, entity);
+		ImGui::PushID(entity + type_id);
+
+		StringBuffer64 callback_input = callback.callback.c_str();
+		if (ImGui::InputText("Callback", callback_input.buffer(), callback_input.bufferLength()))
+		{
+			callback.callback = callback_input.c_str();
+		}
 
 		ImGui::PopID();
 	}

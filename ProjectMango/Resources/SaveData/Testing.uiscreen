@@ -1,0 +1,58 @@
+[
+    {
+        "__identifier": "element 1",
+        "iid": 2147483648,
+        "width": 75.5999984741211,
+        "height": 85.20000457763672,
+        "px": [
+            34.79999923706055,
+            113.5999984741211
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "testing text",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 77,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    }
+]

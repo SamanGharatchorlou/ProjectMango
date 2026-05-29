@@ -11,15 +11,24 @@ namespace ECS
 	struct EntityData
 	{
 		COMPONENT_TYPE(EntityData)
+
+		static constexpr const char* kRequirement = "id";
 		
 		EntityData();
 
+		// name
 		BasicString id;
+
+		// instance id, unique and randomly generated
+		u64 iid;	
 
 		ECS::Entity parent;
 		std::vector<Entity> children;
 
 		static void SetParent(Entity child, Entity parent);
+
+		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
 	};
 
 	struct Audio
@@ -72,7 +81,7 @@ namespace ECS
 			Count
 		};
 
-		Team team; 
+		Team team = Team::None; 
 
 		Entity GetTarget() const;
 		static Entity GetTarget(Entity entity);
@@ -160,8 +169,10 @@ namespace ECS
 
 		static constexpr const char* kRequirement = "callback";
 		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
 
 		BasicString callback;
+		bool firstRun = true;
 	};
 	
 	struct Spawner

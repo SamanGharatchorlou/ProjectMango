@@ -11,7 +11,7 @@
 	"iid": "a502b8e0-73f0-11ef-8eb1-af7ce018d269",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 139,
+	"nextUid": 142,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -793,7 +793,7 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "center",
+					"identifier": "center_text",
 					"doc": null,
 					"__type": "Bool",
 					"uid": 39,
@@ -1167,11 +1167,11 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "faction",
+					"identifier": "colour_type",
 					"doc": null,
-					"__type": "LocalEnum.Faction",
-					"uid": 109,
-					"type": "F_Enum(99)",
+					"__type": "LocalEnum.ColourType",
+					"uid": 123,
+					"type": "F_Enum(51)",
 					"isArray": false,
 					"canBeNull": false,
 					"arrayMinLength": null,
@@ -1204,11 +1204,11 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "colour_type",
+					"identifier": "coin_capacity",
 					"doc": null,
-					"__type": "LocalEnum.ColourType",
-					"uid": 123,
-					"type": "F_Enum(51)",
+					"__type": "Int",
+					"uid": 139,
+					"type": "F_Int",
 					"isArray": false,
 					"canBeNull": false,
 					"arrayMinLength": null,
@@ -2026,6 +2026,43 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
+				},
+				{
+					"identifier": "coin_capacity",
+					"doc": null,
+					"__type": "Int",
+					"uid": 140,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
 				}
 			]
 		}
@@ -2527,14 +2564,11 @@
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
 								}] },
-								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
 								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Blue"]
-								}] }
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 200,
 							"__worldY": 208
@@ -2556,14 +2590,11 @@
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
 								}] },
-								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
 								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Red"]
-								}] }
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 220,
 							"__worldY": 208
@@ -2585,14 +2616,11 @@
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
 								}] },
-								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
 								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Green"]
-								}] }
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 230,
 							"__worldY": 208
@@ -2664,21 +2692,18 @@
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
 								}] },
-								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
 								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["White"]
-								}] }
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 190,
 							"__worldY": 208
 						},
 						{
 							"__identifier": "Enemy",
-							"__grid": [11,9],
+							"__grid": [12,9],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 0, "w": 16, "h": 16 },
@@ -2687,7 +2712,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 88,
-							"px": [184,144],
+							"px": [200,144],
 							"fieldInstances": [
 								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 93, "realEditorValues": [{
 									"id": "V_Bool",
@@ -2703,7 +2728,7 @@
 									"params": [ true ]
 								}] }
 							],
-							"__worldX": 184,
+							"__worldX": 200,
 							"__worldY": 144
 						},
 						{
@@ -2717,7 +2742,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 95,
-							"px": [156,144],
+							"px": [148,144],
 							"fieldInstances": [
 								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 97, "realEditorValues": [{
 									"id": "V_Bool",
@@ -2729,133 +2754,8 @@
 								}] },
 								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 103, "realEditorValues": [] }
 							],
-							"__worldX": 156,
+							"__worldX": 148,
 							"__worldY": 144
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [14,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "23437910-d380-11f0-a7a0-17e889b3a810",
-							"width": 5,
-							"height": 10,
-							"defUid": 106,
-							"px": [230,224],
-							"fieldInstances": [
-								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
-								}] },
-								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 122, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] }
-							],
-							"__worldX": 230,
-							"__worldY": 224
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [13,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "6ababf00-d380-11f0-9e37-3324b508cf38",
-							"width": 5,
-							"height": 10,
-							"defUid": 106,
-							"px": [220,224],
-							"fieldInstances": [
-								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
-								}] },
-								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 122, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] }
-							],
-							"__worldX": 220,
-							"__worldY": 224
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [13,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "6af55700-d380-11f0-9e37-91dfed0ac427",
-							"width": 5,
-							"height": 10,
-							"defUid": 106,
-							"px": [210,224],
-							"fieldInstances": [
-								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
-								}] },
-								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 122, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Black"]
-								}] }
-							],
-							"__worldX": 210,
-							"__worldY": 224
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [12,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "6b351f20-d380-11f0-9e37-0dc14debcad0",
-							"width": 5,
-							"height": 10,
-							"defUid": 106,
-							"px": [200,224],
-							"fieldInstances": [
-								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
-								}] },
-								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 122, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] }
-							],
-							"__worldX": 200,
-							"__worldY": 224
-						},
-						{
-							"__identifier": "CardPower",
-							"__grid": [11,14],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 96, "y": 384, "w": 16, "h": 16 },
-							"__smartColor": "#C0CBDC",
-							"iid": "6b6fb720-d380-11f0-9e37-173410cb2379",
-							"width": 5,
-							"height": 10,
-							"defUid": 106,
-							"px": [190,224],
-							"fieldInstances": [
-								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 108, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["InventoryCardPower"]
-								}] },
-								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 122, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["White"]
-								}] }
-							],
-							"__worldX": 190,
-							"__worldY": 224
 						},
 						{
 							"__identifier": "Torch",
@@ -2894,14 +2794,11 @@
 									"id": "V_String",
 									"params": ["InventoryCoinPile"]
 								}] },
-								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 109, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Player"]
-								}] },
 								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Black"]
-								}] }
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 210,
 							"__worldY": 208
@@ -2926,7 +2823,8 @@
 									"id": "V_String",
 									"params": ["White"]
 								}] },
-								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 40,
 							"__worldY": 232
@@ -2951,7 +2849,8 @@
 									"id": "V_String",
 									"params": ["Blue"]
 								}] },
-								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 56,
 							"__worldY": 232
@@ -2976,7 +2875,8 @@
 									"id": "V_String",
 									"params": ["Black"]
 								}] },
-								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 72,
 							"__worldY": 232
@@ -3001,7 +2901,8 @@
 									"id": "V_String",
 									"params": ["Red"]
 								}] },
-								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 88,
 							"__worldY": 232
@@ -3026,7 +2927,8 @@
 									"id": "V_String",
 									"params": ["Green"]
 								}] },
-								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] }
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 104,
 							"__worldY": 232
@@ -3236,6 +3138,136 @@
 							],
 							"__worldX": 208,
 							"__worldY": 16
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [12,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "a68c9ed0-48b0-11f1-adb8-9b3027a857be",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [200,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": 200,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [11,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "095e2ab0-48b0-11f1-adb8-9ffbf0e68591",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [190,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": 190,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "0a481580-48b0-11f1-adb8-8d1bd05146d2",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [210,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": 210,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "0b02b2f0-48b0-11f1-adb8-1dd5e09de122",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [220,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": 220,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [14,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "bb897cd0-48b0-11f1-adb8-97b7159728fe",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [230,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": 230,
+							"__worldY": 224
 						}
 					]
 				},
@@ -3280,7 +3312,7 @@
 									"id": "V_String",
 									"params": ["TurnNumber"]
 								}] },
-								{ "__identifier": "center", "__type": "Bool", "__value": false, "__tile": null, "defUid": 39, "realEditorValues": [{
+								{ "__identifier": "center_text", "__type": "Bool", "__value": false, "__tile": null, "defUid": 39, "realEditorValues": [{
 									"id": "V_Bool",
 									"params": [ false ]
 								}] },
@@ -3311,7 +3343,7 @@
 									"id": "V_String",
 									"params": ["GameOverResult"]
 								}] },
-								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
+								{ "__identifier": "center_text", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
 								{ "__identifier": "pt_size", "__type": "Int", "__value": 80, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
 								{ "__identifier": "colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] },
 								{ "__identifier": "text", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 138, "realEditorValues": [{
@@ -3336,7 +3368,7 @@
 							"px": [198,0],
 							"fieldInstances": [
 								{ "__identifier": "text_callback", "__type": "String", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [null] },
-								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
+								{ "__identifier": "center_text", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
 								{ "__identifier": "pt_size", "__type": "Int", "__value": 20, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
 								{ "__identifier": "colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] },
 								{ "__identifier": "text", "__type": "String", "__value": "Auto-confirm End Turn", "__tile": null, "defUid": 138, "realEditorValues": [{
@@ -3632,7 +3664,1547 @@
 					"entityInstances": []
 				}
 			],
-			"__neighbours": [{ "levelIid": "183fe720-d380-11f0-83f7-37a91df44187", "dir": "e" }]
+			"__neighbours": [ { "levelIid": "3b7b68a0-48b0-11f1-a044-ef8cc42508ac", "dir": "w" }, { "levelIid": "183fe720-d380-11f0-83f7-37a91df44187", "dir": "e" } ]
+		},
+		{
+			"identifier": "Level_1",
+			"iid": "3b7b68a0-48b0-11f1-a044-ef8cc42508ac",
+			"uid": 141,
+			"worldX": -256,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 256,
+			"pxHei": 256,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": true,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": null,
+			"fieldInstances": [],
+			"layerInstances": [
+				{
+					"__identifier": "TerrainColliders",
+					"__type": "IntGrid",
+					"__cWid": 16,
+					"__cHei": 16,
+					"__gridSize": 16,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"iid": "3b7b68a1-48b0-11f1-a044-4fdb242d560e",
+					"levelId": 141,
+					"layerDefUid": 75,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": false,
+					"optionalRules": [],
+					"intGridCsv": [
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+						2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,2
+					],
+					"autoLayerTiles": [],
+					"seed": 6964266,
+					"overrideTilesetUid": null,
+					"gridTiles": [],
+					"entityInstances": []
+				},
+				{
+					"__identifier": "Board",
+					"__type": "Entities",
+					"__cWid": 16,
+					"__cHei": 16,
+					"__gridSize": 16,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"iid": "3b7b68a2-48b0-11f1-a044-a7ba5ef0c07a",
+					"levelId": 141,
+					"layerDefUid": 29,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": true,
+					"optionalRules": [],
+					"intGridCsv": [],
+					"autoLayerTiles": [],
+					"seed": 5830796,
+					"overrideTilesetUid": null,
+					"gridTiles": [],
+					"entityInstances": [
+						{
+							"__identifier": "Card",
+							"__grid": [2,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a3-48b0-11f1-a044-fdfe8b2e00c5",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a4-48b0-11f1-a044-7d923c29ef2f",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a5-48b0-11f1-a044-e7cb0326c181",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a6-48b0-11f1-a044-c7d66c83c8d3",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Button",
+							"__grid": [15,15],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 288, "y": 32, "w": 16, "h": 16 },
+							"__smartColor": "#2F6BD2",
+							"iid": "3b7b68a7-48b0-11f1-a044-5f97918a7416",
+							"width": 16,
+							"height": 16,
+							"defUid": 44,
+							"px": [240,240],
+							"fieldInstances": [
+								{ "__identifier": "button_callback", "__type": "String", "__value": "EndTurnButton", "__tile": null, "defUid": 45, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["EndTurnButton"]
+								}] },
+								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "tick", "__tile": null, "defUid": 47, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["tick"]
+								}] }
+							],
+							"__worldX": -16,
+							"__worldY": 240
+						},
+						{
+							"__identifier": "Button",
+							"__grid": [15,14],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 288, "y": 32, "w": 16, "h": 16 },
+							"__smartColor": "#2F6BD2",
+							"iid": "3b7b8fb0-48b0-11f1-a044-694fd1881f79",
+							"width": 16,
+							"height": 16,
+							"defUid": 44,
+							"px": [240,224],
+							"fieldInstances": [
+								{ "__identifier": "button_callback", "__type": "String", "__value": "ReturnCoinsButton", "__tile": null, "defUid": 45, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ReturnCoinsButton"]
+								}] },
+								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "undo_turn", "__tile": null, "defUid": 47, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["undo_turn"]
+								}] }
+							],
+							"__worldX": -16,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Button",
+							"__grid": [15,0],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 288, "y": 32, "w": 16, "h": 16 },
+							"__smartColor": "#2F6BD2",
+							"iid": "3b7b8fb1-48b0-11f1-a044-d95afd5df7a0",
+							"width": 16,
+							"height": 16,
+							"defUid": 44,
+							"px": [240,0],
+							"fieldInstances": [
+								{ "__identifier": "button_callback", "__type": "String", "__value": "AutoConfirmTurn", "__tile": null, "defUid": 45, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["AutoConfirmTurn"]
+								}] },
+								{ "__identifier": "center", "__type": "Bool", "__value": true, "__tile": null, "defUid": 46, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "tick", "__tile": null, "defUid": 47, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["tick"]
+								}] }
+							],
+							"__worldX": -16,
+							"__worldY": 0
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb2-48b0-11f1-a044-e77031b3faf6",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb3-48b0-11f1-a044-8d815ccbe2fa",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb4-48b0-11f1-a044-21bbb8e91979",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb5-48b0-11f1-a044-15766665df97",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb6-48b0-11f1-a044-db41248634ed",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb7-48b0-11f1-a044-0d474cad52d4",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb8-48b0-11f1-a044-537c86a06ed2",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb9-48b0-11f1-a044-6f9115c36acf",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [12,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7b8fba-48b0-11f1-a044-1d8d563330b5",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [200,208],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -56,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7b8fbb-48b0-11f1-a044-67fc2dd0cba1",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [220,208],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -36,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [14,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7b8fbc-48b0-11f1-a044-8dd6eb0fbc59",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [230,208],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -26,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "HealthBar",
+							"__grid": [15,10],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#2CE8F5",
+							"iid": "3b7b8fbd-48b0-11f1-a044-714b5871e78d",
+							"width": 8,
+							"height": 32,
+							"defUid": 70,
+							"px": [244,160],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["HealthBar"]
+								}] },
+								{ "__identifier": "callback", "__type": "String", "__value": "PlayerHealthBar", "__tile": null, "defUid": 72, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["PlayerHealthBar"]
+								}] }
+							],
+							"__worldX": -12,
+							"__worldY": 160
+						},
+						{
+							"__identifier": "HealthBar",
+							"__grid": [15,2],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#2CE8F5",
+							"iid": "3b7b8fbe-48b0-11f1-a044-cf47c63cf255",
+							"width": 8,
+							"height": 32,
+							"defUid": 70,
+							"px": [244,32],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["HealthBar"]
+								}] },
+								{ "__identifier": "callback", "__type": "String", "__value": "AIHealthBar", "__tile": null, "defUid": 72, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["AIHealthBar"]
+								}] }
+							],
+							"__worldX": -12,
+							"__worldY": 32
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [11,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7b8fbf-48b0-11f1-a044-2761d2011949",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [190,208],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -66,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "Enemy",
+							"__grid": [12,9],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#8B9BB4",
+							"iid": "3b7b8fc0-48b0-11f1-a044-c52e8d36efae",
+							"width": 16,
+							"height": 16,
+							"defUid": 88,
+							"px": [200,144],
+							"fieldInstances": [
+								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 93, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] },
+								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 104, "realEditorValues": [] },
+								{ "__identifier": "enemy_type", "__type": "String", "__value": "ShockSweeper", "__tile": null, "defUid": 135, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ShockSweeper"]
+								}] },
+								{ "__identifier": "snap_to_wall_right", "__type": "Bool", "__value": true, "__tile": null, "defUid": 136, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
+							],
+							"__worldX": -56,
+							"__worldY": 144
+						},
+						{
+							"__identifier": "Player",
+							"__grid": [9,9],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 0, "y": 240, "w": 16, "h": 16 },
+							"__smartColor": "#5A6988",
+							"iid": "3b7bb6c0-48b0-11f1-a044-914ed6550c88",
+							"width": 16,
+							"height": 16,
+							"defUid": 95,
+							"px": [148,144],
+							"fieldInstances": [
+								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 97, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] },
+								{ "__identifier": "animator", "__type": "String", "__value": "Tree", "__tile": null, "defUid": 98, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Tree"]
+								}] },
+								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 103, "realEditorValues": [] }
+							],
+							"__worldX": -108,
+							"__worldY": 144
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [6,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c04e0-48b0-11f1-a044-83dc00b73dcc",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [96,16],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -160,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,13],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c04e1-48b0-11f1-a044-bff9a43face0",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [210,208],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCoinPile", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCoinPile"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -46,
+							"__worldY": 208
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [2,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "3b7c04e2-48b0-11f1-a044-8755b9c128ee",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [40,232],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
+								}] },
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [3,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "3b7c04e3-48b0-11f1-a044-0f4c7a2577ad",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [56,232],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
+								}] },
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -200,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [4,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "3b7c04e4-48b0-11f1-a044-817704e3fed2",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [72,232],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] },
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [5,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "3b7c2bf0-48b0-11f1-a044-3b9e41675aa4",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [88,232],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
+								}] },
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -168,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "CoinStack",
+							"__grid": [6,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 160, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "3b7c2bf1-48b0-11f1-a044-696d50154c82",
+							"width": 16,
+							"height": 16,
+							"defUid": 115,
+							"px": [104,232],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "CoinStack", "__tile": null, "defUid": 116, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCoin", "__tile": null, "defUid": 118, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "String", "__value": "coins", "__tile": null, "defUid": 119, "realEditorValues": [] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 121, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
+								}] },
+								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 232
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [9,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf2-48b0-11f1-a044-5f3ec010a953",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [144,224],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 131, "realEditorValues": [] },
+								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": -112,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [10,3],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf3-48b0-11f1-a044-1b28b1d1fc92",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [160,48],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -96,
+							"__worldY": 48
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [2,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf4-48b0-11f1-a044-4316f68b8caf",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [32,16],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -224,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [10,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf5-48b0-11f1-a044-33b102a63340",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [160,16],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -96,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [13,3],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf6-48b0-11f1-a044-fddd64a60bf1",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [208,48],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -48,
+							"__worldY": 48
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [11,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf7-48b0-11f1-a044-e9ca72172b8d",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [176,224],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [13,13], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [13] }, { "id": "V_Float", "params": [13] } ] },
+								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": -80,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Flower",
+							"__grid": [7,14],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 16, "y": 288, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf8-48b0-11f1-a044-7f9b419015e4",
+							"width": 16,
+							"height": 16,
+							"defUid": 126,
+							"px": [112,224],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Flower", "__tile": null, "defUid": 127, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.2, "__tile": null, "defUid": 129, "realEditorValues": [] },
+								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [10,10], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [10] }, { "id": "V_Float", "params": [10] } ] },
+								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
+							],
+							"__worldX": -144,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [6,12],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bf9-48b0-11f1-a044-6581f2cfe118",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [96,200],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -160,
+							"__worldY": 200
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [2,12],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bfa-48b0-11f1-a044-d3dbe5f06923",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [32,200],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -224,
+							"__worldY": 200
+						},
+						{
+							"__identifier": "Torch",
+							"__grid": [13,1],
+							"__pivot": [0,0],
+							"__tags": ["AnimatedObject"],
+							"__tile": { "tilesetUid": 9, "x": 192, "y": 384, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "3b7c2bfb-48b0-11f1-a044-7bb23f392ab3",
+							"width": 16,
+							"height": 16,
+							"defUid": 14,
+							"px": [208,16],
+							"fieldInstances": [
+								{ "__identifier": "animator", "__type": "String", "__value": "Torch", "__tile": null, "defUid": 110, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
+								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
+							],
+							"__worldX": -48,
+							"__worldY": 16
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [12,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c2bfc-48b0-11f1-a044-dd3f9e2b010e",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [200,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Blue", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -56,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [11,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c2bfd-48b0-11f1-a044-c377e242679d",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [190,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "White", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["White"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -66,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c2bfe-48b0-11f1-a044-57855de0e50b",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [210,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Black", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Black"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -46,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [13,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c5300-48b0-11f1-a044-7f50ac5ca0ad",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [220,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Red", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Red"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -36,
+							"__worldY": 224
+						},
+						{
+							"__identifier": "CoinPile",
+							"__grid": [14,14],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 208, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "3b7c5301-48b0-11f1-a044-bb80982b54b7",
+							"width": 5,
+							"height": 10,
+							"defUid": 66,
+							"px": [230,224],
+							"fieldInstances": [
+								{ "__identifier": "callback", "__type": "String", "__value": "InventoryCardPower", "__tile": null, "defUid": 73, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["InventoryCardPower"]
+								}] },
+								{ "__identifier": "colour_type", "__type": "LocalEnum.ColourType", "__value": "Green", "__tile": null, "defUid": 123, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Green"]
+								}] },
+								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+							],
+							"__worldX": -26,
+							"__worldY": 224
+						}
+					]
+				},
+				{
+					"__identifier": "UIComponents",
+					"__type": "Entities",
+					"__cWid": 16,
+					"__cHei": 16,
+					"__gridSize": 16,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"iid": "3b7c5302-48b0-11f1-a044-634b50518ac4",
+					"levelId": 141,
+					"layerDefUid": 27,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": true,
+					"optionalRules": [],
+					"intGridCsv": [],
+					"autoLayerTiles": [],
+					"seed": 5543670,
+					"overrideTilesetUid": null,
+					"gridTiles": [],
+					"entityInstances": [
+						{
+							"__identifier": "Text",
+							"__grid": [11,15],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7c5303-48b0-11f1-a044-7dea18ffee2a",
+							"width": 16,
+							"height": 16,
+							"defUid": 34,
+							"px": [184,245],
+							"fieldInstances": [
+								{ "__identifier": "text_callback", "__type": "String", "__value": "TurnNumber", "__tile": null, "defUid": 35, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["TurnNumber"]
+								}] },
+								{ "__identifier": "center_text", "__type": "Bool", "__value": false, "__tile": null, "defUid": 39, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ false ]
+								}] },
+								{ "__identifier": "pt_size", "__type": "Int", "__value": 30, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
+								{ "__identifier": "colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] },
+								{ "__identifier": "text", "__type": "String", "__value": "Turn Number", "__tile": null, "defUid": 138, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Turn Number"]
+								}] }
+							],
+							"__worldX": -72,
+							"__worldY": 245
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [7,9],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7c5304-48b0-11f1-a044-c1264a4224d3",
+							"width": 16,
+							"height": 16,
+							"defUid": 34,
+							"px": [112,144],
+							"fieldInstances": [
+								{ "__identifier": "text_callback", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 35, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["GameOverResult"]
+								}] },
+								{ "__identifier": "center_text", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
+								{ "__identifier": "pt_size", "__type": "Int", "__value": 80, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
+								{ "__identifier": "colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] },
+								{ "__identifier": "text", "__type": "String", "__value": "GameOverResult", "__tile": null, "defUid": 138, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["GameOverResult"]
+								}] }
+							],
+							"__worldX": -144,
+							"__worldY": 144
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [12,0],
+							"__pivot": [0,0],
+							"__tags": ["UI"],
+							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7c5305-48b0-11f1-a044-277d466abc6f",
+							"width": 16,
+							"height": 16,
+							"defUid": 34,
+							"px": [198,0],
+							"fieldInstances": [
+								{ "__identifier": "text_callback", "__type": "String", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [null] },
+								{ "__identifier": "center_text", "__type": "Bool", "__value": true, "__tile": null, "defUid": 39, "realEditorValues": [] },
+								{ "__identifier": "pt_size", "__type": "Int", "__value": 20, "__tile": null, "defUid": 40, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
+								{ "__identifier": "colour", "__type": "Color", "__value": "#FFFFFF", "__tile": null, "defUid": 43, "realEditorValues": [] },
+								{ "__identifier": "text", "__type": "String", "__value": "Auto-confirm End Turn", "__tile": null, "defUid": 138, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Auto-confirm End Turn"]
+								}] }
+							],
+							"__worldX": -58,
+							"__worldY": 0
+						}
+					]
+				},
+				{
+					"__identifier": "Boundaries",
+					"__type": "Tiles",
+					"__cWid": 16,
+					"__cHei": 16,
+					"__gridSize": 16,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": 1,
+					"__tilesetRelPath": "DARK Edition Tileset with background.png",
+					"iid": "3b7c5306-48b0-11f1-a044-974a94c751ba",
+					"levelId": 141,
+					"layerDefUid": 3,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": true,
+					"optionalRules": [],
+					"intGridCsv": [],
+					"autoLayerTiles": [],
+					"seed": 3319483,
+					"overrideTilesetUid": null,
+					"gridTiles": [
+						{ "px": [0,0], "src": [32,160], "f": 0, "t": 182, "d": [0], "a": 1 },
+						{ "px": [16,0], "src": [0,0], "f": 0, "t": 0, "d": [1], "a": 1 },
+						{ "px": [32,0], "src": [48,32], "f": 0, "t": 39, "d": [2], "a": 1 },
+						{ "px": [48,0], "src": [64,32], "f": 0, "t": 40, "d": [3], "a": 1 },
+						{ "px": [64,0], "src": [80,32], "f": 0, "t": 41, "d": [4], "a": 1 },
+						{ "px": [80,0], "src": [128,0], "f": 0, "t": 8, "d": [5], "a": 1 },
+						{ "px": [96,0], "src": [144,0], "f": 0, "t": 9, "d": [6], "a": 1 },
+						{ "px": [112,0], "src": [32,0], "f": 0, "t": 2, "d": [7], "a": 1 },
+						{ "px": [128,0], "src": [48,0], "f": 0, "t": 3, "d": [8], "a": 1 },
+						{ "px": [144,0], "src": [64,0], "f": 0, "t": 4, "d": [9], "a": 1 },
+						{ "px": [160,0], "src": [176,32], "f": 0, "t": 47, "d": [10], "a": 1 },
+						{ "px": [176,0], "src": [192,32], "f": 0, "t": 48, "d": [11], "a": 1 },
+						{ "px": [192,0], "src": [208,32], "f": 0, "t": 49, "d": [12], "a": 1 },
+						{ "px": [208,0], "src": [32,160], "f": 0, "t": 182, "d": [13], "a": 1 },
+						{ "px": [224,0], "src": [32,160], "f": 0, "t": 182, "d": [14], "a": 1 },
+						{ "px": [240,0], "src": [32,160], "f": 0, "t": 182, "d": [15], "a": 1 },
+						{ "px": [0,16], "src": [80,208], "f": 0, "t": 239, "d": [16], "a": 1 },
+						{ "px": [16,16], "src": [144,112], "f": 0, "t": 135, "d": [17], "a": 1 },
+						{ "px": [32,16], "src": [160,112], "f": 0, "t": 136, "d": [18], "a": 1 },
+						{ "px": [48,16], "src": [32,96], "f": 0, "t": 110, "d": [19], "a": 1 },
+						{ "px": [64,16], "src": [160,128], "f": 0, "t": 154, "d": [20], "a": 1 },
+						{ "px": [80,16], "src": [64,96], "f": 0, "t": 112, "d": [21], "a": 1 },
+						{ "px": [96,16], "src": [80,96], "f": 0, "t": 113, "d": [22], "a": 1 },
+						{ "px": [112,16], "src": [176,192], "f": 0, "t": 227, "d": [23], "a": 1 },
+						{ "px": [128,16], "src": [192,192], "f": 0, "t": 228, "d": [24], "a": 1 },
+						{ "px": [144,16], "src": [208,192], "f": 0, "t": 229, "d": [25], "a": 1 },
+						{ "px": [160,16], "src": [128,16], "f": 0, "t": 26, "d": [26], "a": 1 },
+						{ "px": [176,16], "src": [192,48], "f": 0, "t": 66, "d": [27], "a": 1 },
+						{ "px": [192,16], "src": [128,192], "f": 0, "t": 224, "d": [28], "a": 1 },
+						{ "px": [208,16], "src": [240,80], "f": 0, "t": 105, "d": [29], "a": 1 },
+						{ "px": [224,16], "src": [240,176], "f": 0, "t": 213, "d": [30], "a": 1 },
+						{ "px": [240,16], "src": [112,32], "f": 0, "t": 43, "d": [31], "a": 1 },
+						{ "px": [0,32], "src": [32,160], "f": 0, "t": 182, "d": [32], "a": 1 },
+						{ "px": [16,32], "src": [144,128], "f": 0, "t": 153, "d": [33], "a": 1 },
+						{ "px": [32,32], "src": [160,128], "f": 0, "t": 154, "d": [34], "a": 1 },
+						{ "px": [48,32], "src": [272,0], "f": 0, "t": 17, "d": [35], "a": 1 },
+						{ "px": [64,32], "src": [272,0], "f": 0, "t": 17, "d": [36], "a": 1 },
+						{ "px": [80,32], "src": [64,112], "f": 0, "t": 130, "d": [37], "a": 1 },
+						{ "px": [96,32], "src": [240,112], "f": 0, "t": 141, "d": [38], "a": 1 },
+						{ "px": [112,32], "src": [176,208], "f": 0, "t": 245, "d": [39], "a": 1 },
+						{ "px": [128,32], "src": [192,208], "f": 0, "t": 246, "d": [40], "a": 1 },
+						{ "px": [144,32], "src": [208,208], "f": 0, "t": 247, "d": [41], "a": 1 },
+						{ "px": [160,32], "src": [192,48], "f": 0, "t": 66, "d": [42], "a": 1 },
+						{ "px": [176,32], "src": [64,80], "f": 0, "t": 94, "d": [43], "a": 1 },
+						{ "px": [192,32], "src": [128,208], "f": 0, "t": 242, "d": [44], "a": 1 },
+						{ "px": [208,32], "src": [64,128], "f": 0, "t": 148, "d": [45], "a": 1 },
+						{ "px": [224,32], "src": [80,128], "f": 0, "t": 149, "d": [46], "a": 1 },
+						{ "px": [240,32], "src": [64,208], "f": 0, "t": 238, "d": [47], "a": 1 },
+						{ "px": [0,48], "src": [80,240], "f": 0, "t": 275, "d": [48], "a": 1 },
+						{ "px": [16,48], "src": [192,128], "f": 0, "t": 156, "d": [49], "a": 1 },
+						{ "px": [32,48], "src": [208,128], "f": 0, "t": 157, "d": [50], "a": 1 },
+						{ "px": [48,48], "src": [272,0], "f": 0, "t": 17, "d": [51], "a": 1 },
+						{ "px": [64,48], "src": [272,0], "f": 0, "t": 17, "d": [52], "a": 1 },
+						{ "px": [80,48], "src": [224,128], "f": 0, "t": 158, "d": [53], "a": 1 },
+						{ "px": [96,48], "src": [240,128], "f": 0, "t": 159, "d": [54], "a": 1 },
+						{ "px": [112,48], "src": [256,128], "f": 0, "t": 160, "d": [55], "a": 1 },
+						{ "px": [128,48], "src": [272,0], "f": 0, "t": 17, "d": [56], "a": 1 },
+						{ "px": [144,48], "src": [272,0], "f": 0, "t": 17, "d": [57], "a": 1 },
+						{ "px": [160,48], "src": [272,0], "f": 0, "t": 17, "d": [58], "a": 1 },
+						{ "px": [176,48], "src": [208,128], "f": 0, "t": 157, "d": [59], "a": 1 },
+						{ "px": [192,48], "src": [64,80], "f": 0, "t": 94, "d": [60], "a": 1 },
+						{ "px": [208,48], "src": [272,0], "f": 0, "t": 17, "d": [61], "a": 1 },
+						{ "px": [224,48], "src": [48,80], "f": 0, "t": 93, "d": [62], "a": 1 },
+						{ "px": [240,48], "src": [64,224], "f": 0, "t": 256, "d": [63], "a": 1 },
+						{ "px": [0,64], "src": [48,160], "f": 0, "t": 183, "d": [64], "a": 1 },
+						{ "px": [16,64], "src": [192,144], "f": 0, "t": 174, "d": [65], "a": 1 },
+						{ "px": [32,64], "src": [208,144], "f": 0, "t": 175, "d": [66], "a": 1 },
+						{ "px": [48,64], "src": [16,16], "f": 0, "t": 19, "d": [67], "a": 1 },
+						{ "px": [64,64], "src": [240,176], "f": 0, "t": 213, "d": [68], "a": 1 },
+						{ "px": [80,64], "src": [224,144], "f": 0, "t": 176, "d": [69], "a": 1 },
+						{ "px": [96,64], "src": [240,144], "f": 0, "t": 177, "d": [70], "a": 1 },
+						{ "px": [112,64], "src": [256,144], "f": 0, "t": 178, "d": [71], "a": 1 },
+						{ "px": [128,64], "src": [16,16], "f": 0, "t": 19, "d": [72], "a": 1 },
+						{ "px": [144,64], "src": [16,16], "f": 0, "t": 19, "d": [73], "a": 1 },
+						{ "px": [160,64], "src": [16,16], "f": 0, "t": 19, "d": [74], "a": 1 },
+						{ "px": [176,64], "src": [16,16], "f": 0, "t": 19, "d": [75], "a": 1 },
+						{ "px": [192,64], "src": [256,144], "f": 0, "t": 178, "d": [76], "a": 1 },
+						{ "px": [208,64], "src": [16,16], "f": 0, "t": 19, "d": [77], "a": 1 },
+						{ "px": [224,64], "src": [16,16], "f": 0, "t": 19, "d": [78], "a": 1 },
+						{ "px": [240,64], "src": [64,240], "f": 0, "t": 274, "d": [79], "a": 1 },
+						{ "px": [0,80], "src": [32,160], "f": 0, "t": 182, "d": [80], "a": 1 },
+						{ "px": [16,80], "src": [16,64], "f": 0, "t": 73, "d": [81], "a": 1 },
+						{ "px": [32,80], "src": [16,64], "f": 0, "t": 73, "d": [82], "a": 1 },
+						{ "px": [48,80], "src": [16,64], "f": 0, "t": 73, "d": [83], "a": 1 },
+						{ "px": [64,80], "src": [240,192], "f": 0, "t": 231, "d": [84], "a": 1 },
+						{ "px": [80,80], "src": [224,160], "f": 0, "t": 194, "d": [85], "a": 1 },
+						{ "px": [96,80], "src": [240,160], "f": 0, "t": 195, "d": [86], "a": 1 },
+						{ "px": [112,80], "src": [256,160], "f": 0, "t": 196, "d": [87], "a": 1 },
+						{ "px": [128,80], "src": [16,16], "f": 0, "t": 19, "d": [88], "a": 1 },
+						{ "px": [144,80], "src": [240,176], "f": 0, "t": 213, "d": [89], "a": 1 },
+						{ "px": [160,80], "src": [32,64], "f": 0, "t": 74, "d": [90], "a": 1 },
+						{ "px": [176,80], "src": [48,64], "f": 0, "t": 75, "d": [91], "a": 1 },
+						{ "px": [192,80], "src": [64,64], "f": 0, "t": 76, "d": [92], "a": 1 },
+						{ "px": [208,80], "src": [80,64], "f": 0, "t": 77, "d": [93], "a": 1 },
+						{ "px": [224,80], "src": [96,64], "f": 0, "t": 78, "d": [94], "a": 1 },
+						{ "px": [240,80], "src": [16,160], "f": 0, "t": 181, "d": [95], "a": 1 },
+						{ "px": [0,96], "src": [32,160], "f": 0, "t": 182, "d": [96], "a": 1 },
+						{ "px": [16,96], "src": [176,64], "f": 0, "t": 83, "d": [97], "a": 1 },
+						{ "px": [32,96], "src": [192,64], "f": 0, "t": 84, "d": [98], "a": 1 },
+						{ "px": [48,96], "src": [208,64], "f": 0, "t": 85, "d": [99], "a": 1 },
+						{ "px": [64,96], "src": [240,208], "f": 0, "t": 249, "d": [100], "a": 1 },
+						{ "px": [80,96], "src": [224,176], "f": 0, "t": 212, "d": [101], "a": 1 },
+						{ "px": [96,96], "src": [240,176], "f": 0, "t": 213, "d": [102], "a": 1 },
+						{ "px": [112,96], "src": [256,176], "f": 0, "t": 214, "d": [103], "a": 1 },
+						{ "px": [128,96], "src": [16,16], "f": 0, "t": 19, "d": [104], "a": 1 },
+						{ "px": [144,96], "src": [240,192], "f": 0, "t": 231, "d": [105], "a": 1 },
+						{ "px": [160,96], "src": [176,160], "f": 0, "t": 191, "d": [106], "a": 1 },
+						{ "px": [176,96], "src": [192,160], "f": 0, "t": 192, "d": [107], "a": 1 },
+						{ "px": [192,96], "src": [208,160], "f": 0, "t": 193, "d": [108], "a": 1 },
+						{ "px": [208,96], "src": [192,48], "f": 0, "t": 66, "d": [109], "a": 1 },
+						{ "px": [224,96], "src": [256,192], "f": 0, "t": 232, "d": [110], "a": 1 },
+						{ "px": [240,96], "src": [64,240], "f": 0, "t": 274, "d": [111], "a": 1 },
+						{ "px": [0,112], "src": [80,208], "f": 0, "t": 239, "d": [112], "a": 1 },
+						{ "px": [16,112], "src": [176,80], "f": 0, "t": 101, "d": [113], "a": 1 },
+						{ "px": [32,112], "src": [192,80], "f": 0, "t": 102, "d": [114], "a": 1 },
+						{ "px": [48,112], "src": [208,80], "f": 0, "t": 103, "d": [115], "a": 1 },
+						{ "px": [64,112], "src": [256,128], "f": 0, "t": 160, "d": [116], "a": 1 },
+						{ "px": [80,112], "src": [224,192], "f": 0, "t": 230, "d": [117], "a": 1 },
+						{ "px": [96,112], "src": [240,192], "f": 0, "t": 231, "d": [118], "a": 1 },
+						{ "px": [112,112], "src": [256,192], "f": 0, "t": 232, "d": [119], "a": 1 },
+						{ "px": [128,112], "src": [272,0], "f": 0, "t": 17, "d": [120], "a": 1 },
+						{ "px": [144,112], "src": [240,208], "f": 0, "t": 249, "d": [121], "a": 1 },
+						{ "px": [160,112], "src": [176,176], "f": 0, "t": 209, "d": [122], "a": 1 },
+						{ "px": [176,112], "src": [192,176], "f": 0, "t": 210, "d": [123], "a": 1 },
+						{ "px": [192,112], "src": [208,176], "f": 0, "t": 211, "d": [124], "a": 1 },
+						{ "px": [208,112], "src": [272,0], "f": 0, "t": 17, "d": [125], "a": 1 },
+						{ "px": [224,112], "src": [256,208], "f": 0, "t": 250, "d": [126], "a": 1 },
+						{ "px": [240,112], "src": [64,208], "f": 0, "t": 238, "d": [127], "a": 1 },
+						{ "px": [0,128], "src": [80,208], "f": 0, "t": 239, "d": [128], "a": 1 },
+						{ "px": [16,128], "src": [240,176], "f": 0, "t": 213, "d": [129], "a": 1 },
+						{ "px": [32,128], "src": [224,144], "f": 0, "t": 176, "d": [130], "a": 1 },
+						{ "px": [48,128], "src": [240,144], "f": 0, "t": 177, "d": [131], "a": 1 },
+						{ "px": [64,128], "src": [256,144], "f": 0, "t": 178, "d": [132], "a": 1 },
+						{ "px": [80,128], "src": [208,128], "f": 0, "t": 157, "d": [133], "a": 1 },
+						{ "px": [96,128], "src": [240,208], "f": 0, "t": 249, "d": [134], "a": 1 },
+						{ "px": [112,128], "src": [256,208], "f": 0, "t": 250, "d": [135], "a": 1 },
+						{ "px": [128,128], "src": [272,0], "f": 0, "t": 17, "d": [136], "a": 1 },
+						{ "px": [144,128], "src": [272,0], "f": 0, "t": 17, "d": [137], "a": 1 },
+						{ "px": [160,128], "src": [176,192], "f": 0, "t": 227, "d": [138], "a": 1 },
+						{ "px": [176,128], "src": [192,192], "f": 0, "t": 228, "d": [139], "a": 1 },
+						{ "px": [192,128], "src": [208,192], "f": 0, "t": 229, "d": [140], "a": 1 },
+						{ "px": [208,128], "src": [0,112], "f": 0, "t": 126, "d": [141], "a": 1 },
+						{ "px": [224,128], "src": [256,224], "f": 0, "t": 268, "d": [142], "a": 1 },
+						{ "px": [240,128], "src": [64,208], "f": 0, "t": 238, "d": [143], "a": 1 },
+						{ "px": [0,144], "src": [80,224], "f": 0, "t": 257, "d": [144], "a": 1 },
+						{ "px": [16,144], "src": [240,192], "f": 0, "t": 231, "d": [145], "a": 1 },
+						{ "px": [32,144], "src": [224,160], "f": 0, "t": 194, "d": [146], "a": 1 },
+						{ "px": [48,144], "src": [240,160], "f": 0, "t": 195, "d": [147], "a": 1 },
+						{ "px": [64,144], "src": [256,160], "f": 0, "t": 196, "d": [148], "a": 1 },
+						{ "px": [80,144], "src": [224,224], "f": 0, "t": 266, "d": [149], "a": 1 },
+						{ "px": [96,144], "src": [240,224], "f": 0, "t": 267, "d": [150], "a": 1 },
+						{ "px": [112,144], "src": [256,224], "f": 0, "t": 268, "d": [151], "a": 1 },
+						{ "px": [128,144], "src": [272,0], "f": 0, "t": 17, "d": [152], "a": 1 },
+						{ "px": [144,144], "src": [272,0], "f": 0, "t": 17, "d": [153], "a": 1 },
+						{ "px": [160,144], "src": [176,208], "f": 0, "t": 245, "d": [154], "a": 1 },
+						{ "px": [176,144], "src": [192,208], "f": 0, "t": 246, "d": [155], "a": 1 },
+						{ "px": [192,144], "src": [208,208], "f": 0, "t": 247, "d": [156], "a": 1 },
+						{ "px": [208,144], "src": [272,0], "f": 0, "t": 17, "d": [157], "a": 1 },
+						{ "px": [224,144], "src": [16,128], "f": 0, "t": 145, "d": [158], "a": 1 },
+						{ "px": [240,144], "src": [64,240], "f": 0, "t": 274, "d": [159], "a": 1 },
+						{ "px": [0,160], "src": [48,160], "f": 0, "t": 183, "d": [160], "a": 1 },
+						{ "px": [16,160], "src": [240,208], "f": 0, "t": 249, "d": [161], "a": 1 },
+						{ "px": [32,160], "src": [224,176], "f": 0, "t": 212, "d": [162], "a": 1 },
+						{ "px": [48,160], "src": [240,176], "f": 0, "t": 213, "d": [163], "a": 1 },
+						{ "px": [64,160], "src": [256,176], "f": 0, "t": 214, "d": [164], "a": 1 },
+						{ "px": [80,160], "src": [272,0], "f": 0, "t": 17, "d": [165], "a": 1 },
+						{ "px": [96,160], "src": [272,0], "f": 0, "t": 17, "d": [166], "a": 1 },
+						{ "px": [112,160], "src": [272,0], "f": 0, "t": 17, "d": [167], "a": 1 },
+						{ "px": [128,160], "src": [272,0], "f": 0, "t": 17, "d": [168], "a": 1 },
+						{ "px": [144,160], "src": [272,0], "f": 0, "t": 17, "d": [169], "a": 1 },
+						{ "px": [160,160], "src": [16,144], "f": 0, "t": 163, "d": [170], "a": 1 },
+						{ "px": [176,160], "src": [0,208], "f": 0, "t": 234, "d": [171], "a": 1 },
+						{ "px": [192,160], "src": [0,208], "f": 0, "t": 234, "d": [172], "a": 1 },
+						{ "px": [208,160], "src": [16,208], "f": 0, "t": 235, "d": [173], "a": 1 },
+						{ "px": [224,160], "src": [32,208], "f": 0, "t": 236, "d": [174], "a": 1 },
+						{ "px": [240,160], "src": [32,160], "f": 0, "t": 182, "d": [175], "a": 1 },
+						{ "px": [0,176], "src": [80,208], "f": 0, "t": 239, "d": [176], "a": 1 },
+						{ "px": [16,176], "src": [208,128], "f": 0, "t": 157, "d": [177], "a": 1 },
+						{ "px": [32,176], "src": [224,192], "f": 0, "t": 230, "d": [178], "a": 1 },
+						{ "px": [48,176], "src": [240,192], "f": 0, "t": 231, "d": [179], "a": 1 },
+						{ "px": [64,176], "src": [256,192], "f": 0, "t": 232, "d": [180], "a": 1 },
+						{ "px": [80,176], "src": [272,0], "f": 0, "t": 17, "d": [181], "a": 1 },
+						{ "px": [96,176], "src": [272,0], "f": 0, "t": 17, "d": [182], "a": 1 },
+						{ "px": [112,176], "src": [96,192], "f": 0, "t": 222, "d": [183], "a": 1 },
+						{ "px": [128,176], "src": [112,192], "f": 0, "t": 223, "d": [184], "a": 1 },
+						{ "px": [144,176], "src": [128,192], "f": 0, "t": 224, "d": [185], "a": 1 },
+						{ "px": [160,176], "src": [0,240], "f": 0, "t": 270, "d": [186], "a": 1 },
+						{ "px": [176,176], "src": [80,32], "f": 0, "t": 41, "d": [187], "a": 1 },
+						{ "px": [192,176], "src": [160,32], "f": 0, "t": 46, "d": [188], "a": 1 },
+						{ "px": [208,176], "src": [96,32], "f": 0, "t": 42, "d": [189], "a": 1 },
+						{ "px": [224,176], "src": [112,32], "f": 0, "t": 43, "d": [190], "a": 1 },
+						{ "px": [240,176], "src": [32,160], "f": 0, "t": 182, "d": [191], "a": 1 },
+						{ "px": [0,192], "src": [80,224], "f": 0, "t": 257, "d": [192], "a": 1 },
+						{ "px": [16,192], "src": [272,0], "f": 0, "t": 17, "d": [193], "a": 1 },
+						{ "px": [32,192], "src": [224,208], "f": 0, "t": 248, "d": [194], "a": 1 },
+						{ "px": [48,192], "src": [240,208], "f": 0, "t": 249, "d": [195], "a": 1 },
+						{ "px": [64,192], "src": [256,208], "f": 0, "t": 250, "d": [196], "a": 1 },
+						{ "px": [80,192], "src": [16,16], "f": 0, "t": 19, "d": [197], "a": 1 },
+						{ "px": [96,192], "src": [256,144], "f": 0, "t": 178, "d": [198], "a": 1 },
+						{ "px": [112,192], "src": [96,208], "f": 0, "t": 240, "d": [199], "a": 1 },
+						{ "px": [128,192], "src": [112,208], "f": 0, "t": 241, "d": [200], "a": 1 },
+						{ "px": [144,192], "src": [128,208], "f": 0, "t": 242, "d": [201], "a": 1 },
+						{ "px": [160,192], "src": [128,64], "f": 0, "t": 80, "d": [202], "a": 1 },
+						{ "px": [176,192], "src": [176,96], "f": 0, "t": 119, "d": [203], "a": 1 },
+						{ "px": [192,192], "src": [192,96], "f": 0, "t": 120, "d": [204], "a": 1 },
+						{ "px": [208,192], "src": [64,80], "f": 0, "t": 94, "d": [205], "a": 1 },
+						{ "px": [224,192], "src": [0,64], "f": 0, "t": 72, "d": [206], "a": 1 },
+						{ "px": [240,192], "src": [64,208], "f": 0, "t": 238, "d": [207], "a": 1 },
+						{ "px": [0,208], "src": [80,240], "f": 0, "t": 275, "d": [208], "a": 1 },
+						{ "px": [16,208], "src": [192,48], "f": 0, "t": 66, "d": [209], "a": 1 },
+						{ "px": [32,208], "src": [224,224], "f": 0, "t": 266, "d": [210], "a": 1 },
+						{ "px": [48,208], "src": [240,224], "f": 0, "t": 267, "d": [211], "a": 1 },
+						{ "px": [64,208], "src": [256,224], "f": 0, "t": 268, "d": [212], "a": 1 },
+						{ "px": [80,208], "src": [192,48], "f": 0, "t": 66, "d": [213], "a": 1 },
+						{ "px": [96,208], "src": [208,240], "f": 0, "t": 283, "d": [214], "a": 1 },
+						{ "px": [112,208], "src": [96,224], "f": 0, "t": 258, "d": [215], "a": 1 },
+						{ "px": [128,208], "src": [112,224], "f": 0, "t": 259, "d": [216], "a": 1 },
+						{ "px": [144,208], "src": [128,224], "f": 0, "t": 260, "d": [217], "a": 1 },
+						{ "px": [160,208], "src": [128,80], "f": 0, "t": 98, "d": [218], "a": 1 },
+						{ "px": [176,208], "src": [208,144], "f": 0, "t": 175, "d": [219], "a": 1 },
+						{ "px": [192,208], "src": [192,112], "f": 0, "t": 138, "d": [220], "a": 1 },
+						{ "px": [208,208], "src": [208,112], "f": 0, "t": 139, "d": [221], "a": 1 },
+						{ "px": [224,208], "src": [208,176], "f": 0, "t": 211, "d": [222], "a": 1 },
+						{ "px": [240,208], "src": [32,160], "f": 0, "t": 182, "d": [223], "a": 1 },
+						{ "px": [0,224], "src": [32,160], "f": 0, "t": 182, "d": [224], "a": 1 },
+						{ "px": [16,224], "src": [0,80], "f": 0, "t": 90, "d": [225], "a": 1 },
+						{ "px": [32,224], "src": [16,224], "f": 0, "t": 253, "d": [226], "a": 1 },
+						{ "px": [48,224], "src": [16,224], "f": 0, "t": 253, "d": [227], "a": 1 },
+						{ "px": [64,224], "src": [16,224], "f": 0, "t": 253, "d": [228], "a": 1 },
+						{ "px": [80,224], "src": [208,128], "f": 0, "t": 157, "d": [229], "a": 1 },
+						{ "px": [96,224], "src": [16,224], "f": 0, "t": 253, "d": [230], "a": 1 },
+						{ "px": [112,224], "src": [96,240], "f": 0, "t": 276, "d": [231], "a": 1 },
+						{ "px": [128,224], "src": [192,176], "f": 0, "t": 210, "d": [232], "a": 1 },
+						{ "px": [144,224], "src": [128,240], "f": 0, "t": 278, "d": [233], "a": 1 },
+						{ "px": [160,224], "src": [128,96], "f": 0, "t": 116, "d": [234], "a": 1 },
+						{ "px": [176,224], "src": [240,176], "f": 0, "t": 213, "d": [235], "a": 1 },
+						{ "px": [192,224], "src": [256,176], "f": 0, "t": 214, "d": [236], "a": 1 },
+						{ "px": [208,224], "src": [48,16], "f": 0, "t": 21, "d": [237], "a": 1 },
+						{ "px": [224,224], "src": [0,32], "f": 0, "t": 36, "d": [238], "a": 1 },
+						{ "px": [240,224], "src": [64,32], "f": 0, "t": 40, "d": [239], "a": 1 },
+						{ "px": [0,240], "src": [32,160], "f": 0, "t": 182, "d": [240], "a": 1 },
+						{ "px": [16,240], "src": [0,208], "f": 0, "t": 234, "d": [241], "a": 1 },
+						{ "px": [32,240], "src": [16,208], "f": 0, "t": 235, "d": [242], "a": 1 },
+						{ "px": [48,240], "src": [32,208], "f": 0, "t": 236, "d": [243], "a": 1 },
+						{ "px": [64,240], "src": [64,32], "f": 0, "t": 40, "d": [244], "a": 1 },
+						{ "px": [80,240], "src": [0,208], "f": 0, "t": 234, "d": [245], "a": 1 },
+						{ "px": [96,240], "src": [16,208], "f": 0, "t": 235, "d": [246], "a": 1 },
+						{ "px": [112,240], "src": [32,208], "f": 0, "t": 236, "d": [247], "a": 1 },
+						{ "px": [128,240], "src": [32,160], "f": 0, "t": 182, "d": [248], "a": 1 },
+						{ "px": [144,240], "src": [32,144], "f": 0, "t": 164, "d": [249], "a": 1 },
+						{ "px": [160,240], "src": [16,208], "f": 0, "t": 235, "d": [250], "a": 1 },
+						{ "px": [176,240], "src": [32,160], "f": 0, "t": 182, "d": [251], "a": 1 },
+						{ "px": [192,240], "src": [16,208], "f": 0, "t": 235, "d": [252], "a": 1 },
+						{ "px": [208,240], "src": [32,208], "f": 0, "t": 236, "d": [253], "a": 1 },
+						{ "px": [224,240], "src": [32,160], "f": 0, "t": 182, "d": [254], "a": 1 },
+						{ "px": [240,240], "src": [32,160], "f": 0, "t": 182, "d": [255], "a": 1 }
+					],
+					"entityInstances": []
+				}
+			],
+			"__neighbours": [{ "levelIid": "a502dff0-73f0-11ef-8eb1-cd28636774e5", "dir": "e" }]
 		},
 		{
 			"identifier": "UI_RewardScreen",
@@ -3768,7 +5340,7 @@
 			"__neighbours": []
 		},
 		{
-			"identifier": "Level_2",
+			"identifier": "Level_3",
 			"iid": "183fe720-d380-11f0-83f7-37a91df44187",
 			"uid": 78,
 			"worldX": 256,

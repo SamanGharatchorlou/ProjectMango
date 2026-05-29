@@ -56,27 +56,27 @@ static void TurnCoinsBindings(std::unordered_map<BasicString, std::function<Basi
 static void CoinStackSupplyBindings(std::unordered_map<BasicString, std::function<BasicString(Entity)>>& text_bindings)
 {
 	text_bindings[ "CoinStackSupply_White" ] =  [](Entity entity) {
-		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::White);
+		CoinStack& cs = GetGlobalCoinBank((u32)Colour::White);
 		return BasicString(cs.remaining); 
 	};
 
 	text_bindings[ "CoinStackSupply_Blue" ] =  [](Entity entity) {
-		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Blue);
+		CoinStack& cs = GetGlobalCoinBank((u32)Colour::Blue);
 		return BasicString(cs.remaining);
 	};
 
 	text_bindings[ "CoinStackSupply_Black" ] =  [](Entity entity) {
-		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Black);
+		CoinStack& cs = GetGlobalCoinBank((u32)Colour::Black);
 		return BasicString(cs.remaining); 
 	 };
 
 	text_bindings[ "CoinStackSupply_Red" ] =  [](Entity entity) {
-		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Red);
+		CoinStack& cs = GetGlobalCoinBank((u32)Colour::Red);
 		return BasicString(cs.remaining); 
 	 };
 
 	text_bindings[ "CoinStackSupply_Green" ] =  [](Entity entity) {
-		CoinStack& cs = GetCoinStack(Faction::None, (u32)Colour::Green);
+		CoinStack& cs = GetGlobalCoinBank((u32)Colour::Green);
 		return BasicString(cs.remaining); 
 	};
 }
@@ -131,7 +131,7 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 	text_bindings[ "GameOverResult" ] =  [](Entity entity) {
 		if(const GameState* game_state = GameState::GetActive())
 		{
-			if(game_state->gameOver)
+			if(game_state->endGameState.showingGameOverText)
 			{
 				if(const ECS::Health* health = GetComponent(Health, Faction::GetEnemy()))
 				{
@@ -198,5 +198,19 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 		}
 					
 		return BasicString(""); 
+	};
+
+	text_bindings["ParentRelicDescription"] = [](Entity entity) {
+		Entity parent = GetParent(entity);
+		if (Inventory* inventory = GetComponent(Inventory, parent))
+		{
+			for (u32 i = 0; i < inventory->relics.size(); i++)
+			{
+				Relic& relic = inventory->relics[i];
+				return relic.description;
+			}
+		}
+
+		return BasicString("");
 	};
 }

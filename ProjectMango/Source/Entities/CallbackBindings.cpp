@@ -2,6 +2,9 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
+#include "Core/Helpers.h"
+#include "Entities/Registries/ResourceBank.h"
+#include "Entities/Registries/RelicRegistry.h"
 
 using namespace ECS;
 
@@ -86,37 +89,143 @@ static void UpdateLayeredHealthBar(const Health* health, Entity health_bar_ui)
 	}
 }
 
-void SetupCallbackBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& callback_bindings)
+void SetupCallbackUpdates(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& callback_updates)
 {
-	callback_bindings[ "PlayerHealthBar" ] =  [](ECS::Entity entity) {
+	callback_updates[ "PlayerHealthBar" ] =  [](ECS::Entity entity) {
 		if(const Health* health = GetComponent(Health, Faction::GetPlayer()))
 			UpdateLayeredHealthBar(health, entity);
 	};
 
-	callback_bindings[ "AIHealthBar" ] =  [](ECS::Entity entity) {
+	callback_updates[ "AIHealthBar" ] =  [](ECS::Entity entity) {
 		if(const Health* health = GetComponent(Health, Faction::GetEnemy()))
 			UpdateLayeredHealthBar(health, entity);
 	};
 
-	callback_bindings[ "InventoryCoinPile" ] =  [](ECS::Entity entity) {
+	callback_updates[ "InventoryCoinPile" ] =  [](ECS::Entity entity) {
 		UpdateCoinPile(entity, Faction::GetPlayer());
 	};
 
-	callback_bindings[ "InventoryCardPower" ] =  [](ECS::Entity entity) {
+	callback_updates[ "InventoryCardPower" ] =  [](ECS::Entity entity) {
 		UpdateCardPower(entity, Faction::GetPlayer());
 	};
 
-	callback_bindings[ "AICardPower" ] =  [](ECS::Entity entity) {
+	callback_updates[ "AICardPower" ] =  [](ECS::Entity entity) {
 		UpdateCardPower(entity, Faction::GetEnemy());
 	};
 
-	callback_bindings[ "EnemyCoinPile" ] =  [](ECS::Entity entity) {
+	callback_updates[ "EnemyCoinPile" ] =  [](ECS::Entity entity) {
 		UpdateCoinPile(entity, Faction::GetEnemy());
 	};
 
-	callback_bindings[ "CoinStack" ] =  [](ECS::Entity entity) {
+	callback_updates[ "CoinStack" ] =  [](ECS::Entity entity) {
 		const CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
 		SpriteSheet& sprite_sheet = GetComponentRef(SpriteSheet, entity);
 		sprite_sheet.index = coin_stack.remaining-1;
 	};
+}
+
+// todo: move this somewhere else?
+static void SetupCostIcons(Entity entity, int count)
+{
+	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+
+	DestroyChildren(entity);
+	coin_stack.costEntities.resize(count);
+
+	const Transform& transform = GetComponentRef(Transform, entity);
+	VectorF size = transform.size;
+	VectorF bottom = VectorF(size.x * 0.1f, size.y * 0.85f);
+
+	for (u32 i = 0; i < count; i++)
+	{
+		Entity child_entity = CreateEntity("coin_icon");
+		coin_stack.costEntities[i] = (child_entity);
+
+		EntityData::SetParent(child_entity, entity);
+
+		// Transform
+		VectorF size = VectorF(15, 15);
+		size = AdjustToScreenSize(size);
+		Transform& child_transform = AddComponent(Transform, child_entity);
+		child_transform.size = size;
+
+		VectorF offset = VectorF(0.0f, i * 1.25f);
+		VectorF local_position = bottom - (child_transform.size * offset);
+		child_transform.SetLocalPosition(local_position);
+
+		// Sprite
+		Sprite& child_sprite = AddComponent(Sprite, child_entity);
+		child_sprite.SetTexture("cost_filled");
+		child_sprite.params.renderLayer = RenderLayer::UI;
+		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
+		child_sprite.params.colourMod.setOpacity(0.6f);
+	}
+}
+
+static void SetupPowerIcons(Entity entity, int count)
+{
+	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+
+	DestroyChildren(entity);
+	coin_stack.costEntities.resize(count);
+
+	const Transform& transform = GetComponentRef(Transform, entity);
+	VectorF size = transform.size;
+	VectorF top = VectorF(size.x * 0.1f, size.y * 0.1f);
+
+	for (u32 i = 0; i < count; i++)
+	{
+		Entity child_entity = CreateEntity("coin_icon");
+		coin_stack.costEntities[i] = (child_entity);
+
+		EntityData::SetParent(child_entity, entity);
+
+		// Transform
+		VectorF size = VectorF(15, 15);
+		size = AdjustToScreenSize(size);
+
+		Transform& child_transform = AddComponent(Transform, child_entity);
+		child_transform.size = size;
+
+		VectorF offset = VectorF(0.0f, i * 1.25f);
+		VectorF local_position = top + (child_transform.size * offset);
+		child_transform.SetLocalPosition(local_position);
+
+		// Sprite
+		Sprite& child_sprite = AddComponent(Sprite, child_entity);
+		child_sprite.SetTexture("power_filled");
+		child_sprite.params.renderLayer = RenderLayer::UI;
+		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
+		child_sprite.params.colourMod.setOpacity(0.6f);
+	}
+}
+
+
+void SetupCallbackInits(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& callback_inits)
+{
+	callback_inits["CoinStack"] = [](ECS::Entity entity) {
+		CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+		coin_stack.remaining = coin_stack.capacity;
+
+		RegisterCoinResource(entity);
+	};
+
+	callback_inits["InventoryCardPower"] = [](ECS::Entity entity) {
+		CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+		SetupPowerIcons(entity, coin_stack.capacity);
+	};
+
+	callback_inits["InventoryCoinPile"] = [](ECS::Entity entity) {
+		CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
+		SetupCostIcons(entity, coin_stack.capacity);
+	};
+
+	callback_inits["RandomRelicChoicePanel"] = [](ECS::Entity entity) {
+		Inventory& inventory = AddComponent(Inventory, entity);
+		if(ECS::Relic* relic = RelicRegistry::GetRandomUnobtainedRelic())
+		{
+			inventory.relics.push_back(*relic);
+		}
+	};
+	
 }

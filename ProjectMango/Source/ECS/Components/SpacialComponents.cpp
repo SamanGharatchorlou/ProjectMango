@@ -20,10 +20,10 @@ namespace ECS
 	{ }
 
 	void Transform::Init(const EntityMetaData* emd)
-	{
+	{	
 		if(emd)
 		{	
-			size = emd->data.GetVector("size");
+			size = emd->data.GetVector(kRequirement);
 			SetWorldPosition(emd->data.GetVector("position") - (size * emd->data.GetVector("pivot_point")));
 		}
 
@@ -34,11 +34,28 @@ namespace ECS
 			facingDirection = config->data.GetBool("flipped") ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 		}
 	}
+
+
+	void Transform::Init(const EntityMetaData& emd)
+	{
+		size = emd.data.GetVector(kRequirement);
+		
+		// todo: do i need this?
+		//size = AdjustToScreenSize(size);
+
+		SetWorldPosition(emd.data.GetVector("position") - (size * emd.data.GetVector("pivot_point")));
+	}
 	
 	void Transform::Init(const EntityMetaData* emd, Collider& collider)
 	{
 		Init(emd);
 		collider.Init();
+	}
+
+	void Transform::Serialise(EntityMetaData& out_emd) const
+	{
+		out_emd.data.AddVectorF("position", worldPosition);
+		out_emd.data.AddVectorF("size", size);
 	}
 
 	void Transform::SetWorldRect(const VectorF& _pos, const VectorF& _size)
@@ -418,107 +435,41 @@ namespace ECS
 		speed = VectorF::zero();
 	}
 	
-	
 	// Biome
 	// ------------------------------------------------------------------
-	Biome::Biome()
+	const Biome& Biome::GetActive()
 	{
-		aabb[0] = VectorF();
-		aabb[1] = VectorF();
-	}
-
-	const Entity Biome::GetActive()
-	{
-		State& state = GameData::Get().systemStateManager->mStates.Top();
-		if (const GameState* gs = dynamic_cast<const GameState*>(&state))
+		ComponentArray<Biome>& biomes = GetAllComponents(Biome);
+		for (auto iter = biomes.entityToComponent.begin(); iter != biomes.entityToComponent.end(); iter++)
 		{
-			return gs->activeLevel;
+			return biomes.GetComponentByIndex(iter->second);
 		}
 
-		return EntityInvalid;
+		DebugPrint(Error, "No biome is active");
+		return Biome();
 	}
 
-	const Biome& Biome::GetActiveBiome()
-	{	
-		return GetComponentRef(Biome, GetActive());
-	}
-	
-	const Level& Biome::GetLevel(ECS::Entity entity)
-	{
-		VectorF pos = GetPosition(entity);
-		return GetLevel(pos);
-	}
-
-	const Level& Biome::GetLevel(VectorF position)
-	{
-		const std::vector<ECS::Level>& levels = GetActiveBiome().levels;
-		for( u32 i = 0; i < levels.size(); i++ )
-		{
-			const VectorF world_pos = levels[i].worldPos;
-			if(position.x > world_pos.x && position.y > world_pos.y)
-			{
-				const VectorF world_pos_end = world_pos + levels[i].size;
-				if(position.x < world_pos_end.x && position.y < world_pos_end.y)
-				{
-					return levels[i];
-				}
-			}
-		}
-
-		ASSERT(levels.size() > 0, "We have no levels yet, biome has not been parsed");
-		return levels.front();
-	}
-
-	const Level* Biome::GetLevelFromIndex(u32 level_index)
-	{
-		const std::vector<ECS::Level>& levels = GetActiveBiome().levels;
-		for (u32 i = 0; i < levels.size(); i++)
-		{
-			if (levels[i].index == level_index)
-				return &levels[i];
-		}
-
-		return nullptr;
-	}
-
-	const Level& Biome::GetVisibleLevel()
-	{
-		const Camera* camera = Camera::Get();
-		return GetLevel(camera->GetRect().Center());
-	}
-
-	
-	VectorI Level::GetTileIndex(VectorF position) const
-	{
-		VectorF local_pos = position - worldPos;
-		if(local_pos.isPositive())
-		{
-			if(local_pos.x <= size.x && local_pos.y <= size.y)
-			{
-				VectorF tile_size = layers.front().tileSize;
-
-				return (local_pos / tile_size).toInt();
-			}
-		}
-
-		return VectorI(-1,-1);
-	}
-
-	
-	RectF Level::GetWalkableTileRect(VectorI index) const 
+	VectorI Biome::GetTileIndex(VectorF position) const
 	{
 		VectorF tile_size = layers.front().tileSize;
-		VectorF tile_pos = index.toFloat() * tile_size + worldPos;
+		return (position / tile_size).toInt();
+	}
+
+	
+	RectF Biome::GetWalkableTileRect(VectorI index) const 
+	{
+		VectorF tile_size = layers.front().tileSize;
+		VectorF tile_pos = index.toFloat() * tile_size;
 
 		return RectF(tile_pos, tile_size);
 	}
 
-	RectF Level::GetBounds() const
+	RectF Biome::GetBounds() const
 	{
-		return RectF(worldPos, size);
+		return RectF(VectorF::zero(), size);
 	}
 
-	bool Level::IsPointInBounds(VectorF world_position) const
+	bool Biome::IsPointInBounds(VectorF world_position) const
 	{
 		return Contains(GetBounds(), world_position);
 	}

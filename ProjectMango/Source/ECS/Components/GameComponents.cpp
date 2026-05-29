@@ -148,7 +148,7 @@ namespace ECS
 				UIText& child_text_display = AddComponent(UIText, child_entity);
 				child_text_display.SetText( text.c_str() );
 				child_text_display.FitToSize(visible_size);
-				child_text_display.SetRenderOffsetToCenter();
+				child_text_display.UpdateRenderOffset();
 				child_text_display.renderOffset += VectorF(0,2);
 				if((Colour::Type)i == Colour::White)
 					child_text_display.SetColour(SColour::Black);
@@ -235,10 +235,10 @@ namespace ECS
 			UIText& ui_text = AddComponent(UIText, points_entity);
 			ui_text.center = true;
 			ui_text.SetColour(SColour::White);
-			ui_text.SetSize(19);
 
 			BasicString number_to_text = BasicString(points);
 			ui_text.SetText(number_to_text.c_str());
+			ui_text.SetSize(19);
 		}
 
 		GenerateCostIcons(entity );
@@ -287,7 +287,7 @@ namespace ECS
 			std::vector<Colour::Type> available_coin_stacks;
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
-				if(GetCoinStack(Faction::None, i).remaining > 0)
+				if(GetGlobalCoinBank(i).remaining > 0)
 				{
 					available_coin_stacks.push_back((Colour::Type)i);
 				}
@@ -480,5 +480,15 @@ namespace ECS
 		status_effect.turnApplied = GameState::GetTurnIndex();
 
 		effects->effects.push_back(status_effect);
+	}
+
+
+	// CoinStack
+	// ------------------------------------------------------------------
+	void CoinStack::Init(const EntityMetaData& emd)
+	{
+		capacity = emd.data.GetInt("coin_capacity", 0);
+		colourType = (Colour::Type)emd.data.GetInt("colour_type", -1.0f);
+		remaining = 0;
 	}
 }

@@ -31,7 +31,7 @@ namespace ECS
 
 	void Sprite::Init(const ECS::EntityMetaData& emd)
 	{
-		params.renderLayer = RenderLayer::BasicObject;
+		params.renderLayer = (RenderLayer)emd.data.GetInt("render_layer", (int)RenderLayer::BasicObject);
 		params.colourMod = emd.data.GetColour("colour");
 
 		const char* id = emd.data.GetString(kRequirement);
@@ -50,6 +50,15 @@ namespace ECS
 
 			image.id = coloured_sprite.c_str();
 			SetTexture(image.id.c_str());
+		}
+	}
+
+	void Sprite::Serialise(EntityMetaData& out_emd) const
+	{
+		if (image.texture)
+		{
+			out_emd.data.AddString(kRequirement, TextureManager::Get()->getTextureName(image.texture).c_str());
+			out_emd.data.GetInt("render_layer", (int)params.renderLayer);
 		}
 	}
 

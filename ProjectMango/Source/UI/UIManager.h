@@ -8,14 +8,17 @@ typedef std::vector<ECS::Entity> UIScreenEntities;
 struct UIManager
 {
 	static UIManager& Get();
-	
+
 	// [ screen ID, meta data for screen ]
 	std::unordered_map<BasicString, UIScreenMetaData> screenMetaData;
 
 	// [ screen ID, entities for screen ]
 	std::unordered_map<BasicString, UIScreenEntities> screenEntities;
 
+	void Init();
 	void OpenScreen(const char* screen_name);
 	void CloseScreen(const char* screen_name);
 	void RefreshScreen(const char* screen_name);
+
+	bool IsScreenOpen(const char* screen_name);
 };

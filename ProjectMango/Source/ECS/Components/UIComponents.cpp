@@ -42,6 +42,12 @@ namespace ECS
 		callback = emd.data.GetString(kRequirement);
 	}
 
+	void UIButton::Serialise(EntityMetaData& out_emd) const
+	{
+		if (callback.c_str())
+			out_emd.data.AddString(kRequirement, callback.c_str());
+	}
+
 	bool UIButton::IsPressed(int frame_buffer) const
 	{
 		const FrameRateController& frc = FrameRateController::Get();
@@ -59,17 +65,17 @@ namespace ECS
 		SetColour(SColour::White);
 	}
 
-
 	void UIText::Init(const EntityMetaData& emd)
 	{
-		center = emd.data.GetBool("center");
+		font.wrapped = emd.data.GetBool("wrapped");
+		center = emd.data.GetBool("center_text");
+		SetText(emd.data.GetString(kRequirement));
 		SetSize(emd.data.GetInt("pt_size"));
 		SetColour(emd.data.GetColour("colour"));
 
-		SetText(emd.data.GetString(kRequirement));
 		callback = emd.data.GetString("text_callback");
 
-		Colour::Type colour_type = (Colour::Type)emd.data.GetFloat("colour_type", -1.0f);
+		Colour::Type colour_type = (Colour::Type)emd.data.GetInt("colour_type", -1.0f);
 		if (colour_type != -1)
 		{
 			Colour& colour = AddComponent(Colour, entity);
@@ -77,14 +83,40 @@ namespace ECS
 		}
 	}
 
+	void UIText::Serialise(EntityMetaData& out_emd) const
+	{
+		if (text.c_str())
+			out_emd.data.AddString(kRequirement, text.c_str());
+
+		if (callback.c_str())
+		{
+			out_emd.data.AddString("text_callback", callback.c_str());
+
+			if (!out_emd.data.Contains(kRequirement))
+			{
+				out_emd.data.AddString(kRequirement, "");
+			}
+		}
+
+		int pt_size = (int)(RevertFromScreenSize((float)font.GetPtSize()) + 0.5f);
+		out_emd.data.AddInt("pt_size", pt_size);
+		out_emd.data.AddBool("center_text", center);
+		out_emd.data.AddBool("wrapped", font.wrapped);
+	}
+
 	void UIText::SetText(const char* _text) 
 	{ 
 		text = _text;
 
-		font.SetText(text.c_str()); 
+		font.SetText(text.c_str());
 
-		if(center)
-			SetRenderOffsetToCenter();
+		if (font.wrapped )
+		{
+			const Transform& transform = GetComponentRef(Transform, entity);
+			font.width = (int)(transform.size.x + 0.5f);
+		}
+
+		UpdateRenderOffset();
 	}
 	
 	void UIText::SetColour(SColour scolour) 
@@ -96,9 +128,7 @@ namespace ECS
 	{ 
 		ptSize = (int)(AdjustToScreenSize((float)ptSize) + 0.5f);
 		font.SetSize(text.c_str(), ptSize);
-
-		if(center)
-			SetRenderOffsetToCenter();
+		UpdateRenderOffset();
 	}
 
 	void UIText::FitToSize(VectorF size)
@@ -112,12 +142,17 @@ namespace ECS
 		}
 	}
 
-	void UIText::SetRenderOffsetToCenter()
+	void UIText::UpdateRenderOffset()
 	{
 		const Transform& transform = GetComponentRef(Transform, entity);
-
-		renderOffset = VectorF(0,0);
-		renderOffset = transform.size * 0.5f - font.GetSize().toFloat() * 0.5f;
+		if (center)
+		{
+			renderOffset = transform.size * 0.5f - font.GetSize().toFloat() * 0.5f;
+		}
+		else
+		{
+			renderOffset = transform.size * 0.05f;
+		}
 	}
 
 }

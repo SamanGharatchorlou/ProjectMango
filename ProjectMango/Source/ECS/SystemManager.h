@@ -173,7 +173,7 @@ namespace ECS
 			}
 		}
 
-		void EntityRemoveType(Entity entity, ComponentID component_id)
+		void EntityRemoveType(Entity entity, ComponentID component_id, Signature type)
 		{
 			for (u32 i = 0; i < entAndSystems.size(); i++)
 			{
@@ -199,6 +199,11 @@ namespace ECS
 				// need to check if this entity could be part of this system
 				if ((entOrSystems[i]->signature & (u64)1 << component_id))
 				{
+					// but since its an or system check if there's at least 1 matching bit
+					// if there is then we dont want to remove it from this system
+					if ((entOrSystems[i]->signature & type) != 0)
+						continue;
+
 					const u32 ent_count = (u32)entOrSystems[i]->entities.size();
 					for (int ent = 0; ent < ent_count; ent++)
 					{

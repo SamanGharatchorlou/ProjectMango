@@ -34,7 +34,7 @@ namespace RelicRegistry
 		}
 	}
 
-	static void IncreaseColourDrawRate(const Relic& relic, ECS::Entity entity)
+	static void IncreaseColourDrawChance(const Relic& relic, ECS::Entity entity)
 	{
 		if(Card* card = GetComponent(Card, entity))
 		{
@@ -60,32 +60,72 @@ namespace RelicRegistry
 	{
 		s_relicRegistry.clear();
 
-		s_relicRegistry.push_back(Relic());
-		Relic& relic_1 = s_relicRegistry.back();
-		relic_1.id = "DiscountCardCost";
-		relic_1.description = "Reduces the cost of all specified coloured cards by 1 random colour";
-		relic_1.trigger = GameEvent::CardDrawn;
-		relic_1.colour = Colour::Black;
-		relic_1.effectFn = DiscountCardCost;
-		
-		s_relicRegistry.push_back(Relic());
-		Relic& relic_2 = s_relicRegistry.back();
-		relic_2.id = "IncreaseColourDrawRate";
-		relic_2.description = "Increase the draw rate of the specified coloured card";
-		relic_2.trigger = GameEvent::CardDrawn;
-		relic_2.colour = Colour::Green;
-		relic_2.effectFn = IncreaseColourDrawRate;
-	}
-
-	
-	Relic* GetRelic(const char* relic_id)
-	{
-		for( u32 i = 0; i < s_relicRegistry.size(); i++ )
+		for (u32 i = 0; i < Colour::Count; i++)
 		{
-			if(s_relicRegistry[i].id == relic_id)
-				return &s_relicRegistry[i];
+			s_relicRegistry.push_back(Relic());
+			Relic& relic = s_relicRegistry.back();
+
+			relic.id = "DiscountCardCost";
+
+			Colour::Type colour = (Colour::Type)i;
+			const char* colour_string = Colour::s_typeToString.at(colour).c_str();
+
+			char buffer[128];
+			snprintf(buffer, 128, "Reduces the cost of all %s cards by 1 random colour", colour_string);
+			relic.description = buffer;
+
+			relic.trigger = GameEvent::CardDrawn;
+			relic.colour = colour;
+			relic.effectFn = DiscountCardCost;
 		}
 
-		return nullptr;
+		for (u32 i = 0; i < Colour::Count; i++)
+		{
+			s_relicRegistry.push_back(Relic());
+			Relic& relic = s_relicRegistry.back();
+
+			relic.id = "IncreaseColourDrawChance";
+
+			Colour::Type colour = (Colour::Type)i;
+			const char* colour_string = Colour::s_typeToString.at(colour).c_str();
+
+			char buffer[128];
+			snprintf(buffer, 128, "Increase the draw chance of %s cards", colour_string);
+			relic.description = buffer;
+
+			relic.trigger = GameEvent::CardDrawn;
+			relic.colour = colour;
+			relic.effectFn = IncreaseColourDrawChance;
+		}
+	}
+	
+	//Relic* GetRelic(const char* relic_id)
+	//{
+	//	for( u32 i = 0; i < s_relicRegistry.size(); i++ )
+	//	{
+	//		 todo - this wont work anymore
+	//		if(s_relicRegistry[i].id == relic_id)
+	//			return &s_relicRegistry[i];
+	//	}
+
+	//	return nullptr;
+	//}
+
+	ECS::Relic* GetRandomUnobtainedRelic()
+	{
+		Entity player = Faction::GetPlayer();
+		Inventory* inventory = GetComponent(Inventory, player);
+
+		std::vector<Relic*> unobtained_relics;
+		for (u32 i = 0; i < s_relicRegistry.size(); i++)
+		{
+			if (inventory && Contains(inventory->relics, s_relicRegistry[i]))
+				continue;
+
+			unobtained_relics.push_back(&s_relicRegistry[i]);
+		}
+
+		int random_index = Maths::randomNumberBetween(0, unobtained_relics.size());
+		return unobtained_relics[random_index];
 	}
 }

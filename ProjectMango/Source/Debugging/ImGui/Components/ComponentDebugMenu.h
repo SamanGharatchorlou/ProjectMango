@@ -6,6 +6,20 @@ namespace ECS { struct Collider; }
 
 namespace DebugMenu 
 {
+#define COMPONENT_PREAMBLE(component)							\
+	StringBuffer32 type_name = component::TypeName();			\
+	ComponentID type_id = component::TypeId();					\
+	ImGui::PushID(type_name.c_str());							\
+	if(!HasComponent(component, entity)) {						\
+		char buf[64]{ 0 }; \
+		sprintf(buf, "Add %s component", component::TypeName().c_str()); \
+		if (ImGui::Button(buf)) { AddComponent(component, entity); } \
+		ImGui::PopID();			\
+		return EntityInvalid; } \
+	if (ImGui::Button("-")) { RemoveComponent(component, entity); ImGui::PopID(); return EntityInvalid; } \
+	ImGui::PopID(); ImGui::SameLine();											\
+
+
 	u32 DoEntityDataDebugMenu(ECS::Entity& entity);
 	u32 DoTransformDebugMenu(ECS::Entity& entity);
 	u32 DoSpriteDebugMenu(ECS::Entity& entity);
@@ -26,6 +40,17 @@ namespace DebugMenu
 	u32 DoEntityStateDebugMenu(ECS::Entity& entity);
 	u32 DoFactionDebugMenu(ECS::Entity& entity);
 	u32 DoAIIntentDebugMenu(ECS::Entity& entity);
+	u32 DoCallbackDebugMenu(ECS::Entity& entity);
+
+	inline void DoUIEditorMenus(ECS::Entity& entity)
+	{
+		DoEntityDataDebugMenu(entity);
+		DoTransformDebugMenu(entity);
+		DoSpriteDebugMenu(entity);
+		DoUITextDebugMenu(entity);
+		DoUIButtonDebugMenu(entity);
+		DoCallbackDebugMenu(entity);
+	}
 
 	void DrawCollider(const ECS::Collider& collider);
 
@@ -33,4 +58,7 @@ namespace DebugMenu
 	{
 		return value ? "true" : "false";
 	}
+
+
+
 }

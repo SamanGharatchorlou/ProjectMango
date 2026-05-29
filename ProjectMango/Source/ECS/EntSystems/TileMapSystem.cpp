@@ -10,7 +10,6 @@ namespace ECS
 {
 	void TileMapSystem::Update(float dt)
 	{
-		
 		RenderManager* rm = GameData::Get().renderManager;
 		
 		// increase the camera size so we draw a little extra than the actual screen
@@ -25,31 +24,26 @@ namespace ECS
 		{
 			const Biome& biome = GetComponentRef(Biome, entity);
 
-			for( u32 l = 0; l < biome.levels.size(); l++ )
+			for( int i = (int)biome.layers.size() - 1; i >= 0; i-- )
 			{
-				const Level& level = biome.levels[l];
+				const Layer& layer = biome.layers[i];
+				const VectorF& tile_size = layer.tileSet->tileSize;
+				STexture* tile_texture = layer.tileSet->texture;
 
-				for( int i = (int)level.layers.size() - 1; i >= 0; i-- )
+				for( u32 j = 0; j < layer.tiles.size(); j++ )
 				{
-					const Layer& layer = level.layers[i];
-					const VectorF& tile_size = layer.tileSet->tileSize;
-					STexture* tile_texture = layer.tileSet->texture;
+					RectF rect(layer.tiles[j].draw_pos, layer.tileSize);
 
-					for( u32 j = 0; j < layer.tiles.size(); j++ )
-					{
-						RectF rect(layer.tiles[j].draw_pos, layer.tileSize);
+					if(!camera_rect.Intersect(rect))
+						continue;
 
-						if(!camera_rect.Intersect(rect))
-							continue;
+					RectF subRect(layer.tiles[j].tileset_pos, tile_size);
 
-						RectF subRect(layer.tiles[j].tileset_pos, tile_size);
+					RenderPack pack(tile_texture, (u32)RenderLayer::Scenery);
+					pack.rect = rect;
+					pack.subRect = subRect;
 
-						RenderPack pack(tile_texture, (u32)RenderLayer::Scenery);
-						pack.rect = rect;
-						pack.subRect = subRect;
-
-						rm->AddRenderPacket(pack);
-					}
+					rm->AddRenderPacket(pack);
 				}
 			}
 		}

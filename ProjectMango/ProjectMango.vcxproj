@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Entities\Enemies\AIStrategyCardPlayer.cpp" />
     <ClCompile Include="Source\Entities\Enemies\EnemyTurn.cpp" />
     <ClCompile Include="Source\Entities\Factory\ComponentAssembler.cpp" />
+    <ClCompile Include="Source\Entities\Factory\EnemyBuilder.cpp" />
     <ClCompile Include="Source\Entities\Factory\EntitySerialiser.cpp" />
     <ClCompile Include="Source\Entities\Registries\SpellRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Source\Entities\Registries\RelicRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\ResourceBank.cpp" />
     <ClCompile Include="Source\Entities\Registries\StatusEffectRegistry.cpp" />
+    <ClCompile Include="Source\Game\EndBattle.cpp" />
     <ClCompile Include="Source\Game\Readers\AnimationReader.cpp" />
     <ClCompile Include="Source\Audio\Audio.cpp" />
     <ClCompile Include="Source\Audio\AudioManager.cpp" />
@@ -297,6 +299,7 @@
     <ClInclude Include="Source\Entities\Enemies\AIStrategyCardPlayer.h" />
     <ClInclude Include="Source\Entities\Enemies\EnemyTurn.h" />
     <ClInclude Include="Source\Entities\Factory\ComponentAssembler.h" />
+    <ClInclude Include="Source\Entities\Factory\EnemyBuilder.h" />
     <ClInclude Include="Source\Entities\Factory\EntitySerialiser.h" />
     <ClInclude Include="Source\Entities\Registries\SpellRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h" />
@@ -304,6 +307,7 @@
     <ClInclude Include="Source\Entities\Registries\RelicRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\ResourceBank.h" />
     <ClInclude Include="Source\Entities\Registries\StatusEffectRegistry.h" />
+    <ClInclude Include="Source\Game\EndBattle.h" />
     <ClInclude Include="Source\Game\Readers\AnimationReader.h" />
     <ClInclude Include="Source\Audio\Audio.h" />
     <ClInclude Include="Source\Audio\AudioManager.h" />

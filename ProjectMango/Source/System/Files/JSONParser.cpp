@@ -64,22 +64,25 @@ bool PopulateSettingByType(const rapidjson::Value& value, const char* id, kJsonT
 	{	
 		case kJsonType::Number:
 		{
-			settings.values[id] = value.GetFloat();
+			if(value.IsDouble())
+				settings.AddFloat(id, value.GetFloat());
+			else
+				settings.AddInt(id, (int)(value.GetFloat() + 0.5f));
 			return true;
 		}
 		case kJsonType::True:
 		{
-			settings.values[id] = true;
+			settings.AddBool(id, true);
 			return true;
 		}
 		case kJsonType::False:
 		{
-			settings.values[id] = false;
+			settings.AddBool(id, false);
 			return true;
 		}
 		case kJsonType::String:
 		{
-			settings.strings[id] = value.GetString();
+			settings.AddString(id, value.GetString());
 			return true;
 		} 
 		case kJsonType::Array:
@@ -87,17 +90,17 @@ bool PopulateSettingByType(const rapidjson::Value& value, const char* id, kJsonT
 			const Value::ConstArray& array = value.GetArray();
 			if(array.Size() > 0 && array.begin()->GetType() == kJsonType::Number)
 			{
-				if(array.Size() <= 2)
-				{
-					VectorF vector;
-					if( array.Size() > 0 )
-						vector.x = array[0].GetFloat();
-					if( array.Size() > 1 )
-						vector.y = array[1].GetFloat();
+				//if(array.Size() <= 2)
+				//{
+				//	VectorF vector;
+				//	if( array.Size() > 0 )
+				//		vector.x = array[0].GetFloat();
+				//	if( array.Size() > 1 )
+				//		vector.y = array[1].GetFloat();
 
-					settings.vectors[id] = vector;
-				}
-				else
+				//	settings.vectors[id] = vector;
+				//}
+				//else
 				{
 					std::vector<float>& float_array = settings.floatArrays.data[id];
 					for( u32 i = 0; i < array.Size(); i++ )

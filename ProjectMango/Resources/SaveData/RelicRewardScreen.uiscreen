@@ -1,0 +1,444 @@
+[
+    {
+        "__identifier": "background",
+        "iid": 3856045568,
+        "children_iids": [
+            511369346,
+            1601688483,
+            1127221739
+        ],
+        "width": 78.0,
+        "height": 120.4000015258789,
+        "px": [
+            25.600000381469727,
+            72.4000015258789
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "callback",
+                "__type": "String",
+                "__value": "RandomRelicChoicePanel",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 3856045568,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "select_button",
+        "iid": 1601688483,
+        "width": 67.0,
+        "height": 17.399999618530273,
+        "px": [
+            31.200000762939453,
+            168.8000030517578
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Select Relic",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "button_callback",
+                "__type": "String",
+                "__value": "ChooseParentRelic",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Float",
+                "__value": 77,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 1601688483,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Float",
+                "__value": 0,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "icon",
+        "iid": 511369346,
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            43.60000228881836,
+            76.4000015258789
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "debuff_icon",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 511369346,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "description",
+        "iid": 1127221739,
+        "width": 69.20000457763672,
+        "height": 47.20000076293945,
+        "px": [
+            29.600000381469727,
+            116.4000015258789
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": "ParentRelicDescription",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Float",
+                "__value": 61,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 1127221739,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "background - copy",
+        "iid": 447147933,
+        "children_iids": [
+            3302291583,
+            2744951613,
+            2426269861
+        ],
+        "width": 78.0,
+        "height": 120.4000015258789,
+        "px": [
+            143.1999969482422,
+            71.5999984741211
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "callback",
+                "__type": "String",
+                "__value": "RandomRelicChoicePanel",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg_black",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 447147933,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "icon - copy",
+        "iid": 3302291583,
+        "width": 40.0,
+        "height": 40.0,
+        "px": [
+            161.60000610351563,
+            76.80000305175781
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "debuff_icon",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 3302291583,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "description - copy",
+        "iid": 2744951613,
+        "width": 69.20000457763672,
+        "height": 47.20000076293945,
+        "px": [
+            148.0,
+            117.20000457763672
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": "ParentRelicDescription",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Float",
+                "__value": 61,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 2744951613,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    },
+    {
+        "__identifier": "select_button - copy",
+        "iid": 2426269861,
+        "width": 67.0,
+        "height": 17.399999618530273,
+        "px": [
+            148.8000030517578,
+            170.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Select Relic",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "button_callback",
+                "__type": "String",
+                "__value": "ChooseParentRelic",
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Float",
+                "__value": 77,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "iid",
+                "__type": "Float",
+                "__value": 2426269861,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Float",
+                "__value": 1,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Float",
+                "__value": 0,
+                "__tile": null,
+                "defUid": -1,
+                "realEditorValues": []
+            }
+        ]
+    }
+]

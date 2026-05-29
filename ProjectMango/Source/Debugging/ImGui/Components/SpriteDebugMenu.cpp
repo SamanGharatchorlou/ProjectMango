@@ -18,18 +18,27 @@ namespace DebugMenu
 
 	u32 DoSpriteDebugMenu(Entity& entity)
 	{
-		StringBuffer32 type_name = Sprite::TypeName();
-		ComponentID type_id = Sprite::TypeId();
+		COMPONENT_PREAMBLE(Sprite);
 
 		ImGui::PushID(entity + type_id);
 		if (ImGui::CollapsingHeader(type_name.c_str()))
 		{
 			Sprite& sprite = GetComponentRef(Sprite, entity);
 
-			StringBuffer64 name = TextureManager::Get()->getTextureName(sprite.image.texture);
+			StringBuffer64 name;
+			if (sprite.image.texture)
+			{
+				name = TextureManager::Get()->getTextureName(sprite.image.texture);
+			}
 			if (ImGui::SpriteSheetCombo(name))
 			{
 				sprite.image.texture = TextureManager::Get()->getTexture(name, FileManager::Images);
+			}
+
+			int layer = (int)sprite.params.renderLayer;
+			if (ImGui::SliderInt("Render Layer", &layer, 0, (int)RenderLayer::Top))
+			{
+				sprite.params.renderLayer = (RenderLayer)layer;
 			}
 
 			ImGui::Text(sprite.params.flip == SDL_FLIP_HORIZONTAL ? "No flip" : "Horizontal flip");
@@ -55,25 +64,6 @@ namespace DebugMenu
 			ImGui::Text("rotation: %f", sprite.params.rotation);
 
 			ImGui::Text("render offset %f, %f", sprite.params.renderOffset.x, sprite.params.renderOffset.y);
-
-
-			//if (ImGui::TreeNode("Display"))
-			//{
-			//	RenderPack pack;
-			//	GenerateRenderPack(sprite, pack);
-
-			//	DebugDraw::RectOutline(pack.rect, SColour::Green);
-
-			//	VectorF about_point = (pack.flipPoint) + pack.rect.TopLeft();
-
-			//	QuadF quad(pack.rect);
-			//	quad.rotate(pack.rotation, about_point);
-
-			//	DebugDraw::Quad(quad, SColour::Purple);
-			//	DebugDraw::Point(about_point, SColour::Red, 2.0f);
-
-			//	ImGui::TreePop();
-			//}
 		}
 
 		ImGui::PopID();

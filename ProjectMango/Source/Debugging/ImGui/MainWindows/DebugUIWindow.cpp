@@ -8,6 +8,8 @@ namespace DebugMenu
 {
 	void DoUIWindow()
 	{
+		ImGui::Begin("UI Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
 		UIManager& ui_manager = UIManager::Get();
 
 		std::vector<const char*> screens;
@@ -21,5 +23,7 @@ namespace DebugMenu
 		{
 			ui_manager.OpenScreen(screens[index]);
 		}
+
+		ImGui::End();
 	}
 }

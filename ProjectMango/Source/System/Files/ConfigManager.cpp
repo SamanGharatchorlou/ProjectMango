@@ -37,16 +37,16 @@ static void XMLReadStrings(const XMLNode& node, Settings& out_string)
 			bool is_false = strncmp(in_value, "false", strlen("false")) == 0;
 			if (is_true || is_false)
 			{
-				out_string.values[childNode.name()] = (float)((int)is_true);
+				out_string.AddBool(childNode.name(), is_true);
 			}
 			else
 			{
-				out_string.strings[childNode.name()] = childNode.value();
+				out_string.AddString(childNode.name(), childNode.value());
 			}
 		}
 		else
 		{
-			out_string.values[childNode.name()] = (float)converted;
+			out_string.AddU64(childNode.name(), converted);
 		}
 
 		childNode = childNode.next();

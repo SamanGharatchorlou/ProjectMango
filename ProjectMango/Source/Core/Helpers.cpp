@@ -70,6 +70,12 @@ bool IsSelectedDebugEntity(ECS::Entity entity)
 	return DebugMenu::GetSelectedEntity() == entity;
 }
 
+float RevertFromScreenSize(float size)
+{
+	const Window* window = GameData::Get().window;
+	return size * window->fakeSize().area() / window->realSize().area();
+}
+
 float AdjustToScreenSize(float size)
 {
 	const Window* window = GameData::Get().window;

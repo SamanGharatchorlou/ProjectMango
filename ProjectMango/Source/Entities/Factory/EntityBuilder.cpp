@@ -1,20 +1,16 @@
 #include "pch.h"
 #include "EntityBuilder.h"
 
-#include "ECS/EntityCoordinator.h"
+#include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/Components/IncludeComponents.h"
+#include "ECS/EntityCoordinator.h"
+#include "EnemyBuilder.h"
+#include "Entities/Factory/ComponentAssembler.h"
+#include "Entities/Factory/EntitySerialiser.h"
+#include "Graphics/Raycast.h"
 #include "System/Files/ConfigManager.h"
 #include "UIEntityBuilder.h"
 #include "Entities/States/Behaviours.h"
-#include "Game/States/GameState.h"
-#include "Debugging/ImGui/ImGuiMenu.h"
-#include "Graphics/Raycast.h"
-#include "Entities/Registries/ResourceBank.h"
-#include "Entities/Registries/RelicRegistry.h"
-#include "Entities/Registries/CardRegistry.h"
-#include "Game/Readers/AnimationReader.h"
-#include "Core/Helpers.h"
-#include "Entities/Factory/ComponentAssembler.h"
 
 using namespace ECS;
 
@@ -52,138 +48,10 @@ Entity CreateBasicObject(const EntityMetaData& emd)
 	return AssembleEntity(emd);
 }
 
-Entity CreateCoinStack(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-
-	CoinStack& coin_stack = AddComponent(CoinStack, entity);
-	coin_stack.isInventory = false;
-	coin_stack.capacity = 5;
-	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("colour_type" , -1.0f);
-	coin_stack.remaining = coin_stack.capacity;
-	
-	RegisterCoinResource(entity, Faction::GetTeam(emd.data.GetString("faction")));
-
-	return entity;
-}
-
-static void SetupCostIcons(Entity entity, int count)
-{
-	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-
-	DestroyChildren(entity);
-	coin_stack.costEntities.resize(count);
-
-	const Transform& transform = GetComponentRef(Transform, entity);
-	VectorF size = transform.size;
-	VectorF bottom = VectorF(size.x * 0.1f, size.y * 0.85f);
-
-	for( u32 i = 0; i < count; i++ )
-	{
-		Entity child_entity = CreateEntity("coin_icon");
-		coin_stack.costEntities[i] = (child_entity);
-
-		EntityData::SetParent(child_entity, entity);
-
-		// Transform
-		VectorF size = VectorF(15,15);
-		size = AdjustToScreenSize(size);
-		Transform& child_transform = AddComponent(Transform, child_entity);
-		child_transform.size = size;
-
-		VectorF offset =  VectorF(0.0f, i * 1.25f);
-		VectorF local_position = bottom - (child_transform.size * offset);
-		child_transform.SetLocalPosition( local_position );
-
-		// Sprite
-		Sprite& child_sprite = AddComponent(Sprite, child_entity);
-		child_sprite.SetTexture("cost_filled");
-		child_sprite.params.renderLayer = RenderLayer::UI;
-		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
-		child_sprite.params.colourMod.setOpacity(0.6f);
-	}
-}
-
-static void SetupPowerIcons(Entity entity, int count)
-{
-	CoinStack& coin_stack = GetComponentRef(CoinStack, entity);
-
-	DestroyChildren(entity);
-	coin_stack.costEntities.resize(count);
-
-	const Transform& transform = GetComponentRef(Transform, entity);
-	VectorF size = transform.size;
-	VectorF top = VectorF(size.x * 0.1f, size.y * 0.1f);
-
-	for( u32 i = 0; i < count; i++ )
-	{
-		Entity child_entity = CreateEntity("coin_icon");
-		coin_stack.costEntities[i] = (child_entity);
-
-		EntityData::SetParent(child_entity, entity);
-
-		// Transform
-		VectorF size = VectorF(15,15);
-		size = AdjustToScreenSize(size);
-
-		Transform& child_transform = AddComponent(Transform, child_entity);
-		child_transform.size = size;
-
-		VectorF offset =  VectorF(0.0f, i * 1.25f);
-		VectorF local_position = top + (child_transform.size * offset);
-		child_transform.SetLocalPosition( local_position );
-
-		// Sprite
-		Sprite& child_sprite = AddComponent(Sprite, child_entity);
-		child_sprite.SetTexture("power_filled");
-		child_sprite.params.renderLayer = RenderLayer::UI;
-		child_sprite.params.colourMod = Colour::s_typeToColour.at(coin_stack.colourType);
-		child_sprite.params.colourMod.setOpacity(0.6f);
-	}
-}
-
-static Entity CreateCoinPile(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-
-	CoinStack& coin_stack = AddComponent(CoinStack, entity);
-	coin_stack.isInventory = true;
-	coin_stack.capacity = 5;
-	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("colour_type" , -1.0f);
-	coin_stack.remaining = 0;
-
-	SetupCostIcons(entity, coin_stack.capacity);
-
-	RegisterCoinResource(entity, Faction::GetTeam(emd.data.GetString("faction")));
-
-	return entity;
-}
-
-static Entity CreateCardPower(const EntityMetaData& emd)
-{
-	Entity entity = CreateBasicObject( emd );
-
-	CoinStack& coin_stack = AddComponent(CoinStack, entity);
-	coin_stack.isInventory = false;
-	coin_stack.capacity = 5;
-	coin_stack.colourType = (Colour::Type)emd.data.GetFloat("colour_type" , -1.0f);
-	coin_stack.remaining = 0;
-
-	SetupPowerIcons(entity, coin_stack.capacity);
-	
-	RegisterCardResource(entity, Faction::GetTeam(emd.data.GetString("faction")));
-
-	return entity;
-}
-
 static Entity CreateHealthBar(const EntityMetaData& emd)
 {
-	Entity entity = CreateEntity(emd);
+	Entity entity = AssembleEntity(emd);
 			
-	// Transform
-	Transform& transform = AddComponent(Transform, entity);
-	transform.Init(&emd);
-
 	LayeredSprite& layers = AddComponent(LayeredSprite, entity);
 	layers.spriteLayers.push_back(LayeredSprite::Layer());
 	layers.spriteLayers.push_back(LayeredSprite::Layer());
@@ -199,7 +67,7 @@ static Entity CreateHealthBar(const EntityMetaData& emd)
 	return entity;
 }
 
-// something that moves
+// something that.. acts?
 Entity CreateActor(const EntityMetaData& emd, const char* id_override)
 {
 	// adding everything something NEEDS to be an enemy... pretty much anyway
@@ -217,40 +85,7 @@ Entity CreateActor(const EntityMetaData& emd, const char* id_override)
 		meta_data.data.Merge(config->data);
 
 		// merge config data into meta data, config overrides default meta data
-		return AssembleEntity(meta_data);
-	}
-
-	// Collider
-	Collider& collider = AddComponent(Collider, entity);
-
-	// Transform
-	Transform& transform = AddComponent(Transform, entity);
-	transform.Init(&emd, collider);
-
-	// MovementPhysics
-	Physics& physics = AddComponent(Physics, entity);
-	physics.Init();
-
-	// Animator
-	Animator& animation = AddComponent(Animator, entity);
-	animation.Init();
-
-	// Health
-	Health& health = AddComponent(Health, entity);
-	health.Init();
-	
-	// Sprite
-	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.Init(nullptr);
-	sprite.params.renderLayer = RenderLayer::Monsters;
-
-	// EntityState
-	EntityState& character_state = AddComponent(EntityState, entity);
-
-	if (emd.data.Contains("faction"))
-	{
-		Faction& faction = GetOrAddComponent(Faction, entity);
-		faction.team = Faction::GetTeam(emd.data.GetString("faction"));
+		return AssembleEntity(meta_data, entity);
 	}
 
 	return entity;
@@ -323,119 +158,6 @@ Entity CreateCardSpell(const EntityMetaData& emd, Entity parent)
 	return entity;
 }
 
-static void BuildIntentIconEntity(Entity icon_entity)
-{
-	UIIntentIcon& icon = AddComponent(UIIntentIcon, icon_entity);
-	icon.displays.push_back({ "basic_approach_icon"	, EnemyPhase::Approach });
-	icon.displays.push_back({ "basic_attack_icon"	, EnemyPhase::Attack });
-	icon.displays.push_back({ "basic_recovery_icon"	, EnemyPhase::Recover });
-	icon.displays.push_back({ "debuff_icon"			, EnemyPhase::Debuff });
-
-	// Transform
-	Transform& child_transform = AddComponent(Transform, icon_entity);
-	VectorF size = VectorF(16,16);
-	child_transform.size = AdjustToScreenSize(size);
-
-	
-	Entity parent = GetParent(icon_entity);
-	const Transform& parent_transform = GetComponentRef(Transform, parent);
-	VectorF object_tc = parent_transform.GetObjectRect().TopCenter();
-	VectorF top_left = parent_transform.GetRect().TopLeft();
-
-
-	VectorF local_position = VectorF(object_tc.x- top_left.x, (object_tc.y - top_left.y) * 0.25f );
-	child_transform.SetLocalPosition( local_position );
-
-	// Sprite
-	Sprite& child_sprite = AddComponent(Sprite, icon_entity);
-	child_sprite.params.renderLayer = RenderLayer::UI;
-	child_sprite.params.colourMod.setOpacity(0.85f);
-	//child_sprite.SetTexture( "basic_recovery_icon" );
-}
-
-// Enemy
-// ---------------------------------------------------------
-// create an actual enemy i.e. the thing the player fights
-Entity CreateEnemy(const ECS::EntityMetaData& emd)
-{	
-	// pick random enemy create enemy registry
-	const char* enemy_type = emd.data.GetString("enemy_type");
-	Entity entity = CreateActor(emd, enemy_type);
-	
-	AddComponent(AIIntent, entity);
-	AddComponent(Inventory, entity);
-	
-	// AIStrategy
-	AIStrategy& strategy = AddComponent(AIStrategy, entity);
-	EnemyPhase recover { EnemyPhase::Recover, 1 };
-	EnemyPhase approach { EnemyPhase::Approach, 99 }; // once we reach the target
-	EnemyPhase attack { EnemyPhase::Attack, 1 };
-	EnemyPhase debuff { EnemyPhase::Debuff, 1 };
-	
-	Strategy approach_pattern;
-	approach_pattern.name = "Approach";
-	approach_pattern.phases.push_back(recover);
-	approach_pattern.phases.push_back(approach);
-
-	Strategy attack_pattern; 
-	attack_pattern.name = "Attack";
-	attack_pattern.phases.push_back(recover);
-	attack_pattern.phases.push_back(attack);
-	attack_pattern.phases.push_back(recover);
-
-	Strategy debuff_pattern; 
-	debuff_pattern.name = "Debuff";
-	debuff_pattern.phases.push_back(recover);
-	debuff_pattern.phases.push_back(debuff);
-	debuff_pattern.phases.push_back(recover);
-
-	strategy.strategies.push_back(approach_pattern);
-	strategy.strategies.push_back(attack_pattern);
-	strategy.strategies.push_back(debuff_pattern);
-
-	strategy.currentPhase = 0;
-	strategy.turnsLeft = 1;
-	
-	// UIIntentIcon
-	Entity child_entity = CreateEntity("intent_icon");
-	EntityData::SetParent(child_entity, entity);
-	BuildIntentIconEntity(child_entity);
-
-	// Collider
-	Collider& collider = GetComponentRef(Collider, entity);
-	collider.SetFlag(Collider::IsEnemy);
-
-	// AIController
-	AIController& ai = AddComponent(AIController, entity);
-	ai.isDisabled = false;
-	
-	// BehaviourState
-	BehaviourState& state = AddComponent(BehaviourState, entity);
-	state.Init();
-
-	BehaviourMap& map = AddComponent(BehaviourMap, entity);
-	PopulateDefaultBehaviours(map);
-
-	// link this up the to kind of attack or phase
-	//Damage& damage = AddComponent(Damage, entity);
-	//damage.value = 1;
-
-	// Turn
-	TurnState& turn = AddComponent(TurnState, entity);
-	turn.initiative = 10;
-
-	// mark ourselves as the enemy
-	if(GameState* game_state = GameState::GetActive())
-	{
-		game_state->enemy = entity;
-	}
-		
-	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
-		DebugMenu::SelectEntity(entity);
-
-	return entity;
-}
-
 // Player
 // ---------------------------------------------------------
 Entity CreatePlayer(const ECS::EntityMetaData& emd)
@@ -448,14 +170,14 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	AddComponent(BehaviourState, entity);
 
 	Inventory& inventory = AddComponent(Inventory, entity);
-	if(ECS::Relic* relic = RelicRegistry::GetRelic("DiscountCardCost"))
-	{
-		//inventory.relics.push_back(*relic);
-	}
-	if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseColourDrawRate"))
-	{
-		//inventory.relics.push_back(*relic);
-	}
+	//if(ECS::Relic* relic = RelicRegistry::GetRelic("DiscountCardCost"))
+	//{
+	//	//inventory.relics.push_back(*relic);
+	//}
+	//if(ECS::Relic* relic = RelicRegistry::GetRelic("IncreaseColourDrawRate"))
+	//{
+	//	//inventory.relics.push_back(*relic);
+	//}
 
 	Collider& collider = GetComponentRef(Collider, entity);
 	collider.SetFlag(Collider::IsPlayer);
@@ -477,9 +199,6 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 
 Entity CreateVFX(const char* vfx, const RectF& rect)
 {
-	if(!vfx || !AnimationReader::AnimationExists(vfx))
-		return EntityInvalid;
-
 	EntityMetaData meta_data;
 	PopulateMetaData(vfx, rect, meta_data);
 
@@ -499,25 +218,6 @@ Entity CreateVFX(const char* vfx, const RectF& rect)
 
 static void PostProcess(Entity entity, const EntityMetaData& emd)
 {
-	// todo: remove these
-	if( emd.data.Contains("button_callback") )
-	{
-		UIButton& button = GetOrAddComponent(UIButton, entity);
-		button.callback = emd.data.GetString("button_callback");
-	}
-
-	if( emd.data.Contains("callback") )
-	{
-		Callback& cb = GetOrAddComponent(Callback, entity);
-		cb.callback = emd.data.GetString("callback");
-	}
-
-	if( emd.data.Contains("faction") )
-	{
-		Faction& faction = GetOrAddComponent(Faction, entity);
-		faction.team = Faction::GetTeam(emd.data.GetString("faction"));
-	}
-	
 	if( emd.data.GetBool("snap_to_floor") )
 	{
 		RaycastResult result;
@@ -538,7 +238,7 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 
 			// they will be hugging the wall, so leave a gap
 			if(result.distance > 0.0f)
-				position = position - VectorF(50.0f, 0.0f);
+				position = position - VectorF(40.0f, 0.0f);
 
 			transform.SetWorldPosition( position );
 		}
@@ -547,19 +247,14 @@ static void PostProcess(Entity entity, const EntityMetaData& emd)
 	ASSERT(GetComponentRef(Transform, entity).size.isPositive(), "%s: Invalid Transform, has size 0", GetName(entity));
 }
 
+typedef Entity(*CreateEntityFn)(const EntityMetaData& emd);
 static std::unordered_map<BasicString, CreateEntityFn> s_createEntitiyFunctions;
 
 static void InitEntityFunctions()
 {
 	// game object entities
-	//s_createEntitiyFunctions["Card"] = CreateCardEntity;
-	s_createEntitiyFunctions["CoinStack"] = CreateCoinStack;
-	s_createEntitiyFunctions["CoinPile"] = CreateCoinPile;
-	s_createEntitiyFunctions["CardPower"] = CreateCardPower;
-	//s_createEntitiyFunctions["Text"] = CreateUIText;
 	s_createEntitiyFunctions["HealthBar"] = CreateHealthBar;
 	s_createEntitiyFunctions["Enemy"] = CreateEnemy;
-	//s_createEntitiyFunctions["Spawner"] = CreateSpawner;
 	s_createEntitiyFunctions["Player"] = CreatePlayer;
 }
 
@@ -589,18 +284,10 @@ void CreateEntities(Entity& biome_entity)
 	if (s_createEntitiyFunctions.size() == 0)
 		InitEntityFunctions();
 
-	// UI entities
-	CreateUIEntities();
-
 	Biome& biome = GetComponentRef(Biome, biome_entity);
-	for (u32 i = 0; i < biome.levels.size(); i++)
+	for (u32 i = 0; i < biome.entityMetaData.size(); i++)
 	{
-		const Level& level = biome.levels[i];
-
-		for (u32 i = 0; i < level.entityMetaData.size(); i++)
-		{
-			const EntityMetaData& emd = level.entityMetaData[i];
-			Entity entity = CreateEntityFromData(emd);
-		}
+		const EntityMetaData& emd = biome.entityMetaData[i];
+		Entity entity = CreateEntityFromData(emd);
 	}
 }

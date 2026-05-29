@@ -130,11 +130,11 @@ bool RaycastToFloor(const RectF& rect, float& out_distance)
 			
 	std::vector<u32> collider_flags;
 	collider_flags.push_back(ECS::Collider::IsFloor);
-			
-	const ECS::Level& level = ECS::Biome::GetLevel(top);
+
+	const ECS::Biome& biome = ECS::Biome::GetActive();
 
 	RaycastResult result;
-	Raycast(top, VectorF(0.0f, 1.0f), level.size.y, result, nullptr, &collider_flags);
+	Raycast(top, VectorF(0.0f, 1.0f), biome.size.y, result, nullptr, &collider_flags);
 
 	out_distance = result.distance - rect.Height();
 	// bump it up a little
@@ -147,11 +147,9 @@ bool RaycastToFloor(const VectorF& start, RaycastResult& result)
 	std::vector<u32> collider_flags;
 	collider_flags.push_back(ECS::Collider::IsFloor);
 			
-	const ECS::Level& level = ECS::Biome::GetLevel(start);
+	const ECS::Biome& biome = ECS::Biome::GetActive();
 
-	Raycast(start, VectorF(0.0f, 1.0f), level.size.y, result, nullptr, &collider_flags);
-
-
+	Raycast(start, VectorF(0.0f, 1.0f), biome.size.y, result, nullptr, &collider_flags);
 
 	return result.hasHit;
 }
@@ -172,13 +170,13 @@ bool RaycastToFloor(ECS::Entity entity, RaycastResult& out_result)
 
 		std::vector<u32> collider_flags;
 		collider_flags.push_back(ECS::Collider::IsFloor);
-			
-		const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+		const ECS::Biome& biome = ECS::Biome::GetActive();
 
 		for( u32 i = 0; i < 3; i++ )
 		{
 			RaycastResult result;
-			Raycast(test_points[i], VectorF(0.0f, 1.0f), level.size.y, result, &self, &collider_flags);
+			Raycast(test_points[i], VectorF(0.0f, 1.0f), biome.size.y, result, &self, &collider_flags);
 
 			if(result.hasHit)
 			{
@@ -200,26 +198,6 @@ bool RaycastToFloor(ECS::Entity entity, RaycastResult& out_result)
 
 bool RaycastToWall(ECS::Entity entity, VectorF direction, RaycastResult& out_result)
 {
-	//if(const ECS::Transform* transform = GetComponent(Transform, entity))
-	//{
-	//	VectorF bot = transform->GetRect().BotCenter();
-	//		
-	//	std::vector<ECS::Entity> self;
-	//	self.push_back(entity);
-
-	//	std::vector<u32> collider_flags;
-	//	collider_flags.push_back(ECS::Collider::IsWall);
-	//		
-	//	const ECS::Level& level = ECS::Biome::GetLevel(entity);
-
-	//	RaycastResult result;
-	//	Raycast(bot, direction, level.size.y, result, &self, &collider_flags);
-
-	//	out_distance = result.distance;
-	//	return result.hasHit;
-	//}
-
-
 	if(const ECS::Transform* transform = GetComponent(Transform, entity))
 	{
 		ASSERT(!transform->GetRect().Size().isZero(), "cant raycast if the size hasnt been set");
@@ -234,13 +212,13 @@ bool RaycastToWall(ECS::Entity entity, VectorF direction, RaycastResult& out_res
 
 		std::vector<u32> collider_flags;
 		collider_flags.push_back(ECS::Collider::IsWall);
-			
-		const ECS::Level& level = ECS::Biome::GetLevel(entity);
+
+		const ECS::Biome& biome = ECS::Biome::GetActive();
 
 		for( u32 i = 0; i < 3; i++ )
 		{
 			RaycastResult result;
-			Raycast(test_points[i], direction, level.size.y, result, &self, &collider_flags);
+			Raycast(test_points[i], direction, biome.size.y, result, &self, &collider_flags);
 
 			if(result.hasHit)
 			{

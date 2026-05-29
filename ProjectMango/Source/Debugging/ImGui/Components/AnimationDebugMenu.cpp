@@ -2,6 +2,7 @@
 #include "ComponentDebugMenu.h"
 
 #include "ECS/Components/GraphicComponents.h"
+#include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCoordinator.h"
 #include "Game/FrameRateController.h"
 #include "imgui-master/imgui.h"

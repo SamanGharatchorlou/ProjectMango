@@ -42,10 +42,10 @@ namespace ECS
 			transform.UpdateChildTransforms();
 
 			// check out of bounds
-			const Biome& biome = Biome::GetActiveBiome();
+			const Biome& biome = Biome::GetActive();
 			const RectF rect = transform.GetRect();
-			if (rect.RightPoint() < biome.aabb[0].x || rect.BotPoint() < biome.aabb[0].y || 
-				rect.LeftPoint() > biome.aabb[1].x || rect.TopPoint() > biome.aabb[1].y)
+			if (rect.RightPoint() < 0.0f || rect.BotPoint() < 0.0f || 
+				rect.LeftPoint() > biome.size.x || rect.TopPoint() > biome.size.y)
 			{
 				out_of_bounds_entities.push_back(entity);
 			}

@@ -36,4 +36,6 @@ namespace Maths
 
 	// easings from https://easings.net/
 	float EaseOutCubic(float x);
+
+	u32 GenerateIID();
 }

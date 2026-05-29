@@ -127,12 +127,11 @@ namespace CardRegistry
 					// end
 					default:
 						break;
-				}	
+				}
 				column++;
 			}
 		}
 	}
-
 
 	const Card* LookupCard(int index)
 	{
@@ -155,10 +154,7 @@ namespace CardRegistry
 			AddColourPostfix(sprite.image.id.c_str(), card.colour, coloured_sprite);
 			sprite.SetTexture(coloured_sprite.c_str());
 
-			//int monster_index = MonsterRegistry::GetRandomMonsterIndex(card.points);
-			//card.monsterRegistryIndex = monster_index;
 			card.spell = SpellRegistry::GetSpell(card.points, card.colour);
-
 			card.RegenerateChildDisplays();
 		}
 	}
@@ -175,10 +171,40 @@ namespace CardRegistry
 		int random_index = Maths::randomNumberBetween( 0, (int)indexes.size());
 		return indexes[random_index];
 	}
+
+	void ResetCards()
+	{
+		std::vector<Entity> entities;
+
+		ComponentArray<Card>& cards = GetAllComponents(Card);
+		for (auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++)
+		{
+			const Card& card = cards.GetComponentByIndex(iter->second);
+			entities.push_back(iter->first);
+		}
+
+		for (u32 i = 0; i < entities.size(); i++)
+		{
+			DiscardCard(entities[i]);
+		}
+
+		for (u32 i = 0; i < Card::c_tiers; i++)
+		{
+			s_cardRegistryDrawPile[i].clear();
+			s_cardRegistryDiscard[i].clear();
+		}
+
+		std::vector<int> indexes;
+		for (int i = 0; i < s_cardRegistry.size(); i++)
+		{
+			int tier = s_cardRegistry[i].tier;
+			s_cardRegistryDrawPile[tier].push_back(i);
+		}
+	}
 	
 	void DiscardCard(Entity entity)
 	{
-		const Card& card = GetComponentRef(Card, entity);
+		Card& card = GetComponentRef(Card, entity);
 		
 		// place into discard pile
 		std::vector<int>& discard_pile = s_cardRegistryDiscard[card.tier];
@@ -191,12 +217,13 @@ namespace CardRegistry
 		sprite.params.disabled = true;
 
 		// remove the component
-		RemoveComponent(Card, entity);
+		//RemoveComponent(Card, entity);
+		card.registryIndex = -1;
 	}
 
 	void ReturnCardToDrawPile(ECS::Entity entity)
 	{
-		const Card& card = GetComponentRef(Card, entity);
+		Card& card = GetComponentRef(Card, entity);
 		
 		// place into discard pile
 		std::vector<int>& draw_pile = s_cardRegistryDrawPile[card.tier];
@@ -208,8 +235,9 @@ namespace CardRegistry
 		Sprite& sprite = GetComponentRef(Sprite, entity);
 		sprite.params.disabled = true;
 
+		card.registryIndex = -1;
 		// remove the component
-		RemoveComponent(Card, entity);
+		//RemoveComponent(Card, entity);
 	}
 	
 	void DrawRandomCard(Entity entity, int tier)
@@ -253,7 +281,7 @@ namespace CardRegistry
 		ComponentArray<Card>& cards = GetAllComponents(Card);
 
 		// [ entity, tier ] 
-		// push these into a list first, otherwise we can invalidat the iterator
+		// push these into a list first, otherwise we can invalidate the iterator
 		std::vector< std::pair<Entity, int> > entities;
 		for (auto iter = cards.entityToComponent.begin(); iter != cards.entityToComponent.end(); iter++)
 		{
@@ -263,7 +291,7 @@ namespace CardRegistry
 
 		for (u32 i = 0; i < entities.size(); i++)
 		{
-			CardRegistry::DrawRandomCard(entities[i].first, entities[i].second);
+			DrawRandomCard(entities[i].first, entities[i].second);
 		}
 	}
 }

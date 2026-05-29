@@ -4,7 +4,7 @@
 #include "System/Files/JSONParser.h"
 
 #include "Entities/Factory/EntityBuilder.h"
-#include "Entities/Factory/ComponentAssembler.h"
+#include "Entities/Factory/EntitySerialiser.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "Game/Readers/AnimationReader.h"
 #include "ECS/EntityCoordinator.h"
@@ -19,7 +19,7 @@ namespace SpellRegistry
 		int damage = 0;
 		Colour::Type colour = Colour::Count;
 
-		bool operator == (CardSpell& cs) { return damage == cs.damage && colour == cs.colour; }
+		bool operator == (const CardSpell& cs) const { return damage == cs.damage && colour == cs.colour; }
 	};
 
 	std::unordered_map<BasicString, CardSpell> s_spellsRegistry;
@@ -105,8 +105,8 @@ namespace SpellRegistry
 		//EntityMetaData meta_data;
 		PopulateMetaData(spell_id, RectF(VectorF::zero(), size), emd);
 
-		emd.data.values["damage"] = (float)spell.damage;
-		emd.data.values["colour"] = (float)spell.colour;
+		emd.data.AddInt("damage", spell.damage);
+		emd.data.AddInt("colour", (int)spell.colour);
 
 		return true;
 	}
@@ -121,7 +121,7 @@ namespace SpellRegistry
 		VectorF size = AnimationReader::GetAnimationFrameSize(spell_id);
 		float tl_x = GetPosition(target).x - size.x * 0.5f;
 		float tl_y = GetRect(target).BotPoint() - size.y;
-		meta_data.data.vectors["position"] = VectorF(tl_x, tl_y);
+		meta_data.data.AddVectorF("position", VectorF(tl_x, tl_y));
 
 		Entity entity = CreateBasicObject(meta_data);
 
@@ -138,7 +138,7 @@ namespace SpellRegistry
 		ds.action = action;
 
 		Damage& damage = AddComponent(Damage, target);
-		damage.value = meta_data.data.GetFloat("damage");
+		damage.value = meta_data.data.GetInt("damage");
 		damage.sourceEntity = entity;
 
 		if (BehaviourState* bs = GetComponent(BehaviourState, entity))

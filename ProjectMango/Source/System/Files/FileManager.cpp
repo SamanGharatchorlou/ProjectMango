@@ -47,6 +47,9 @@ void FileManager::init()
 	AddFolder(Config_Animations, Configs, "Animations\\");
 	AddFolder(Config_Data, Configs, "Data\\");
 
+	// SaveData
+	AddFolder(SaveData, Root, "SaveData\\");
+
 	for (int i = 0; i < Folder::Count; i++)
 	{
 		ASSERT(!folderPaths[(Folder)i].path.empty(), "The enum %d in the folderPath map has not been defined", i);
@@ -206,7 +209,7 @@ BasicString FileManager::findFileEtx(const Folder folder, const char* name) cons
 
 }
 
-StringBuffer64 FileManager::getItemName(const char* filePath) const
+StringBuffer64 FileManager::getItemName(const char* filePath)
 {
 	char fileName[50];
 	errno_t error = _splitpath_s(filePath, NULL, 0, NULL, 0, fileName, 50, NULL, 0);
@@ -214,18 +217,18 @@ StringBuffer64 FileManager::getItemName(const char* filePath) const
 }
 
 
-StringBuffer64 FileManager::getItemName(const fs::path& filePath) const
+StringBuffer64 FileManager::getItemName(const fs::path& filePath)
 {
 	char fileName[50];
 	errno_t error = _splitpath_s(pathToString(filePath).c_str(), NULL, 0, NULL, 0, fileName, 50, NULL, 0);
 	return StringBuffer64(fileName);
 }
 
-StringBuffer64 FileManager::getItemNameAndExt(const fs::path& filePath) const
+StringBuffer64 FileManager::getItemNameAndExt(const fs::path& filePath)
 {
-	char fileName[26];
-	char ext[6];
-	errno_t error = _splitpath_s(pathToString(filePath).c_str(), NULL, 0, NULL, 0, fileName, 26, ext, 6);
+	char fileName[32];
+	char ext[32];
+	errno_t error = _splitpath_s(pathToString(filePath).c_str(), NULL, 0, NULL, 0, fileName, 32, ext, 32);
 	return StringBuffer64(fileName) + ext;
 }
 
@@ -233,7 +236,7 @@ StringBuffer64 FileManager::getItemNameAndExt(const fs::path& filePath) const
 bool FileManager::HasExt(const char* filePath, const char* extension)
 {
 	StringBuffer64 buffer;
-	errno_t error = _splitpath_s(filePath, NULL, 0, NULL, 0, NULL, 0, buffer.buffer(), 6);
+	errno_t error = _splitpath_s(filePath, NULL, 0, NULL, 0, NULL, 0, buffer.buffer(), buffer.bufferLength());
 	return buffer == extension;
 }
 

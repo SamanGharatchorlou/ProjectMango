@@ -380,6 +380,8 @@ void InputManager::bindDefaultButtons()
 	mButtons.push_back(Button(Button::Key::Space));
 	mButtons.push_back(Button(Button::Key::Shift));
 	mButtons.push_back(Button(Button::Key::Tab));
+	mButtons.push_back(Button(Button::Key::Delete));
+	
 
 	// Keys
 	mButtons.push_back(Button(Button::Key::E));

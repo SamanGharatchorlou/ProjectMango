@@ -37,6 +37,20 @@ namespace ECS
 		return entity;
 	}
 
+	Entity FindEntityFromIid(u64 iid)
+	{
+		const ComponentArray<EntityData>& eds = GetAllComponents(EntityData);
+		for (auto iter = eds.entityToComponent.begin(); iter != eds.entityToComponent.end(); iter++)
+		{
+			const EntityData& ed = eds.GetComponentByIndex(iter->second);
+			if (ed.iid == iid)
+				return iter->first;
+		}
+
+		DebugPrint(Warning, "No entity found with iid %u", iid);
+		return EntityInvalid;
+	}
+
 	const char* GetName(Entity entity)
 	{
 		if(EntityData* ed = GetComponent(EntityData, entity))
@@ -217,34 +231,34 @@ namespace ECS
 		rect_a.SetSize(size);
 	}
 
-	bool IsInLevel(const Level& level, const Transform& transform)
-	{
-		const VectorF position = transform.worldPosition;
-		const VectorF world_pos = level.worldPos;
+	//bool IsInLevel(const Level& level, const Transform& transform)
+	//{
+	//	const VectorF position = transform.worldPosition;
+	//	const VectorF world_pos = level.worldPos;
 
-		if (position.x > world_pos.x && position.y > world_pos.y)
-		{
-			const VectorF world_pos_end = world_pos + level.size;
-			return position.x < world_pos_end.x && position.y < world_pos_end.y;
-		}
+	//	if (position.x > world_pos.x && position.y > world_pos.y)
+	//	{
+	//		const VectorF world_pos_end = world_pos + level.size;
+	//		return position.x < world_pos_end.x && position.y < world_pos_end.y;
+	//	}
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities)
-	{
-		for (auto iter = in_entities.begin(); iter != in_entities.end(); iter++)
-		{
-			ECS::Entity entity = iter->first;
-			if (const Transform* transform = GetComponent(Transform, entity))
-			{
-				if (IsInLevel(level, *transform))
-				{
-					out_entities.push_back(entity);
-				}
-			}
-		}
-	}
+	//void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities)
+	//{
+	//	for (auto iter = in_entities.begin(); iter != in_entities.end(); iter++)
+	//	{
+	//		ECS::Entity entity = iter->first;
+	//		if (const Transform* transform = GetComponent(Transform, entity))
+	//		{
+	//			if (IsInLevel(level, *transform))
+	//			{
+	//				out_entities.push_back(entity);
+	//			}
+	//		}
+	//	}
+	//}
 
 	// Actions
 	const char* ActionToString(Action::Enum action)

@@ -19,6 +19,8 @@ namespace DebugMenu
 
     void DoTweakerWindow()
     {
+        ImGui::Begin("Entity Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
         SharedState& state = GetSharedState();
 
         ECS::Entity entity = ECS::Faction::GetPlayer();
@@ -26,6 +28,15 @@ namespace DebugMenu
         if (ECS::Health* health = GetComponent(Health, entity))
         {
             ImGui::Checkbox("Player Invulnerable", &health->invulnerable);
+        }
+
+        if (ImGui::Button("Kill Enemy"))
+        {
+            ECS::Entity enemy = ECS::Faction::GetEnemy();
+            if (ECS::Health* health = GetComponent(Health, enemy))
+            {
+                health->ApplyDamage(FLT_MAX);
+            }
         }
 
         ImGui::Checkbox("Can buy any card", &state.canBuyAnyCard);
@@ -73,6 +84,8 @@ namespace DebugMenu
         {
             state.turnLog.clear();
         }
+
+        ImGui::End();
     }
 
     void SendRenderLayerInfo(const std::vector<RenderPack>* render_packs)

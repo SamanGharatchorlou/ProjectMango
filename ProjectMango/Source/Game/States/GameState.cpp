@@ -5,8 +5,8 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Factory/EntityBuilder.h"
 #include "Entities/Factory/UIEntityBuilder.h"
+#include "Entities/Factory/EnemyBuilder.h"
 #include "Game/Camera/Camera.h"
 #include "Game/Readers/SceneReader.h"
 #include "Game/States/EditorState.h"
@@ -15,6 +15,8 @@
 #include "System/Window.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
 #include "Entities/Registries/CardRegistry.h"
+#include "UI/UIManager.h"
+#include "Game/EndBattle.h"
 
 
 GameState* GameState::GetActive()
@@ -35,34 +37,24 @@ void GameState::Init()
 {
 	ECS::ParseGameFileData();
 
-	ECS::Entity biome_entity = ECS::CreateEntity("Map_1");
+	CreateUICursor();
 
-	AddComponent(Biome, biome_entity);
-	Scene::BuildBiome( "GemBiome", biome_entity );
-	activeLevel = biome_entity;
-	
-	CreateEntities(biome_entity);
+	Scene::BuildBiome("GemBiome", 0);
+
 	CardRegistry::DrawCards();
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
 
 	camera->setViewport(window->size());
-	camera->targetEntity = Faction::GetPlayer();
+	camera->targetEntity = ECS::Faction::GetPlayer();
 	camera->InitShakeyCam(5.0f, VectorF(12.0,0));
 
-	// Start Audio
-	//AudioManager* audio = AudioManager::Get();
-	//audio->PlayMusic("Game");
-
+	// Start Audio (disable for now)
 	SoundController* sc = AudioManager::GetController();
-	sc->SetMusicVolume(0);//0.05f);
-	//audio->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 1500));
-	//float vol = audio->musicVolume();
-	//audio->setMusicVolume(0.2f);
+	sc->SetMusicVolume(0);
 
-	// create cursor
-	CreateUIEntities();
+	UIManager::Get().Init();
 
 	// finally init all the systems
 	ecs->InitSystems();
@@ -97,6 +89,8 @@ void GameState::HandleInput()
 
 	if(input->isPressed(Button::P))
 	{
+		using namespace ECS;
+
 		// pause physics	
 		ECS::Signature physics_signature = ArcheBit(Physics);
 		ecs->ToggleSystemPaused( physics_signature );
@@ -116,25 +110,100 @@ void GameState::HandleInput()
 #endif
 }
 
-void GameState::FastUpdate(float dt)
+static void SavePlayerState(PlayerState& player_state)
 {
-	//Camera::Get()->fastUpdate(dt);
+	ECS::Entity player = ECS::Faction::GetPlayer();
+	if (const ECS::Inventory* inventory = GetComponent(Inventory, player))
+	{
+		player_state.relics = inventory->relics;
+	}
+	if (const ECS::Health* health = GetComponent(Health, player))
+	{
+		player_state.health = health->currentHealth;
+	}
+}
+
+static void LoadPlayerState(PlayerState& player_state)
+{
+	ECS::Entity player = ECS::Faction::GetPlayer();
+	if (ECS::Inventory* inventory = GetComponent(Inventory, player))
+	{
+		inventory->relics = player_state.relics;
+	}
+	if (ECS::Health* health = GetComponent(Health, player))
+	{
+		health->currentHealth = player_state.health;
+	}
+}
+
+void GameState::NextBattle()
+{
+	SavePlayerState(playerState);
+	endGameState = EndGameState();
+
+	ecs->DestroyAllEntities();
+
+	CreateUICursor();
+	Scene::BuildBiome("GemBiome", 1);
+
+	LoadPlayerState(playerState);
+
+	CardRegistry::DrawCards();
 }
 
 void GameState::Update(float dt)
 {
+	bool was_game_over = endGameState.gameOver;
+
 	ECS::Entity ai = ECS::Faction::GetEnemy();
 	if(ECS::Health* health = GetComponent(Health, ai))
 	{
 		if(health->currentHealth <= 0)
-			gameOver = true;
+			endGameState.gameOver = true;
 	}
 
-	ECS::Entity player = Faction::GetPlayer();
+	ECS::Entity player = ECS::Faction::GetPlayer();
 	if(ECS::Health* health = GetComponent(Health, player))
 	{
 		if(health->currentHealth <= 0)
-			gameOver = true;
+			endGameState.gameOver = true;
+	}
+
+	if (endGameState.gameOver)
+	{
+		if (!was_game_over)
+		{
+			endGameState.showingGameOverText = true;
+			CardRegistry::ResetCards();
+		}
+
+		if (endGameState.showingGameOverText)
+		{
+			InputManager* input = InputManager::Get();
+			if (input->isPressed(Button::Space))
+			{
+				endGameState.showingGameOverText = false;
+
+				endGameState.showingRelicSelectScreen = true;
+				UIManager& ui_manager = UIManager::Get();
+				ui_manager.OpenScreen("RelicRewardScreen");
+			}
+		}
+
+		if (endGameState.showingRelicSelectScreen)
+		{
+			UIManager& ui_manager = UIManager::Get();
+			if (!ui_manager.IsScreenOpen("RelicRewardScreen"))
+			{
+				endGameState.showingRelicSelectScreen = false;
+				endGameState.beginNextBattle = true;
+			}
+		}
+
+		if (endGameState.beginNextBattle)
+		{
+			NextBattle();
+		}
 	}
 
 	ecs->UpdateSystems(dt);
@@ -145,49 +214,8 @@ void GameState::Update(float dt)
 	cursor->mode();
 }
 
-void GameState::Resume() 
-{
-	//mGameData->environment->resume();
-	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeInMusic, "Game", nullptr, 750));
-}
-
-void GameState::Pause()
-{
-	//mGameData->environment->pause();
-	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
-}
-
-
 void GameState::Exit()
 {
-	//mGameData->environment->clear();
-	//mGameData->scoreManager->reset();
-	//AudioManager::Get()->push(AudioEvent(AudioEvent::FadeOut, "Game", nullptr, 150));
-	
-
 	ecs->DestroyAllEntities();
-	//ecs->components.Close();
-
-	//ecs->Close();// systems.Close();
 	ECS::ClearGameFileData();
-}
-
-
-// --- Private Functions --- //
-
-void GameState::initCamera()
-{
-	//Camera* camera = Camera::Get();
-
-	//camera->setViewport(VectorF(100.0f, 100.0f));
-	//camera->follow(Target::GetPlayer());
-
-	//VectorF cameraPosition = VectorF(0.0f, 0.0f);
-	//camera->SetPosition(cameraPosition);
-
-	// TODO: fix these values
-	//camera->initShakeyCam(100.0f, 80.0f);
-
-	//RectF* playerRect = &mGameData->environment->actors()->player()->get()->rectRef();
-	//camera->follow(playerRect);
 }

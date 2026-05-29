@@ -33,38 +33,38 @@ void Camera::Update(float dt)
 	if(!transform)
 		return;
 
-	const ECS::Level& level = ECS::Biome::GetLevel(targetEntity);
-	
-	const VectorF translation = (transform->GetObjectCenter() - rect.Center()) * dt * 5.0f;
-	rect.Translate( translation );
+	//const ECS::Biome& biome = ECS::Biome::GetActive();
+	//
+	//const VectorF translation = (transform->GetObjectCenter() - rect.Center()) * dt * 5.0f;
+	//rect.Translate( translation );
 
-	VectorF bounds_translation;
+	//VectorF bounds_translation;
 
-	// restrict within x bounds
-	const float left_point = level.worldPos.x;
-	const float right_point = level.worldPos.x + level.size.x;
-	if(rect.LeftPoint() < left_point)
-	{
-		bounds_translation.x = left_point - rect.LeftPoint();
-	}
-	else if(rect.RightPoint() > right_point)
-	{
-		bounds_translation.x = right_point - rect.RightPoint();
-	}
+	//// restrict within x bounds
+	//const float left_point = biome.worldPos.x;
+	//const float right_point = biome.worldPos.x + biome.size.x;
+	//if(rect.LeftPoint() < left_point)
+	//{
+	//	bounds_translation.x = left_point - rect.LeftPoint();
+	//}
+	//else if(rect.RightPoint() > right_point)
+	//{
+	//	bounds_translation.x = right_point - rect.RightPoint();
+	//}
 
-	// restrict within y bounds
-	const float top_point = level.worldPos.y;
-	const float bot_point = level.worldPos.y + level.size.y;
-	if (rect.TopPoint() < top_point)
-	{
-		bounds_translation.y = top_point - rect.TopPoint();
-	}
-	else if (rect.BotPoint() > bot_point)
-	{
-		bounds_translation.y = bot_point - rect.BotPoint();
-	}
-	
-	rect.Translate(bounds_translation);
+	//// restrict within y bounds
+	//const float top_point = biome.worldPos.y;
+	//const float bot_point = biome.worldPos.y + biome.size.y;
+	//if (rect.TopPoint() < top_point)
+	//{
+	//	bounds_translation.y = top_point - rect.TopPoint();
+	//}
+	//else if (rect.BotPoint() > bot_point)
+	//{
+	//	bounds_translation.y = bot_point - rect.BotPoint();
+	//}
+	//
+	//rect.Translate(bounds_translation);
 
 	shakeyCam.Update(dt);
 }
@@ -107,10 +107,10 @@ void Camera::AddShake(float magnitude, VectorF source)
 	shakeyCam.magnitude += magnitude;
 	shakeyCam.magnitude = Maths::clamp(shakeyCam.magnitude, 0.0f , 1.0f);
 	
-	const ECS::Level& level = ECS::Biome::GetLevel(targetEntity);
+	const ECS::Biome& biome = ECS::Biome::GetActive();
 	VectorF center;
-	center.x = (level.GetBounds().x1 + level.GetBounds().x2) * 0.5f;
-	center.y = (level.GetBounds().y1 + level.GetBounds().y2) * 0.5f;
+	center.x = (biome.GetBounds().x1 + biome.GetBounds().x2) * 0.5f;
+	center.y = (biome.GetBounds().y1 + biome.GetBounds().y2) * 0.5f;
 	if(source.x > center.x)
 	{
 		shakeyCam.direction.x = -1.0f;

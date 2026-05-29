@@ -29,7 +29,7 @@ static void TakeCoins(Entity entity, Colour::Type colour, int amount)
 	inventory.coins[colour] = Maths::clamp(inventory.coins[colour] + amount, 0, 5);
 
 	// return coins to the stack
-	CoinStack& cs = GetCoinStack(Faction::None, (u32)colour);
+	CoinStack& cs = GetGlobalCoinBank((u32)colour);
 	cs.remaining -= amount;
 	cs.remaining = Maths::clamp(cs.remaining, 0, cs.capacity);
 

@@ -27,8 +27,7 @@ void EditorState::OpenUIEditor()
 
 void EditorState::Init()
 {	
-	// create cursor
-	CreateUIEntities();
+	CreateUICursor();
 
 	SDL_ShowCursor(true);
 

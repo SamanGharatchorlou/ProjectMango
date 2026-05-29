@@ -13,6 +13,7 @@ namespace CardRegistry
 
 	const ECS::Card* LookupCard(int index);
 
+	void ResetCards();
 	void DiscardCard(ECS::Entity entity);
 	void ReturnCardToDrawPile(ECS::Entity entity);
 

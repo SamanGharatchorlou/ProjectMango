@@ -25,9 +25,8 @@ namespace ECS
 		Player = 4,
 		Monsters = 5,
 		BasicObject = 6,
-		UI = 8,
-		Top = 9,
-		Count = 10
+		UI = 9,
+		Top = 13
 	};
 
 #define ACTION_LIST \
@@ -82,6 +81,8 @@ namespace ECS
 	void GetChildren(Entity parent, std::vector<Entity>& children);
 	Entity GetFirstChild(Entity parent);
 	void DestroyChildren(Entity parent);
+
+	Entity FindEntityFromIid(u64 iid);
 	
 	void SetWorldPosition(ECS::Entity entity, VectorF pos);
 	VectorF GetPosition(Entity entity);
@@ -107,9 +108,9 @@ namespace ECS
 		to.entity = to_entity;
 	}
 
-	struct Level;
-	struct Transform;
+	//struct Level;
+	//struct Transform;
 
-	bool IsInLevel(const Level& level, const Transform& transform);
-	void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities);
+	//bool IsInLevel(const Level& level, const Transform& transform);
+	//void GetEntitiesInLevel(const Level& level, const std::unordered_map<Entity, u32>& in_entities, std::vector<Entity>& out_entities);
 }

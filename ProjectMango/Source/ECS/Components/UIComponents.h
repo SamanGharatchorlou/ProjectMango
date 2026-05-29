@@ -36,6 +36,7 @@ namespace ECS
 		
 		UIButton();
 		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
 
 		bool IsPressed(int frame_buffer = 0) const;
 	};
@@ -46,6 +47,7 @@ namespace ECS
 
 		static constexpr const char* kRequirement = "text";
 		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
 
 		BasicString callback;
 
@@ -64,7 +66,7 @@ namespace ECS
 		void SetSize(int ptsize);
 		void FitToSize(VectorF size);
 
-		void SetRenderOffsetToCenter();
+		void UpdateRenderOffset();
 
 		void Render();
 	};

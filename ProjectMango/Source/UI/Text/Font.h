@@ -4,7 +4,6 @@ class Renderer;
 
 struct Font
 {
-private:
 	SDL_Texture* texture = nullptr;
 
 	BasicString fontName;
@@ -13,7 +12,7 @@ private:
 	int width = -1;
 	bool wrapped = false;
 
-	SDL_Color colour;
+	SDL_Color colour = SDL_Color();
 
 	// dont not edit - this is set by the size
 	Vector2D<int> size;
@@ -21,15 +20,13 @@ private:
 	// use SetSize()
 	int ptSize = 0;
 	
-
-public:
 	Font() : texture(nullptr) { }
 	~Font();
 
 	void Render(Renderer* renderer, const VectorF position) const;
 
 	// Creates image from font string
-	void SetText(const char* _text, bool wrapped = false, int width = -1);
+	void SetText(const char* _text);
 	void SetSize(const char* text, int ptSize);
 	void SetColour(const char* text, SDL_Color colour);
 

@@ -22,10 +22,8 @@ void Font::SetSize(const char* text, int _ptSize)
 	UpdateText(text);
 }
 
-void Font::SetText(const char* text, bool _wrapped, int _width)
+void Font::SetText(const char* text)
 {
-	wrapped = _wrapped;
-	width = _width;
 	UpdateText(text);
 }
 

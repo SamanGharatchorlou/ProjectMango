@@ -85,14 +85,14 @@ namespace DebugMenu
         }
 
 
-        if (is_number)
-        {
-            int number = std::atoi(filter.c_str());
-            if (ecs->IsAlive(number))
-            {
-                selected_entity = number;
-            }
-        }
+        //if (is_number)
+        //{
+        //    int number = std::atoi(filter.c_str());
+        //    if (ecs->IsAlive(number))
+        //    {
+        //        selected_entity = number;
+        //    }
+        //}
 
         if (!ecs->IsAlive(selected_entity))
         {
@@ -136,7 +136,13 @@ namespace DebugMenu
                 const  ECS::EntityData& ed = entity_data.GetComponentByIndex(iter->second);
                 StringBuffer64 entity_name = StringBuffer64(ed.id.c_str()).to_lower();
 
-                if (filter.length() > 0 && !is_number)
+                if (is_number)
+                {
+                    int number = std::atoi(filter.c_str());
+                    if (iter->first != number)
+                        continue;
+                }
+                else if (filter.length() > 0 )
                 {
                     StringBuffer64 filter_lower = filter.to_lower();
                     const char* value = strstr(entity_name.c_str(), filter_lower.c_str());

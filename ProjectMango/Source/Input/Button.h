@@ -39,6 +39,7 @@ public:
 		Space = SDLK_SPACE,
 		Shift = SDLK_LSHIFT,
 		Tab = SDLK_TAB,
+		Delete = SDLK_DELETE,
 
 		// Keys
 		E = SDLK_e,

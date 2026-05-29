@@ -9,7 +9,7 @@
 
 namespace ECS
 {
-	static bool CanMoveDistance(Entity entity, const ECS::Level* level, VectorF target_position)
+	static bool CanMoveDistance(Entity entity, const ECS::Biome* biome, VectorF target_position)
 	{
 		ECS::Transform& transform = GetComponentRef(Transform, entity);
 
@@ -38,11 +38,11 @@ namespace ECS
 		if (down_resut.hasHit)
 		{
 			VectorF position = down_resut.hitPosition;
-			VectorI index = level->GetTileIndex(position);
+			VectorI index = biome->GetTileIndex(position);
 
 			if (index.isPositive())
 			{
-				int traversal_value = level->walkableTiles.get(index);
+				int traversal_value = biome->walkableTiles.get(index);
 				if (traversal_value == 1)
 					return true;
 			}
@@ -54,8 +54,8 @@ namespace ECS
 
 	void PathingSystem::Update(float dt)
 	{
-		const Level& active_level = Biome::GetVisibleLevel();
-		if(active_level.walkableTiles.rows() == 0 )
+		const Biome& active_biome = Biome::GetActive();
+		if(active_biome.walkableTiles.rows() == 0 )
 			return;
 
  		for (Entity entity : entities)
@@ -82,14 +82,14 @@ namespace ECS
 			//	continue;
 			//}
 
-			if (!active_level.IsPointInBounds(pathing.targetLocation))
+			if (!active_biome.IsPointInBounds(pathing.targetLocation))
 				continue;
 
 			VectorF target = pathing.targetLocation;
 			VectorF position = GetPosition(entity);
 
 			// !!! this then fails !!!
-			bool can_move_to_target_location = CanMoveDistance(entity, &active_level, pathing.targetLocation);
+			bool can_move_to_target_location = CanMoveDistance(entity, &active_biome, pathing.targetLocation);
 			if (!can_move_to_target_location)
 				continue;
 

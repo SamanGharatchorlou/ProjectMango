@@ -2,6 +2,7 @@
 #include "Components.h"
 
 #include "Core/Helpers.h"
+#include "Core/Maths.h"
 #include "ECS/Components/GraphicComponents.h"
 #include "ECS/Components/SpacialComponents.h"
 #include "ECS/EntityCommon.h"
@@ -12,14 +13,37 @@
 #include "Game/SystemStateManager.h"
 #include "Game/States/GameState.h"
 
-//temp
 
 namespace ECS
 {
 	// EntityData
 	// ------------------------------------------------------------------
 	EntityData::EntityData() : parent(EntityInvalid)
-	{ }
+	{
+		iid = Maths::GenerateIID();
+	}
+
+	void EntityData::Init(const EntityMetaData& emd)
+	{
+		if (emd.data.Contains(kRequirement))
+			id = emd.GetID();
+
+		if (emd.data.Contains("iid"))
+			iid = emd.data.GetU64("iid");
+	}
+	void EntityData::Serialise(EntityMetaData& out_emd) const
+	{
+		out_emd.data.AddString(kRequirement, id.c_str());
+		out_emd.data.AddU64("iid", iid);
+
+		for (u32 i = 0; i < children.size(); i++)
+		{
+			if (EntityData* child_ed = GetComponent(EntityData, children[i]))
+			{
+				out_emd.data.intArrays["children_iids"].push_back(child_ed->iid);
+			}
+		}
+	}
 
 	void EntityData::SetParent(Entity child, Entity parent)
 	{
@@ -50,6 +74,10 @@ namespace ECS
 		}
 
 		PushBackUnique(parent_entity_data->children, child);
+
+		// update the local position
+		if(Transform* transform = GetComponent(Transform, child))
+			transform->SetWorldPosition(transform->worldPosition);
 	}
 
 
@@ -273,7 +301,7 @@ namespace ECS
 
 	void Health::Init(const EntityMetaData& emd)
 	{
-		maxHealth = emd.data.GetFloat(kRequirement);
+		maxHealth = emd.data.GetInt(kRequirement);
 		currentHealth = maxHealth;
 	}
 
@@ -313,5 +341,10 @@ namespace ECS
 	void Callback::Init(const EntityMetaData& emd)
 	{
 		callback = emd.data.GetString(kRequirement);
+	}
+
+	void Callback::Serialise(EntityMetaData& out_emd) const
+	{
+		out_emd.data.strings[kRequirement] = callback;
 	}
 }

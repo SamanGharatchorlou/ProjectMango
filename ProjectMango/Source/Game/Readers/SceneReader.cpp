@@ -3,11 +3,11 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Factory/ComponentAssembler.h"
+#include "Entities/Factory/EntitySerialiser.h"
 #include "Graphics/TextureManager.h"
-#include "System/Files/JSONParser.h"
 #include "System/Window.h"
 #include "UI/UIManager.h"
+#include "Entities/Factory/EntityBuilder.h"
 
 namespace Scene
 {
@@ -42,31 +42,10 @@ namespace Scene
 			}
 		}
 	}
-		
-	void ParseUILayer(Value& ui_layer)
-	{
-		const char* id = ui_layer["identifier"].GetString();
-		UIScreenMetaData& screen_meta_data = UIManager::Get().screenMetaData[BasicString(id)];
-
-		Value& layers = ui_layer["layerInstances"];
-		for (SizeType i = 0; i < layers.Size(); i++)
-		{
-			const Value::Array& entities = layers[i]["entityInstances"].GetArray();
-			for (u32 e = 0; e < entities.Size(); e++)
-			{
-				Value& entry = entities[e];
-
-				ECS::EntityMetaData emd;
-				PopulateMetaData(entry, emd);
-
-				screen_meta_data.push_back(emd);
-			}
-		}
-	}
 
 	struct Params
 	{
-		ECS::Level* level = nullptr;
+		ECS::Biome* biome = nullptr;
 
 		std::unordered_map<int, BasicString> valueDefines;
 
@@ -75,7 +54,7 @@ namespace Scene
 		int gridLength = 0;
 	};
 
-	static void ParseEntitiesLayer(Value& layer, ECS::Level& level)
+	static void ParseEntitiesLayer(Value& layer, ECS::Biome& biome)
 	{
 		const Value::Array& entities = layer["entityInstances"].GetArray();
 		for (u32 e = 0; e < entities.Size(); e++)
@@ -83,9 +62,9 @@ namespace Scene
 			Value& entry = entities[e];
 
 			ECS::EntityMetaData emd;
-			PopulateMetaData(entry, emd);
+			PopulateMetaDataFromJson(entry, emd);
 
-			level.entityMetaData.push_back(emd);
+			biome.entityMetaData.push_back(emd);
 		}
 	}
 
@@ -106,7 +85,7 @@ namespace Scene
 		{
 			for (u32 ent_y = 0; ent_y < params.levelSize.y; ent_y++)
 			{
-				int index = ent_y * params.levelSize.x + ent_x;
+				u32 index = ent_y * (u32)params.levelSize.x + ent_x;
 				int value = entities[index].GetInt();
 
 				if (value != 0)
@@ -137,7 +116,7 @@ namespace Scene
 					int x_idx = ent_x;
 					while (x_idx < params.levelSize.x)
 					{
-						int x_index = ent_y * params.levelSize.x + x_idx;
+						int x_index = ent_y * (int)params.levelSize.x + x_idx;
 						int x_value = entities[x_index].GetInt();
 
 						if (x_value != value)
@@ -152,7 +131,7 @@ namespace Scene
 						bool exit = false;
 						for (u32 xy_ent = ent_x; xy_ent < x_idx; xy_ent++)
 						{
-							int y_index = y_idx * params.levelSize.x + xy_ent;
+							int y_index = y_idx * (int)params.levelSize.x + xy_ent;
 							int y_value = entities[y_index].GetInt();
 
 							if (y_value != value)
@@ -217,14 +196,14 @@ namespace Scene
 			}
 		}
 
-		params.level->walkableTiles = Grid<int>(params.levelSize.x, params.levelSize.y, 0);
+		params.biome->walkableTiles.set(params.levelSize.toInt(), 0);// = Grid<int>(params.levelSize.x, params.levelSize.y, 0);
 		for (u32 ent_x = 0; ent_x < params.levelSize.x; ent_x++)
 		{
 			for (u32 ent_y = 0; ent_y < params.levelSize.y; ent_y++)
 			{
-				int index = ent_y * params.levelSize.x + ent_x;
+				int index = ent_y * (int)params.levelSize.x + ent_x;
 				int value = entities[index].GetInt();
-				params.level->walkableTiles.get(ent_x, ent_y) = value;
+				params.biome->walkableTiles.get(ent_x, ent_y) = value;
 			}
 		}
 	}
@@ -232,8 +211,8 @@ namespace Scene
 	static void ParseLayerBoundaries(Value& layer, JSONParser& parser, const Params& params)
 	{
 		ECS::Layer new_layer;
-		params.level->layers.push_back(new_layer);
-		ECS::Layer& level_layer = params.level->layers.back();
+		params.biome->layers.push_back(new_layer);
+		ECS::Layer& level_layer = params.biome->layers.back();
 
 		const char* tileset_name = layer["__tilesetRelPath"].GetString();
 		int tileset_uid = layer["__tilesetDefUid"].GetInt();
@@ -254,20 +233,18 @@ namespace Scene
 			float px_x = px[0].GetFloat() * params.levelToWindow.x;
 			float px_y = px[1].GetFloat() * params.levelToWindow.y;
 
-			VectorF tile_pos = VectorF(px_x, px_y) + params.level->worldPos;
-
 			Value& src = entry["src"];
 			float src_x = src[0].GetFloat();
 			float src_y = src[1].GetFloat();
 
 			ECS::Layer::Tile tile;
-			tile.draw_pos = tile_pos;
+			tile.draw_pos = VectorF(px_x, px_y);
 			tile.tileset_pos = VectorF(src_x, src_y);
 			level_layer.tiles.push_back(tile);
 		}
 	}
 
-	void BuildBiome(const char* biome_id, ECS::Entity& biome_entity)
+	static void ParseBiome(const char* biome_id, ECS::Biome& biome)
 	{
 		BasicString file;
 		FileManager::Get()->FindFile(FileManager::Maps, biome_id, file);
@@ -275,8 +252,6 @@ namespace Scene
 		JSONParser parser(file.c_str());
 		if(!parser.IsValid())
 			return;
-
-		ECS::Biome& biome = GetComponentRef(Biome, biome_entity);
 
 		const VectorF window_size = GameData::Get().window->size();
 
@@ -289,6 +264,7 @@ namespace Scene
 		Params params;
 		params.gridLength = parser.document["defaultGridSize"].GetInt();
 		params.levelToWindow = level_to_window;
+		params.biome = &biome;
 
 		Value& defines = parser.document["defs"];
 		Value::Array layers = defines["layers"].GetArray();
@@ -305,23 +281,14 @@ namespace Scene
 			}
 		}
 
-		u32 level_index = 0;
-
 		const Value::Array& levels = parser.document["levels"].GetArray();
 		for( u32 i = 0; i < levels.Size(); i++ )
 		{
-			const char* level_id = levels[i]["identifier"].GetString();
-			if (strncmp(level_id, "UI_", 3) == 0)
-			{
-				ParseUILayer(levels[i]);
+			if (i != biome.biomeIndex)
 				continue;
-			}
-
-			ECS::Level level;
 
 			// bump the level index
-			level.index = level_index++;
-			level.id = level_id;
+			biome.id = levels[i]["identifier"].GetString();
 
 			int level_px_width = levels[i]["pxWid"].GetInt();
 			int level_px_height = levels[i]["pxHei"].GetInt();
@@ -331,16 +298,10 @@ namespace Scene
 
 			int world_offset_x = levels[i]["worldX"].GetInt();
 			int world_offset_y = levels[i]["worldY"].GetInt();
-			level.worldPos = VectorI(world_offset_x, world_offset_y).toFloat() * level_to_window;
-			level.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
+			biome.size = VectorI(level_px_width, level_px_height).toFloat() * level_to_window;
 
-			params.level = &level;
+			//params.level = &level;
 			params.levelSize = VectorF(level_width, level_height);
-
-			biome.aabb[0].x = Maths::Min(biome.aabb[0].x, level.worldPos.x);
-			biome.aabb[0].y = Maths::Min(biome.aabb[0].y, level.worldPos.y);
-			biome.aabb[1].x = Maths::Max(biome.aabb[1].x, level.worldPos.x + level.size.x);
-			biome.aabb[1].y = Maths::Max(biome.aabb[1].y, level.worldPos.y + level.size.y);
 
 			Value& layers = levels[i]["layerInstances"];
 			for (SizeType i = 0; i < layers.Size(); i++)
@@ -359,11 +320,21 @@ namespace Scene
 				// handle all other entities
 				else
 				{
-					ParseEntitiesLayer(layer, level);
+					ParseEntitiesLayer(layer, biome);
 				}
 			}
-
-			biome.levels.push_back(level);
 		}
+	}
+
+	ECS::Entity BuildBiome(const char* biome_id, int biome_index)
+	{
+		ECS::Entity biome_entity = ECS::CreateEntity("Scene");
+		ECS::Biome& biome = AddComponent(Biome, biome_entity);
+		biome.biomeIndex = biome_index;
+
+		ParseBiome(biome_id, biome);
+		CreateEntities(biome_entity);
+
+		return biome_entity;
 	}
 }

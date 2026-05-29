@@ -16,13 +16,20 @@ namespace StatusEffectRegistry
 	static bool DestroyRandomBoardCard(Entity entity)
 	{
 		ComponentArray<Card>& cards =  GetAllComponents(Card);
-		int index = Maths::randomNumberBetween(0, cards.Count());
-		
-		const Card& card = cards.GetComponentByIndex(index);
-		ASSERT( ecs->IsAlive(card.entity), "Trying to remove card that does not exist, cannot get component by index like this?");
 
-		// i need a debug thing to show me how many parts exist
-		CardRegistry::DiscardCard(card.entity);
+		std::vector<Card*> valid_cards;
+		for (auto& [key, value] : cards.entityToComponent)
+		{
+			Card& card = cards.GetComponentByIndex(value);
+			if (card.registryIndex != -1)
+			{
+				valid_cards.push_back(&card);
+			}
+		}
+
+		int index = Maths::randomNumberBetween(0, (int)valid_cards.size());
+		const Card* card = valid_cards[index];
+		CardRegistry::DiscardCard(card->entity);
 
 		bool finished = true;
 		return finished;

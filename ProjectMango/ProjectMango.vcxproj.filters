@@ -414,6 +414,12 @@
     <ClCompile Include="Source\Entities\Factory\ComponentAssembler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\EndBattle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Factory\EnemyBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Readers\AnimationReader.h">
@@ -1209,6 +1215,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Factory\ComponentAssembler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\EndBattle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Factory\EnemyBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -199,3 +199,4 @@ bool IsSelectedDebugEntity(ECS::Entity entity);
 
 float AdjustToScreenSize(float size);
 VectorF AdjustToScreenSize(VectorF size);
+float RevertFromScreenSize(float size);

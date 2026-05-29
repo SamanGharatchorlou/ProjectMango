@@ -75,7 +75,9 @@ namespace ECS
 
 			ComponentID component_id = GetComponentID<T>();
 			entities.RemoveComponent(entity, component_id);
-			systems.EntityRemoveType(entity, component_id);
+
+			Archetype archetype = entities.GetAchetype(entity);
+			systems.EntityRemoveType(entity, component_id, archetype);
 		}
 
 		template<class T>

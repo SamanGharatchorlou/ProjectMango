@@ -2,7 +2,6 @@
 	"types": [
 		{
 			"id": "BlindingSpider",
-			"id": "BlindingSpider",
 			"object_pos": [ 0.05, 0.75 ],
 			"object_size": [ 0.33, 0.25 ],
 			"size": [ 64, 64 ],
@@ -16,15 +15,14 @@
 		},
 		{
 			"id": "ShockSweeper",
+			"animator": "ShockSweeper",
 			"object_pos": [ 0.239, 0.417 ],
 			"object_size": [ 0.137, 0.492 ],
-			"size": [352, 120],
+			"size": [ 264, 90 ],
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,
 			"max_speed": 80,
-			"attack_cooldown_time_ms" : 1000,
-			"action_cooldown_time_ms" : 500,
 			"max_health": 10
 		},
 		{
@@ -32,7 +30,7 @@
 			"animator": "OrbMage",
 			"object_pos": [ 0.144, 0.265 ],
 			"object_size": [ 0.083, 0.733 ],
-			"size": [ 352, 120 ],
+			"size": [ 264, 90 ],
 			"gravity": true,
 			"snap_to_floor": true,
 			"acceleration": 80,

@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "Core/StringBuffers.h"
@@ -32,6 +33,8 @@ public:
 		Audio_Music,
 		Audio_Sound,
 
+		SaveData,
+
 		Count
 	};
 
@@ -58,9 +61,9 @@ public:
 	std::vector<BasicString> fullPathsInFolder(const char* directory) const;
 	std::vector<BasicString> fileNamesInFolder(const Folder folder) const;
 
-	StringBuffer64 getItemName(const char* filePath) const;
-	StringBuffer64 getItemName(const fs::path& filePath) const;
-	StringBuffer64 getItemNameAndExt(const fs::path& filePath) const;
+	static StringBuffer64 getItemName(const char* filePath);
+	static StringBuffer64 getItemName(const fs::path& filePath);
+	static StringBuffer64 getItemNameAndExt(const fs::path& filePath);
 
 
 	void GetFilesInFolder(const Folder folder, std::vector<BasicString>& out_files) const;

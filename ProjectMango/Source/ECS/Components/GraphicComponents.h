@@ -38,6 +38,8 @@ namespace ECS
 
 		void Init(const EntityMetaData& emd);
 		void Init(const char* sprite_id);
+		void Serialise(EntityMetaData& out_emd) const;
+
 		bool IsValid() const;
 
 		void SetTexture(const char* label);

@@ -57,18 +57,18 @@ namespace ECS
 	{
 		COMPONENT_TYPE(CoinStack)
 
+		static constexpr const char* kRequirement = "coin_capacity";
+
 		Colour::Type colourType = Colour::Count;
 
 		int capacity = -1;
 		int remaining = -1;
-		
-		// special case, these are the inventory coin piles, there's probably a
-		// better way to do this, but i dont want to make a new component just for this
-		bool isInventory = false;
 
 		Entity owner = EntityInvalid;
 
 		std::vector<Entity> costEntities;
+
+		void Init(const EntityMetaData& emd);
 	};
 
 	struct Card
@@ -134,6 +134,8 @@ namespace ECS
 
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
+
+		bool operator == (const Relic& relic) const { return effectFn == relic.effectFn && colour == relic.colour; }
 	};
 
 	struct StatusEffect

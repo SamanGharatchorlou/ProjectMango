@@ -118,9 +118,10 @@ namespace AIStrategy
 			// we cant collect the coin we actually want, so pick a random one instead
 			if(!turn.CanCollectCoin(colour))
 				colour = (Colour::Type)Maths::randomNumberBetween(0, Colour::Count);
-						
-			CoinStack& cs = GetCoinStack(Faction::None, (u32)colour);
-			action_request.target = cs.entity; 
+				
+			// todo removed due to refactor
+			//CoinStack& cs = GetCoinStack(Faction::None, (u32)colour);
+			//action_request.target = cs.entity; 
 		}
 		// buy the card
 		else
@@ -191,9 +192,10 @@ namespace AIStrategy
 
 			// pick a random colour
 			int random_colur = Maths::randomNumberBetween(0, Colour::Count);
-						
-			CoinStack& cs = GetCoinStack(Faction::None, random_colur);
-			action_request.target = cs.entity; 
+
+			// todo removed due to refactor	
+			//CoinStack& cs = GetCoinStack(Faction::None, random_colur);
+			//action_request.target = cs.entity; 
 		}
 		// try buy a card
 		else
