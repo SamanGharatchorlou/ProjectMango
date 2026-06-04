@@ -10,6 +10,9 @@ namespace ECS
 	void TransformSystem::Update(float dt)
 	{
 		std::vector<Entity> out_of_bounds_entities;
+		const Biome* biome = GetOnlyComponent(Biome);
+		if (!biome)
+			return;
 
 		for (Entity entity : entities)
 		{
@@ -42,10 +45,9 @@ namespace ECS
 			transform.UpdateChildTransforms();
 
 			// check out of bounds
-			const Biome& biome = Biome::GetActive();
 			const RectF rect = transform.GetRect();
 			if (rect.RightPoint() < 0.0f || rect.BotPoint() < 0.0f || 
-				rect.LeftPoint() > biome.size.x || rect.TopPoint() > biome.size.y)
+				rect.LeftPoint() > biome->size.x || rect.TopPoint() > biome->size.y)
 			{
 				out_of_bounds_entities.push_back(entity);
 			}

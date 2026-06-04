@@ -3,6 +3,7 @@
 namespace ECS
 {
 	struct Card;
+	struct DeckCard;
 }
 
 namespace CardRegistry
@@ -12,14 +13,6 @@ namespace CardRegistry
 	void ReadomFromCSV(const char* config, int tier);
 
 	const ECS::Card* LookupCard(int index);
-
-	void ResetCards();
-	void DiscardCard(ECS::Entity entity);
-	void ReturnCardToDrawPile(ECS::Entity entity);
-
-	void DrawCard( ECS::Entity entity, int index );
-	void DrawRandomCard( ECS::Entity entity, int tier );
-
-	// setup the board
-	void DrawCards();
+	ECS::Entity CreateCard(const char* id, VectorF world_pos, const ECS::DeckCard& dc);
+	void PopulateDrawPiles(std::vector<ECS::DeckCard>* cards, int tier);
 }

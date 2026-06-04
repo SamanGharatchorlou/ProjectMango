@@ -3,8 +3,8 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "CardRegistry.h"
 #include "Core/Helpers.h"
+#include "Entities/Registries/CardRegistry.h"
 
 using namespace ECS;
 
@@ -36,23 +36,22 @@ namespace RelicRegistry
 
 	static void IncreaseColourDrawChance(const Relic& relic, ECS::Entity entity)
 	{
-		if(Card* card = GetComponent(Card, entity))
+		if(CardBoard* board = GetComponent(CardBoard, entity))
 		{
-			// if its the target colour then we dont want to draw again
-			if(card->power[relic.colour] != 0)
-				return;
-
-			Entity player = Faction::GetPlayer();
-			if(Inventory* inventory = GetComponent(Inventory, player))
-				inventory->disabledRelicIds.push_back(relic.id);
-
-			// replace card and draw again
-			int tier = card->tier;
-			CardRegistry::ReturnCardToDrawPile(entity);
-			CardRegistry::DrawRandomCard(entity, tier);
-
-			if(Inventory* inventory = GetComponent(Inventory, player))
-				Erase(inventory->disabledRelicIds, relic.id);
+			for (u32 i = 0; i < Card::c_tiers; i++)
+			{
+				std::vector<DeckCard>& draw_pile = board->drawPile[i];
+				for (u32 k = 0; k < draw_pile.size(); k++)
+				{
+					if(const Card* card = CardRegistry::LookupCard(draw_pile[k].registryIndex))
+					{
+						if (card->IsColour(relic.colour) )
+						{
+							draw_pile[k].weight *= 2;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -77,6 +76,7 @@ namespace RelicRegistry
 			relic.trigger = GameEvent::CardDrawn;
 			relic.colour = colour;
 			relic.effectFn = DiscountCardCost;
+			relic.phase = Relic::Effect;
 		}
 
 		for (u32 i = 0; i < Colour::Count; i++)
@@ -93,39 +93,41 @@ namespace RelicRegistry
 			snprintf(buffer, 128, "Increase the draw chance of %s cards", colour_string);
 			relic.description = buffer;
 
-			relic.trigger = GameEvent::CardDrawn;
+			relic.trigger = GameEvent::DrawPileBuilt;
 			relic.colour = colour;
 			relic.effectFn = IncreaseColourDrawChance;
+			relic.phase = Relic::Selection;
 		}
 	}
-	
-	//Relic* GetRelic(const char* relic_id)
-	//{
-	//	for( u32 i = 0; i < s_relicRegistry.size(); i++ )
-	//	{
-	//		 todo - this wont work anymore
-	//		if(s_relicRegistry[i].id == relic_id)
-	//			return &s_relicRegistry[i];
-	//	}
-
-	//	return nullptr;
-	//}
 
 	ECS::Relic* GetRandomUnobtainedRelic()
 	{
-		Entity player = Faction::GetPlayer();
-		Inventory* inventory = GetComponent(Inventory, player);
-
 		std::vector<Relic*> unobtained_relics;
 		for (u32 i = 0; i < s_relicRegistry.size(); i++)
 		{
-			if (inventory && Contains(inventory->relics, s_relicRegistry[i]))
+			bool obtained = false;
+
+			const ComponentArray<Inventory>& inventories = GetAllComponents(Inventory);
+			for (auto [key, value] : inventories.entityToComponent)
+			{
+				const Inventory& inventory = inventories.GetComponentByIndex(value);
+				if (Contains(inventory.relics, s_relicRegistry[i]))
+				{
+					obtained = true;
+					break;
+				}
+			}
+
+			if (obtained)
 				continue;
 
 			unobtained_relics.push_back(&s_relicRegistry[i]);
 		}
 
-		int random_index = Maths::randomNumberBetween(0, unobtained_relics.size());
+		if (unobtained_relics.size() == 0)
+			return nullptr;
+
+		int random_index = Maths::randomNumberBetween(0, (int)unobtained_relics.size());
 		return unobtained_relics[random_index];
 	}
 }

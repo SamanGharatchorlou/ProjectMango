@@ -38,7 +38,49 @@ static void BuildIntentIconEntity(Entity icon_entity)
 	child_sprite.params.colourMod.setOpacity(0.85f);
 }
 
-static void PopulateStrategy(const char* enemy_type, AIStrategy& strategy)
+static void PopulateGhoulStrategy(AIStrategy& strategy)
+{
+	EnemyPhase recover{ EnemyPhase::Recover, 1 };
+	EnemyPhase attack{ EnemyPhase::Attack, 1 };
+	EnemyPhase approach{ EnemyPhase::Approach, 99 };
+
+	Strategy approach_pattern;
+	approach_pattern.name = "Approach";
+	approach_pattern.phases.push_back(recover);
+	approach_pattern.phases.push_back(approach);
+	approach_pattern.phases.push_back(recover);
+	strategy.strategies.push_back(approach_pattern);
+
+	Strategy attack_pattern;
+	attack_pattern.name = "Attack";
+	attack_pattern.phases.push_back(recover);
+	attack_pattern.phases.push_back(attack);
+	attack_pattern.phases.push_back(recover);
+	strategy.strategies.push_back(attack_pattern);
+
+	strategy.currentPhase = 0;
+	strategy.turnsLeft = 1;
+}
+
+static void PopulateShockSweeperStrategy(AIStrategy& strategy)
+{
+	EnemyPhase recover{ EnemyPhase::Recover, 1 };
+	EnemyPhase attack{ EnemyPhase::Attack, 1 };
+
+	Strategy attack_pattern;
+	attack_pattern.name = "Attack";
+	attack_pattern.phases.push_back(recover);
+	attack_pattern.phases.push_back(attack);
+	attack_pattern.phases.push_back(recover);
+	attack_pattern.phases.push_back(attack);
+	attack_pattern.phases.push_back(recover);
+	strategy.strategies.push_back(attack_pattern);
+
+	strategy.currentPhase = 0;
+	strategy.turnsLeft = 1;
+}
+
+static void PopulateOrbMageStrategy(AIStrategy& strategy)
 {
 	EnemyPhase recover{ EnemyPhase::Recover, 1 };
 	EnemyPhase attack{ EnemyPhase::Attack, 1 };
@@ -46,31 +88,66 @@ static void PopulateStrategy(const char* enemy_type, AIStrategy& strategy)
 
 	Strategy attack_pattern;
 	attack_pattern.name = "Attack";
-
-	if (StringCompare(enemy_type, "ShockSweeper"))
-	{
-		attack_pattern.phases.push_back(attack);
-		attack_pattern.phases.push_back(recover);
-		attack_pattern.phases.push_back(recover);
-	}
-
-	attack_pattern.phases.push_back(attack);
 	attack_pattern.phases.push_back(recover);
+	attack_pattern.phases.push_back(attack);
 	strategy.strategies.push_back(attack_pattern);
 
-	if ( StringCompare(enemy_type, "OrbMage") )
-	{
-		Strategy debuff_pattern;
-		debuff_pattern.name = "Debuff";
-		debuff_pattern.phases.push_back(recover);
-		debuff_pattern.phases.push_back(debuff);
-		debuff_pattern.phases.push_back(recover);
-		strategy.strategies.push_back(debuff_pattern);
-	}
+	Strategy debuff_pattern;
+	debuff_pattern.name = "Debuff";
+	debuff_pattern.phases.push_back(recover);
+	debuff_pattern.phases.push_back(debuff);
+	debuff_pattern.phases.push_back(recover);
+	strategy.strategies.push_back(debuff_pattern);
 
 	strategy.currentPhase = 0;
 	strategy.turnsLeft = 1;
 }
+
+typedef void(*PopulateStrategyFn)(AIStrategy& strategy);
+
+struct BiomeEnemy
+{
+	BasicString enemyId;
+	PopulateStrategyFn populateStrategyFn = nullptr;
+};
+
+std::vector<BiomeEnemy> s_biomeEntities;
+
+void SetupBiomeEntities()
+{
+	BiomeEnemy biome_1;
+	biome_1.enemyId = "Ghoul";
+	biome_1.populateStrategyFn = PopulateGhoulStrategy;
+	s_biomeEntities.push_back(biome_1);
+
+	BiomeEnemy biome_2;
+	biome_2.enemyId = "ShockSweeper";
+	biome_2.populateStrategyFn = PopulateShockSweeperStrategy;
+	s_biomeEntities.push_back(biome_2);
+
+	BiomeEnemy biome_3;
+	biome_3.enemyId = "OrbMage";
+	biome_3.populateStrategyFn = PopulateOrbMageStrategy;
+	s_biomeEntities.push_back(biome_3);
+}
+//
+//static void PopulateStrategy(const char* enemy_type, AIStrategy& strategy)
+//{
+//	if (StringCompare(enemy_type, "Ghoul"))
+//	{
+//		PopulateGhoulStrategy(strategy);
+//	}
+//
+//	if (StringCompare(enemy_type, "ShockSweeper"))
+//	{
+//		PopulateShockSweeperStrategy(strategy);
+//	}
+//
+//	if (StringCompare(enemy_type, "OrbMage"))
+//	{
+//		PopulateOrbMageStrategy(strategy);
+//	}
+//}
 
 static EntityMetaData s_enemyMetaData;
 
@@ -85,17 +162,19 @@ ECS::Entity CreateEnemy(const char* enemy_type)
 // create an actual enemy i.e. the thing the player fights
 Entity CreateEnemy(const ECS::EntityMetaData& emd)
 {
-	s_enemyMetaData = emd;
+	Biome* biome = GetOnlyComponent(Biome);
+	u32 index = Maths::Min((u32)(s_biomeEntities.size() - 1), biome->levelIndex);
+	BiomeEnemy& biome_enemy = s_biomeEntities[index];
 
 	// pick random enemy create enemy registry
-	const char* enemy_type = emd.data.GetString("enemy_type");
-	Entity entity = CreateActor(emd, enemy_type);
+	//emd.data.strings["enemy_type"] = biome_enemy.enemyId;
+	Entity entity = CreateActor(emd, biome_enemy.enemyId.c_str());
 
 	AddComponent(AIIntent, entity);
 
 	// AIStrategy
 	AIStrategy& strategy = AddComponent(AIStrategy, entity);
-	PopulateStrategy(enemy_type, strategy);
+	biome_enemy.populateStrategyFn(strategy);
 
 	// UIIntentIcon
 	Entity child_entity = CreateEntity("intent_icon");
@@ -129,6 +208,7 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 
 	if (DebugMenu::GetSelectedEntity() == EntityInvalid)
 		DebugMenu::SelectEntity(entity);
+
 
 	return entity;
 }

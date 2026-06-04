@@ -244,13 +244,25 @@ namespace Scene
 		}
 	}
 
+	static void AddSideBar(RectF rect)
+	{
+		Entity entity = CreateEntity("side bar");
+		Transform& transform = AddComponent(Transform, entity);
+		transform.SetWorldPosition(rect.TopLeft());
+		transform.size = rect.Size();
+
+		Sprite& sprite = AddComponent(Sprite, entity);
+		sprite.SetTexture("EditorBg_black");
+		sprite.params.renderLayer = RenderLayer::Bottom;
+	}
+
 	static void ParseBiome(const char* biome_id, ECS::Biome& biome)
 	{
 		BasicString file;
 		FileManager::Get()->FindFile(FileManager::Maps, biome_id, file);
 
 		JSONParser parser(file.c_str());
-		if(!parser.IsValid())
+		if (!parser.IsValid())
 			return;
 
 		const VectorF window_size = GameData::Get().window->size();
@@ -259,7 +271,7 @@ namespace Scene
 		const float level_to_window_x = window_size.x / parser.document["defaultLevelWidth"].GetFloat();;
 		const float level_to_window_y = window_size.y / parser.document["defaultLevelHeight"].GetFloat();
 		VectorF level_to_window(level_to_window_x, level_to_window_y);
-		GameData::Get().window->windowToLevel = VectorF( 1.0f / level_to_window_x, 1.0f / level_to_window_y);
+		GameData::Get().window->windowToLevel = VectorF(1.0f / level_to_window_x, 1.0f / level_to_window_y);
 
 		Params params;
 		params.gridLength = parser.document["defaultGridSize"].GetInt();
@@ -268,12 +280,12 @@ namespace Scene
 
 		Value& defines = parser.document["defs"];
 		Value::Array layers = defines["layers"].GetArray();
-		for( u32 i = 0; i < layers.Size(); i++ )
+		for (u32 i = 0; i < layers.Size(); i++)
 		{
-			if( StringCompare( layers[i]["identifier"].GetString(), "TerrainColliders" ) )
+			if (StringCompare(layers[i]["identifier"].GetString(), "TerrainColliders"))
 			{
 				const Value::Array& grid_values = layers[i]["intGridValues"].GetArray();
-				for( u32 i = 0; i < grid_values.Size(); i++ )
+				for (u32 i = 0; i < grid_values.Size(); i++)
 				{
 					Value& grid_value = grid_values[i];
 					params.valueDefines[grid_value["value"].GetInt()] = grid_value["identifier"].GetString();
@@ -282,7 +294,7 @@ namespace Scene
 		}
 
 		const Value::Array& levels = parser.document["levels"].GetArray();
-		for( u32 i = 0; i < levels.Size(); i++ )
+		for (u32 i = 0; i < levels.Size(); i++)
 		{
 			if (i != biome.biomeIndex)
 				continue;
@@ -292,7 +304,7 @@ namespace Scene
 
 			int level_px_width = levels[i]["pxWid"].GetInt();
 			int level_px_height = levels[i]["pxHei"].GetInt();
-		
+
 			int level_width = level_px_width / params.gridLength;
 			int level_height = level_px_height / params.gridLength;
 
@@ -308,12 +320,12 @@ namespace Scene
 			{
 				Value& layer = layers[i];
 				const char* layer_id = layer["__identifier"].GetString();
-				
-				if( StringCompare(layer_id, "TerrainColliders" ) )
+
+				if (StringCompare(layer_id, "TerrainColliders"))
 				{
 					ParseTerrainColliders(layer, params);
 				}
-				else if( StringCompare(layer_id, "Boundaries" ) )
+				else if (StringCompare(layer_id, "Boundaries"))
 				{
 					ParseLayerBoundaries(layer, parser, params);
 				}
@@ -324,13 +336,44 @@ namespace Scene
 				}
 			}
 		}
+
+		// add black bars around the edge of the map
+		// tbh this was better before when it was handled by LDtk, as i could set the colour...
+		const float dim = 60.0f;
+		{
+			VectorF size(dim, biome.size.y + 2 * dim);
+			// left
+			{
+				VectorF position(-dim, -dim);
+				AddSideBar(RectF(position, size));
+			}
+			// right
+			{
+				VectorF position(biome.size.x, -dim);
+				AddSideBar(RectF(position, size));
+			}
+		}
+		{
+			VectorF size(biome.size.x + 2 * dim,  dim);
+			// top
+			{
+				VectorF position(-dim, -dim);
+				AddSideBar(RectF(position, size));
+			}
+			// bot
+			{
+				VectorF position(-dim, biome.size.y);
+				AddSideBar(RectF(position, size));
+			}
+		}
 	}
 
-	ECS::Entity BuildBiome(const char* biome_id, int biome_index)
+	ECS::Entity BuildBiome(const char* biome_id, int biome_index, int level_index)
 	{
 		ECS::Entity biome_entity = ECS::CreateEntity("Scene");
 		ECS::Biome& biome = AddComponent(Biome, biome_entity);
 		biome.biomeIndex = biome_index;
+		biome.levelIndex = level_index;
 
 		ParseBiome(biome_id, biome);
 		CreateEntities(biome_entity);

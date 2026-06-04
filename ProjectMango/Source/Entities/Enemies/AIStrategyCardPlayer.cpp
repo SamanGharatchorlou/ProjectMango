@@ -4,7 +4,6 @@
 #include "ECS/EntityCoordinator.h"
 #include "ECS/Components/IncludeComponents.h"
 #include "Entities/Registries/ResourceBank.h"
-#include "Entities/Registries/CardRegistry.h"
 
 namespace AIStrategy
 {
@@ -166,7 +165,7 @@ namespace AIStrategy
 	// collect coins until we can buy the cheapest card
 	void BuyCheapestCard(Entity entity)
 	{
-		ComponentArray<Card>& cards =  GetAllComponents(Card);
+		const ComponentArray<Card>& cards =  GetAllComponents(Card);
 		std::vector<const Card*> all_cards;
 		for( auto iter = cards.entityToComponent.begin(); iter != cards .entityToComponent.end(); iter++ )
 		{ 

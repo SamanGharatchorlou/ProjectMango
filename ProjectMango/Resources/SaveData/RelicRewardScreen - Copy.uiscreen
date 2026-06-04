@@ -4,6 +4,7 @@
         "iid": 302345643,
         "children_iids": [
             1423939926,
+            2789053531,
             3627139614
         ],
         "width": 79.20000457763672,
@@ -25,25 +26,12 @@
             {
                 "__identifier": "sprite",
                 "__type": "String",
-                "__value": "card_bases"
-            },
-            {
-                "__identifier": "button_callback",
-                "__type": "String",
-                "__value": "ChooseRelic"
+                "__value": "EditorBg_black"
             },
             {
                 "__identifier": "render_layer",
                 "__type": "Int",
                 "__value": 6
-            },
-            {
-                "__identifier": "sprite_sheet_frames",
-                "__type": "Array<Float>",
-                "__value": [
-                    5.0,
-                    1.0
-                ]
             }
         ]
     },
@@ -53,8 +41,8 @@
         "width": 40.0,
         "height": 40.0,
         "px": [
-            48.40000534057617,
-            105.5999984741211
+            48.0,
+            92.0
         ],
         "__pivot": [
             0.0,
@@ -74,13 +62,64 @@
         ]
     },
     {
+        "__identifier": "select_button",
+        "iid": 2789053531,
+        "width": 66.0,
+        "height": 16.200000762939453,
+        "px": [
+            33.60000228881836,
+            166.8000030517578
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Select Relic"
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg"
+            },
+            {
+                "__identifier": "button_callback",
+                "__type": "String",
+                "__value": "ChooseParentRelic"
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 77
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 8
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
+            }
+        ]
+    },
+    {
         "__identifier": "description",
         "iid": 3627139614,
         "width": 66.40001678466797,
-        "height": 30.80000114440918,
+        "height": 27.0,
         "px": [
             33.20000076293945,
-            146.40000915527344
+            136.0
         ],
         "__pivot": [
             0.0,
@@ -128,6 +167,7 @@
         "__identifier": "background - copy",
         "iid": 478327034,
         "children_iids": [
+            2090497864,
             1380649297,
             611836051
         ],
@@ -150,25 +190,63 @@
             {
                 "__identifier": "sprite",
                 "__type": "String",
-                "__value": "card_bases"
-            },
-            {
-                "__identifier": "button_callback",
-                "__type": "String",
-                "__value": "ChooseRelic"
+                "__value": "EditorBg_black"
             },
             {
                 "__identifier": "render_layer",
                 "__type": "Int",
                 "__value": 6
+            }
+        ]
+    },
+    {
+        "__identifier": "select_button - copy",
+        "iid": 2090497864,
+        "width": 66.0,
+        "height": 16.200000762939453,
+        "px": [
+            131.1999969482422,
+            166.40000915527344
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Select Relic"
             },
             {
-                "__identifier": "sprite_sheet_frames",
-                "__type": "Array<Float>",
-                "__value": [
-                    5.0,
-                    1.0
-                ]
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "EditorBg"
+            },
+            {
+                "__identifier": "button_callback",
+                "__type": "String",
+                "__value": "ChooseParentRelic"
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 77
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 8
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
             }
         ]
     },
@@ -176,10 +254,10 @@
         "__identifier": "icon - copy",
         "iid": 1380649297,
         "width": 40.0,
-        "height": 38.60000228881836,
+        "height": 40.0,
         "px": [
-            145.6000213623047,
-            104.4000015258789
+            144.40000915527344,
+            92.4000015258789
         ],
         "__pivot": [
             0.0,
@@ -202,10 +280,10 @@
         "__identifier": "description - copy",
         "iid": 611836051,
         "width": 66.40001678466797,
-        "height": 30.80000114440918,
+        "height": 27.0,
         "px": [
-            130.8000030517578,
-            146.00001525878906
+            131.1999969482422,
+            136.40000915527344
         ],
         "__pivot": [
             0.0,

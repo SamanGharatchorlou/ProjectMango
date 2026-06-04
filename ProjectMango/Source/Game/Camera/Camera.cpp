@@ -107,10 +107,14 @@ void Camera::AddShake(float magnitude, VectorF source)
 	shakeyCam.magnitude += magnitude;
 	shakeyCam.magnitude = Maths::clamp(shakeyCam.magnitude, 0.0f , 1.0f);
 	
-	const ECS::Biome& biome = ECS::Biome::GetActive();
+	const ECS::Biome* biome = GetOnlyComponent(Biome);
+	RectF bounds;
+	if (biome)
+		bounds = biome->GetBounds();
+
 	VectorF center;
-	center.x = (biome.GetBounds().x1 + biome.GetBounds().x2) * 0.5f;
-	center.y = (biome.GetBounds().y1 + biome.GetBounds().y2) * 0.5f;
+	center.x = (bounds.x1 + bounds.x2) * 0.5f;
+	center.y = (bounds.y1 + bounds.y2) * 0.5f;
 	if(source.x > center.x)
 	{
 		shakeyCam.direction.x = -1.0f;

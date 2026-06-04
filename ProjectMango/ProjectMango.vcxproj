@@ -168,6 +168,7 @@
     <ClCompile Include="Source\Entities\Factory\ComponentAssembler.cpp" />
     <ClCompile Include="Source\Entities\Factory\EnemyBuilder.cpp" />
     <ClCompile Include="Source\Entities\Factory\EntitySerialiser.cpp" />
+    <ClCompile Include="Source\Entities\Objects\CardBoard.cpp" />
     <ClCompile Include="Source\Entities\Registries\SpellRegistry.cpp" />
     <ClCompile Include="Source\Entities\Registries\MonsterRegistry.cpp" />
     <ClCompile Include="Source\Entities\Player\PlayerTurn.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="Source\Entities\Factory\ComponentAssembler.h" />
     <ClInclude Include="Source\Entities\Factory\EnemyBuilder.h" />
     <ClInclude Include="Source\Entities\Factory\EntitySerialiser.h" />
+    <ClInclude Include="Source\Entities\Objects\CardBoard.h" />
     <ClInclude Include="Source\Entities\Registries\SpellRegistry.h" />
     <ClInclude Include="Source\Entities\Registries\MonsterRegistry.h" />
     <ClInclude Include="Source\Entities\Player\PlayerTurn.h" />

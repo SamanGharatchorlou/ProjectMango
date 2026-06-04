@@ -420,6 +420,9 @@
     <ClCompile Include="Source\Entities\Factory\EnemyBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Entities\Objects\CardBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Readers\AnimationReader.h">
@@ -1221,6 +1224,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Factory\EnemyBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Objects\CardBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

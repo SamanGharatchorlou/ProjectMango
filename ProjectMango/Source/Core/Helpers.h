@@ -32,7 +32,7 @@ void merge(std::vector<T>& vectorA, const std::vector<T>& vectorB)
 }
 
 template<typename T>
-bool Contains(std::vector<T>& vector, const T& item)
+bool Contains(const std::vector<T>& vector, const T& item)
 {
 	for( u32 i = 0; i < vector.size(); i++ )
 	{

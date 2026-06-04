@@ -8,6 +8,7 @@
 #include "Graphics/TextureManager.h"
 #include "imgui-master/imgui.h"
 #include "Debugging/ImGui/ImGuiHelpers.h"
+#include "Graphics/STexture.h"
 
 namespace DebugMenu
 {
@@ -32,7 +33,8 @@ namespace DebugMenu
 			}
 			if (ImGui::SpriteSheetCombo(name))
 			{
-				sprite.image.texture = TextureManager::Get()->getTexture(name, FileManager::Images);
+				sprite.image.id = name.c_str();
+				sprite.SetTexture(sprite.image.id.c_str());
 			}
 
 			int layer = (int)sprite.params.renderLayer;
@@ -64,6 +66,31 @@ namespace DebugMenu
 			ImGui::Text("rotation: %f", sprite.params.rotation);
 
 			ImGui::Text("render offset %f, %f", sprite.params.renderOffset.x, sprite.params.renderOffset.y);
+		}
+
+		ImGui::PopID();
+
+		return type_id;
+	}
+
+
+	u32 DoSpriteSheetDebugMenu(Entity& entity)
+	{
+		COMPONENT_PREAMBLE(SpriteSheet);
+
+		ImGui::PushID(entity + type_id);
+		if (ImGui::CollapsingHeader(type_name.c_str()))
+		{
+			SpriteSheet& ss = GetComponentRef(SpriteSheet, entity);
+
+			if(ImGui::InputVectorI("Grid Count", ss.frame.gridCount))
+			{
+				Sprite* sprite = GetComponent(Sprite, entity);
+				if (sprite && sprite->image.texture)
+					ss.frame.frameSize = sprite->image.texture->originalDimentions / ss.frame.gridCount.toFloat();
+			}
+
+			ImGui::InputInt("Starting Index", &ss.index, 0, ss.frame.gridCount.length() - 1);
 		}
 
 		ImGui::PopID();

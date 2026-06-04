@@ -61,7 +61,15 @@ namespace ECS
 	// ------------------------------------------------------------------
 	void Card::Init(const EntityMetaData& emd)
 	{
-		tier = emd.data.GetInt(kRequirement);
+		int registry_index = emd.data.GetInt("card_registry_index");
+		if (const Card* registry_card = CardRegistry::LookupCard(registry_index))
+		{
+			CopyComponent<Card>(*this, *registry_card);
+		}
+		
+		spell = SpellRegistry::GetSpell(points, colour);
+
+		BuildChildDisplays();
 	}
 	
 	bool Card::CanAfford(Entity entity) const
@@ -92,21 +100,10 @@ namespace ECS
 	{
 		return cost[index] - discount[index];
 	}
-	
-	Entity Card::GetMonster() const
-	{
-		std::vector<Entity> children;
-		GetChildren(entity, children);
-		for( u32 i = 0; i < children.size(); i++ )
-		{
-			// a bit random to get the animator, but it works...
-			if(HasComponent(Animator, children[i]))
-			{
-				return children[i];
-			}
-		}
 
-		return EntityInvalid;
+	bool Card::IsColour(Colour::Type colour) const
+	{
+		return power[colour] != 0;
 	}
 
 	static void GenerateColouredGems(Entity entity)
@@ -160,7 +157,6 @@ namespace ECS
 		}
 	}
 
-
 	static void GenerateCostIcons(Entity entity)
 	{
 		Card& card = GetComponentRef(Card, entity);		
@@ -207,7 +203,7 @@ namespace ECS
 		}
 	}
 
-	void Card::RegenerateChildDisplays()
+	void Card::BuildChildDisplays()
 	{
 		DestroyChildren(entity);
 		for( int i = 0; i < Colour::Count; i++ )
@@ -241,7 +237,7 @@ namespace ECS
 			ui_text.SetSize(19);
 		}
 
-		GenerateCostIcons(entity );
+		GenerateCostIcons(entity);
 
 		if (!spell.empty())
 		{
@@ -251,15 +247,16 @@ namespace ECS
 		}
 	}
 
+
+
 	// Turn
 	// ------------------------------------------------------------------
 	void TurnState::ResetState()
 	{
 		memset(collectedCoins, 0, sizeof(int) * (int)Colour::Count);
-		collectedCardSource = EntityInvalid;
 		canEndTurn = false;
 		tryEndTurn = false;
-		collectedCardRegIndex = -1;
+		collectedCardRegistryIndex = -1;
 		endTurnCooldownSecs = 0.0f;
 	}
 	
@@ -307,7 +304,7 @@ namespace ECS
 			if(!has_available_coin_stack)
 				return false;
 		}
-		else if(collectedCardSource != EntityInvalid)
+		else if(collectedCardRegistryIndex != -1)
 		{
 			return false;
 		}
@@ -325,7 +322,7 @@ namespace ECS
 		}
 
 		// already collect a card
-		if(collectedCardSource != EntityInvalid)
+		if(collectedCardRegistryIndex != -1)
 			return true;
 
 		return false;
@@ -382,6 +379,14 @@ namespace ECS
 		}
 
 		return nullptr;
+	}
+
+	bool TurnState::IsCurrentTurn(Entity entity)
+	{
+		if (const TurnState* active_turn = TurnState::GetActive())
+		{
+			return entity == active_turn->entity;
+		}
 	}
 
 	bool TurnState::IsCurrentTurn() const
@@ -444,17 +449,24 @@ namespace ECS
 		Entity player = Faction::GetPlayer();
 		if(Inventory* inventory = GetComponent(Inventory, player))
 		{
-			for( u32 i = 0; i < inventory->relics.size(); i++ )
+			for (u32 j = 0; j < Relic::Phase::Count; j++)
 			{
-				const Relic& relic = inventory->relics[i];
+				Relic::Phase phase = (Relic::Phase)j;
 
-				// skip over any disabled relics
-				if(Contains(inventory->disabledRelicIds, relic.id))
-					continue;
-
-				if(relic.trigger == event)
+				for( u32 i = 0; i < inventory->relics.size(); i++ )
 				{
-					relic.effectFn(relic, entity);
+					const Relic& relic = inventory->relics[i];
+					if (relic.phase != phase)
+						continue;
+
+					// skip over any disabled relics	
+					if(Contains(inventory->disabledRelicIds, relic.id))
+						continue;
+
+					if(relic.trigger == event)
+					{
+						relic.effectFn(relic, entity);
+					}
 				}
 			}
 		}
@@ -488,7 +500,7 @@ namespace ECS
 	void CoinStack::Init(const EntityMetaData& emd)
 	{
 		capacity = emd.data.GetInt("coin_capacity", 0);
-		colourType = (Colour::Type)emd.data.GetInt("colour_type", -1.0f);
+		colourType = (Colour::Type)emd.data.GetInt("colour_type", -1);
 		remaining = 0;
 	}
 }

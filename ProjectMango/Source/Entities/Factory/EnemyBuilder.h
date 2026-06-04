@@ -2,5 +2,7 @@
 
 namespace ECS { struct EntityMetaData; }
 
+void SetupBiomeEntities();
+
 ECS::Entity CreateEnemy(const ECS::EntityMetaData& emd);
 ECS::Entity CreateEnemy(const char* enemy_type);

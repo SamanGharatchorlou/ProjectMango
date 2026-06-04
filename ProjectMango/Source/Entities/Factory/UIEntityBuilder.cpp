@@ -1,8 +1,10 @@
 #include "UIEntityBuilder.h"
 
 #include "ECS/EntityCoordinator.h"
-#include "ECS/Components/IncludeComponents.h"
+#include "ECS/Components/ComponentHelpers.h"
+#include "ECS/Components/UIComponents.h"
 #include "Input/InputManager.h"
+#include "Entities/Factory/ComponentAssembler.h"
 
 using namespace ECS;
 
@@ -10,24 +12,15 @@ typedef Entity(*CreateEntityFn)(const EntityMetaData&);
 
 Entity CreateUICursor()
 {
-	Entity entity = CreateEntity("Cursor", true);
+	const Config* config = GetConfig("cursor");
 
-	const Config* config = GetConfigFromEntity(entity);
-
-	// Transform
-	Transform& transform = AddComponent(Transform, entity);
-	transform.size = config->data.GetVector("size");
-	transform.SetWorldPosition(VectorF());
-
-	// Sprite
-	Sprite& sprite = AddComponent(Sprite, entity);
-	sprite.params.renderLayer = RenderLayer::Top;
-	sprite.Init(nullptr);
-	sprite.params.renderOffset = transform.size * -0.5;
+	EntityMetaData meta_data;
+	meta_data.data.Merge(config->data);
+	meta_data.data.AddVectorF("render_offset", config->data.GetVector("size") * -0.5f);
+	Entity entity = AssembleEntity(meta_data);
 
 	UICursor& cursor = AddComponent(UICursor, entity);
-	InputManager* input = InputManager::Get();
-	cursor.cursor = &input->mCursor;
+	cursor.cursor = &InputManager::Get()->mCursor;
 
 	return entity;
 }

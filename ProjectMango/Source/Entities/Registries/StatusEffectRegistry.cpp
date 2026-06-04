@@ -3,7 +3,7 @@
 
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/EntityCoordinator.h"
-#include "Entities/Registries/CardRegistry.h"
+#include "Entities/Objects/CardBoard.h"
 
 using namespace ECS;
 
@@ -27,9 +27,12 @@ namespace StatusEffectRegistry
 			}
 		}
 
-		int index = Maths::randomNumberBetween(0, (int)valid_cards.size());
-		const Card* card = valid_cards[index];
-		CardRegistry::DiscardCard(card->entity);
+		if (valid_cards.size() > 0)
+		{
+			int index = Maths::randomNumberBetween(0, (int)valid_cards.size());
+			const Card* card = valid_cards[index];
+			DiscardCard(card->entity);
+		}
 
 		bool finished = true;
 		return finished;

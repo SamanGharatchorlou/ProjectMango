@@ -31,8 +31,12 @@ namespace ECS
 
 	void Sprite::Init(const ECS::EntityMetaData& emd)
 	{
-		params.renderLayer = (RenderLayer)emd.data.GetInt("render_layer", (int)RenderLayer::BasicObject);
+		int render_layer = emd.data.GetInt("render_layer", (int)RenderLayer::BasicObject);
+		render_layer = Maths::clamp(render_layer, 0, (int)RenderLayer::Top);
+
+		params.renderLayer = (RenderLayer)render_layer;
 		params.colourMod = emd.data.GetColour("colour");
+		params.renderOffset = emd.data.GetVector("render_offset");
 
 		const char* id = emd.data.GetString(kRequirement);
 		if (!id)
@@ -58,7 +62,7 @@ namespace ECS
 		if (image.texture)
 		{
 			out_emd.data.AddString(kRequirement, TextureManager::Get()->getTextureName(image.texture).c_str());
-			out_emd.data.GetInt("render_layer", (int)params.renderLayer);
+			out_emd.data.AddInt("render_layer", (int)params.renderLayer);
 		}
 	}
 
@@ -82,16 +86,19 @@ namespace ECS
 			frame.frameSize = sprite->image.texture->originalDimentions / frame_counts.toFloat();
 	}
 
-
 	void SpriteSheet::Init(const ECS::EntityMetaData& emd)
 	{
-		ASSERT(emd.data.GetVector(kRequirement).lengthSquared() > 0,
-			"Sprite sheet %d has frames counts == 0 (entity %s)", emd.data.GetString(Sprite::kRequirement), emd.GetID());
+		Sprite& sprite = GetOrAddComponent(Sprite, entity);
 
 		frame.gridCount = emd.data.GetVector(kRequirement).toInt();
-		Sprite& sprite = GetOrAddComponent(Sprite, entity);
-		if (sprite.image.texture)
-			frame.frameSize = sprite.image.texture->originalDimentions / frame.gridCount.toFloat();
+		frame.frameSize = sprite.image.texture->originalDimentions / frame.gridCount.toFloat();
+
+		index = emd.data.GetInt("sprite_sheet_index", 0);
+	}
+
+	void SpriteSheet::Serialise(EntityMetaData& out_emd) const
+	{
+		out_emd.data.AddVectorF(kRequirement, frame.gridCount.toFloat() );
 	}
 
 	bool SpriteSheet::HasValidFrameIndex() const

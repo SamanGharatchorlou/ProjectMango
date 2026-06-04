@@ -7,11 +7,9 @@ static constexpr PriorityLevel LogLevel = PriorityLevel::Debug;
 static constexpr PriorityLevel LogLevel = PriorityLevel::Log;
 #endif
 
-#define TWEAK_ENABLE_LOGGING 1
-
 static std::unordered_map<BasicString, bool> s_loggings;
 
-static void PriorityLevelToText(PriorityLevel level, BasicString& out_text)
+static void PriorityLevelToText(PriorityLevel level, StringBuffer64& out_text)
 {
 	switch (level)
 	{
@@ -39,9 +37,25 @@ void DebugPrint(PriorityLevel priority, const char* format, ...)
 #if TWEAK_ENABLE_LOGGING
 	if (priority <= LogLevel)
 	{
+		// ------ temp to find a bug -------
+		if (!format)
+		{
+			fprintf(stdout, "DebugPrint: null format\n");
+			fflush(stdout);
+			return;
+		}
+
+		fprintf(stdout, "DebugPrint: ptr=%p val=%.64s\n", (void*)format, format);
+		fflush(stdout);
+		// ------ temp to find a bug -------
+
+		// Validate the pointer before touching it
+		if (!format) 
+			return;
+
 		va_list arg;
 
-		BasicString log_level;
+		StringBuffer64 log_level;
 		PriorityLevelToText(priority, log_level);
 		if(!log_level.empty())
 			fprintf(stdout, "%s: ", log_level.c_str());
@@ -81,7 +95,7 @@ void DebugPrintOnce(PriorityLevel priority, const char* format, ...)
 
 		s_loggings[string] = true;
 
-		BasicString log_level;
+		StringBuffer64 log_level;
 		PriorityLevelToText(priority, log_level);
 		if(!log_level.empty())
 			fprintf(stdout, "%s: ", log_level.c_str());

@@ -118,10 +118,6 @@ namespace ECS
 		COMPONENT_TYPE(BehaviourState)
 
 		float accelleration = 0.0f;
-
-		// time the last attack finished and the cooldown begins
-		u64 attackCooldownTimeMS = 0;
-		u64 attackFinishedTimeMS = 0;
 		
 		// reset when we enter a new state
 		bool didHit = false;

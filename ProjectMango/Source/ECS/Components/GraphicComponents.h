@@ -63,6 +63,8 @@ namespace ECS
 		int index = 0;
 
 		void Init(const EntityMetaData& emd);
+		void Serialise(EntityMetaData& out_emd) const;
+
 		void Init(VectorI frame_counts);
 		bool HasValidFrameIndex() const;
 	};

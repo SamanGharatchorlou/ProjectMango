@@ -12,8 +12,8 @@ struct SettingValues
 template<class T>
 struct SettingArrays
 {
-	inline std::vector<T> operator [] (const char* label) const { return data.at(label); }
-	inline std::vector<T>& operator [] (const char* label) { return data[label]; }
+	//inline std::vector<T> operator [] (const char* label) const { return data.at(label); }
+	//inline std::vector<T>& operator [] (const char* label) { return data[label]; }
 
 	std::unordered_map<StringBuffer32, std::vector<T>> data;
 };
@@ -124,6 +124,10 @@ struct Settings
 	inline void AddIntArray(const char* label, const std::vector<u64>& value)
 	{
 		intArrays.data[label] = value;
+	}	
+	inline void AddIntArrayMember(const char* label, u64 value)
+	{
+		intArrays.data[label].push_back(value);
 	}
 
 	inline SColour GetColour(const char* label, SColour default_value = SColour() ) const

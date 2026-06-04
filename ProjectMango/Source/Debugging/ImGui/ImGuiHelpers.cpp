@@ -26,15 +26,20 @@ namespace ImGui
 		ImGui::PopID();
 	}
 
-	void InputVectorI(const char* label, VectorI& vector)
+	bool InputVectorI(const char* label, VectorI& vector)
 	{
+		bool did_change = false;
+
 		ImGui::PushID(label);
 		int vec[2] = { vector.x, vector.y };
 		if (ImGui::InputInt2(label, vec))
 		{
 			vector = VectorI(vec[0], vec[1]);
+			did_change = true;
 		}
 		ImGui::PopID();
+
+		return did_change;
 	}
 
 	bool ActiveButton(const char* label, bool isActive)
@@ -91,7 +96,7 @@ namespace ImGui
 		bool did_select = false;
 
 		// file select dropdown
-		if (ImGui::BeginCombo("Sprite Sheet", selected.c_str()))
+		if (ImGui::BeginCombo("Texture", selected.c_str()))
 		{
 			FileManager* fm = FileManager::Get();
 			std::vector<BasicString> file_names = fm->fileNamesInFolder(FileManager::Images);
@@ -133,6 +138,11 @@ namespace ImGui
 			}
 
 			ImGui::EndCombo();
+		}
+
+		if (ImGui::InputText("Custom Texture", selected.buffer(), selected.bufferLength()))
+		{
+			
 		}
 
 		return did_select;

@@ -21,8 +21,8 @@
 			"size": [ 264, 90 ],
 			"gravity": true,
 			"snap_to_floor": true,
-			"acceleration": 80,
-			"max_speed": 80,
+			"acceleration": 80.0,
+			"max_speed": 80.0,
 			"max_health": 10
 		},
 		{
@@ -33,8 +33,8 @@
 			"size": [ 264, 90 ],
 			"gravity": true,
 			"snap_to_floor": true,
-			"acceleration": 80,
-			"max_speed": 80,
+			"acceleration": 80.0,
+			"max_speed": 80.0,
 			"attack_cooldown_time_ms": 1000,
 			"action_cooldown_time_ms": 500,
 			"max_health": 10
@@ -67,15 +67,14 @@
 		},
 		{
 			"id": "Ghoul",
+			"animator": "Ghoul",
 			"object_pos": [ 0.434, 0.304 ],
 			"object_size": [ 0.114, 0.664 ],
-			"size": [124, 66],
+			"size": [ 124, 66 ],
 			"gravity": true,
 			"snap_to_floor": true,
-			"acceleration": 80,
-			"max_speed": 50,
-			"attack_cooldown_time_ms" : 1000,
-			"action_cooldown_time_ms" : 500,
+			"acceleration": 80.0,
+			"max_speed": 50.0,
 			"max_health": 10
 		},
 		{

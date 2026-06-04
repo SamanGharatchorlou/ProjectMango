@@ -225,6 +225,11 @@ void SetupCallbackInits(std::unordered_map<BasicString, std::function<void(ECS::
 		if(ECS::Relic* relic = RelicRegistry::GetRandomUnobtainedRelic())
 		{
 			inventory.relics.push_back(*relic);
+
+			if (SpriteSheet* ss = GetComponent(SpriteSheet, entity))
+			{
+				ss->index = relic->colour;
+			}
 		}
 	};
 	

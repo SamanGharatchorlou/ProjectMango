@@ -45,7 +45,7 @@ namespace ECS
 	_entry(Jiggler,           c_rare) \
 	_entry(Audio,             c_veryCommon) \
 	_entry(EntityState,       c_common) \
-	_entry(PlayerController,  c_rare) \
+	_entry(PlayerController,  1) \
 	_entry(Physics,           c_veryCommon) \
 	_entry(Collider,          c_allEntities) \
 	_entry(AIController,      c_common) \
@@ -54,7 +54,7 @@ namespace ECS
 	_entry(Pathing,           c_common) \
 	_entry(Damage,            c_common) \
 	_entry(Health,            c_veryCommon) \
-	_entry(Biome,             c_rare) \
+	_entry(Biome,             1) \
 	_entry(Spawner,           c_rare) \
 	_entry(SpawnRequest,      c_uncommon) \
 	_entry(UICursor,          1) \
@@ -72,7 +72,8 @@ namespace ECS
 	_entry(Faction,           c_common) \
 	_entry(BehaviourMap,      c_common) \
 	_entry(BehaviourState,    c_common) \
-	_entry(StatusEffects,	  c_rare)
+	_entry(StatusEffects,	  c_rare) \
+	_entry(CardBoard,		  1) 
 
 
 #define STRING_ENTRY(name, _) #name,

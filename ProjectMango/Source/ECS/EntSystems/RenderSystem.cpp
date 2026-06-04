@@ -22,7 +22,7 @@ namespace ECS
 
 	bool IsValid(const RenderPack& pack)
 	{
-		return (pack.texture || pack.font) && pack.layer > 0 && pack.layer <= (u32)RenderLayer::Top;
+		return (pack.texture || pack.font) && pack.layer >= (u32)RenderLayer::Bottom && pack.layer <= (u32)RenderLayer::Top;
 	}
 
 	void RenderSystem::Init()

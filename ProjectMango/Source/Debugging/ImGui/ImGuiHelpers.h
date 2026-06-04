@@ -5,7 +5,7 @@ namespace ImGui
 	void VectorText(const char* label, VectorF vector);
 	void VectorText(const char* label, VectorI vector);
 	void InputVectorF(const char* label, VectorF& vector);
-	void InputVectorI(const char* label, VectorI& vector);
+	bool InputVectorI(const char* label, VectorI& vector);
 	bool ActiveButton(const char* label, bool isActive);
 	void DisplayRect(RectF rect);
 

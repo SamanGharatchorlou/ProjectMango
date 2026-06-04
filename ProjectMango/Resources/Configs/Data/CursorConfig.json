@@ -1,5 +1,6 @@
 {
-	"id" : "Cursor",
+	"id" : "cursor",
 	"sprite": "cursor",
-	"size": [24, 24]
+	"size": [ 24, 24 ],
+	"render_layer" : 100
 }

@@ -212,7 +212,6 @@ namespace ECS
 	struct Biome
 	{
 		COMPONENT_TYPE(Biome)
-		Biome() { }
 
 		std::vector<Layer> layers;
 		std::vector<ECS::Entity> colliders;
@@ -222,10 +221,13 @@ namespace ECS
 		std::vector<EntityMetaData> entityMetaData;
 
 		VectorF biomeToWindow;
-		//VectorF worldPos;
 		VectorF size;
 
+		// the biome we load, linked to the data
 		u32 biomeIndex;
+
+		// some variation of the biome, different cards/enemies
+		u32 levelIndex;
 
 		BasicString id;
 
@@ -234,7 +236,5 @@ namespace ECS
 		RectF GetBounds() const;
 
 		bool IsPointInBounds(VectorF world_position) const;
-
-		static const Biome& GetActive();
 	};
 }

@@ -29,13 +29,16 @@ u32 DebugMenu::DoTransformDebugMenu(ECS::Entity& entity)
 		ECS::Transform& transform = GetComponentRef(Transform, entity);
 
 		// input values
-		float pos[2]{ transform.worldPosition.x, transform.worldPosition.y };
-		if (ImGui::InputFloat2("World Pos", pos))
-			transform.worldPosition = VectorF(pos[0], pos[1]);
+		//float pos[2]{ transform.worldPosition.x, transform.worldPosition.y };
+		//if (ImGui::InputFloat2("World Pos", pos))
+		//	transform.worldPosition = VectorF(pos[0], pos[1]);
 
-		float size[2]{ transform.size.x, transform.size.y };
-		if (ImGui::InputFloat2("Size", size))
-			transform.size = VectorF(size[0], size[1]);
+		//float size[2]{ transform.size.x, transform.size.y };
+		//if (ImGui::InputFloat2("Size", size))
+		//	transform.size = VectorF(size[0], size[1]);
+
+		ImGui::InputVectorF("World Pos", transform.worldPosition);
+		ImGui::InputVectorF("Size", transform.size);
 
 		ImGui::Checkbox("Display Object Rect", &s_displayRect);
 		if (s_displayRect)

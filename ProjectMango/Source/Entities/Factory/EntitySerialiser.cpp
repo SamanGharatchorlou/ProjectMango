@@ -214,7 +214,7 @@ void PopulateMetaDataFromJson(Value& jsonValue, EntityMetaData& metaData)
         const Value::Array& children_iids = jsonValue["children_iids"].GetArray();
         for (u32 i = 0; i < children_iids.Size(); i++)
         {
-            settings.intArrays["children_iids"].push_back(children_iids[i].GetUint());
+            settings.AddIntArrayMember("children_iids", children_iids[i].GetUint());
         }
     }
 

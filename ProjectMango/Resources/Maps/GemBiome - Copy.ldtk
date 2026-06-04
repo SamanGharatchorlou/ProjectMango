@@ -11,7 +11,7 @@
 	"iid": "a502b8e0-73f0-11ef-8eb1-af7ce018d269",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 144,
+	"nextUid": 142,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -557,6 +557,159 @@
 					"regex": null,
 					"acceptFileTypes": null,
 					"defaultOverride": { "id": "V_Float", "params": [0.4] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
+		},
+		{
+			"identifier": "Card",
+			"uid": 28,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 30,
+			"height": 40,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FFFFFF",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 9,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "sprite",
+					"doc": null,
+					"__type": "String",
+					"uid": 32,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["card_base"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "button_callback",
+					"doc": null,
+					"__type": "String",
+					"uid": 50,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": true,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["RequestCard"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "card_tier",
+					"doc": null,
+					"__type": "Int",
+					"uid": 57,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
 					"textLanguageMode": null,
 					"symmetricalRef": false,
 					"autoChainRef": true,
@@ -1912,82 +2065,6 @@
 					"tilesetUid": null
 				}
 			]
-		},
-		{
-			"identifier": "Board",
-			"uid": 142,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 144,
-			"height": 160,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 1,
-			"lineOpacity": 1,
-			"hollow": true,
-			"color": "#BE4A2F",
-			"renderMode": "Rectangle",
-			"showName": true,
-			"tilesetId": null,
-			"tileRenderMode": "FitInside",
-			"tileRect": null,
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
-			"fieldDefs": [
-				{
-					"identifier": "card_board",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 143,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ true ]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				}
-			]
 		}
 	], "tilesets": [
 		{
@@ -2129,6 +2206,110 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
+							"__identifier": "Card",
+							"__grid": [2,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e382ebc0-ac70-11f0-835c-5126f8afccde",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": 40,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "9948e560-d380-11f0-81d1-416cca48604d",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": 72,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "9ae30d60-d380-11f0-81d1-b7eca269db29",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": 104,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "9b34afd0-d380-11f0-81d1-7760954a4c10",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": 136,
+							"__worldY": 178
+						},
+						{
 							"__identifier": "Button",
 							"__grid": [15,15],
 							"__pivot": [0,0],
@@ -2205,6 +2386,166 @@
 							],
 							"__worldX": 240,
 							"__worldY": 0
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e5276fa0-d380-11f0-8e3a-19ed1cf16b88",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": 40,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e85be6b0-d380-11f0-8e3a-8d35fae927f6",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": 72,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e8b02130-d380-11f0-8e3a-a393bb948b2c",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": 104,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e8f78a70-d380-11f0-8e3a-ad3dde18c655",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": 136,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e95d7830-d380-11f0-8e3a-75bd17b7e000",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": 136,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e9a75270-d380-11f0-8e3a-fb7ea591742e",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": 104,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "ea006ef0-d380-11f0-8e3a-99ae7d3ac81e",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": 72,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "ea3dc610-d380-11f0-8e3a-7bede8afd866",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": 40,
+							"__worldY": 72
 						},
 						{
 							"__identifier": "CoinPile",
@@ -2378,9 +2719,9 @@
 									"params": [ true ]
 								}] },
 								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Enemy", "__tile": null, "defUid": 104, "realEditorValues": [] },
-								{ "__identifier": "enemy_type", "__type": "String", "__value": "Ghoul", "__tile": null, "defUid": 135, "realEditorValues": [{
+								{ "__identifier": "enemy_type", "__type": "String", "__value": "OrbMage", "__tile": null, "defUid": 135, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Ghoul"]
+									"params": ["OrbMage"]
 								}] },
 								{ "__identifier": "snap_to_wall_right", "__type": "Bool", "__value": true, "__tile": null, "defUid": 136, "realEditorValues": [{
 									"id": "V_Bool",
@@ -2927,22 +3268,6 @@
 							],
 							"__worldX": 230,
 							"__worldY": 224
-						},
-						{
-							"__identifier": "Board",
-							"__grid": [1,2],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "895cafd0-48b0-11f1-b60d-6d7762adcf95",
-							"width": 144,
-							"height": 160,
-							"defUid": 142,
-							"px": [16,32],
-							"fieldInstances": [{ "__identifier": "card_board", "__type": "Bool", "__value": true, "__tile": null, "defUid": 143, "realEditorValues": [] }],
-							"__worldX": 16,
-							"__worldY": 32
 						}
 					]
 				},
@@ -3421,6 +3746,110 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
+							"__identifier": "Card",
+							"__grid": [2,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a3-48b0-11f1-a044-fdfe8b2e00c5",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a4-48b0-11f1-a044-7d923c29ef2f",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a5-48b0-11f1-a044-e7cb0326c181",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 178
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b68a6-48b0-11f1-a044-c7d66c83c8d3",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,178],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["card_base"]
+								}] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["RequestCard"]
+								}] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 178
+						},
+						{
 							"__identifier": "Button",
 							"__grid": [15,15],
 							"__pivot": [0,0],
@@ -3497,6 +3926,166 @@
 							],
 							"__worldX": -16,
 							"__worldY": 0
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb2-48b0-11f1-a044-e77031b3faf6",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb3-48b0-11f1-a044-8d815ccbe2fa",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb4-48b0-11f1-a044-21bbb8e91979",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,7],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb5-48b0-11f1-a044-15766665df97",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,125],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 1, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 125
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [8,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb6-48b0-11f1-a044-db41248634ed",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [136,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -120,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [6,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb7-48b0-11f1-a044-0d474cad52d4",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [104,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -152,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [4,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb8-48b0-11f1-a044-537c86a06ed2",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [72,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -184,
+							"__worldY": 72
+						},
+						{
+							"__identifier": "Card",
+							"__grid": [2,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 9, "x": 384, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "3b7b8fb9-48b0-11f1-a044-6f9115c36acf",
+							"width": 30,
+							"height": 40,
+							"defUid": 28,
+							"px": [40,72],
+							"fieldInstances": [
+								{ "__identifier": "sprite", "__type": "String", "__value": "card_base", "__tile": null, "defUid": 32, "realEditorValues": [] },
+								{ "__identifier": "button_callback", "__type": "String", "__value": "RequestCard", "__tile": null, "defUid": 50, "realEditorValues": [] },
+								{ "__identifier": "card_tier", "__type": "Int", "__value": 2, "__tile": null, "defUid": 57, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+							],
+							"__worldX": -216,
+							"__worldY": 72
 						},
 						{
 							"__identifier": "CoinPile",

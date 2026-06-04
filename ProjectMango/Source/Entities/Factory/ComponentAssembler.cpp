@@ -60,6 +60,7 @@ ECS::Entity AssembleEntity(const ECS::EntityMetaData& emd, Entity existing_entit
 	TryAddComponent<Callback>(entity, emd);
 	TryAddComponent<Faction>(entity, emd);
 	TryAddComponent<Card>(entity, emd);
+	TryAddComponent<CardBoard>(entity, emd);
 	TryAddComponent<CoinStack>(entity, emd);
 
 	return entity;
@@ -70,6 +71,7 @@ void SerialiseEntity(ECS::Entity entity, ECS::EntityMetaData& out_data)
 	SerialiseComponent<EntityData>(entity, out_data);
 	SerialiseComponent<Transform>(entity, out_data);
 	SerialiseComponent<Sprite>(entity, out_data);
+	SerialiseComponent<SpriteSheet>(entity, out_data);
 	SerialiseComponent<UIButton>(entity, out_data);
 	SerialiseComponent<UIText>(entity, out_data);
 	SerialiseComponent<Callback>(entity, out_data);

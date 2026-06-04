@@ -8,6 +8,19 @@
 
 #define DEBUG_MODE _DEBUG
 
+// NEW operator override
+// where should this go?
+#define TWEAK_MEMORY_TRACKING 0 // 1 = default, 2 = (very)verbose
+#define TWEAK_IGNORE_UNKNOWNS 0
+#if TWEAK_MEMORY_TRACKING
+#include "Debugging/MemTrack.h"
+#else
+#define PRINT_MEMORY 0
+#endif
+
+#define TWEAK_ENABLE_LOGGING 1
+
+
 // --- Standard Library --- 
 
 // Strings
@@ -101,14 +114,4 @@ namespace fs = std::filesystem;
 // --- Debug Only Includes ---
 #include "Debugging/DebugDraw.h"
 #include "Debugging/Logging.h"
-
-// NEW operator override
-// where should this go?
-#define TWEAK_MEMORY_TRACKING 0 // 1 = default, 2 = (very)verbose
-#define TWEAK_IGNORE_UNKNOWNS 0
-#if TWEAK_MEMORY_TRACKING
-#include "Debugging/MemTrack.h"
-#else
-#define PRINT_MEMORY 0
-#endif
 

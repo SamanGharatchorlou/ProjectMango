@@ -32,8 +32,7 @@
 #include "Entities/Registries/RelicRegistry.h"
 #include "Entities/Registries/StatusEffectRegistry.h"
 #include "Entities/States/Behaviours.h"
-
-
+#include "Entities/Factory/EnemyBuilder.h"
 
 
 void ECS::RegisterAllComponents()
@@ -92,17 +91,12 @@ void ECS::RegisterAllSystems()
 	Signature cardSignature = ArcheBit(Card);
 	ecs->RegisterAndSystem<CardSystem>(cardSignature);
 
-	// todo: can remove this now?
-	// Compoenent Updates - run any random part update loops here if they dont need their own system
+	// Compoenent Updates - run any random part update loops here when they dont need their own system
 	Signature ComponentsSignature = 0;
 	ecs->RegisterOrSystem<ComponentUpdateSystem>(ComponentsSignature);
 
 	
 	// --------- state systems ---------
-
-	// AI Controller
-	//Signature AIControllerSignature = ArcheBit(AIController);
-	//ecs->RegisterAndSystem<AIControllerSystem>(AIControllerSignature);
 
 	// State Resolution
 	Signature StateResolutionSignature = ArcheBit(EntityState) | ArcheBit(AIIntent) | ArcheBit(BehaviourState);
@@ -136,7 +130,7 @@ void ECS::RegisterAllSystems()
 	ecs->RegisterAndSystem<CollisionSystem>(collisionSignature);
 
 	// Transform
-	Signature transformSignature = ArcheBit(Transform);
+	Signature transformSignature = ArcheBit(Transform) | ArcheBit(Physics);
 	ecs->RegisterAndSystem<TransformSystem>(transformSignature);
 
 
@@ -165,6 +159,8 @@ void ECS::ParseGameFileData()
 
 	RelicRegistry::PopulateRegistry();
 	StatusEffectRegistry::PopulateRegistry();
+
+	SetupBiomeEntities();
 }
 
 void ECS::ClearGameFileData()

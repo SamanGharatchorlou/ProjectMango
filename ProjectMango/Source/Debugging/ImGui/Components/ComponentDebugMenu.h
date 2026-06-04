@@ -23,6 +23,7 @@ namespace DebugMenu
 	u32 DoEntityDataDebugMenu(ECS::Entity& entity);
 	u32 DoTransformDebugMenu(ECS::Entity& entity);
 	u32 DoSpriteDebugMenu(ECS::Entity& entity);
+	u32 DoSpriteSheetDebugMenu(ECS::Entity& entity);
 	u32 DoPhysicsDebugMenu(ECS::Entity& entity);
 	u32 DoAnimatorDebugMenu(ECS::Entity& entity);
 	u32 DoColliderDebugMenu(ECS::Entity& entity);
@@ -44,9 +45,10 @@ namespace DebugMenu
 
 	inline void DoUIEditorMenus(ECS::Entity& entity)
 	{
-		DoEntityDataDebugMenu(entity);
 		DoTransformDebugMenu(entity);
+		DoEntityDataDebugMenu(entity);
 		DoSpriteDebugMenu(entity);
+		DoSpriteSheetDebugMenu(entity);
 		DoUITextDebugMenu(entity);
 		DoUIButtonDebugMenu(entity);
 		DoCallbackDebugMenu(entity);

@@ -88,7 +88,7 @@ Entity CreateActor(const EntityMetaData& emd, const char* id_override)
 		return AssembleEntity(meta_data, entity);
 	}
 
-	return entity;
+	return AssembleEntity(emd, entity);
 }
 
 // spawns from a card
@@ -141,7 +141,7 @@ Entity CreateCardSpell(const EntityMetaData& emd, Entity parent)
 	transform.size = rect.Size();
 	transform.SetObjectCenter(parent_transform.GetObjectCenter());
 
-	// Animator
+	// Animator // todo:remove?
 	Animator& animation = AddComponent(Animator, entity);
 	animation.Init();
 
@@ -257,7 +257,6 @@ static void InitEntityFunctions()
 	s_createEntitiyFunctions["Enemy"] = CreateEnemy;
 	s_createEntitiyFunctions["Player"] = CreatePlayer;
 }
-
 
 Entity CreateEntityFromData(const EntityMetaData& meta_data)
 {

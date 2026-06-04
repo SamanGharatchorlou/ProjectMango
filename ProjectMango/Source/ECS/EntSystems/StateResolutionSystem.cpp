@@ -59,15 +59,6 @@ namespace ECS
 				continue;
 			}
 
-			// getting hurt or dying
-			if(Health* health = GetComponent(Health, entity))
-			{
-				if(health->currentHealth <= 0)
-					next_state = Action::Death; 
-				else if( (health->currentHealth / health->maxHealth) <= 0.2f)
-					next_state = Action::Hurting;
-			}
-
 			// attack
 			if(intent.wantsToAttack && can_attack)
 			{
@@ -83,7 +74,12 @@ namespace ECS
 				next_state = Action::Run;
 			}
 						
-
+			// getting hurt or dying
+			if (Health* health = GetComponent(Health, entity))
+			{
+				if (health->currentHealth <= 0)
+					next_state = Action::Death;
+			}
 		}
 	}
 }

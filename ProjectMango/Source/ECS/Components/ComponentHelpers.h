@@ -73,6 +73,7 @@ namespace ECS
 
 	Entity CreateEntity(const char* id, bool config_postfix = false);
 	Entity CreateEntity(const EntityMetaData& emd);
+	void DestroyEntityAndChildren(Entity entity);
 
 	const char* GetName(Entity entity);
 	const Config* GetConfigFromEntity(Entity entity);

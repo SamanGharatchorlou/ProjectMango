@@ -91,6 +91,12 @@ namespace ECS
 		return EntityInvalid;
 	}
 
+	void DestroyEntityAndChildren(Entity entity)
+	{
+		DestroyChildren(entity);
+		ecs->entities.KillEntity(entity);
+	}
+
 	void DestroyChildren(Entity parent)
 	{
 		if(EntityData* ed = GetComponent(EntityData, parent))

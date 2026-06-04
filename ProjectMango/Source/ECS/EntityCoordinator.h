@@ -109,6 +109,16 @@ namespace ECS
 
 		template<class T>
 		ComponentArray<T>& GetComponents() { return *static_cast<ComponentArray<T>*>(components.componentArrays[GetComponentID<T>()]); }
+
+		template<class T>
+		T* GetOnlyComponent() 
+		{ 
+			ComponentArray<T>* array = static_cast<ComponentArray<T>*>(components.componentArrays[GetComponentID<T>()]);
+			if(array->entityToComponent.size() > 0)
+				return &array->GetComponentByIndex(array->entityToComponent.begin()->second);
+
+			return nullptr;
+		}
 		
 		void InitSystems();
 		void UpdateSystems(float dt);
@@ -132,4 +142,5 @@ namespace ECS
 #define GetOrAddComponent(compType, entity) ecs->GetOrAddComponent<ECS::compType>(entity)
 
 #define GetAllComponents(compType) ecs->GetComponents<ECS::compType>()
+#define GetOnlyComponent(compType) ecs->GetOnlyComponent<ECS::compType>()
 }

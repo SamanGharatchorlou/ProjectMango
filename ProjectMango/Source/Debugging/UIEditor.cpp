@@ -94,20 +94,8 @@ namespace UIEditor
                     {
                         ImGui::SameLine(); ImGui::Text(" <--");
                     }
-
-                    char text_buffer[64];
-                    snprintf(text_buffer, 64, "%s", ed->id.buffer());
-
-                    ImGui::PushID((int)ed->iid);
-                    ImGui::SameLine();
-                    if (ImGui::InputText("", text_buffer, 64))
-                    {
-                        ed->id = text_buffer;
-                    }
                     ImGui::PopID();
                 }
-
-                ImGui::PopID();
             }
             ImGui::TreePop();
         }
@@ -205,7 +193,17 @@ namespace UIEditor
 
     static void DoEntityControlPanel(Entity entity, UIScreenMetaData& screen_metas, UIScreenEntities& entities)
     {
-        ImGui::Begin(GetName(entity), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Begin("Entity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+        if (EntityData* ed = GetComponent(EntityData, entity))
+        {
+            char text_buffer[64];
+            snprintf(text_buffer, 64, "%s", ed->id.c_str());
+            if (ImGui::InputText("ID", text_buffer, 64))
+            {
+                ed->id = text_buffer;
+            }
+        }
 
         if (ImGui::Button("Duplicate"))
         {

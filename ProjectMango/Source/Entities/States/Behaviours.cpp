@@ -114,18 +114,7 @@ namespace Actor
 				}
 			}
 		}
-
-		if(animator.loopCount > 0)
-		{
-			const Animation* animation = animator.GetActiveAnimation();
-			ASSERT(animation->action == attack, "Not the basic attack anim state in the basic attack update");
-
-			// mark the attack as finished
-			BehaviourState& state = GetComponentRef(BehaviourState, entity);
-			state.attackFinishedTimeMS = GetTicksMS();
-		}
 	}
-
 
 	// BasicAttack
 	static void BasicAttackUpdate(ECS::Entity entity)

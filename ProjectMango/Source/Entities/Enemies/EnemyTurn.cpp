@@ -26,6 +26,7 @@ void EnemyTurn::Update(ECS::TurnState& turn)
 			AIStrategies::SimpleAttacker(entity, *intent);
 	}
 
+
 	turn.canEndTurn = true;
 
 	if(turn.tryEndTurn)

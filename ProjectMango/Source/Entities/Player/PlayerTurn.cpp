@@ -1,22 +1,14 @@
 #include "pch.h"
 #include "PlayerTurn.h"
 
-#include "ECS/EntityCoordinator.h"
-#include "ECS/Components/IncludeComponents.h"
-
-#include "Game/States/GameState.h"
-#include "Core/Helpers.h"
-#include "Entities/Registries/CardRegistry.h"
-#include "Entities/Registries/MonsterRegistry.h"
-#include "Game/FrameRateController.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
+#include "ECS/Components/IncludeComponents.h"
+#include "ECS/EntityCoordinator.h"
+#include "Entities/Objects/CardBoard.h"
+#include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/ResourceBank.h"
-
-#include "Game/Camera/Camera.h"
+#include "Game/States/GameState.h"
 #include "Input/InputManager.h"
-
-// temp
-#include "Entities/Registries/SpellRegistry.h"
 
 using namespace ECS;
 
@@ -39,10 +31,6 @@ static void TakeCoins(Entity entity, Colour::Type colour, int amount)
 
 static void TakeCard(Entity entity, const Card& card)
 {
-	//int card_cost[Colour::Count];
-
-	//memcpy(card_cost, card.cost, sizeof(int) * (int)Colour::Count);
-
 	Inventory& inventory = GetComponentRef(Inventory, entity);
 	int card_power[Colour::Count];
 	inventory.GetCardPower(card_power);
@@ -60,17 +48,15 @@ static void TakeCard(Entity entity, const Card& card)
 	}
 
 	TurnState& turn = GetComponentRef(TurnState, entity);
-	turn.collectedCardRegIndex = card.registryIndex;
-	turn.collectedCardSource = card.entity;
+	turn.collectedCardRegistryIndex = card.registryIndex;
 
-	inventory.cards.push_back(card.registryIndex); 
+	inventory.cards.push_back(card.registryIndex);
 	
-	Entity target = Faction::GetTarget(entity);
-	if(target != EntityInvalid)
-		SpellRegistry::CreateSpell(card.spell.c_str(), target);
-
-	// destroys all children
-	CardRegistry::DiscardCard(card.entity);
+	bool triggered_spell = TriggerCard(card.entity, entity);
+	if (triggered_spell)
+	{
+		turn.endTurnCooldownSecs = 2.0f;
+	}
 }
 
 static bool ExecuteAction(ActionRequest& action_request, TurnState& turn)
@@ -185,8 +171,8 @@ void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 				turn_log.emplace_back( BasicString( buffer ) );
 			}
 		}
-					
-		if(const Card* collected_card = CardRegistry::LookupCard(turn.collectedCardRegIndex))
+
+		if(const Card* collected_card = CardRegistry::LookupCard(turn.collectedCardRegistryIndex))
 		{
 			const char* power = nullptr;
 			for( u32 i = 0; i < Colour::Count; i++ )
@@ -215,11 +201,7 @@ void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 		}
 	}
 
-	if(const Card* collected_card = CardRegistry::LookupCard(turn.collectedCardRegIndex))
-	{
-		// redraw any cards we removed
-		CardRegistry::DrawRandomCard( turn.collectedCardSource, collected_card->tier );
-	}
+	RestockTriggeredCards();
 
 	turn.turnIndex++;
 	turn.ResetState();

@@ -116,11 +116,13 @@ namespace ECS
 			collider->UpdateFromTransform(*this);
 		}
 
-		EntityData& entity_data = GetComponentRef(EntityData, entity);
-		if(entity_data.parent != EntityInvalid)
+		if (EntityData* entity_data = GetComponent(EntityData, entity))
 		{
-			const Transform& parent_transform = GetComponentRef(Transform, entity_data.parent);
-			localPosition = worldPosition - parent_transform.worldPosition;
+			if (entity_data->parent != EntityInvalid)
+			{
+				const Transform& parent_transform = GetComponentRef(Transform, entity_data->parent);
+				localPosition = worldPosition - parent_transform.worldPosition;
+			}
 		}
 	}
 
@@ -437,18 +439,6 @@ namespace ECS
 	
 	// Biome
 	// ------------------------------------------------------------------
-	const Biome& Biome::GetActive()
-	{
-		ComponentArray<Biome>& biomes = GetAllComponents(Biome);
-		for (auto iter = biomes.entityToComponent.begin(); iter != biomes.entityToComponent.end(); iter++)
-		{
-			return biomes.GetComponentByIndex(iter->second);
-		}
-
-		DebugPrint(Error, "No biome is active");
-		return Biome();
-	}
-
 	VectorI Biome::GetTileIndex(VectorF position) const
 	{
 		VectorF tile_size = layers.front().tileSize;

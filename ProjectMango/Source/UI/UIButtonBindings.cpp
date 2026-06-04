@@ -10,15 +10,21 @@ using namespace ECS;
 void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& button_bindings)
 {
 	button_bindings[ "RequestCoin" ] =  [](ECS::Entity entity) {
-		ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
-		action_request.request = ActionRequest::CollectCoin;
-		action_request.target = entity; 
+		if (TurnState::IsCurrentTurn(Faction::GetPlayer()))
+		{
+			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
+			action_request.request = ActionRequest::CollectCoin;
+			action_request.target = entity;
+		}
 	};
 
-	button_bindings[ "RequestCard" ] =  [](ECS::Entity entity) {
-		ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
-		action_request.request = ActionRequest::AquireCard;
-		action_request.target = entity;
+	button_bindings[ "RequestCard" ] =  [](ECS::Entity entity) {		
+		if (TurnState::IsCurrentTurn(Faction::GetPlayer()))
+		{
+			ActionRequest& action_request = AddComponent(ActionRequest, Faction::GetPlayer());
+			action_request.request = ActionRequest::AquireCard;
+			action_request.target = entity;
+		}
 	};
 
 	button_bindings[ "EndTurnButton" ] =  [](ECS::Entity entity) {
@@ -48,15 +54,15 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 		}
 	};
 
-	button_bindings["ChooseParentRelic"] = [](ECS::Entity entity) {
+	button_bindings["ChooseRelic"] = [](ECS::Entity entity) {
 
 		Entity player = Faction::GetPlayer();
 		Inventory* player_inventory = GetComponent(Inventory, player);
 		if (!player_inventory)
 			return;
 
-		Entity parent = GetParent(entity);
-		if (Inventory* inventory = GetComponent(Inventory, parent))
+		//Entity parent = GetParent(entity);
+		if (Inventory* inventory = GetComponent(Inventory, entity))
 		{
 			for (u32 i = 0; i < inventory->relics.size(); i++)
 			{
@@ -66,8 +72,6 @@ void SetupButtonActionBindings(std::unordered_map<BasicString, std::function<voi
 
 		UIManager& ui_manager = UIManager::Get();
 		ui_manager.CloseScreen("RelicRewardScreen");
-
-
 	};
 }
 

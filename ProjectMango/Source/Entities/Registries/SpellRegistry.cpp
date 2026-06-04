@@ -138,7 +138,7 @@ namespace SpellRegistry
 		ds.action = action;
 
 		Damage& damage = AddComponent(Damage, target);
-		damage.value = meta_data.data.GetInt("damage");
+		damage.value = (float)meta_data.data.GetInt("damage");
 		damage.sourceEntity = entity;
 
 		if (BehaviourState* bs = GetComponent(BehaviourState, entity))

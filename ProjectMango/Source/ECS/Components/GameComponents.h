@@ -1,5 +1,8 @@
 #pragma once
 
+// when adding a component, define it in EntityCommon.h
+// then setup how its updated in ComponentsSetup
+
 // all the more game speicifc components in here
 namespace ECS
 {
@@ -77,7 +80,7 @@ namespace ECS
 
 		COMPONENT_TYPE(Card)
 
-		static constexpr const char* kRequirement = "card_tier";
+		static constexpr const char* kRequirement = "card_registry_index";
 		void Init(const EntityMetaData& emd);
 
 		Colour::Type colour;
@@ -99,26 +102,47 @@ namespace ECS
 		int tier = 0;
 
 		int registryIndex = 0;
+		VectorI boardIndex;
 
-		//int monsterRegistryIndex = -1;
 		BasicString spell;
 
-		void RegenerateChildDisplays();
+		void BuildChildDisplays();
 		bool CanAfford(Entity entity) const;
-		Entity GetMonster() const;
 
 		int Cost(u32 index) const;
+		bool IsColour(Colour::Type colour) const;
+	};
+
+
+	struct DeckCard
+	{
+		int tier;
+		int registryIndex;
+		int weight = 1;
+
+		bool operator == (const DeckCard& dc) const { return tier == dc.tier && registryIndex == dc.registryIndex; }
+	};
+
+	struct CardBoard
+	{
+		COMPONENT_TYPE(CardBoard)
+
+		static constexpr const char* kRequirement = "card_board";
+		void Init(const EntityMetaData& emd) {}
+
+		Grid<ECS::Entity> cards;
+
+		std::vector<DeckCard>	drawPile[Card::c_tiers];
+		std::vector<int>		discardPile[Card::c_tiers];
+
+		std::vector<VectorI> triggeredCards;
 	};
 
 	enum class GameEvent
 	{
 		None,
-		CoinCollected,
-		CardAquired,
+		DrawPileBuilt,
 		CardDrawn,
-		MonsterSummoned,
-		TurnStart,
-		TurnEnd
 	};
 
 
@@ -127,10 +151,18 @@ namespace ECS
 	{
 		typedef void(*EffectFn)(const Relic& relic, Entity entity);
 
+		enum Phase
+		{
+			Selection,	// run first, card selection so we want other effects after this
+			Effect,		// default
+			Count
+		};
+
 		BasicString id;
 		BasicString description;
 		GameEvent trigger;
 		EffectFn effectFn;
+		Phase phase = Effect;
 
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
@@ -210,8 +242,7 @@ namespace ECS
 
 		// player specific state
 		int collectedCoins[Colour::Count] { 0 };
-		int collectedCardRegIndex = -1;
-		Entity collectedCardSource = EntityInvalid;
+		int collectedCardRegistryIndex = -1;
 
 		void ResetState();
 		bool CanAquireMoreResources() const;
@@ -219,7 +250,11 @@ namespace ECS
 		bool CanCollectCoin(Colour::Type colour) const;
 
 		static TurnState* GetActive();
+		static bool IsCurrentTurn(Entity entity);
+
 		bool IsCurrentTurn() const;
+
+
 	};
 
 	struct ActionRequest

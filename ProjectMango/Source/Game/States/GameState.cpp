@@ -14,9 +14,9 @@
 #include "Input/InputManager.h"
 #include "System/Window.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
-#include "Entities/Registries/CardRegistry.h"
 #include "UI/UIManager.h"
 #include "Game/EndBattle.h"
+#include "Entities/Objects/CardBoard.h"
 
 
 GameState* GameState::GetActive()
@@ -39,9 +39,9 @@ void GameState::Init()
 
 	CreateUICursor();
 
-	Scene::BuildBiome("GemBiome", 0);
+	Scene::BuildBiome("GemBiome", 0,  0);
 
-	CardRegistry::DrawCards();
+	PopulateBoard(5, 2);
 
 	Camera* camera = Camera::Get();
 	Window* window = GameData::Get().window;
@@ -117,10 +117,10 @@ static void SavePlayerState(PlayerState& player_state)
 	{
 		player_state.relics = inventory->relics;
 	}
-	if (const ECS::Health* health = GetComponent(Health, player))
-	{
-		player_state.health = health->currentHealth;
-	}
+	//if (const ECS::Health* health = GetComponent(Health, player))
+	//{
+	//	player_state.health = health->currentHealth;
+	//}
 }
 
 static void LoadPlayerState(PlayerState& player_state)
@@ -130,25 +130,28 @@ static void LoadPlayerState(PlayerState& player_state)
 	{
 		inventory->relics = player_state.relics;
 	}
-	if (ECS::Health* health = GetComponent(Health, player))
-	{
-		health->currentHealth = player_state.health;
-	}
+	//if (ECS::Health* health = GetComponent(Health, player))
+	//{
+	//	health->currentHealth = player_state.health;
+	//}
 }
 
 void GameState::NextBattle()
 {
+	u32 current_level = GetOnlyComponent(Biome)->levelIndex;
+
 	SavePlayerState(playerState);
 	endGameState = EndGameState();
+	turnIndex = 0;
 
 	ecs->DestroyAllEntities();
 
 	CreateUICursor();
-	Scene::BuildBiome("GemBiome", 1);
+	Scene::BuildBiome("GemBiome", 0, current_level + 1);
 
 	LoadPlayerState(playerState);
 
-	CardRegistry::DrawCards();
+	PopulateBoard(4, 3);
 }
 
 void GameState::Update(float dt)
@@ -174,7 +177,7 @@ void GameState::Update(float dt)
 		if (!was_game_over)
 		{
 			endGameState.showingGameOverText = true;
-			CardRegistry::ResetCards();
+			ClearBoard();
 		}
 
 		if (endGameState.showingGameOverText)

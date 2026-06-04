@@ -40,7 +40,7 @@ namespace ECS
 		{
 			if (EntityData* child_ed = GetComponent(EntityData, children[i]))
 			{
-				out_emd.data.intArrays["children_iids"].push_back(child_ed->iid);
+				out_emd.data.AddIntArrayMember("children_iids", child_ed->iid);
 			}
 		}
 	}
@@ -173,11 +173,8 @@ namespace ECS
 
 	Entity Faction::GetPlayer()
 	{
-		ComponentArray<PlayerController>& players =  GetAllComponents(PlayerController);
-		for( auto iter = players.entityToComponent.begin(); iter != players.entityToComponent.end(); iter++ )
-		{
-			return iter->first;
-		}
+		if(const ECS::PlayerController* player = GetOnlyComponent(PlayerController))
+			return player->entity;
 
 		return EntityInvalid;
 	}
@@ -301,7 +298,7 @@ namespace ECS
 
 	void Health::Init(const EntityMetaData& emd)
 	{
-		maxHealth = emd.data.GetInt(kRequirement);
+		maxHealth = (float)emd.data.GetInt(kRequirement);
 		currentHealth = maxHealth;
 	}
 

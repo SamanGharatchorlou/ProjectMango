@@ -54,9 +54,9 @@ namespace ECS
 
 	void PathingSystem::Update(float dt)
 	{
-		const Biome& active_biome = Biome::GetActive();
-		if(active_biome.walkableTiles.rows() == 0 )
-			return;
+		//const Biome& biome = GetOnlyComponent(Biome);
+		//if(biome.walkableTiles.rows() == 0 )
+		//	return;
 
  		for (Entity entity : entities)
 		{
@@ -64,13 +64,13 @@ namespace ECS
 			if(IsSelectedDebugEntity(entity))
 				int a = 4;
 
-			Pathing& pathing = GetComponentRef(Pathing, entity);
-			//AIController& aic = GetComponentRef(AIController, entity);
+			//Pathing& pathing = GetComponentRef(Pathing, entity);
+			////AIController& aic = GetComponentRef(AIController, entity);
 
 
 
-			// reset this every frame
-			pathing.hasValidPath = false;
+			//// reset this every frame
+			//pathing.hasValidPath = false;
 
 			//VectorF pos = GetPosition(entity);
 			//const Level& level = Biome::GetLevel(pos);
@@ -82,23 +82,23 @@ namespace ECS
 			//	continue;
 			//}
 
-			if (!active_biome.IsPointInBounds(pathing.targetLocation))
-				continue;
+			//if (!biome.IsPointInBounds(pathing.targetLocation))
+			//	continue;
 
-			VectorF target = pathing.targetLocation;
-			VectorF position = GetPosition(entity);
+			//VectorF target = pathing.targetLocation;
+			//VectorF position = GetPosition(entity);
 
-			// !!! this then fails !!!
-			bool can_move_to_target_location = CanMoveDistance(entity, &active_biome, pathing.targetLocation);
-			if (!can_move_to_target_location)
-				continue;
+			//// !!! this then fails !!!
+			//bool can_move_to_target_location = CanMoveDistance(entity, &active_biome, pathing.targetLocation);
+			//if (!can_move_to_target_location)
+			//	continue;
 
-			// passed all the tests, can move to the next location
-			pathing.hasValidPath = true;
+			//// passed all the tests, can move to the next location
+			//pathing.hasValidPath = true;
 
-			// move the physics
-			Physics& physics = GetComponentRef(Physics, entity);
-			physics.speed += (pathing.targetLocation - position);
+			//// move the physics
+			//Physics& physics = GetComponentRef(Physics, entity);
+			//physics.speed += (pathing.targetLocation - position);
 		}
 	}
 }

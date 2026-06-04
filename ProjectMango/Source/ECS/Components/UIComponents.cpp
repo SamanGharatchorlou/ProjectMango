@@ -17,14 +17,7 @@ namespace ECS
 
 	UICursor* UICursor::Get()
 	{
-		ComponentArray<UICursor>& cursors = GetAllComponents(UICursor);
-		if (cursors.Count() > 0)
-		{
-			auto front_index = cursors.entityToComponent.begin();
-			return &cursors.GetComponentByIndex(front_index->second);
-		}
-
-		return nullptr;
+		return GetOnlyComponent(UICursor);
 	}
 
 	VectorF UICursor::Position() const
@@ -75,7 +68,7 @@ namespace ECS
 
 		callback = emd.data.GetString("text_callback");
 
-		Colour::Type colour_type = (Colour::Type)emd.data.GetInt("colour_type", -1.0f);
+		Colour::Type colour_type = (Colour::Type)emd.data.GetInt("colour_type", -1);
 		if (colour_type != -1)
 		{
 			Colour& colour = AddComponent(Colour, entity);
