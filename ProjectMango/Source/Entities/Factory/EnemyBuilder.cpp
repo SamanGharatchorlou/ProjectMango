@@ -49,6 +49,7 @@ static void PopulateGhoulStrategy(AIStrategy& strategy)
 	approach_pattern.phases.push_back(recover);
 	approach_pattern.phases.push_back(approach);
 	approach_pattern.phases.push_back(recover);
+	approach_pattern.triggerCount = 1;
 	strategy.strategies.push_back(approach_pattern);
 
 	Strategy attack_pattern;
@@ -130,24 +131,7 @@ void SetupBiomeEntities()
 	biome_3.populateStrategyFn = PopulateOrbMageStrategy;
 	s_biomeEntities.push_back(biome_3);
 }
-//
-//static void PopulateStrategy(const char* enemy_type, AIStrategy& strategy)
-//{
-//	if (StringCompare(enemy_type, "Ghoul"))
-//	{
-//		PopulateGhoulStrategy(strategy);
-//	}
-//
-//	if (StringCompare(enemy_type, "ShockSweeper"))
-//	{
-//		PopulateShockSweeperStrategy(strategy);
-//	}
-//
-//	if (StringCompare(enemy_type, "OrbMage"))
-//	{
-//		PopulateOrbMageStrategy(strategy);
-//	}
-//}
+
 
 static EntityMetaData s_enemyMetaData;
 
@@ -206,8 +190,8 @@ Entity CreateEnemy(const ECS::EntityMetaData& emd)
 		game_state->enemy = entity;
 	}
 
-	if (DebugMenu::GetSelectedEntity() == EntityInvalid)
-		DebugMenu::SelectEntity(entity);
+	//if (DebugMenu::GetSelectedEntity() == EntityInvalid)
+	//	DebugMenu::SelectEntity(entity);
 
 
 	return entity;

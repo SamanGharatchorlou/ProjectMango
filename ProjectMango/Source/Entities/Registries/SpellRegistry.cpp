@@ -16,10 +16,16 @@ namespace SpellRegistry
 	{
 		// multiple of frame size
 		float size = 1.0f;
-		int damage = 0;
 		Colour::Type colour = Colour::Count;
 
-		bool operator == (const CardSpell& cs) const { return damage == cs.damage && colour == cs.colour; }
+		// spells have a range of damage that they can be assigned to
+		int damageMin = 0;
+		int damageMax = 0;
+
+		bool operator == (const CardSpell& cs) const { 
+			return colour == cs.colour &&
+				damageMin == cs.damageMin && damageMax && cs.damageMax; 
+		}
 	};
 
 	std::unordered_map<BasicString, CardSpell> s_spellsRegistry;
@@ -40,29 +46,32 @@ namespace SpellRegistry
 		using namespace rapidjson;
 
 		BasicString file_path;
-		FileManager::Get()->FindFile(FileManager::Configs, file, file_path);
-		JSONParser parser(file_path.c_str());
-		if (parser.IsValid())
+		bool found = FileManager::Get()->FindFile(FileManager::Configs, file, file_path);
+		if (found)
 		{
-			const char* header = "Spells";
-			if (parser.document.HasMember(header))
+			JSONParser parser(file_path.c_str());
+			if (parser.IsValid())
 			{
-				if (parser.document[header].IsArray())
+				const char* header = "Spells";
+				if (parser.document.HasMember(header))
 				{
-					const Value::Array& entries = parser.document[header].GetArray();
-
-					s_spellsRegistry.reserve(entries.Size());
-
-					for (u32 i = 0; i < entries.Size(); i++)
+					if (parser.document[header].IsArray())
 					{
-						const Value& value = entries[i];
+						const Value::Array& entries = parser.document[header].GetArray();
 
-						CardSpell spell;
-						spell.damage = value["damage"].GetInt();
-						spell.size = value["size"].GetFloat();
-						spell.colour = Colour::s_stringToType.at(value["colour"].GetString());
+						s_spellsRegistry.reserve(entries.Size());
 
-						s_spellsRegistry[value["id"].GetString()] = spell;
+						for (u32 i = 0; i < entries.Size(); i++)
+						{
+							const Value& value = entries[i];
+
+							CardSpell spell;
+							//spell.damage = value["damage"].GetInt();
+							spell.size = value["size"].GetFloat();
+							spell.colour = Colour::s_stringToType.at(value["colour"].GetString());
+
+							s_spellsRegistry[value["id"].GetString()] = spell;
+						}
 					}
 				}
 			}
@@ -71,17 +80,18 @@ namespace SpellRegistry
 		// default populate any non-existing entries
 		for (u32 i = 0; i < Colour::Count; i++)
 		{
-			for (int j = 1; j <= 5; j++)
+			for (int j = 0; j < 5; j++)
 			{
 				CardSpell spell;
-				spell.damage = j;
+				spell.damageMin = j * 10;
+				spell.damageMax = spell.damageMin + 10;
 				spell.colour = (Colour::Type)i;
 
 				if (SpellExists(spell))
 					continue;
 
 				char id_buffer[32];
-				snprintf(id_buffer, 32, "%s_spell_%d", Colour::s_typeToString.at(spell.colour).c_str(), spell.damage);
+				snprintf(id_buffer, 32, "%s_spell_%d", Colour::s_typeToString.at(spell.colour).c_str(), j + 1);
 
 				s_spellsRegistry[id_buffer] = spell;
 			}
@@ -98,20 +108,14 @@ namespace SpellRegistry
 		VectorF size = AnimationReader::GetAnimationFrameSize(spell_id);
 		size = size * spell.size;
 
-		//emd.data.strings["id"] = spell_id;
-		//emd.data.strings["sprite"] = spell_id;
-		//emd.data.vectors["size"] = size;
-
-		//EntityMetaData meta_data;
 		PopulateMetaData(spell_id, RectF(VectorF::zero(), size), emd);
-
-		emd.data.AddInt("damage", spell.damage);
+		//emd.data.AddInt("damage", spell.damage);
 		emd.data.AddInt("colour", (int)spell.colour);
 
 		return true;
 	}
 
-	Entity CreateSpell(const char* spell_id, ECS::Entity target)
+	Entity CreateSpell(const char* spell_id, int spell_damage, ECS::Entity target)
 	{
 		EntityMetaData meta_data;
 		bool exists = GetSpellMetaData(spell_id, meta_data);
@@ -138,7 +142,7 @@ namespace SpellRegistry
 		ds.action = action;
 
 		Damage& damage = AddComponent(Damage, target);
-		damage.value = (float)meta_data.data.GetInt("damage");
+		damage.value = (float)spell_damage;
 		damage.sourceEntity = entity;
 
 		if (BehaviourState* bs = GetComponent(BehaviourState, entity))
@@ -147,13 +151,14 @@ namespace SpellRegistry
 		return entity;
 	}
 
-	const char* GetSpell(int points, u32 colour)
+	const char* GetSpell(int damage, u32 colour)
 	{
 		std::vector<const char*> candidates;
 
 		for (auto iter = s_spellsRegistry.begin(); iter != s_spellsRegistry.end(); iter++)
 		{
-			if (iter->second.damage == points && (u32)iter->second.colour == colour)
+			bool within_damage_range = damage > iter->second.damageMin && damage <= iter->second.damageMax;
+			if (within_damage_range && (u32)iter->second.colour == colour)
 				candidates.push_back(iter->first.c_str());
 		}
 

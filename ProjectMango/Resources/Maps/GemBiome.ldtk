@@ -2285,56 +2285,6 @@
 							"__worldY": 208
 						},
 						{
-							"__identifier": "HealthBar",
-							"__grid": [15,10],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#2CE8F5",
-							"iid": "4217e570-d380-11f0-b8d4-43bf7ee6f584",
-							"width": 8,
-							"height": 32,
-							"defUid": 70,
-							"px": [244,160],
-							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["HealthBar"]
-								}] },
-								{ "__identifier": "callback", "__type": "String", "__value": "PlayerHealthBar", "__tile": null, "defUid": 72, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["PlayerHealthBar"]
-								}] }
-							],
-							"__worldX": 244,
-							"__worldY": 160
-						},
-						{
-							"__identifier": "HealthBar",
-							"__grid": [15,2],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 9, "x": 16, "y": 0, "w": 16, "h": 16 },
-							"__smartColor": "#2CE8F5",
-							"iid": "110bbe60-d380-11f0-8af1-67c026244489",
-							"width": 8,
-							"height": 32,
-							"defUid": 70,
-							"px": [244,32],
-							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "String", "__value": "HealthBar", "__tile": null, "defUid": 71, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["HealthBar"]
-								}] },
-								{ "__identifier": "callback", "__type": "String", "__value": "AIHealthBar", "__tile": null, "defUid": 72, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["AIHealthBar"]
-								}] }
-							],
-							"__worldX": 244,
-							"__worldY": 32
-						},
-						{
 							"__identifier": "CoinPile",
 							"__grid": [11,13],
 							"__pivot": [0,0],
@@ -2972,7 +2922,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Text",
-							"__grid": [11,15],
+							"__grid": [3,0],
 							"__pivot": [0,0],
 							"__tags": ["UI"],
 							"__tile": { "tilesetUid": 9, "x": 96, "y": 64, "w": 16, "h": 16 },
@@ -2981,7 +2931,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 34,
-							"px": [184,245],
+							"px": [56,5],
 							"fieldInstances": [
 								{ "__identifier": "text_callback", "__type": "String", "__value": "TurnNumber", "__tile": null, "defUid": 35, "realEditorValues": [{
 									"id": "V_String",
@@ -2998,8 +2948,8 @@
 									"params": ["Turn Number"]
 								}] }
 							],
-							"__worldX": 184,
-							"__worldY": 245
+							"__worldX": 56,
+							"__worldY": 5
 						},
 						{
 							"__identifier": "Text",
@@ -3339,13 +3289,13 @@
 					"entityInstances": []
 				}
 			],
-			"__neighbours": [ { "levelIid": "3b7b68a0-48b0-11f1-a044-ef8cc42508ac", "dir": "w" }, { "levelIid": "183fe720-d380-11f0-83f7-37a91df44187", "dir": "e" } ]
+			"__neighbours": [{ "levelIid": "183fe720-d380-11f0-83f7-37a91df44187", "dir": "e" }]
 		},
 		{
 			"identifier": "Level_1",
 			"iid": "3b7b68a0-48b0-11f1-a044-ef8cc42508ac",
 			"uid": 141,
-			"worldX": -256,
+			"worldX": -304,
 			"worldY": 0,
 			"worldDepth": 0,
 			"pxWid": 256,
@@ -3443,7 +3393,7 @@
 									"params": ["tick"]
 								}] }
 							],
-							"__worldX": -16,
+							"__worldX": -64,
 							"__worldY": 240
 						},
 						{
@@ -3469,7 +3419,7 @@
 									"params": ["undo_turn"]
 								}] }
 							],
-							"__worldX": -16,
+							"__worldX": -64,
 							"__worldY": 224
 						},
 						{
@@ -3495,7 +3445,7 @@
 									"params": ["tick"]
 								}] }
 							],
-							"__worldX": -16,
+							"__worldX": -64,
 							"__worldY": 0
 						},
 						{
@@ -3521,7 +3471,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -56,
+							"__worldX": -104,
 							"__worldY": 208
 						},
 						{
@@ -3547,7 +3497,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -36,
+							"__worldX": -84,
 							"__worldY": 208
 						},
 						{
@@ -3573,7 +3523,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -26,
+							"__worldX": -74,
 							"__worldY": 208
 						},
 						{
@@ -3598,7 +3548,7 @@
 									"params": ["PlayerHealthBar"]
 								}] }
 							],
-							"__worldX": -12,
+							"__worldX": -60,
 							"__worldY": 160
 						},
 						{
@@ -3623,7 +3573,7 @@
 									"params": ["AIHealthBar"]
 								}] }
 							],
-							"__worldX": -12,
+							"__worldX": -60,
 							"__worldY": 32
 						},
 						{
@@ -3649,7 +3599,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -66,
+							"__worldX": -114,
 							"__worldY": 208
 						},
 						{
@@ -3679,7 +3629,7 @@
 									"params": [ true ]
 								}] }
 							],
-							"__worldX": -56,
+							"__worldX": -104,
 							"__worldY": 144
 						},
 						{
@@ -3705,7 +3655,7 @@
 								}] },
 								{ "__identifier": "faction", "__type": "LocalEnum.Faction", "__value": "Player", "__tile": null, "defUid": 103, "realEditorValues": [] }
 							],
-							"__worldX": -108,
+							"__worldX": -156,
 							"__worldY": 144
 						},
 						{
@@ -3725,7 +3675,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -160,
+							"__worldX": -208,
 							"__worldY": 16
 						},
 						{
@@ -3751,7 +3701,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -46,
+							"__worldX": -94,
 							"__worldY": 208
 						},
 						{
@@ -3777,7 +3727,7 @@
 								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -216,
+							"__worldX": -264,
 							"__worldY": 232
 						},
 						{
@@ -3803,7 +3753,7 @@
 								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -200,
+							"__worldX": -248,
 							"__worldY": 232
 						},
 						{
@@ -3829,7 +3779,7 @@
 								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -184,
+							"__worldX": -232,
 							"__worldY": 232
 						},
 						{
@@ -3855,7 +3805,7 @@
 								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -168,
+							"__worldX": -216,
 							"__worldY": 232
 						},
 						{
@@ -3881,7 +3831,7 @@
 								{ "__identifier": "sprite_sheet_frames", "__type": "Array<Float>", "__value": [5,1], "__tile": null, "defUid": 124, "realEditorValues": [ { "id": "V_Float", "params": [5] }, { "id": "V_Float", "params": [1] } ] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 140, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -152,
+							"__worldX": -200,
 							"__worldY": 232
 						},
 						{
@@ -3903,7 +3853,7 @@
 								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 131, "realEditorValues": [] },
 								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
 							],
-							"__worldX": -112,
+							"__worldX": -160,
 							"__worldY": 224
 						},
 						{
@@ -3923,7 +3873,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -96,
+							"__worldX": -144,
 							"__worldY": 48
 						},
 						{
@@ -3943,7 +3893,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -224,
+							"__worldX": -272,
 							"__worldY": 16
 						},
 						{
@@ -3963,7 +3913,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -96,
+							"__worldX": -144,
 							"__worldY": 16
 						},
 						{
@@ -3983,7 +3933,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -48,
+							"__worldX": -96,
 							"__worldY": 48
 						},
 						{
@@ -4005,7 +3955,7 @@
 								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [13,13], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [13] }, { "id": "V_Float", "params": [13] } ] },
 								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
 							],
-							"__worldX": -80,
+							"__worldX": -128,
 							"__worldY": 224
 						},
 						{
@@ -4027,7 +3977,7 @@
 								{ "__identifier": "size_override", "__type": "Array<Float>", "__value": [10,10], "__tile": null, "defUid": 131, "realEditorValues": [ { "id": "V_Float", "params": [10] }, { "id": "V_Float", "params": [10] } ] },
 								{ "__identifier": "snap_to_floor", "__type": "Bool", "__value": true, "__tile": null, "defUid": 132, "realEditorValues": [] }
 							],
-							"__worldX": -144,
+							"__worldX": -192,
 							"__worldY": 224
 						},
 						{
@@ -4047,7 +3997,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -160,
+							"__worldX": -208,
 							"__worldY": 200
 						},
 						{
@@ -4067,7 +4017,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -224,
+							"__worldX": -272,
 							"__worldY": 200
 						},
 						{
@@ -4087,7 +4037,7 @@
 								{ "__identifier": "randomise_frame_start", "__type": "Bool", "__value": true, "__tile": null, "defUid": 111, "realEditorValues": [] },
 								{ "__identifier": "randomise_frame_speed", "__type": "Float", "__value": 0.4, "__tile": null, "defUid": 113, "realEditorValues": [] }
 							],
-							"__worldX": -48,
+							"__worldX": -96,
 							"__worldY": 16
 						},
 						{
@@ -4113,7 +4063,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -56,
+							"__worldX": -104,
 							"__worldY": 224
 						},
 						{
@@ -4139,7 +4089,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -66,
+							"__worldX": -114,
 							"__worldY": 224
 						},
 						{
@@ -4165,7 +4115,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -46,
+							"__worldX": -94,
 							"__worldY": 224
 						},
 						{
@@ -4191,7 +4141,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -36,
+							"__worldX": -84,
 							"__worldY": 224
 						},
 						{
@@ -4217,7 +4167,7 @@
 								}] },
 								{ "__identifier": "coin_capacity", "__type": "Int", "__value": 5, "__tile": null, "defUid": 139, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": -26,
+							"__worldX": -74,
 							"__worldY": 224
 						}
 					]
@@ -4274,7 +4224,7 @@
 									"params": ["Turn Number"]
 								}] }
 							],
-							"__worldX": -72,
+							"__worldX": -120,
 							"__worldY": 245
 						},
 						{
@@ -4302,7 +4252,7 @@
 									"params": ["GameOverResult"]
 								}] }
 							],
-							"__worldX": -144,
+							"__worldX": -192,
 							"__worldY": 144
 						},
 						{
@@ -4327,7 +4277,7 @@
 									"params": ["Auto-confirm End Turn"]
 								}] }
 							],
-							"__worldX": -58,
+							"__worldX": -106,
 							"__worldY": 0
 						}
 					]
@@ -4615,7 +4565,7 @@
 					"entityInstances": []
 				}
 			],
-			"__neighbours": [{ "levelIid": "a502dff0-73f0-11ef-8eb1-cd28636774e5", "dir": "e" }]
+			"__neighbours": []
 		},
 		{
 			"identifier": "UI_RewardScreen",

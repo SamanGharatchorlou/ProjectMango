@@ -11,67 +11,13 @@
 
 using namespace ECS;
 
-void ClearBoard()
+static std::vector<VectorI> s_boardConfigurations;
+
+void InitBoardConfigurations()
 {
-	CardBoard* board = GetOnlyComponent(CardBoard);
-	if (!board)
-		return;
-
-	Grid<Entity>& cards = board->cards;
-	for (u32 y = 0; y < board->cards.rows(); y++)
-	{
-		for (u32 x = 0; x < board->cards.colums(); x++)
-		{
-			Entity entity = cards.get(VectorI(x, y));
-			DestroyEntityAndChildren(entity);
-		}
-	}
-
-	for (u32 i = 0; i < Card::c_tiers; i++)
-	{
-		board->drawPile[i].clear();
-		board->discardPile[i].clear();
-	}
-
-	board->triggeredCards.clear();
-}
-
-bool TriggerCard(ECS::Entity card_entity, ECS::Entity owner)
-{
-	bool triggered_spell = false;
-
-	CardBoard* board = GetOnlyComponent(CardBoard);
-	if (!board)
-		return triggered_spell;
-	
-
-	Card& card = GetComponentRef(Card, card_entity);
-	board->triggeredCards.push_back(card.boardIndex);
-
-	Entity target = Faction::GetTarget(owner);
-	if (target != EntityInvalid)
-	{
-		Entity spell_entity = SpellRegistry::CreateSpell(card.spell.c_str(), target);
-		triggered_spell = spell_entity != EntityInvalid;
-	}
-
-	DiscardCard(card_entity);
-
-	return triggered_spell;
-}
-
-void DiscardCard(Entity entity)
-{
-	CardBoard* board = GetOnlyComponent(CardBoard);
-	if (!board)
-		return;
-
-	// place into discard pile
-	Card& card = GetComponentRef(Card, entity);
-	board->discardPile[card.tier].push_back(card.registryIndex);
-
-	// destroy the card
-	DestroyEntityAndChildren(entity);
+	s_boardConfigurations.push_back(VectorI(4, 2));
+	s_boardConfigurations.push_back(VectorI(5, 2));
+	s_boardConfigurations.push_back(VectorI(4, 3));
 }
 
 static bool DrawRandomCard(CardBoard& board, int tier, DeckCard& out_dc)
@@ -86,7 +32,7 @@ static bool DrawRandomCard(CardBoard& board, int tier, DeckCard& out_dc)
 			total += dc.weight;
 
 		int roll = Maths::randomNumberBetween(0, total);
-		int cumulative = 0.0f;
+		int cumulative = 0;
 		int chosen_index = (int)draw_pile.size() - 1;
 		for (u32 i = 0; i < draw_pile.size(); i++)
 		{
@@ -141,7 +87,83 @@ static void CreateNewCard(CardBoard& board, VectorI index)
 	TriggerGameEvent(GameEvent::CardDrawn, card_entity);
 }
 
-void RestockTriggeredCards()
+void ClearBoard()
+{
+	CardBoard* board = GetOnlyComponent(CardBoard);
+	if (!board)
+		return;
+
+	Grid<Entity>& cards = board->cards;
+	for (u32 y = 0; y < board->cards.rows(); y++)
+	{
+		for (u32 x = 0; x < board->cards.colums(); x++)
+		{
+			Entity entity = cards.get(VectorI(x, y));
+			DestroyEntityAndChildren(entity);
+		}
+	}
+
+	for (u32 i = 0; i < Card::c_tiers; i++)
+	{
+		board->drawPile[i].clear();
+		board->discardPile[i].clear();
+	}
+
+	board->triggeredCards.clear();
+}
+
+bool TriggerCard(ECS::Entity card_entity, ECS::Entity owner)
+{
+	bool triggered_spell = false;
+
+	CardBoard* board = GetOnlyComponent(CardBoard);
+	if (!board)
+		return triggered_spell;
+	
+
+	Card& card = GetComponentRef(Card, card_entity);
+	board->triggeredCards.push_back(card.boardIndex);
+
+	Entity target = Faction::GetTarget(owner);
+	if (target != EntityInvalid)
+	{
+		Entity spell_entity = SpellRegistry::CreateSpell(card.spell.c_str(), card.damage, target);
+		triggered_spell = spell_entity != EntityInvalid;
+	}
+
+	DiscardCard(card_entity);
+
+	return triggered_spell;
+}
+
+void DiscardCard(Entity entity)
+{
+	CardBoard* board = GetOnlyComponent(CardBoard);
+	if (!board)
+		return;
+
+	// place into discard pile
+	Card& card = GetComponentRef(Card, entity);
+	board->discardPile[card.tier].push_back(card.registryIndex);
+
+	// destroy the card
+	DestroyEntityAndChildren(entity);
+}
+
+void RedrawCard(ECS::Entity entity)
+{
+	CardBoard* board = GetOnlyComponent(CardBoard);
+	if (!board)
+		return;
+
+	Card& card = GetComponentRef(Card, entity);
+	VectorI board_index = card.boardIndex;
+
+	DiscardCard(entity);
+	CreateNewCard(*board, board_index);
+}
+
+void RestockDiscardedCards()
 {
 	CardBoard* board = GetOnlyComponent(CardBoard);
 	if (!board)
@@ -156,7 +178,7 @@ void RestockTriggeredCards()
 	board->triggeredCards.clear();
 }
 
-void PopulateBoard(int rows, int columns)
+static void PopulateBoard(int x, int y)
 {
 	ClearBoard();
 
@@ -164,7 +186,7 @@ void PopulateBoard(int rows, int columns)
 	if (!board)
 		return;
 
-   	board->cards.set( VectorI(rows, columns), EntityInvalid);
+   	board->cards.set( VectorI(x, y), EntityInvalid);
 	CardRegistry::PopulateDrawPiles(board->drawPile, Card::c_tiers);
 
 	TriggerGameEvent(GameEvent::DrawPileBuilt, board->entity);
@@ -176,5 +198,15 @@ void PopulateBoard(int rows, int columns)
 			VectorI index(x, y);
 			CreateNewCard(*board, index);
 		}
+	}
+}
+
+void SetupBoard(int biome_index)
+{
+	VectorI default_config(4, 3);
+	if (s_boardConfigurations.size() > biome_index)
+	{
+		VectorI config = s_boardConfigurations[biome_index];
+		PopulateBoard(config.x, config.y);
 	}
 }

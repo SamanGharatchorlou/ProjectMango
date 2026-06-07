@@ -7,6 +7,7 @@
 #include "Debugging/ImGui/ImGuiMenu.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Components/GameComponents.h"
+#include "Entities/Registries/RelicRegistry.h"
 
 u32 DebugMenu::DoHealthDebugMenu(ECS::Entity& entity)
 {
@@ -69,20 +70,24 @@ u32 DebugMenu::DoEntityDataDebugMenu(ECS::Entity& entity)
 		bool has_parent = entity_data.parent != ECS::EntityInvalid;
 		const char* parent = has_parent ? ECS::GetName(entity_data.parent) : "No parent";
 
+		ImGui::PushID(entity_data.parent);
 		char buffer[32];
 		snprintf(buffer, 32, "Parent: %s", parent);
 		if (ImGui::ActiveButton(buffer, has_parent))
 		{
 			DebugMenu::SelectEntity(entity_data.parent);
 		}
+		ImGui::PopID();
 
 		for( u32 i = 0; i < entity_data.children.size(); i++ )
 		{
+			ImGui::PushID(entity_data.children[i]);
 			snprintf(buffer, 32, "Child: %s", ECS::GetName(entity_data.children[i]));
 			if ( ImGui::ActiveButton(buffer, ecs->IsAlive(entity_data.children[i])) )
 			{
 				DebugMenu::SelectEntity(entity_data.children[i]);
 			}
+			ImGui::PopID();
 		}
 
 
@@ -210,8 +215,6 @@ u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 		ECS::Inventory& inventory = GetComponentRef(Inventory, entity);
 		ImGui::PushID(entity + type_id);
 		
-		ImGui::Text("Points: %d", inventory.GetPoints());
-
 		ImGui::Text("Owned coins");
 		for( u32 i = 0; i < ECS::Colour::Count; i++ )
 		{
@@ -222,6 +225,20 @@ u32 DebugMenu::DoInventoryDebugMenu(ECS::Entity& entity)
 		for (u32 i = 0; i < inventory.relics.size(); i++)
 		{
 			ImGui::Text(inventory.relics[i].id.c_str());
+		}
+
+		int selected = -1;
+		std::vector<const char*> keys;
+
+		const std::vector<Relic>& relics = RelicRegistry::GetRelicRegistry();
+		for (const Relic& relic : relics)
+		{
+			keys.push_back(relic.id.c_str());
+		}
+
+		if (ImGui::Combo("Add Relic", &selected, keys.data(), (int)keys.size()))
+		{
+			inventory.relics.push_back(relics[selected]);
 		}
 
 		ImGui::PopID();
@@ -244,13 +261,22 @@ u32 DebugMenu::DoCardDebugMenu(ECS::Entity& entity)
 		for( u32 i = 0; i < ECS::Colour::Count; i++ )
 		{
 			SColour colour = ECS::Colour::s_typeToColour.at((ECS::Colour::Type)i);
-			if(colour.type == SColour::Black)
+			if(colour.type == SColour::CardBlack)
 				colour = SColour(SColour::MidGrey);
 			
 			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(colour.r, colour.g, colour.b, 255));
 			ImGui::Text("%d, ", card.cost[i]);
 			ImGui::PopStyleColor();
-			ImGui::SameLine();
+
+			if(i != ECS::Colour::Count - 1)
+				ImGui::SameLine();
+		}
+
+		ImGui::Text("Damage %d", card.damage);
+
+		if (ImGui::Button("Rebuild Child Displays"))
+		{
+			card.BuildChildDisplays();
 		}
 
 		ImGui::PopID();

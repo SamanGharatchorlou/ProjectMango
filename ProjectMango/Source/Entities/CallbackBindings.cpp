@@ -91,10 +91,34 @@ static void UpdateLayeredHealthBar(const Health* health, Entity health_bar_ui)
 
 void SetupCallbackUpdates(std::unordered_map<BasicString, std::function<void(ECS::Entity)>>& callback_updates)
 {
-	callback_updates[ "PlayerHealthBar" ] =  [](ECS::Entity entity) {
+	callback_updates[ "PlayerHealthBar2" ] =  [](ECS::Entity entity) {
 		if(const Health* health = GetComponent(Health, Faction::GetPlayer()))
 			UpdateLayeredHealthBar(health, entity);
 	};
+
+	callback_updates["PlayerHealthBar"] = [](ECS::Entity entity) {
+		if (const Health* health = GetComponent(Health, Faction::GetPlayer()))
+		{
+			float percentage = health->currentHealth / health->maxHealth;
+			VectorF size = GetRect(entity).Size();
+
+			Sprite* sprite = GetComponent(Sprite, entity);
+			sprite->params.renderOffset = VectorF(size.x * (1.0f - percentage), 0.0f);
+			sprite->params.clipping = true;
+		}
+	};
+	callback_updates["EnemyHealthBar"] = [](ECS::Entity entity) {
+		if (const Health* health = GetComponent(Health, Faction::GetEnemy()))
+		{
+			float percentage = health->currentHealth / health->maxHealth;
+			VectorF size = GetRect(entity).Size();
+
+			Sprite* sprite = GetComponent(Sprite, entity);
+			sprite->params.renderOffset = VectorF(size.x * (1.0f - percentage), 0.0f);
+			sprite->params.clipping = true;
+		}
+	};
+
 
 	callback_updates[ "AIHealthBar" ] =  [](ECS::Entity entity) {
 		if(const Health* health = GetComponent(Health, Faction::GetEnemy()))

@@ -5,6 +5,7 @@
 #include "ECS/Components/IncludeComponents.h"
 #include "ECS/Components/ComponentsSetup.h"
 #include "ECS/EntityCoordinator.h"
+#include "Entities/Factory/EntityBuilder.h"
 #include "Entities/Factory/UIEntityBuilder.h"
 #include "Entities/Factory/EnemyBuilder.h"
 #include "Game/Camera/Camera.h"
@@ -37,27 +38,18 @@ void GameState::Init()
 {
 	ECS::ParseGameFileData();
 
-	CreateUICursor();
-
-	Scene::BuildBiome("GemBiome", 0,  0);
-
-	PopulateBoard(5, 2);
-
 	Camera* camera = Camera::Get();
-	Window* window = GameData::Get().window;
-
-	camera->setViewport(window->size());
-	camera->targetEntity = ECS::Faction::GetPlayer();
+	camera->setViewport(GameData::Get().window->size());
 	camera->InitShakeyCam(5.0f, VectorF(12.0,0));
 
 	// Start Audio (disable for now)
 	SoundController* sc = AudioManager::GetController();
 	sc->SetMusicVolume(0);
 
-	UIManager::Get().Init();
-
 	// finally init all the systems
 	ecs->InitSystems();
+
+	StartBattle(0);
 }
 
 void GameState::HandleInput()
@@ -136,22 +128,37 @@ static void LoadPlayerState(PlayerState& player_state)
 	//}
 }
 
-void GameState::NextBattle()
+static void DestroyAllEntities()
 {
-	u32 current_level = GetOnlyComponent(Biome)->levelIndex;
+	// ui manager keeps reference to entities and is not an entity itself
+	// so is not destroyed by DestroyAllEntities, hence we always have to close it
+	UIManager::Get().CloseAllScreens();
+	ecs->DestroyAllEntities();
+}
 
+void GameState::StartBattle(int biome_index)
+{
 	SavePlayerState(playerState);
 	endGameState = EndGameState();
 	turnIndex = 0;
 
-	ecs->DestroyAllEntities();
+	DestroyAllEntities();
 
 	CreateUICursor();
-	Scene::BuildBiome("GemBiome", 0, current_level + 1);
+	Scene::BuildBiomeAndEntities("GemBiome", 0, biome_index);
 
 	LoadPlayerState(playerState);
 
-	PopulateBoard(4, 3);
+	SetupBoard(biome_index);
+
+	UIManager& ui_manager = UIManager::Get();
+	ui_manager.OpenScreen("HUD");
+}
+
+void GameState::NextBattle()
+{
+	u32 current_level = GetOnlyComponent(Biome)->levelIndex;
+	StartBattle(current_level + 1);
 }
 
 void GameState::Update(float dt)
@@ -219,6 +226,6 @@ void GameState::Update(float dt)
 
 void GameState::Exit()
 {
-	ecs->DestroyAllEntities();
+	DestroyAllEntities();
 	ECS::ClearGameFileData();
 }

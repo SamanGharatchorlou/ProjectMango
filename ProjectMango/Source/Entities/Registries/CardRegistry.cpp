@@ -48,18 +48,15 @@ namespace CardRegistry
 					StringBuffer32 label = value["colour"].GetString();
 					Colour::Type type = Colour::s_stringToType.at( label );
 					card.colour = type;
-					card.power[card.colour] = 1;
 					card.registryIndex = registry_index;
 					card.tier = tier_index;
-					card.points = value["points"].GetInt();
+					card.damage = value["points"].GetInt();
 
 					const Value::ConstArray& cost = value["cost"].GetArray();
 					for( u32 c = 0; c < cost.Size(); c++ )
 					{
 						card.cost[c] = cost[c].GetInt();
 					}
-
-					//s_cardRegistryDrawPile[tier_index].push_back({ registry_index, 1 });
 				}
 			}
 		}
@@ -71,19 +68,23 @@ namespace CardRegistry
 		FileManager::Get()->FindFile( FileManager::Configs, file, file_path );
 		TextFileReader reader(file_path.c_str());
 
+		int row = 0;
+
 		std::string line;
 		while(std::getline(reader.mFile, line))
 		{
 			// read a line, each line is a card
 			std::stringstream ss(line);
 
+			// skip the headers
+			if (row++ == 0)
+				continue;
+
 			s_cardRegistry.push_back( Card() );
 			Card& card = s_cardRegistry.back();
 			card.tier = tier_index;
 			card.registryIndex = (int)s_cardRegistry.size() - 1;
 
-			//s_cardRegistryDrawPile[tier_index].push_back({ card.registryIndex, 1 });
-			
 			int column = 0;
 			std::string cell;
 			while(std::getline(ss, cell, ',' ))
@@ -95,12 +96,11 @@ namespace CardRegistry
 						StringBuffer32 colour_string(cell.c_str());
 						colour_string = colour_string.to_lower();
 						card.colour = Colour::s_stringToType.at(colour_string.c_str());
-						card.power[card.colour] = 1;
 						break;
 					}
 					case 1:
 					{
-						card.points = atoi(cell.c_str());
+						card.damage = atoi(cell.c_str());
 						break;
 					}
 					case 2:
@@ -119,6 +119,18 @@ namespace CardRegistry
 						break;
 				}
 				column++;
+			}
+
+			int total_cost = 0;
+			for (u32 i = 0; i < Colour::Count; i++)
+			{
+				total_cost += card.cost[i];
+			}
+
+			if (total_cost == 0)
+			{
+				DebugPrint(Warning, "Card built with no cost - Colour:%s, Damage:%s", 
+					Colour::s_typeToString.at(card.colour), card.damage);
 			}
 		}
 	}
@@ -148,12 +160,12 @@ namespace CardRegistry
 		emd.data.AddVectorF("pivot_point", VectorF(0.5f, 0.5f));
 		emd.data.AddString("button_callback", "RequestCard");
 
-		emd.data.AddString(Sprite::kRequirement, "card_bases");
-		emd.data.AddVectorF(SpriteSheet::kRequirement, VectorF(Colour::Count, 1));
+		emd.data.AddString("sprite", "card_bases");
+		emd.data.AddVectorF("sprite_sheet_frames", VectorF(Colour::Count, 1));
 		if (const Card* registry_card = CardRegistry::LookupCard(dc.registryIndex))
 		{
 			emd.data.AddInt("colour_type", (int)registry_card->colour);
-			emd.data.AddInt(Card::kRequirement, dc.registryIndex);
+			emd.data.AddInt("card_registry_index", dc.registryIndex);
 
 			emd.data.AddInt("sprite_sheet_index", registry_card->colour);
 		}

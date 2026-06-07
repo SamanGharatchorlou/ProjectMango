@@ -83,7 +83,6 @@ namespace ECS
 		static constexpr const char* kRequirement = "card_registry_index";
 		void Init(const EntityMetaData& emd);
 
-		Colour::Type colour;
 
 		// what to pay to aquire the card
 		int cost[Colour::Count] { 0 };
@@ -91,12 +90,9 @@ namespace ECS
 
 		std::vector<Entity> costEntities[Colour::Count];
 
-		// how many coins it provides once owned
-		// turn into a simple colour, doesnt need to be an array
-		int power[Colour::Count] { 0 };
+		Colour::Type colour;
 
-		// points... for something, not sure yet
-		int points = 0;
+		int damage = 0;
 
 		// tier 1,2,3
 		int tier = 0;
@@ -108,9 +104,7 @@ namespace ECS
 
 		void BuildChildDisplays();
 		bool CanAfford(Entity entity) const;
-
 		int Cost(u32 index) const;
-		bool IsColour(Colour::Type colour) const;
 	};
 
 
@@ -143,26 +137,17 @@ namespace ECS
 		None,
 		DrawPileBuilt,
 		CardDrawn,
+		CardObtained
 	};
 
-
-	// turn into a component? does it need to be, dont think so
 	struct Relic
 	{
 		typedef void(*EffectFn)(const Relic& relic, Entity entity);
-
-		enum Phase
-		{
-			Selection,	// run first, card selection so we want other effects after this
-			Effect,		// default
-			Count
-		};
 
 		BasicString id;
 		BasicString description;
 		GameEvent trigger;
 		EffectFn effectFn;
-		Phase phase = Effect;
 
 		// might only affect a specific colour
 		Colour::Type colour = Colour::Count;
@@ -185,12 +170,6 @@ namespace ECS
 		static void Create(const char* effect, StatusEffect& out_effect);
 
 		bool operator==(const StatusEffect& rhs) const = default;
-		//bool operator == (const StatusEffect& rhs)
-		//{
-		//	return type == rhs.type && 
-		//			turnDuration == rhs.turnDuration &&
-		//			turnApplied == rhs.turnApplied;
-		//}
 	};
 
 	struct StatusEffects
@@ -215,14 +194,12 @@ namespace ECS
 
 		// relics we own
 		std::vector<Relic> relics;
-		// disabled relics - these dont accept events
-		std::vector<BasicString> disabledRelicIds;
 
 		// array size always Colour::Count
 		void GetCardPower(int array[]) const;
 		void GetBuyingPower(int array[]) const;
 
-		int GetPoints() const;
+		bool OwnsRelic(const char* relic_id) const;
 	};
 
 	void TriggerGameEvent(GameEvent event, Entity entity);

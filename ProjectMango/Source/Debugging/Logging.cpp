@@ -45,7 +45,7 @@ void DebugPrint(PriorityLevel priority, const char* format, ...)
 			return;
 		}
 
-		fprintf(stdout, "DebugPrint: ptr=%p val=%.64s\n", (void*)format, format);
+		fprintf(stdout, "DebugPrint: ptr=%p\n", (void*)format);
 		fflush(stdout);
 		// ------ temp to find a bug -------
 
@@ -68,6 +68,30 @@ void DebugPrint(PriorityLevel priority, const char* format, ...)
 	}
 #endif
 }
+//{
+//#if TWEAK_ENABLE_LOGGING
+//	if (priority <= LogLevel)
+//	{
+//		va_list arg;
+//		va_start(arg, format);
+//
+//		char buffer[512];
+//		vsnprintf(buffer, sizeof(buffer), format, arg);
+//		va_end(arg);
+//
+//		StringBuffer64 log_level;
+//		PriorityLevelToText(priority, log_level);
+//
+//		char final[512];
+//		if (!log_level.empty())
+//			snprintf(final, sizeof(final), "%s: %s\n", log_level.c_str(), buffer);
+//		else
+//			snprintf(final, sizeof(final), "%s\n", buffer);
+//
+//		OutputDebugStringA(final);
+//	}
+//#endif
+//}
 
 void DebugPrintOnce(PriorityLevel priority, const char* format, ...)
 {

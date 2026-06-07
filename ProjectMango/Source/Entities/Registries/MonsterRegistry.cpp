@@ -17,7 +17,10 @@ namespace MonsterRegistry
 		using namespace rapidjson;
 		
 		BasicString file_path;
-		FileManager::Get()->FindFile(FileManager::Configs, file, file_path);
+		bool found = FileManager::Get()->FindFile(FileManager::Configs, file, file_path);
+		if (!found)
+			return;
+
 		JSONParser parser(file_path.c_str());
 		if(!parser.IsValid())
 			return;

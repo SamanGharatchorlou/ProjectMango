@@ -53,6 +53,9 @@ namespace ECS
 	{
 		BasicString name;
 		std::vector<EnemyPhase> phases;
+
+		int count = 0;
+		int triggerCount = INT_MAX;
 	};
 
 	struct AIStrategy

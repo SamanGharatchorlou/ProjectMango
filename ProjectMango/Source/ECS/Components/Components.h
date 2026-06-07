@@ -142,7 +142,9 @@ namespace ECS
 		
 		void Init();
 		void Init(const EntityMetaData& emd);
+
 		bool ApplyDamage(float damage);
+		void Heal(float health);
 	};
 
 

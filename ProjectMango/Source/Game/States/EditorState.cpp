@@ -6,6 +6,7 @@
 #include "Input/InputManager.h"
 #include "ECS/EntityCoordinator.h"
 #include "ECS/EntSystems/RenderSystem.h"
+#include "ECS/EntSystems/TileMapSystem.h"
 
 #include "Debugging/AnimationEditor.h"
 #include "Debugging/UIEditor.h"
@@ -60,13 +61,6 @@ void EditorState::Update(float dt)
 				UIEditor::Open();
 			}
 		}
-
-		bool esc = im->isPressed(Button::Esc);
-		if (esc && timer.GetSeconds() > 1.0f )
-		{
-			GameData::Get().systemStateManager->mStates.popState();
-			return;
-		}
 	}
 
 	if (AnimationEditor::IsOpen())
@@ -74,6 +68,8 @@ void EditorState::Update(float dt)
 	else if(UIEditor::IsOpen())
 		UIEditor::Render();
 
+	ECS::TileMapSystem* map_system = ecs->systems.GetSystem<ECS::TileMapSystem>();
+	map_system->Update(dt);
 	ECS::RenderSystem* render_sys = ecs->systems.GetSystem<ECS::RenderSystem>();
 	render_sys->Update(dt);
 }

@@ -35,7 +35,7 @@
 					"hitbox_pos": [ 0.43, 0.33 ],
 					"hitbox_size": [ 0.28, 0.57 ],
 					"hit_vfx" : "HitBlood2",
-					"damage" : 1.0
+					"damage" : 10.0
 				},
 				{
 					"action": "TakeHit",

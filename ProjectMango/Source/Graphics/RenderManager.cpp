@@ -67,6 +67,13 @@ void RenderManager::render()
 			if (IsSelectedDebugEntity(render_packs[i].entity))
 				int a = 4;
 			
+			if (render_packs[i].clippingRect.isValid())
+			{
+				render_packs[i].clippingRect.Translate(camera_shift);
+				SDL_Rect clip = render_packs[i].clippingRect.toSDLRect();
+				SDL_RenderSetClipRect(sdl_renderer, &clip);
+			}
+
 			if(render_packs[i].flip == SDL_FLIP_HORIZONTAL)
 			{
 				// same distance but flipped over to the other side, so x2 the diff between rect center and the flip point
@@ -94,6 +101,9 @@ void RenderManager::render()
 			{
 				render_packs[i].font->Render(renderer, render_packs[i].rect.TopLeft());
 			}
+
+			if (render_packs[i].clippingRect.isValid())
+				SDL_RenderSetClipRect(sdl_renderer, nullptr);
 		}
 
 		render_packs.clear();

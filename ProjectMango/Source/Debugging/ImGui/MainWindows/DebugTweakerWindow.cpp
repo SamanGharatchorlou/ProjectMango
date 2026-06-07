@@ -6,6 +6,7 @@
 #include "ECS/EntityCoordinator.h"
 #include "Debugging/ImGui/ImGuiMenu.h"
 #include "Graphics/RenderManager.h"
+#include "Game/States/GameState.h"
 
 namespace DebugMenu
 {
@@ -19,11 +20,29 @@ namespace DebugMenu
 
     void DoTweakerWindow()
     {
-        ImGui::Begin("Entity Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Begin("Tweaker Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
         SharedState& state = GetSharedState();
 
         ECS::Entity entity = ECS::Faction::GetPlayer();
+
+        if (ImGui::Button("Restart Battle"))
+        {
+            if (GameState* game_state = GameState::GetActive())
+            {
+                u32 current_level = GetOnlyComponent(Biome)->levelIndex;
+                game_state->StartBattle(current_level);
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Start Next Battle"))
+        {
+            if (GameState* game_state = GameState::GetActive())
+            {
+                u32 current_level = GetOnlyComponent(Biome)->levelIndex;
+                game_state->StartBattle(current_level + 1);
+            }
+        }
 
         if (ECS::Health* health = GetComponent(Health, entity))
         {

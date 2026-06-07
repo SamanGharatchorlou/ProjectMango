@@ -61,6 +61,11 @@ namespace ECS
 					pack.flipPoint = transform.GetHorizontalFlipPoint();
 					GenerateRenderPack(*sprite, pack);
 
+					if (sprite->params.clipping)
+					{
+						pack.clippingRect = RectF(transform.worldPosition, transform.size);
+					}
+
 					if(const SpriteSheet* sprite_sheet = GetComponent(SpriteSheet, entity))
 					{
 						if(sprite_sheet->HasValidFrameIndex())
@@ -104,7 +109,7 @@ namespace ECS
 						pack.rect = render_rect;
 						pack.flipPoint = transform.GetHorizontalFlipPoint();
 						pack.font = &ui_text->font;
-						pack.layer = (u32)RenderLayer::UI;
+						pack.layer = (u32)RenderLayer::Text;
 
 						if (IsValid(pack))
 						{

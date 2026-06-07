@@ -164,42 +164,6 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 		return BasicString(""); 
 	};
 
-	text_bindings[ "PlayerPoints" ] =  [](Entity entity) {
-		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetPlayer()))
-		{
-			int total_points = 0;
-			for( int card_index : inventory->cards )
-			{
-				const Card* card = CardRegistry::LookupCard(card_index);
-				total_points += card->points;
-			}
-
-			char buffer[32];
-			snprintf(buffer, 32, "Points: %d", total_points);
-			return BasicString(buffer);
-		}
-					
-		return BasicString(""); 
-	};
-
-	text_bindings[ "AIPoints" ] =  [](Entity entity) {
-		if(const Inventory* inventory = GetComponent(Inventory, Faction::GetEnemy()))
-		{
-			int total_points = 0;
-			for( int card_index : inventory->cards )
-			{
-				const Card* card = CardRegistry::LookupCard(card_index);
-				total_points += card->points;
-			}
-
-			char buffer[32];
-			snprintf(buffer, 32, "Points: %d", total_points);
-			return BasicString(buffer);
-		}
-					
-		return BasicString(""); 
-	};
-
 	text_bindings["ParentRelicDescription"] = [](Entity entity) {
 		Entity parent = GetParent(entity);
 		if (Inventory* inventory = GetComponent(Inventory, parent))
@@ -212,5 +176,29 @@ void SetupTextUIBindings(std::unordered_map<BasicString, std::function<BasicStri
 		}
 
 		return BasicString("");
+	};
+
+	text_bindings["PlayerHealthRemaining"] = [](Entity entity) {
+		if (const Health* health = GetComponent(Health, Faction::GetPlayer()))
+		{
+			return BasicString(health->currentHealth);
+		}
+		return BasicString("");
+	};
+	
+	text_bindings["EnemyHealthRemaining"] = [](Entity entity) {
+		if (const Health* health = GetComponent(Health, Faction::GetEnemy()))
+		{
+			return BasicString(health->currentHealth);
+		}
+		return BasicString("");
+	};
+
+	text_bindings["CardDamage"] = [](Entity entity) {
+		Entity parent = GetParent(entity);
+		if (Card* card = GetComponent(Card, parent))
+		{
+			return BasicString(card->damage);
+		}
 	};
 }

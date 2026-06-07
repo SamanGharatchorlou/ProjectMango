@@ -68,6 +68,7 @@ namespace ECS
 
 	void Sprite::SetTexture(const char* label)
 	{
+		image.id = label;
 		image.texture = TextureManager::Get()->getTexture(label, FileManager::Folder::Images);
 	}
 

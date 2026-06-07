@@ -19,6 +19,7 @@ namespace ECS
 		RenderLayer renderLayer = RenderLayer::None;
 
 		bool disabled = false;
+		bool clipping = false;
 	};
 
 	struct SpriteImage

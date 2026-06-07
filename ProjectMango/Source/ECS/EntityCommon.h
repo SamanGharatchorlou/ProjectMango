@@ -28,6 +28,7 @@ namespace ECS
 		return id;
 	}
 
+	static constexpr u32 c_moreEntities = 256;
 	static constexpr u32 c_allEntities = 128;
 	static constexpr u32 c_veryCommon = 64;
 	static constexpr u32 c_common = 32;
@@ -37,7 +38,7 @@ namespace ECS
 #define COMPONENT_LIST(_entry) \
 	_entry(EntityData,        c_allEntities) \
 	_entry(Transform,         c_allEntities) \
-	_entry(Sprite,            c_allEntities) \
+	_entry(Sprite,            c_moreEntities) \
 	_entry(SpriteSheet,       c_uncommon) \
 	_entry(SpriteCycle,       c_uncommon) \
 	_entry(LayeredSprite,     c_uncommon) \

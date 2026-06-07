@@ -317,6 +317,12 @@ namespace ECS
 		return false;
 	}
 
+
+	void Health::Heal(float health)
+	{
+		currentHealth = std::clamp(currentHealth + health, 0.0f, maxHealth);
+	}
+
 	// DeathScentence
 	// ------------------------------------------------------------------
 	bool DeathScentence::CanDie()

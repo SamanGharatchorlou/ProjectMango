@@ -23,7 +23,7 @@
 			"snap_to_floor": true,
 			"acceleration": 80.0,
 			"max_speed": 80.0,
-			"max_health": 10
+			"max_health": 80
 		},
 		{
 			"id": "OrbMage",
@@ -37,7 +37,7 @@
 			"max_speed": 80.0,
 			"attack_cooldown_time_ms": 1000,
 			"action_cooldown_time_ms": 500,
-			"max_health": 10
+			"max_health": 100
 		},
 		{
 			"id": "PandaHero",
@@ -75,7 +75,7 @@
 			"snap_to_floor": true,
 			"acceleration": 80.0,
 			"max_speed": 50.0,
-			"max_health": 10
+			"max_health": 50
 		},
 		{
 			"id": "Shielder",

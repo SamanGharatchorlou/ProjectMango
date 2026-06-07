@@ -31,6 +31,7 @@ public:
 	static GameState* GetActive();
 	static int GetTurnIndex();
 
+	void StartBattle(int index);
 	void NextBattle();
 
 	EndGameState endGameState;

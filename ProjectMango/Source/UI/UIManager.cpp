@@ -15,14 +15,6 @@ UIManager& UIManager::Get()
 
 void UIManager::Init()
 {
-	// clean up any entities
-	for (auto& [key, val] : screenEntities)
-	{
-		CloseScreen(key.c_str());
-	}
-	screenEntities.clear();
-	screenMetaData.clear();
-
 	std::vector<BasicString> files;
 	FileManager::Get()->GetFilesInFolder(FileManager::SaveData, files);
 	for (u32 i = 0; i < files.size(); i++)
@@ -35,10 +27,43 @@ void UIManager::Init()
 			LoadMetaDataFromJson(files[i].c_str(), meta_datas);
 		}
 	}
+
+	initialised = true;
+}
+
+
+void UIManager::ShutDown()
+{
+	// clean up any entities
+	for (auto& [key, val] : screenEntities)
+	{
+		CloseScreen(key.c_str());
+	}
+
+	screenEntities.clear();
+	screenMetaData.clear();
+	initialised = false;
+}
+
+
+void UIManager::CloseAllScreens()
+{
+	for (auto& [key, val] : screenEntities)
+	{
+		CloseScreen(key.c_str());
+	}
 }
 
 void UIManager::OpenScreen(const char* screen_name)
 {
+	if (!initialised)
+		Init();
+
+	if (IsScreenOpen(screen_name))
+	{
+		CloseScreen(screen_name);
+	}
+
 	if (screenMetaData.contains(screen_name))
 	{
 		UIScreenMetaData& meta_datas = screenMetaData[screen_name];
@@ -72,7 +97,6 @@ void UIManager::CloseScreen(const char* screen_name)
 		entities.clear();
 	}
 }
-
 
 bool UIManager::IsScreenOpen(const char* screen_name)
 {

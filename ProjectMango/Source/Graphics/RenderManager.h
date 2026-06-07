@@ -18,6 +18,7 @@ struct RenderPack
 
 	RectF rect;
 	RectF subRect = InvalidRectF;
+	RectF clippingRect = InvalidRectF;
 	VectorF flipPoint;
 	double rotation = 0.0;
 	u32 layer = -1;

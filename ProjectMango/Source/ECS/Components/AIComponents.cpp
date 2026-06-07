@@ -61,7 +61,13 @@ namespace ECS
 
 	void AIStrategy::NextStrategy()
 	{
+		strategies[currentStrategy].count++;
+
 		currentStrategy = (currentStrategy + 1) % (int)strategies.size();
+
+		if (strategies[currentStrategy].triggerCount <= strategies[currentStrategy].count)
+			NextStrategy();
+
 		currentPhase = 0;
 		turnsLeft = GetCurrentPhase().turnDuration;
 	}

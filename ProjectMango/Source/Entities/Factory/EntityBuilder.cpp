@@ -187,12 +187,8 @@ Entity CreatePlayer(const ECS::EntityMetaData& emd)
 	TurnState& turn = AddComponent(TurnState, entity);
 	turn.initiative = 5;
 
-	// edit the render layer from the default (Monsters)
-	Sprite& sprite = GetComponentRef(Sprite, entity);
-	sprite.params.renderLayer = RenderLayer::Player;
-
-	//if(DebugMenu::GetSelectedEntity() == EntityInvalid)
-	//	DebugMenu::SelectEntity(entity);
+	if(DebugMenu::GetSelectedEntity() == EntityInvalid)
+		DebugMenu::SelectEntity(entity);
 		
 	return entity;
 }
@@ -278,7 +274,7 @@ Entity CreateEntityFromData(const EntityMetaData& meta_data)
 	return entity;
 }
 
-void CreateEntities(Entity& biome_entity)
+void BuildBiomeEntities(Entity& biome_entity)
 {
 	if (s_createEntitiyFunctions.size() == 0)
 		InitEntityFunctions();

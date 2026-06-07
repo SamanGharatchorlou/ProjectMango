@@ -4,5 +4,6 @@
 	"size": [ 168, 192 ],
 	"object_pos": [ 0.36, 0.74 ],
 	"object_size": [ 0.16, 0.255 ],
-	"max_health": 10
+	"max_health": 100,
+	"render_layer" :  4
 }

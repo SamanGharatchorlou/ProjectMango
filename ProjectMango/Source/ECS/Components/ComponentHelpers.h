@@ -26,6 +26,7 @@ namespace ECS
 		Monsters = 5,
 		BasicObject = 6,
 		UI = 9,
+		Text = 11,
 		Top = 13
 	};
 

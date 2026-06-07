@@ -15,7 +15,12 @@ struct UIManager
 	// [ screen ID, entities for screen ]
 	std::unordered_map<BasicString, UIScreenEntities> screenEntities;
 
+	bool initialised = false;
+
 	void Init();
+	void ShutDown();
+	void CloseAllScreens();
+
 	void OpenScreen(const char* screen_name);
 	void CloseScreen(const char* screen_name);
 	void RefreshScreen(const char* screen_name);

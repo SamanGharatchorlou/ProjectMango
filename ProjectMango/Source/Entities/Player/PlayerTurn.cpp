@@ -12,23 +12,6 @@
 
 using namespace ECS;
 
-char turnLog[256] = { 0 };
-
-// +amount = take coins, -amount = return coins
-static void TakeCoins(Entity entity, Colour::Type colour, int amount)
-{
-	Inventory& inventory = GetComponentRef(Inventory, entity);
-	inventory.coins[colour] = Maths::clamp(inventory.coins[colour] + amount, 0, 5);
-
-	// return coins to the stack
-	CoinStack& cs = GetGlobalCoinBank((u32)colour);
-	cs.remaining -= amount;
-	cs.remaining = Maths::clamp(cs.remaining, 0, cs.capacity);
-
-	TurnState& turn = GetComponentRef(TurnState, entity);
-	turn.collectedCoins[colour] += amount;
-}
-
 static void TakeCard(Entity entity, const Card& card)
 {
 	Inventory& inventory = GetComponentRef(Inventory, entity);
@@ -43,15 +26,37 @@ static void TakeCard(Entity entity, const Card& card)
 		Colour::Type type = (Colour::Type)i;
 		int card_cost = Maths::Max( 0, card.Cost(i) - card_power[i]);
 
+		if (type == Colour::Black)
+		{
+			int diff = card_cost - inventory.coins[type];
+			if (diff == 1)
+			{
+				// deal 5 damage to ourself to reduce the cost by 1
+				if (inventory.OwnsRelic("LifeForCost_Black"))
+				{
+					card_cost -= 2;
+
+					Damage& damage = AddComponent(Damage, entity);
+					damage.value = 5.0f;
+				}
+			}
+		}
+
 		// returning coins
-		TakeCoins(entity, type, -card_cost);
+		int amount = card_cost;
+		ReturnCoinsToStack(entity, type, amount);
+
+		TurnState& turn = GetComponentRef(TurnState, entity);
+		turn.collectedCoins[type] -= amount;
 	}
 
 	TurnState& turn = GetComponentRef(TurnState, entity);
 	turn.collectedCardRegistryIndex = card.registryIndex;
 
 	inventory.cards.push_back(card.registryIndex);
-	
+
+	TriggerGameEvent(GameEvent::CardObtained, card.entity);
+
 	bool triggered_spell = TriggerCard(card.entity, entity);
 	if (triggered_spell)
 	{
@@ -70,7 +75,9 @@ static bool ExecuteAction(ActionRequest& action_request, TurnState& turn)
 			if(!turn.CanCollectCoin(coin_type))
 				return false;
 
-			TakeCoins(turn.entity, coin_type, 1);
+			int amount = 1;
+			TakeCoinsFromStack(turn.entity, coin_type, amount);
+			turn.collectedCoins[coin_type] += amount;
 
 			break;
 		}
@@ -98,7 +105,9 @@ static bool ExecuteAction(ActionRequest& action_request, TurnState& turn)
 
 				if( turn.collectedCoins[type] != 0 )
 				{
-					TakeCoins(turn.entity, type, -turn.collectedCoins[type]);
+					int amount = turn.collectedCoins[type];
+					ReturnCoinsToStack(turn.entity, type, amount);
+					turn.collectedCoins[type] -= amount;
 				}
 			}
 					
@@ -174,17 +183,8 @@ void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 
 		if(const Card* collected_card = CardRegistry::LookupCard(turn.collectedCardRegistryIndex))
 		{
-			const char* power = nullptr;
-			for( u32 i = 0; i < Colour::Count; i++ )
-			{
-				if(collected_card->power[i] > 0)
-				{
-					power = Colour::s_typeToString.at((Colour::Type)i).c_str();
-					break;
-				}
-			}
-
-			snprintf(buffer, length, "\tCard Tier: %d, Points: %d, Power: %s, Cost: ", collected_card->tier, collected_card->points, power );
+			const char* colour = Colour::s_typeToString.at(collected_card->colour).c_str();
+			snprintf(buffer, length, "\tCard Tier: %d, Damage: %d, Colour: %s, Cost: ", collected_card->tier, collected_card->damage, colour);
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
 				if(collected_card->Cost(i) > 0)
@@ -201,7 +201,7 @@ void PlayerTurn::OnEndTurn(ECS::TurnState& turn)
 		}
 	}
 
-	RestockTriggeredCards();
+	RestockDiscardedCards();
 
 	turn.turnIndex++;
 	turn.ResetState();

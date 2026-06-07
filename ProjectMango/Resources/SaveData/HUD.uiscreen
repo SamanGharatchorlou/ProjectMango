@@ -1,0 +1,280 @@
+[
+    {
+        "__identifier": "HealthBarBg",
+        "iid": 3514999942,
+        "width": 80.0,
+        "height": 8.0,
+        "px": [
+            32.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "HealthBarBg"
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 9
+            }
+        ]
+    },
+    {
+        "__identifier": "HealthBarHealth",
+        "iid": 42360031,
+        "width": 80.0,
+        "height": 8.0,
+        "px": [
+            32.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "callback",
+                "__type": "String",
+                "__value": "PlayerHealthBar"
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "HealthBar"
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 10
+            }
+        ]
+    },
+    {
+        "__identifier": "health remaining",
+        "iid": 792320278,
+        "width": 20.0,
+        "height": 8.0,
+        "px": [
+            92.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": ""
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": "PlayerHealthRemaining"
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 51
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
+            }
+        ]
+    },
+    {
+        "__identifier": "HealthBarBg - copy",
+        "iid": 712114708,
+        "width": 80.0,
+        "height": 8.0,
+        "px": [
+            156.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "HealthBarBg"
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 9
+            }
+        ]
+    },
+    {
+        "__identifier": "HealthBarHealth - copy",
+        "iid": 1081680256,
+        "width": 80.0,
+        "height": 8.0,
+        "px": [
+            156.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "callback",
+                "__type": "String",
+                "__value": "EnemyHealthBar"
+            },
+            {
+                "__identifier": "sprite",
+                "__type": "String",
+                "__value": "HealthBar"
+            },
+            {
+                "__identifier": "render_layer",
+                "__type": "Int",
+                "__value": 10
+            }
+        ]
+    },
+    {
+        "__identifier": "health remaining - copy",
+        "iid": 2123212084,
+        "width": 20.0,
+        "height": 8.0,
+        "px": [
+            216.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": ""
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": "EnemyHealthRemaining"
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 51
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
+            }
+        ]
+    },
+    {
+        "__identifier": "player health",
+        "iid": 2464185444,
+        "width": 22.0,
+        "height": 8.0,
+        "px": [
+            10.0,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Player"
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": ""
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 51
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
+            }
+        ]
+    },
+    {
+        "__identifier": "enemy health",
+        "iid": 1362206698,
+        "width": 22.200000762939453,
+        "height": 8.0,
+        "px": [
+            133.8000030517578,
+            244.0
+        ],
+        "__pivot": [
+            0.0,
+            0.0
+        ],
+        "fieldInstances": [
+            {
+                "__identifier": "text",
+                "__type": "String",
+                "__value": "Enemy "
+            },
+            {
+                "__identifier": "text_callback",
+                "__type": "String",
+                "__value": ""
+            },
+            {
+                "__identifier": "pt_size",
+                "__type": "Int",
+                "__value": 51
+            },
+            {
+                "__identifier": "center_text",
+                "__type": "Int",
+                "__value": 1
+            },
+            {
+                "__identifier": "wrapped",
+                "__type": "Int",
+                "__value": 0
+            }
+        ]
+    }
+]

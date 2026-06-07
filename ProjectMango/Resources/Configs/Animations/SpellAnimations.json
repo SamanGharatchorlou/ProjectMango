@@ -1,25 +1,6 @@
 {
 	"vfx": [
 		{
-			"id": "Lightning1",
-			"spriteSheet": "Lightning-bolt",
-			"frameSize": [ 72, 72 ],
-			"frameTime": 0.05,
-			"startIndex": 0,
-			"frameCount": 10,
-			"inactiveFrame": 6
-		},
-		{
-			"id": "SunStrike",
-			"spriteSheet": "Sun-strike",
-			"frameSize": [ 72, 72 ],
-			"frameTime": 0.05,
-			"startIndex": 0,
-			"frameCount": 10,
-			"inactiveFrame": 3
-		},
-
-		{
 			"id": "green_spell_1",
 			"spriteSheet": "green_spell_1",
 			"frameSize": [ 128, 64 ],
@@ -225,13 +206,13 @@
 
 		{
 			"id": "white_spell_1",
-			"spriteSheet": "white_spell_1",
+			"spriteSheet": "white_spell_2",
 			"frameSize": [ 256, 256 ],
 			"frameTime": 0.07,
 			"startIndex": 0,
-			"frameCount": 20,
-			"inactiveFrame": 14,
-			"hit_frame": 19
+			"frameCount": 26,
+			"inactiveFrame": 12,
+			"hit_frame": 13
 		},
 		{
 			"id": "white_spell_2",

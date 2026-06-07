@@ -1,9 +1,13 @@
 #pragma once
 
+namespace ECS { struct Card; }
+
+void InitBoardConfigurations();
 
 void ClearBoard();
-void PopulateBoard(int rows, int columns);
-void RestockTriggeredCards();
+void SetupBoard(int biome_index);
+void RestockDiscardedCards();
 
-bool TriggerCard(ECS::Entity card, ECS::Entity owner);
+bool TriggerCard(ECS::Entity entity, ECS::Entity owner);
 void DiscardCard(ECS::Entity entity);
+void RedrawCard(ECS::Entity entity);

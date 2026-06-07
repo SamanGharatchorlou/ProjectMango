@@ -24,7 +24,7 @@
 #include "ECS/EntSystems/HealthSystem.h"
 #include "ECS/EntSystems/TurnActionSystem.h"
 #include "ECS/EntSystems/ComponentUpdateSystem.h"
-
+#include "Entities/Objects/CardBoard.h"
 #include "Game/Readers/AnimationReader.h"
 #include "Entities/Registries/CardRegistry.h"
 #include "Entities/Registries/MonsterRegistry.h"
@@ -151,8 +151,8 @@ void ECS::ParseGameFileData()
 	AnimationReader::ReadAnimationData();
 
 	CardRegistry::ReadomFromCSV("Tier1Cards", 0);
-	CardRegistry::ReadomFromJson("Tier2Cards", 1);
-	CardRegistry::ReadomFromJson("Tier3Cards", 2);
+	CardRegistry::ReadomFromCSV("Tier2Cards", 1);
+	CardRegistry::ReadomFromCSV("Tier3Cards", 2);
 
 	MonsterRegistry::Build( "CardMonsters" );
 	SpellRegistry::Build("CardSpells");
@@ -161,6 +161,7 @@ void ECS::ParseGameFileData()
 	StatusEffectRegistry::PopulateRegistry();
 
 	SetupBiomeEntities();
+	InitBoardConfigurations();
 }
 
 void ECS::ClearGameFileData()

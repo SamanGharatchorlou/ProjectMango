@@ -45,10 +45,10 @@ namespace ECS
 					if(const Card* card = CardRegistry::LookupCard(request.cardRegistryIndex))
 					{
 						// apply card damage
-						if(card->points > 0)
+						if(card->damage > 0)
 						{
 							Damage& damage = AddComponent(Damage, spawner.spawnedEntity);
-							damage.value = (float)card->points;
+							damage.value = (float)card->damage;
 						}
 					}
 					

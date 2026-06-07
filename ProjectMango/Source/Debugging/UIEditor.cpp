@@ -16,6 +16,7 @@
 #include "imgui.h"
 #include "Entities/Factory/EntitySerialiser.h"
 #include "Entities/Factory/ComponentAssembler.h"
+#include "Game/Readers/SceneReader.h"
 
 namespace UIEditor
 {
@@ -178,14 +179,27 @@ namespace UIEditor
         {
             VectorF& size = transform.size;
             if (im->isHeld(Button::UpArrow))
-                size.y += 0.5;
-            if (im->isHeld(Button::DownArrow))
                 size.y -= 0.5;
+            if (im->isHeld(Button::DownArrow))
+                size.y += 0.5;
 
             if (im->isHeld(Button::RightArrow))
                 size.x += 0.5;
             if (im->isHeld(Button::LeftArrow))
                 size.x -= 0.5;
+        }
+        else
+        {
+            VectorF& world_pos = transform.worldPosition;
+            if (im->isHeld(Button::UpArrow))
+                world_pos.y -= 0.5;
+            if (im->isHeld(Button::DownArrow))
+                world_pos.y += 0.5;
+
+            if (im->isHeld(Button::RightArrow))
+                world_pos.x += 0.5;
+            if (im->isHeld(Button::LeftArrow))
+                world_pos.x -= 0.5;
         }
 
         DebugDraw::RectOutline(transform.GetRect(), is_held ? SColour::Green : SColour::Yellow);
@@ -339,6 +353,11 @@ namespace UIEditor
             ui_manager.OpenScreen(screen);
         }
 
+        if (ImGui::Button("Open Scene"))
+        {
+            Scene::BuildBiomeAndEntities("GemBiome", 0, 0);
+        }
+
         UIEntityBuilder();
 
         Entity selected_entity = SelectableUIEntityList();
@@ -404,7 +423,15 @@ namespace UIEditor
     void Open()
     {
         DebugMenu::ToggleUIWindow(true);
-        AddTestScreen("debug_screen");
+
+        UIManager& ui = UIManager::Get();
+        ui.Init();
+
+        if (ui.screenMetaData.size() > 0)
+        {
+            auto iter = ui.screenMetaData.begin();
+            s_state.activeScreen = iter->first;
+        }
     }
 
     void Close()

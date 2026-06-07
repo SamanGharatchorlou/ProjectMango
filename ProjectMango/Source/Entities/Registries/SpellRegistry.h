@@ -8,8 +8,8 @@ namespace ECS
 namespace SpellRegistry
 {
 	void Build(const char* config);
-	ECS::Entity CreateSpell(const char* spell_id, ECS::Entity target);
+	ECS::Entity CreateSpell(const char* spell_id, int damage, ECS::Entity target);
 
-	const char* GetSpell(int points, u32 colour);
+	const char* GetSpell(int damage, u32 colour);
 	bool GetSpellMetaData(const char* spell_id, ECS::EntityMetaData& emd);
 }

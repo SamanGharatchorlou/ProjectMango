@@ -376,8 +376,15 @@ namespace Scene
 		biome.levelIndex = level_index;
 
 		ParseBiome(biome_id, biome);
-		CreateEntities(biome_entity);
 
 		return biome_entity;
+	}
+
+	ECS::Entity BuildBiomeAndEntities(const char* biome_id, int biome_index, int level_index)
+	{
+		ECS::Entity entity = BuildBiome(biome_id, biome_index, level_index);
+		BuildBiomeEntities(entity);
+
+		return entity;
 	}
 }

@@ -5,7 +5,7 @@ using namespace ECS;
 namespace ECS { struct EntityMetaData; }
 
 void InitEntityFunctions();
-void CreateEntities(Entity& biome);
+void BuildBiomeEntities(Entity& biome);
 Entity CreateEntityFromData(const EntityMetaData& meta_data);
 
 Entity CreateBasicObject(const EntityMetaData& emd);

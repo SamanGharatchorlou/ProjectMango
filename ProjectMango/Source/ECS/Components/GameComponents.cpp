@@ -25,10 +25,7 @@ namespace ECS
 		for( u32 i = 0; i < cards.size(); i++ )
 		{
 			const ECS::Card* card = CardRegistry::LookupCard(cards[i]);
-			for( int j = 0; j < Colour::Count; j++ )
-			{
-				array[j] +=  card->power[j];
-			}
+			array[card->colour]++;
 		}
 	}
 
@@ -45,16 +42,15 @@ namespace ECS
 		}
 	}
 
-	int Inventory::GetPoints() const
+	bool Inventory::OwnsRelic(const char* relic_id) const
 	{
-		int total_points = 0;
-		for( int card_index : cards )
+		for (u32 i = 0; i < relics.size(); i++)
 		{
-			const Card* card = CardRegistry::LookupCard(card_index);
-			total_points += card->points;
+			if (StringCompare(relics[i].id.c_str(), relic_id)) 
+				return true;
 		}
 
-		return total_points;
+		return false;
 	}
 
 	// Card
@@ -67,7 +63,7 @@ namespace ECS
 			CopyComponent<Card>(*this, *registry_card);
 		}
 		
-		spell = SpellRegistry::GetSpell(points, colour);
+		spell = SpellRegistry::GetSpell(damage, colour);
 
 		BuildChildDisplays();
 	}
@@ -84,6 +80,13 @@ namespace ECS
 
 			int buying_power[Colour::Count];
 			inventory->GetBuyingPower(buying_power);
+
+			// increase buying power by 1 if we have this relic
+			if (inventory->OwnsRelic("LifeForCost_Black"))
+			{
+				buying_power[Colour::Black] += 2;
+			}
+
 			for( u32 i = 0; i < Colour::Count; i++ )
 			{
 				if( buying_power[i] < Cost(i) )
@@ -99,11 +102,6 @@ namespace ECS
 	int Card::Cost(u32 index) const
 	{
 		return cost[index] - discount[index];
-	}
-
-	bool Card::IsColour(Colour::Type colour) const
-	{
-		return power[colour] != 0;
 	}
 
 	static void GenerateColouredGems(Entity entity)
@@ -196,7 +194,6 @@ namespace ECS
 				child_sprite.SetTexture("cost_empty");
 				child_sprite.params.renderLayer = RenderLayer::UI;
 				child_sprite.params.colourMod = Colour::s_typeToColour.at(colour);
-				child_sprite.params.colourMod.setOpacity(0.85f);
 			}
 
 			count++;
@@ -216,25 +213,26 @@ namespace ECS
 		
 		VectorF child_size = VectorF(transform.size.x, transform.size.x) * 0.5f;
 
-		if(points > 0)
+		if(damage > 0)
 		{
-			// build points
-			Entity points_entity = CreateEntity("card_points");
-			EntityData::SetParent(points_entity, entity);
+			// build damage
+			Entity damage_entity = CreateEntity("card_damage");
+			EntityData::SetParent(damage_entity, entity);
 
 			// Transform
-			Transform& points_transform = AddComponent(Transform, points_entity);
+			Transform& points_transform = AddComponent(Transform, damage_entity);
 			points_transform.size = child_size * 0.5f;
 			points_transform.SetLocalPosition( transform.size * (VectorF(0.025f, 0.03f) ) );
 			
 			// UIText
-			UIText& ui_text = AddComponent(UIText, points_entity);
+			UIText& ui_text = AddComponent(UIText, damage_entity);
 			ui_text.center = true;
 			ui_text.SetColour(SColour::White);
+			ui_text.callback = "CardDamage";
 
-			BasicString number_to_text = BasicString(points);
-			ui_text.SetText(number_to_text.c_str());
-			ui_text.SetSize(19);
+			//BasicString number_to_text = BasicString(damage);
+			//ui_text.SetText(number_to_text.c_str());
+			ui_text.SetSize(25);
 		}
 
 		GenerateCostIcons(entity);
@@ -387,6 +385,8 @@ namespace ECS
 		{
 			return entity == active_turn->entity;
 		}
+
+		return false;
 	}
 
 	bool TurnState::IsCurrentTurn() const
@@ -447,31 +447,18 @@ namespace ECS
 	void TriggerGameEvent(GameEvent event, Entity entity)
 	{
 		Entity player = Faction::GetPlayer();
-		if(Inventory* inventory = GetComponent(Inventory, player))
+		if(const Inventory* inventory = GetComponent(Inventory, player))
 		{
-			for (u32 j = 0; j < Relic::Phase::Count; j++)
+			for( u32 i = 0; i < inventory->relics.size(); i++ )
 			{
-				Relic::Phase phase = (Relic::Phase)j;
-
-				for( u32 i = 0; i < inventory->relics.size(); i++ )
+				const Relic& relic = inventory->relics[i];
+				if(relic.trigger == event)
 				{
-					const Relic& relic = inventory->relics[i];
-					if (relic.phase != phase)
-						continue;
-
-					// skip over any disabled relics	
-					if(Contains(inventory->disabledRelicIds, relic.id))
-						continue;
-
-					if(relic.trigger == event)
-					{
-						relic.effectFn(relic, entity);
-					}
+					relic.effectFn(relic, entity);
 				}
 			}
 		}
 	}
-
 
 	void StatusEffect::Create(const char* effect, StatusEffect& out_effect)
 	{
